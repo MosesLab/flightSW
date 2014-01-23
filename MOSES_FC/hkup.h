@@ -1,6 +1,6 @@
 #include "system.h"
 #include <termios.h>
-#include "packet.h"
+#include "packetType.h"
 #include "packetqueue.h"
 
 #define UPBAUD B1200

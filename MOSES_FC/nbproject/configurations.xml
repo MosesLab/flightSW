@@ -8,6 +8,7 @@
       <itemPath>hkup.h</itemPath>
       <itemPath>mutex.h</itemPath>
       <itemPath>packet.h</itemPath>
+      <itemPath>packetType.h</itemPath>
       <itemPath>packetqueue.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -19,8 +20,7 @@
                    projectFiles="true">
       <itemPath>hkup.c</itemPath>
       <itemPath>main.c</itemPath>
-      <itemPath>system.h</itemPath>
-      <itemPath>/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h</itemPath>
+      <itemPath>packet.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -33,6 +33,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>system.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
@@ -47,11 +48,6 @@
       </toolsSet>
       <compileType>
       </compileType>
-      <item path="/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hkup.c" ex="false" tool="0" flavor2="0">
@@ -62,7 +58,11 @@
       </item>
       <item path="mutex.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="packet.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packetType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -89,11 +89,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hkup.c" ex="false" tool="0" flavor2="0">
@@ -104,7 +99,11 @@
       </item>
       <item path="mutex.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="packet.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packetType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
       </item>

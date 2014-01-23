@@ -11,8 +11,12 @@
 
 #include "hkup.h"
 
-main(){
-
+void hkup(){
+    init_serial_connection();
+    
+    buildLookupTable();
+    
+    while(TRUE);
 }
 
 void init_serial_connection(){
@@ -46,4 +50,11 @@ void init_serial_connection(){
 
 }
 
+packet readPacket(int fd){
+    
+    
+}
 
+char* readData(int fd, int len){
+    read(fd, buf, len);
+}
