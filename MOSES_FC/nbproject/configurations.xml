@@ -4,6 +4,11 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>global_variables.h</itemPath>
+      <itemPath>hkup.h</itemPath>
+      <itemPath>mutex.h</itemPath>
+      <itemPath>packet.h</itemPath>
+      <itemPath>packetqueue.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -12,7 +17,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>hkup.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>system.h</itemPath>
+      <itemPath>/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -26,6 +34,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -36,7 +47,26 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="global_variables.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hkup.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="hkup.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="mutex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -59,7 +89,26 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="/home/byrdie/Documents/moses/oldcode/build_0.1/system2.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="global_variables.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hkup.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="hkup.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="mutex.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
