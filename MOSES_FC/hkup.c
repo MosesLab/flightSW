@@ -77,6 +77,14 @@ packet readPacket(int fd, packet p){
     tempValid = readData(fd, p.data, p.dataSize);
     p.valid = p.valid & tempValid;
     
+    readData(fd, &(p.checksum), 1);
+    readData(fd, &temp, 1);
+    
+    while(temp != stop){
+        readData(fd, &temp, 1);
+    }
+    tempValid = (p.checksum = calcCheckSum(p));
+    p.valid = p.valid & tempValid;
 }
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len){

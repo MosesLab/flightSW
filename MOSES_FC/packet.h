@@ -10,7 +10,7 @@
 #include <math.h>
 
 char start = '%';
-char end = '^';
+char stop = '^';
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
 
 char encode(char dataByte) {return lookupTable[dataByte];}
