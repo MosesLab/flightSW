@@ -70,7 +70,7 @@ packet readPacket(int fd, packet p){
     tempValid = readData(fd, p.subtype, 3);
     p.valid = p.valid & tempValid;
     
-    tempValid = readData(fd, p.dataLength, 6);
+    tempValid = readData(fd, p.dataLength, 2);
     p.valid = p.valid & tempValid;
     
 }
