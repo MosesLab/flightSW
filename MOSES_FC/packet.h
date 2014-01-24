@@ -7,6 +7,7 @@
 /*of serial command packets		*/
 /****************************************/
 #include "packetType.h"
+#include <math.h>
 
 char start = '%';
 char end = '^';

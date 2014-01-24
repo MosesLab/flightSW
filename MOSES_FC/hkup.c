@@ -72,6 +72,10 @@ packet readPacket(int fd, packet p){
     
     tempValid = readData(fd, p.dataLength, 2);
     p.valid = p.valid & tempValid;
+    p.dataSize = ahtoi(p.dataLength, 2);
+    
+    tempValid = readData(fd, p.data, p.dataSize);
+    p.valid = p.valid & tempValid;
     
 }
 /*readData returns an array if successful or 0 if an error occurred*/
