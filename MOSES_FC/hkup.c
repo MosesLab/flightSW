@@ -50,11 +50,49 @@ void init_serial_connection(){
 
 }
 
-packet readPacket(int fd){
+packet readPacket(int fd, packet p){
+    int tempValid;
+    p.valid = TRUE;
+    char temp;
+    char * error = "";
     
+    readData(fd, &temp, 1);
+    while(temp != start){
+        readData(fd, &temp 1);
+    }
+    
+    tempValid = readData(fd, p.timeStamp, 6);
+    p.valid = p.valid & tempValid;
+    
+    tempValid = readData(fd, &(p.type), 1);
+    p.valid = p.valid & tempValid;
+    
+    tempValid = readData(fd, p.subtype, 3);
+    p.valid = p.valid & tempValid;
+    
+    tempValid = readData(fd, p.dataLength, 6);
+    p.valid = p.valid & tempValid;
     
 }
-
-char* readData(int fd, int len){
-    read(fd, buf, len);
+/*readData returns an array if successful or 0 if an error occurred*/
+int readData(int fd, char * data, int len){
+    char temp;
+    int result = TRUE;
+    
+    int rsz = read(fd, data, len);
+    while(rsz < len){
+        rsz += read(fd, data + rsz, len - rsz);
+    }
+    
+    int i;
+    for(i = 0; i < len; i++){
+        temp = data[i];
+        data[i] = decode(temp);
+        
+        if(temp != encode(data[i])){
+            result = FALSE;
+        }
+    }
+    
+    return result;
 }

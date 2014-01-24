@@ -19,8 +19,8 @@ void enqueue(packetQueue queue, packet p) {
         queue.last = queue.first;
     } else {
         packet * temp = queue.last;
-    temp->next = &p;
-    queue.last = &p;
+        temp->next = &p;
+        queue.last = &p;
 }
 }
 

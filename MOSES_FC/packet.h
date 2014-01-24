@@ -8,8 +8,8 @@
 /****************************************/
 #include "packetType.h"
 
-const char start = '%';
-const char end = '^';
+char start = '%';
+char end = '^';
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
 
 char encode(char dataByte) {return lookupTable[dataByte];}
@@ -17,5 +17,4 @@ char decode(char dataByte) {return (dataByte & 0x7F);}
 
 
 void buildLookupTable();
-
 char calcCheckSum(packet p);
