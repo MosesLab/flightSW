@@ -20,3 +20,4 @@ void buildLookupTable();
 char calcCheckSum(packet p);
 
 int ahtoi(char*, int);
+char * itoah(int, int);
