@@ -29,7 +29,7 @@ Packet dequeue(LockingQueue queue) {
     pthread_mutex_lock(&queue.lock);
     
     while(queue.count == 0){
-        pthread_cond_wait(queue.cond, queue.lock);
+        pthread_cond_wait(&queue.cond, &queue.lock);
     }
     Packet p = *(queue.first);
     queue.first = p.next;
