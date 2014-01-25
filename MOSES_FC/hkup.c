@@ -17,7 +17,8 @@ void * hkupThread(void){
     buildLookupTable();
     
     while(ts_alive){
-        Packet new_packet = readPacket(fup, new_packet);
+        Packet new_packet;
+	new_packet = readPacket(fup, new_packet);
         
         enqueue(hkupQueue, new_packet);
     }
@@ -61,7 +62,7 @@ Packet readPacket(int fd, Packet p){
     char * error = "";
     
     readData(fd, &temp, 1);
-    while(temp != start){
+    while(temp != STARTBIT){
         error += temp;
         readData(fd, &temp, 1);
     }
@@ -89,7 +90,7 @@ Packet readPacket(int fd, Packet p){
     readData(fd, &(p.checksum), 1);
     readData(fd, &temp, 1);
     
-    while(temp != stop){
+    while(temp != ENDBIT){
         readData(fd, &temp, 1);
     }
     tempValid = (p.checksum = calcCheckSum(p));

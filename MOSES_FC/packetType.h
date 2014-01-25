@@ -7,10 +7,11 @@
 
 #define BAD_PACKET "BAD_PACKET"
 
-char start = '%';
-char stop = '^';
+#define STARTBIT '%'
+#define ENDBIT '^'
 
 typedef struct {
+
 	char timeStamp[6];
 	char type;
 	char subtype[3];

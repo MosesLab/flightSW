@@ -10,15 +10,13 @@ inline int ahtoi(char * aHex, int len){
 	return sum;
 }
 
-inline char * itoah(int dec, int len){
-    char aHex[len];
+inline void  itoah(int dec, char * aHex, int len){
     char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
     aHex[len] = '\0';
     int i;
     for (i = len - 1; i >= 0; i--){
         aHex[i] = ahlt[dec >> 4 * (len - (i + 1)) & 0xF];
     }
-    return aHex;
 }
 void buildLookupTable(){
 	int j;
@@ -34,7 +32,7 @@ void buildLookupTable(){
 }
 
 char calcCheckSum(Packet p){
-	char parityByte = encode(start);	//this variable is XORed with all bytes to complete rectangle code
+	char parityByte = encode(STARTBIT);	//this variable is XORed with all bytes to complete rectangle code
 
 	int i;
 	for(i = 0; i < 6; i++){

@@ -32,8 +32,9 @@ void quit_signal(int sig){
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads(){
-    pthread_create(&threads[HkupThread], NULL, (void * (*)(void*))hkupThread, NULL);
-    pthread_create(&threads[ControlThread], NULL, (void * (*)(void*))controlThread, NULL);
+    pthread_create(&threads[hkupThread], NULL, (void * (*)(void*))HkupThread, NULL);
+    pthread_create(&threads[controlThread], NULL, (void * (*)(void*))ControlThread, NULL);
+
 }
 
 void join_threads(){

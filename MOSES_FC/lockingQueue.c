@@ -16,7 +16,7 @@ void enqueue(LockingQueue queue, Packet p) {
         queue.first = &p;
         queue.last = queue.first;
     } else {
-        queue.last.next = &p;
+        queue.last->next = &p;
         queue.last = &p;
     }
     queue.count++;

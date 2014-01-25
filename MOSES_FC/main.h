@@ -8,7 +8,7 @@
 
 #include "system.h"
 #include <signal.h>
-
+#include <pthread.h>
 
 #define NUM_THREADS 2
 
