@@ -18,7 +18,7 @@ char decode(char dataByte) {return (dataByte & 0x7F);}
 
 
 void buildLookupTable();
-char calcCheckSum(packet p);
+char calcCheckSum(Packet p);
 
 int ahtoi(char*, int);
 char * itoah(int, int);

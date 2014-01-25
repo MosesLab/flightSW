@@ -4,12 +4,13 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>control.h</itemPath>
       <itemPath>global_variables.h</itemPath>
       <itemPath>hkup.h</itemPath>
-      <itemPath>mutex.h</itemPath>
+      <itemPath>lockingQueue.h</itemPath>
+      <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
       <itemPath>packetType.h</itemPath>
-      <itemPath>packetqueue.h</itemPath>
       <itemPath>system.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -19,7 +20,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>control.c</itemPath>
       <itemPath>hkup.c</itemPath>
+      <itemPath>lockingQueue.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
     </logicalFolder>
@@ -48,23 +51,29 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <item path="control.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="control.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hkup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hkup.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="mutex.h" ex="false" tool="3" flavor2="0">
+      <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packetType.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -89,23 +98,29 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="control.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="control.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hkup.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hkup.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="mutex.h" ex="false" tool="3" flavor2="0">
+      <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packetType.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="packetqueue.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>

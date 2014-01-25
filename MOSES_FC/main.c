@@ -5,14 +5,53 @@
  * Created on January 22, 2014, 5:21 PM
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "main.h"
 /*
  * 
  */
-int main(int argc, char** argv) {
-
+int main(void) {
+    
+    start_threads();
+    
+    init_signal_handler();
+    sigprocmask(SIG_BLOCK, &mask, &oldmask);
+    while(ts_alive){
+        sigsuspend(&oldmask);   // wait here until the program is killed
+    }
+    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
+    
+    /*SIGINT caught, ending program*/
+    join_threads();
+    
     return (EXIT_SUCCESS);
 }
 
+void quit_signal(int sig){
+    ts_alive = 0;
+}
+
+/*this method takes a function pointer and starts it as a new thread*/
+void start_threads(){
+    pthread_create(&threads[HkupThread], NULL, (void * (*)(void*))hkupThread, NULL);
+    pthread_create(&threads[ControlThread], NULL, (void * (*)(void*))controlThread, NULL);
+}
+
+void join_threads(){
+    void * returns;
+    
+    int i;
+    for(i = 0; i < NUM_THREADS; i++){
+        pthread_join(threads[i], &returns);
+    }
+}
+
+void init_signal_handler(){
+    sigfillset(&oldmask);       //save the old mask
+    sigemptyset(&mask);         //create a blank new mask
+    sigaddset(&mask, SIGINT);   //add SIGINT (^C) to mask
+    quit_action.sa_handler = quit_signal;
+    quit_action.sa_mask = oldmask;
+    quit_action.sa_flags = 0;
+    
+    sigaction(SIGINT, &quit_action, NULL);
+}

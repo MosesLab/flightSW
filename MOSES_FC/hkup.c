@@ -11,12 +11,17 @@
 
 #include "hkup.h"
 
-void hkup(){
+void hkupThread(){
     init_serial_connection();
     
     buildLookupTable();
     
-    while(TRUE);
+    while(ts_alive){
+        Packet new_packet;
+        new_packet = readPacket(fup, new_packet);
+        
+        enqueue(new_packet);
+    }
 }
 
 void init_serial_connection(){
@@ -37,7 +42,7 @@ void init_serial_connection(){
         newtio_up.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
         newtio_up.c_cflag &= ~(PARENB | PARODD);
         newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-        newtio_up.c_iflag |= ISTRIP;
+        //newtio_up.c_iflag |= ISTRIP;
         newtio_up.c_oflag &= ~OPOST;
         newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
 
@@ -50,7 +55,7 @@ void init_serial_connection(){
 
 }
 
-packet readPacket(int fd, packet p){
+Packet readPacket(int fd, Packet p){
     int tempValid;
     p.valid = TRUE;
     char temp;
@@ -58,8 +63,13 @@ packet readPacket(int fd, packet p){
     
     readData(fd, &temp, 1);
     while(temp != start){
+        error += temp;
         readData(fd, &temp 1);
     }
+    if(error != ""){
+        tempValid = FALSE;
+    }
+    p.valid = p.valid & tempValid;
     
     tempValid = readData(fd, p.timeStamp, 6);
     p.valid = p.valid & tempValid;
