@@ -17,8 +17,7 @@ void hkupThread(){
     buildLookupTable();
     
     while(ts_alive){
-        Packet new_packet;
-        new_packet = readPacket(fup, new_packet);
+        Packet new_packet = readPacket(fup, new_packet);
         
         enqueue(hkupQueue, new_packet);
     }

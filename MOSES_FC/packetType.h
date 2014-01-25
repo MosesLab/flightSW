@@ -16,7 +16,7 @@ typedef struct {
 	char subtype[3];
 	char dataLength[2];
 	char data[255];
-	char checksum[2];
+	char checksum;
 
         void * next;
         

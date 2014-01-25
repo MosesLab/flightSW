@@ -23,3 +23,5 @@ struct termios oldtio_up, newtio_up; //structures for old device settings and ne
 
 /*Functions*/
 void init_serial_connection();	//initialize attributs of serial connection
+Packet readPacket(int, Packet);
+int readData(int, char *, int);
