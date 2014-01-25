@@ -11,12 +11,16 @@
 
 #include "hkup.h"
 
-void hkup(){
+void hkupThread(){
     init_serial_connection();
     
     buildLookupTable();
     
-    while(TRUE);
+    while(ts_alive){
+        Packet new_packet = readPacket(fup, new_packet);
+        
+        enqueue(hkupQueue, new_packet);
+    }
 }
 
 void init_serial_connection(){
@@ -37,7 +41,7 @@ void init_serial_connection(){
         newtio_up.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
         newtio_up.c_cflag &= ~(PARENB | PARODD);
         newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-        newtio_up.c_iflag |= ISTRIP;
+        //newtio_up.c_iflag |= ISTRIP;
         newtio_up.c_oflag &= ~OPOST;
         newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
 
@@ -50,7 +54,7 @@ void init_serial_connection(){
 
 }
 
-packet readPacket(int fd, packet p){
+Packet readPacket(int fd, Packet p){
     int tempValid;
     p.valid = TRUE;
     char temp;
@@ -58,8 +62,13 @@ packet readPacket(int fd, packet p){
     
     readData(fd, &temp, 1);
     while(temp != start){
-        readData(fd, &temp 1);
+        error += temp;
+        readData(fd, &temp, 1);
     }
+    if(error != ""){
+        tempValid = FALSE;
+    }
+    p.valid = p.valid & tempValid;
     
     tempValid = readData(fd, p.timeStamp, 6);
     p.valid = p.valid & tempValid;
@@ -72,7 +81,21 @@ packet readPacket(int fd, packet p){
     
     tempValid = readData(fd, p.dataLength, 2);
     p.valid = p.valid & tempValid;
+    p.dataSize = ahtoi(p.dataLength, 2);
     
+    tempValid = readData(fd, p.data, p.dataSize);
+    p.valid = p.valid & tempValid;
+    
+    readData(fd, &(p.checksum), 1);
+    readData(fd, &temp, 1);
+    
+    while(temp != stop){
+        readData(fd, &temp, 1);
+    }
+    tempValid = (p.checksum = calcCheckSum(p));
+    p.valid = p.valid & tempValid;
+    
+    return p;
 }
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len){

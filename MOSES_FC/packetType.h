@@ -7,18 +7,21 @@
 
 #define BAD_PACKET "BAD_PACKET"
 
+char start = '%';
+char stop = '^';
+
 typedef struct {
 	char timeStamp[6];
 	char type;
 	char subtype[3];
 	char dataLength[2];
 	char data[255];
-	char checksum[2];
+	char checksum;
 
         void * next;
         
 	int dataSize;
-        int valid = TRUE;
+        int valid;
         
-} packet;
+} Packet;
 

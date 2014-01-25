@@ -1,6 +1,25 @@
 
 #include "packet.h"
 
+
+inline int ahtoi(char * aHex, int len){
+    int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
+    int i;
+    for(i = len - 1; i >= 0; i--) 
+		sum += (int)( ((aHex[i]-48> 16)?aHex[i]-55:aHex[i]-48)*pow(16.0,len-(i+1)) );
+	return sum;
+}
+
+inline char * itoah(int dec, int len){
+    char aHex[len];
+    char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
+    aHex[len] = '\0';
+    int i;
+    for (i = len - 1; i >= 0; i--){
+        aHex[i] = ahlt[dec >> 4 * (len - (i + 1)) & 0xF];
+    }
+    return aHex;
+}
 void buildLookupTable(){
 	int j;
 	for(j = 0; j < 128; j++){
@@ -14,7 +33,7 @@ void buildLookupTable(){
 	}
 }
 
-char calcCheckSum(packet p){
+char calcCheckSum(Packet p){
 	char parityByte = encode(start);	//this variable is XORed with all bytes to complete rectangle code
 
 	int i;
