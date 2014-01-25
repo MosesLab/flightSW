@@ -6,7 +6,6 @@
  */
 
 #include "system.h"
-#include "packetType.h"
 #include "lockingQueue.h"
 
 extern volatile sig_atomic_t ts_alive;
