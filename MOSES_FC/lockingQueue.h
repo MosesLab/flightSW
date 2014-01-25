@@ -6,7 +6,6 @@
  *queue.h declares functions to be used by queues*
  *namely push and pop				*
  ************************************************/
-#include "packet.h"
 #include <pthread.h>
 
 typedef struct {
@@ -18,7 +17,7 @@ typedef struct {
     pthread_cond_t cond;
 } LockingQueue;
 
-lockingQueue_init(LockingQueue);
-enqueue(LockingQueue);
-dequeue(LockingQueue);
+void lockingQueue_init(LockingQueue);
+void enqueue(LockingQueue);
+Packet dequeue(LockingQueue);
 
