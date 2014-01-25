@@ -18,8 +18,8 @@ struct sigaction quit_action;   //action to be taken when ^C is entered
 sigset_t mask, oldmask;
 
 //functions
-void *HkupThread(void *);
-void *ControlThread(void *);
+void *HkupThread(void);
+void *ControlThread(void);
 
 void quit_signal(int);  //signal handler
 void start_threads();
