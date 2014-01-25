@@ -10,10 +10,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/byrdie/NetBeansProjects/MOSES_FC/MOSES_FC/packet.c</file>
-            <file>file:/home/byrdie/NetBeansProjects/MOSES_FC/MOSES_FC/packet.h</file>
-            <file>file:/home/byrdie/NetBeansProjects/MOSES_FC/MOSES_FC/main.c</file>
-            <file>file:/home/byrdie/NetBeansProjects/MOSES_FC/MOSES_FC/hkup.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/lockingQueue.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/hkup.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/hkup.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/packetType.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/packet.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/main.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/control.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/control.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/main.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/system.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/packet.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/MOSES_FC/MOSES_FC/lockingQueue.c</file>
         </group>
     </open-files>
 </project-private>
