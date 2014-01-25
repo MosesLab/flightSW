@@ -7,6 +7,7 @@
  *namely push and pop				*
  ************************************************/
 #include <pthread.h>
+#include "packetType.h"
 
 typedef struct {
     Packet *first;
