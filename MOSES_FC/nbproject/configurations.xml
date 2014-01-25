@@ -66,6 +66,9 @@
       <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <commandLine>-lm -pthread</commandLine>
+        </cTool>
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>

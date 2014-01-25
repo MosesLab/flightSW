@@ -54,7 +54,7 @@ CCADMIN=CCadmin
 build: .build-post
 
 .build-pre:
--lm -pthread
+
 
 .build-post: .build-impl
 # Add your post 'build' code here...
