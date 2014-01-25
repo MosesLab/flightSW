@@ -35,13 +35,15 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/hkup.o \
+	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o
 
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-m32
 
 # CC Compiler Flags
 CCFLAGS=
@@ -54,7 +56,11 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
+<<<<<<< HEAD
 LDLIBSOPTIONS= -lm -pthread
+=======
+LDLIBSOPTIONS=-lm -lpthread
+>>>>>>> ace07263886633fb651dfd56c04f577f0ad3991e
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -64,15 +70,25 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/control.o: control.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/control.o control.c
+
 ${OBJECTDIR}/hkup.o: hkup.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/hkup.o hkup.c
 
+${OBJECTDIR}/lockingQueue.o: lockingQueue.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lockingQueue.o lockingQueue.c
+
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -lm -pthread -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/packet.o: packet.c 
 	${MKDIR} -p ${OBJECTDIR}
