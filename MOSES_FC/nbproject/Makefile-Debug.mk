@@ -43,7 +43,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-m32
+CFLAGS=-mtune=arm9
 
 # CC Compiler Flags
 CCFLAGS=
@@ -53,14 +53,12 @@ CXXFLAGS=
 FFLAGS=
 
 # Assembler Flags
-ASFLAGS=
+ASFLAGS= 
 
 # Link Libraries and Options
-<<<<<<< HEAD
+
 LDLIBSOPTIONS= -lm -pthread
-=======
-LDLIBSOPTIONS=-lm -lpthread
->>>>>>> ace07263886633fb651dfd56c04f577f0ad3991e
+
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

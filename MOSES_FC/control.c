@@ -1,6 +1,6 @@
 #include "control.h"
 
-void * controlThread(void *){
+void * controlThread(void){
     while(ts_alive){
         lockingQueue_init(hkupQueue);
         
