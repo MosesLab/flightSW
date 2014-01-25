@@ -31,7 +31,7 @@ void buildLookupTable(){
 	}
 }
 
-char calcCheckSum(packet p){
+char calcCheckSum(Packet p){
 	char parityByte = encode(start);	//this variable is XORed with all bytes to complete rectangle code
 
 	int i;

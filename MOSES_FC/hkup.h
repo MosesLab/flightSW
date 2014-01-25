@@ -2,6 +2,7 @@
 #include <termios.h>
 #include "packetType.h"
 #include "lockingQueue.h"
+#include <signal.h>
 
 #define UPBAUD B1200
 #define HKUP "/dev/hkup"
