@@ -11,7 +11,7 @@
 
 #include "hkup.h"
 
-void * hkupThread(void *){
+void * hkupThread(void){
     init_serial_connection();
     
     buildLookupTable();
