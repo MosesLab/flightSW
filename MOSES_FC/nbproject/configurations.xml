@@ -10,6 +10,7 @@
       <itemPath>packet.h</itemPath>
       <itemPath>packetType.h</itemPath>
       <itemPath>packetqueue.h</itemPath>
+      <itemPath>system.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -33,7 +34,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>system.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
