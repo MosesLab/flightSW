@@ -17,14 +17,9 @@ volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, s
 struct sigaction quit_action;   //action to be taken when ^C is entered
 sigset_t mask, oldmask;
 
-//functions
-<<<<<<< HEAD
-void *HkupThread(void);
-void *ControlThread(void);
-=======
+
 void *hkupThread(void *);
 void *controlThread(void *);
->>>>>>> f780a0ca6c8eee08685e5205ad130c0dde754eab
 
 void quit_signal(int);  //signal handler
 void start_threads();
