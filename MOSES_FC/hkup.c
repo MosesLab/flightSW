@@ -63,7 +63,7 @@ Packet readPacket(int fd, Packet p){
     readData(fd, &temp, 1);
     while(temp != start){
         error += temp;
-        readData(fd, &temp 1);
+        readData(fd, &temp, 1);
     }
     if(error != ""){
         tempValid = FALSE;
