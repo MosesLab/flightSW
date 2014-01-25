@@ -20,7 +20,7 @@ void hkupThread(){
         Packet new_packet;
         new_packet = readPacket(fup, new_packet);
         
-        enqueue(new_packet);
+        enqueue(hkupQueue, new_packet);
     }
 }
 
@@ -95,6 +95,8 @@ Packet readPacket(int fd, Packet p){
     }
     tempValid = (p.checksum = calcCheckSum(p));
     p.valid = p.valid & tempValid;
+    
+    return p;
 }
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len){

@@ -18,6 +18,6 @@ typedef struct {
 } LockingQueue;
 
 void lockingQueue_init(LockingQueue);
-void enqueue(LockingQueue);
+void enqueue(LockingQueue, Packet);
 Packet dequeue(LockingQueue);
 

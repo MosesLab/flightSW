@@ -7,6 +7,9 @@
 
 #define BAD_PACKET "BAD_PACKET"
 
+char start = '%';
+char stop = '^';
+
 typedef struct {
 	char timeStamp[6];
 	char type;

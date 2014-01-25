@@ -8,10 +8,10 @@
 #define _POSIX_SOURCE 1 /*POSIX compliant source*/
 
 
-//extern volatile sig_atomic_t ts_alive;
+extern volatile sig_atomic_t ts_alive;
 
 pid_t parent_pid;
-extern pthread_mutex_t hkupMutex;
+extern LockingQueue hkupQueue;
 
 int fup, res;	//variables for reading serial data
 char buf[255];	//serial port buffer
