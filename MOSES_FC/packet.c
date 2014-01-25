@@ -3,8 +3,9 @@
 
 
 inline int ahtoi(char * aHex, int len){
-    int sum = 0; //Every character is translated to an integer and is then shifted by
-	for(int i = len - 1; i >= 0; i--) //powers of 16 depending on its position
+    int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
+    int i;
+    for(i = len - 1; i >= 0; i--) 
 		sum += int( ((aHex[i]-48> 16)?aHex[i]-55:aHex[i]-48)*pow(16.0,len-(i+1)) );
 	return sum;
 }
@@ -13,7 +14,8 @@ inline char * itoah(int dec, int len){
     char aHex[len];
     char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
     aHex[len] = '\0';
-    for (int i = len - 1; i >= 0; i--){
+    int i;
+    for (i = len - 1; i >= 0; i--){
         aHex[i] = ahlt[dec >> 4 * (len - (i + 1)) & 0xF];
     }
     return aHex;
