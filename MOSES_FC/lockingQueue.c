@@ -28,7 +28,7 @@ void enqueue(LockingQueue queue, Packet p) {
 Packet dequeue(LockingQueue queue) {
     pthread_mutex_lock(&queue.lock);
     
-    while(queue.count == 0){
+    while(!queue.count && ts_alive){
         pthread_cond_wait(&queue.cond, &queue.lock);
     }
     Packet p = *(queue.first);

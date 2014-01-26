@@ -8,6 +8,9 @@
  ************************************************/
 #include <pthread.h>
 #include "packetType.h"
+#include <signal.h>
+
+extern volatile sig_atomic_t ts_alive;
 
 typedef struct {
     Packet *first;
