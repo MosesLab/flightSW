@@ -23,15 +23,15 @@ void enqueue(LockingQueue queue, Packet p) {
         queue.last = &p;
     }
     queue.count++;
-    
-    pthread_cond_broadcast(&queue.cond);         // Wake up consumer waiting for input
     pthread_mutex_unlock(&queue.lock);
+    pthread_cond_broadcast(&queue.cond);         // Wake up consumer waiting for input
+
 }
 
 Packet dequeue(LockingQueue queue) {
     pthread_mutex_lock(&queue.lock);
     
-    while(!queue.count){
+    while(queue.count == 0){
         pthread_cond_wait(&queue.cond, &queue.lock);
     }
     Packet p = *(queue.first);

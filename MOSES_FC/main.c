@@ -14,11 +14,11 @@ int main(void) {
     start_threads();
     
     init_signal_handler();
-    //sigprocmask(SIG_BLOCK, &mask, &oldmask);
+    sigprocmask(SIG_BLOCK, &mask, &oldmask);
     while(ts_alive){
         sigsuspend(&oldmask);   // wait here until the program is killed
     }
-    //sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
+    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
     
     /*SIGINT caught, ending program*/
     join_threads();
