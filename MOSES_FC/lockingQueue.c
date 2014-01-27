@@ -24,7 +24,7 @@ void enqueue(LockingQueue queue, Packet p) {
     }
     queue.count++;
     
-    pthread_cond_signal(&queue.cond);         // Wake up consumer waiting for input
+    pthread_cond_broadcast(&queue.cond);         // Wake up consumer waiting for input
     pthread_mutex_unlock(&queue.lock);
 }
 
