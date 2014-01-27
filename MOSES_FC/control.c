@@ -1,8 +1,11 @@
 #include "control.h"
 
 void * controlThread(void * arg){
+    
+    lockingQueue_init(hkupQueue);
+    
     while(ts_alive){
-        lockingQueue_init(hkupQueue);
+        
         
         Packet p = dequeue(hkupQueue);
         if(p.valid){
@@ -12,4 +15,5 @@ void * controlThread(void * arg){
             printf("Bad Packet\n");
         }
     }
+    lockingQueue_destroy(hkupQueue);
 }

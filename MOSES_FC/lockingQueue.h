@@ -17,6 +17,7 @@ typedef struct {
     Packet *last;
     int count;  //current number of items
     
+    pthread_condattr_t cattr;
     pthread_mutex_t lock;
     pthread_cond_t cond;
 } LockingQueue;

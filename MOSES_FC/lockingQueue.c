@@ -6,7 +6,8 @@
 
 void lockingQueue_init(LockingQueue queue){
     pthread_mutex_init(&queue.lock, NULL);
-    pthread_cond_init(&queue.cond, NULL);
+    pthread_condattr_init(&queue.cattr);
+    pthread_cond_init(&queue.cond, &queue.cattr);
 
 	queue.count=0;
 }
@@ -39,4 +40,9 @@ Packet dequeue(LockingQueue queue) {
     
     pthread_mutex_unlock(&queue.lock);
     return p;
+}
+
+void lockingQueue_destroy(LockingQueue queue){
+    pthread_cond_destroy(&queue.cond);
+    pthread_mutex_destroy(&queue.lock);
 }
