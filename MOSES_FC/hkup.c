@@ -26,15 +26,13 @@ void * hkupThread(void * arg){
 
 void *hkupSimThread(void * arg){
     
-        struct timespec sleepValue = {0};
-        sleepValue.tv_sec = 3;
-        sleepValue.tv_nsec = 0;
-
         Packet p;
         p.type = 'T';
         p.checksum = 'H';
         while(ts_alive){
             enqueue(hkupQueue, p);
+            
+            sleep(2);
         }
 }
 
