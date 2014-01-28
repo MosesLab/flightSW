@@ -2,6 +2,8 @@
  *Author: Roy Smart
  *MOSES LAB
  **/
+#include <sys/time.h>
+
 #include "lockingQueue.h"
 
 void lockingQueue_init(LockingQueue * queue){
@@ -30,10 +32,17 @@ void enqueue(LockingQueue * queue, Packet p) {
 }
 
 Packet dequeue(LockingQueue * queue) {
+    struct timespec timeToWait;
+    struct timeval now;
+    
+    gettimeofday(&now, NULL);
+    timeToWait.tv_sec = now.tv_sec + 2;
+    timeToWait.tv_nsec = 0;
+    
     pthread_mutex_lock(&queue->lock);
     
     while(queue->count == 0){
-        pthread_cond_wait(&queue->cond, &queue->lock);
+        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);
     }
     Packet p = *(queue->first);
     queue->first = p.next;
