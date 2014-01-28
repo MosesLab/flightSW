@@ -109,24 +109,6 @@ Packet readPacket(int fd, Packet p){
     
     while(temp != ENDBIT){
         readData(fd, &temp, 1);
-    }ful or 0 if an error occurred*/
-int readData(int fd, char * data, int len){
-    char temp;
-    int result = TRUE;
-    
-    int rsz = read(fd, data, len);
-    while(rsz < len){
-        rsz += read(fd, data + rsz, len - rsz);
-    }
-    
-    int i;
-    for(i = 0; i < len; i++){
-        temp = data[i];
-        data[i] = decode(temp);
-        
-        if(temp != encode(data[i])){
-            result = FALSE;
-        }
     }
     tempValid = (p.checksum == calcCheckSum(p));
     p.valid = p.valid & tempValid;
