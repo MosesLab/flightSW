@@ -20,7 +20,7 @@ void * hkupThread(void * arg){
         Packet new_packet;
 	new_packet = readPacket(fup, new_packet);
         
-        enqueue(hkupQueue, new_packet);
+        enqueue(&hkupQueue, new_packet);
     }
 }
 
