@@ -12,12 +12,12 @@
 
 typedef struct {
 
-	char timeStamp[7];
-	char type;
-	char subtype[4];
-	char dataLength[3];
-	char data[256];
-	char checksum;
+	char * timeStamp;
+	char * type;
+	char * subtype;
+	char * dataLength;
+	char * data;
+	char * checksum;
 
         void * next;
         
