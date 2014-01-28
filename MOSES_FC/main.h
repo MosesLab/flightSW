@@ -20,6 +20,7 @@ sigset_t mask, oldmask;
 
 void *hkupThread(void *);
 void *controlThread(void *);
+void *hkupSimThread(void *);
 
 void quit_signal(int);  //signal handler
 void start_threads();

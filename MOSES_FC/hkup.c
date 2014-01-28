@@ -24,6 +24,23 @@ void * hkupThread(void * arg){
     }
 }
 
+void *hkupSimThread(void * arg){
+    
+        struct timespec sleepValue = {0};
+        sleepValue.tv_sec = 3;
+        sleepValue.tv_nsec = 0;
+
+        Packet p;
+        p.type = 'T';
+        p.timeStamp"178578";
+        p.subtype = "GHK";
+        p.dataLength = '00';
+        p.checksum = 'H';
+        while(ts_alive){
+            enqueue(hkupQueue, p);
+        }
+}
+
 void init_serial_connection(){
 	/*Open serial device for reading*/
         fup = open(HKUP, O_RDONLY | O_NOCTTY);
