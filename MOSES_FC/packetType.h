@@ -13,11 +13,11 @@
 typedef struct {
 
 	char timeStamp[7];
-	char type;
+	char type[2];
 	char subtype[4];
 	char dataLength[3];
 	char data[256];
-	char checksum;
+	char checksum[2];
 
         void * next;
         
