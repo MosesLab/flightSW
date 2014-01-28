@@ -41,7 +41,7 @@ Packet dequeue(LockingQueue * queue) {
     
     pthread_mutex_lock(&queue->lock);
     
-    while(queue->count == 0){
+    while((queue->count == 0) && ts_alive){
         pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);
     }
     Packet p = *(queue->first);
