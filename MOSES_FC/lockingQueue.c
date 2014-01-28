@@ -13,18 +13,18 @@ void lockingQueue_init(LockingQueue * queue){
 }
 
 void enqueue(LockingQueue * queue, Packet p) {
-    pthread_mutex_lock(&queue.lock);
+    pthread_mutex_lock(&queue->lock);
     
     if (queue->first == NULL) {
         queue->first = &p;
-        queue->last = queue.first;
+        queue->last = queue->first;
     } else {
         queue->last->next = &p;
         queue->last = &p;
     }
     queue->count++;
-    pthread_cond_broadcast(&queue.cond);// Wake up consumer waiting for input
-    pthread_mutex_unlock(&queue.lock);
+    pthread_cond_broadcast(&queue->cond);// Wake up consumer waiting for input
+    pthread_mutex_unlock(&queue->lock);
              
 
 }
@@ -32,7 +32,7 @@ void enqueue(LockingQueue * queue, Packet p) {
 Packet dequeue(LockingQueue * queue) {
     pthread_mutex_lock(&queue->lock);
     
-    while(queue.count == 0){
+    while(queue->count == 0){
         pthread_cond_wait(&queue->cond, &queue->lock);
     }
     Packet p = *(queue->first);
@@ -43,7 +43,7 @@ Packet dequeue(LockingQueue * queue) {
     return p;
 }
 
-void lockingQueue_destroy(LockingQueue queue){
+void lockingQueue_destroy(LockingQueue * queue){
     pthread_cond_destroy(&queue->cond);
     pthread_mutex_destroy(&queue->lock);
 }
