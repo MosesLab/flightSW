@@ -29,8 +29,7 @@ void * hkupThread(void * arg){
 void *hkupSimThread(void * arg){
     
         Packet p;
-        p.type = 'T';
-        p.checksum = 'H';
+
         while(ts_alive){
             Packet new_packet = p;
             enqueue(&hkupQueue, new_packet);
@@ -91,7 +90,7 @@ Packet readPacket(int fd, Packet p){
     tempValid = readData(fd, p.timeStamp, 6);
     p.valid = p.valid & tempValid;
     
-    tempValid = readData(fd, &(p.type), 1);
+    tempValid = readData(fd, p.type, 1);
     p.valid = p.valid & tempValid;
     
     tempValid = readData(fd, p.subtype, 3);
@@ -104,7 +103,7 @@ Packet readPacket(int fd, Packet p){
     tempValid = readData(fd, p.data, p.dataSize);
     p.valid = p.valid & tempValid;
     
-    readData(fd, &(p.checksum), 1);
+    readData(fd, p.checksum, 1);
     readData(fd, &temp, 1);
     
     while(temp != ENDBIT){
