@@ -22,7 +22,7 @@ typedef struct {
     pthread_cond_t cond;
 } LockingQueue;
 
-void lockingQueue_init(LockingQueue);
-void enqueue(LockingQueue, Packet);
-Packet dequeue(LockingQueue);
+void lockingQueue_init(LockingQueue *);
+void enqueue(LockingQueue *, Packet);
+Packet dequeue(LockingQueue *);
 
