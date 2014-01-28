@@ -23,7 +23,7 @@ int main(void) {
     /*SIGINT caught, ending program*/
     join_threads();
     
-    return (EXIT_SUCCESS);
+    return 0;
 }
 
 void quit_signal(int sig){
@@ -32,8 +32,11 @@ void quit_signal(int sig){
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads(){
-    pthread_create(&threads[HkupThread], NULL, (void * (*)(void*))hkupSimThread, NULL);
-    pthread_create(&threads[ControlThread], NULL, (void * (*)(void*))controlThread, NULL);
+    
+    pthread_attr_init(&attrs);
+    pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
+    pthread_create(&threads[HkupThread], &attrs, (void * (*)(void*))hkupSimThread, NULL);
+    pthread_create(&threads[ControlThread], &attrs, (void * (*)(void*))controlThread, NULL);
 
 }
 

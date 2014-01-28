@@ -13,7 +13,7 @@
 #define NUM_THREADS 2
 
 volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
-
+pthread_attr_t attrs;
 struct sigaction quit_action;   //action to be taken when ^C is entered
 sigset_t mask, oldmask;
 
