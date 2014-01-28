@@ -32,9 +32,6 @@ void *hkupSimThread(void * arg){
 
         Packet p;
         p.type = 'T';
-        p.timeStamp = "178578";
-        p.subtype = "GHK";
-        p.dataLength = '00';
         p.checksum = 'H';
         while(ts_alive){
             enqueue(hkupQueue, p);
