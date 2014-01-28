@@ -37,7 +37,7 @@ Packet dequeue(LockingQueue * queue) {
     }
     Packet p = *(queue->first);
     queue->first = p.next;
-    queue.count--;
+    queue->count--;
     
     pthread_mutex_unlock(&queue->lock);
     return p;
