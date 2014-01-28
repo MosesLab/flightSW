@@ -22,6 +22,8 @@ void * hkupThread(void * arg){
         
         enqueue(&hkupQueue, new_packet);
     }
+    
+    return;
 }
 
 void *hkupSimThread(void * arg){
@@ -35,6 +37,8 @@ void *hkupSimThread(void * arg){
             
             sleep(2);
         }
+        
+        return;
 }
 
 void init_serial_connection(){
