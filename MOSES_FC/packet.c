@@ -39,7 +39,7 @@ char calcCheckSum(Packet p){
 		parityByte ^= encode(p.timeStamp[i]);
 	}
 
-	parityByte ^= p.type;	//this is incorrect according to documentation
+	parityByte ^= p.type[0];	//this is incorrect according to documentation
 	//parityByte ^= encode(type);	//this is correct
 
 	for(i = 0; i < 3; i++){
