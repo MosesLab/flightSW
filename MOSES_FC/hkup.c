@@ -110,7 +110,7 @@ Packet readPacket(int fd, Packet p){
     while(temp != ENDBIT){
         readData(fd, &temp, 1);
     }
-    tempValid = (p.checksum = calcCheckSum(p));
+    tempValid = (p.checksum == calcCheckSum(p));
     p.valid = p.valid & tempValid;
     
     return p;
