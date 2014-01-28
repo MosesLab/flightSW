@@ -30,7 +30,8 @@ void *hkupSimThread(void * arg){
         p.type = 'T';
         p.checksum = 'H';
         while(ts_alive){
-            enqueue(&hkupQueue, p);
+            Packet new_packet = p;
+            enqueue(&hkupQueue, new_packet);
             
             sleep(2);
         }
