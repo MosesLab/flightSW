@@ -18,6 +18,7 @@ void enqueue(LockingQueue * queue, Packet p) {
     pthread_mutex_lock(&queue->lock);
     
     if (queue->first == NULL) {
+        p.next = NULL;
         queue->first = &p;
         queue->last = queue->first;
     } else {
