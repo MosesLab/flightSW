@@ -14,16 +14,15 @@ void lockingQueue_init(LockingQueue * queue){
 	queue->count=0;
 }
 
-void enqueue(LockingQueue * queue, Packet p) {
+void enqueue(LockingQueue * queue, Packet * p) {
     
     
     if (queue->first == NULL) {
-        p.next = NULL;
-        queue->first = &p;
+        queue->first = p;
         queue->last = queue->first;
     } else {
-        queue->last->next = &p;
-        queue->last = &p;
+        queue->last->next = p;
+        queue->last = p;
     }
     queue->count++;
     
