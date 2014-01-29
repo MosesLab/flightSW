@@ -6,7 +6,7 @@
 
 #include "lockingQueue.h"
 
-void lockingQueue_init(LockingQueue * queue){
+void lockingQueue_init(volatile LockingQueue * queue){
     pthread_mutex_init(&queue->lock, NULL);
     pthread_condattr_init(&queue->cattr);
     pthread_cond_init(&queue->cond, &queue->cattr);
@@ -14,7 +14,7 @@ void lockingQueue_init(LockingQueue * queue){
 	queue->count=0;
 }
 
-void enqueue(LockingQueue * queue, Packet p) {
+void enqueue(volatile LockingQueue * queue, Packet p) {
     
     
     if (queue->first == NULL) {
@@ -31,7 +31,7 @@ void enqueue(LockingQueue * queue, Packet p) {
 
 }
 
-Packet dequeue(LockingQueue * queue) { 
+Packet dequeue(volatile LockingQueue * queue) { 
     struct timespec timeToWait;
     struct timeval now;
     
@@ -52,7 +52,7 @@ Packet dequeue(LockingQueue * queue) {
     return p;
 }
 
-void lockingQueue_destroy(LockingQueue * queue){
+void lockingQueue_destroy(volatile LockingQueue * queue){
     pthread_cond_destroy(&queue->cond);
     pthread_mutex_destroy(&queue->lock);
 }
