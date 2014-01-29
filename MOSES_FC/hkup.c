@@ -19,8 +19,10 @@ void * hkupThread(void * arg){
     while(ts_alive){
         Packet new_packet;
 	new_packet = readPacket(fup, new_packet);
-        
+        pthread_mutex_lock(&hkupQueue->lock);
         enqueue(&hkupQueue, new_packet);
+        pthread_cond_broadcast(&hkupQueue->cond);// Wake up consumer waiting for input
+         pthread_mutex_unlock(&hkupQueue->lock);
     }
     
     return;

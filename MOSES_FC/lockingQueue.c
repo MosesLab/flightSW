@@ -15,7 +15,7 @@ void lockingQueue_init(LockingQueue * queue){
 }
 
 void enqueue(LockingQueue * queue, Packet p) {
-    pthread_mutex_lock(queue->lock);
+    
     
     if (queue->first == NULL) {
         p.next = NULL;
@@ -26,8 +26,7 @@ void enqueue(LockingQueue * queue, Packet p) {
         queue->last = &p;
     }
     queue->count++;
-    pthread_cond_broadcast(queue->cond);// Wake up consumer waiting for input
-    pthread_mutex_unlock(queue->lock);
+    
              
 
 }
@@ -40,7 +39,7 @@ Packet dequeue(LockingQueue * queue) {
     timeToWait.tv_sec = now.tv_sec + 2;
     timeToWait.tv_nsec = 0;
     
-    pthread_mutex_lock(queue->lock);
+    
     
     while((queue->count == 0) && ts_alive){
         pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);
@@ -49,7 +48,7 @@ Packet dequeue(LockingQueue * queue) {
     queue->first = (Packet *)p.next;
     queue->count--;
 
-    pthread_mutex_unlock(&queue->lock);
+    
     return p;
 }
 
