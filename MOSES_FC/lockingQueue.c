@@ -31,7 +31,7 @@ void enqueue(LockingQueue * queue, Packet p) {
 
 }
 
-Packet dequeue(volatile LockingQueue * queue) { 
+Packet dequeue(LockingQueue * queue) { 
     struct timespec timeToWait;
     struct timeval now;
     
@@ -52,7 +52,7 @@ Packet dequeue(volatile LockingQueue * queue) {
     return p;
 }
 
-void lockingQueue_destroy(volatile LockingQueue * queue){
+void lockingQueue_destroy(LockingQueue * queue){
     pthread_cond_destroy(&queue->cond);
     pthread_mutex_destroy(&queue->lock);
 }
