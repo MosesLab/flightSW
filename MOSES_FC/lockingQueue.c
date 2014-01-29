@@ -21,7 +21,7 @@ void enqueue(LockingQueue * queue, Packet p) {
         queue->first = &p;
         queue->last = queue->first;
     } else {
-        queue->last->next = (Packet *)&p;
+        queue->last->next = &p;
         queue->last = &p;
     }
     queue->count++;
@@ -44,10 +44,10 @@ Packet dequeue(LockingQueue * queue) {
     while((queue->count == 0) && ts_alive){
         pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);
     }
-    Packet p = *(queue->first);
+    Packet p = (Packet *)*(queue->first);
     queue->first = (Packet *)p.next;
     queue->count--;
-    
+
     pthread_mutex_unlock(&queue->lock);
     return p;
 }
