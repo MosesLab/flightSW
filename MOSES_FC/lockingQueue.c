@@ -21,7 +21,7 @@ void enqueue(LockingQueue * queue, Packet p) {
         queue->first = &p;
         queue->last = queue->first;
     } else {
-        (Packet *)queue->last->next = &p;
+        queue->last->next = (Packet *)&p;
         queue->last = &p;
     }
     queue->count++;
