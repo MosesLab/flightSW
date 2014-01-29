@@ -20,9 +20,11 @@ void * hkupThread(void * arg){
     while(ts_alive){
 	packetBuf[i%255] = readPacket(fup, packetBuf[i%255]);
         pthread_mutex_lock(&hkupQueue.lock);
+	packetBuf[i%255].valid = TRUE;
         enqueue(&hkupQueue, &packetBuf[i%255]);
         pthread_cond_broadcast(&hkupQueue.cond);// Wake up consumer waiting for input
          pthread_mutex_unlock(&hkupQueue.lock);
+	i++;
     }
     
     return;
@@ -34,7 +36,8 @@ void *hkupSimThread(void * arg){
 
         while(ts_alive){
             Packet new_packet = p;
-            enqueue(&hkupQueue, new_packet);
+	    p.valid = TRUE;
+            enqueue(&hkupQueue, &new_packet);
             
             sleep(2);
         }
@@ -84,9 +87,9 @@ Packet readPacket(int fd, Packet p){
         error += temp;
         readData(fd, &temp, 1);
     }
-    if(error != ""){
-        tempValid = FALSE;
-    }
+//    if(error != ""){
+ //       tempValid = FALSE;
+//    }
     p.valid = p.valid & tempValid;
     
     tempValid = readData(fd, p.timeStamp, 6);
