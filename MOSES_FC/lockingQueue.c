@@ -6,7 +6,7 @@
 
 #include "lockingQueue.h"
 
-void lockingQueue_init(volatile LockingQueue * queue){
+void lockingQueue_init(LockingQueue * queue){
     pthread_mutex_init(&queue->lock, NULL);
     pthread_condattr_init(&queue->cattr);
     pthread_cond_init(&queue->cond, &queue->cattr);
@@ -14,7 +14,7 @@ void lockingQueue_init(volatile LockingQueue * queue){
 	queue->count=0;
 }
 
-void enqueue(volatile LockingQueue * queue, Packet p) {
+void enqueue(LockingQueue * queue, Packet p) {
     
     
     if (queue->first == NULL) {

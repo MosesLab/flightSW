@@ -13,8 +13,8 @@
 extern volatile sig_atomic_t ts_alive;
 
 typedef struct {
-    Packet *first;
-    Packet *last;
+    volatile Packet *first;
+    volatile Packet *last;
     int count;  //current number of items
     
     pthread_condattr_t cattr;
@@ -22,8 +22,8 @@ typedef struct {
     pthread_cond_t cond;
 } LockingQueue;
 
-void lockingQueue_init(volatile LockingQueue *);
-void enqueue(volatile LockingQueue *, Packet);
-Packet dequeue(volatile LockingQueue *);
+void lockingQueue_init(LockingQueue *);
+void enqueue(LockingQueue *, Packet);
+Packet dequeue(LockingQueue *);
 void destroy(LockingQueue *);
 

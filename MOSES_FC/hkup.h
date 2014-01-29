@@ -11,7 +11,7 @@
 extern volatile sig_atomic_t ts_alive;
 
 pid_t parent_pid;
-extern volatile LockingQueue hkupQueue;
+extern LockingQueue hkupQueue;
 
 int fup, res;	//variables for reading serial data
 char buf[255];	//serial port buffer

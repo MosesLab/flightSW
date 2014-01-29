@@ -11,6 +11,6 @@
 
 extern volatile sig_atomic_t ts_alive;
 
-volatile LockingQueue hkupQueue;
+LockingQueue hkupQueue;
 
 //void * controlThread(void *);
