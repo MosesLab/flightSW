@@ -23,7 +23,7 @@ typedef struct {
 } LockingQueue;
 
 void lockingQueue_init(LockingQueue *);
-void enqueue(LockingQueue *, Packet);
+void enqueue(LockingQueue *, Packet *);
 Packet dequeue(LockingQueue *);
 void destroy(LockingQueue *);
 
