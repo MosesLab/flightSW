@@ -16,15 +16,12 @@ void * hkupThread(void * arg){
     
     buildLookupTable();
     
-    int i = 0;
     while(ts_alive){
-	packetBuf[i%255] = readPacket(fup, packetBuf[i%255]);
-        pthread_mutex_lock(&hkupQueue.lock);
-	//packetBuf[i%255].valid = TRUE;
-        enqueue(&hkupQueue, &packetBuf[i%255]);
-        pthread_cond_broadcast(&hkupQueue.cond);// Wake up consumer waiting for input
-         pthread_mutex_unlock(&hkupQueue.lock);
-	i++;
+	Packet new_packet;
+        new_packet = readPacket(fup, new_packet);
+        
+        enqueue(&hkupQueue, &new_packet);
+        
     }
     
     return;
