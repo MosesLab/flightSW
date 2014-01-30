@@ -19,7 +19,7 @@ void enqueue(LockingQueue * queue, Packet * p) {
     
     if (queue->first == NULL) {
         queue->first = p;
-        queue->last = queue->first;s
+        queue->last = queue->first;
                 
     } else {
         queue->last->next = p;
