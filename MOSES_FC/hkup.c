@@ -117,7 +117,7 @@ Packet readPacket(int fd, Packet p){
     while(temp != ENDBIT){
         readData(fd, &temp, 1);
     }
-    tempValid = (p.checksum[0] == calcCheckSum(p));
+    tempValid = (p.checksum[0] == calcCheckSum(&p));
     p.valid = p.valid & tempValid;
     if(tempValid != TRUE) printf("Bad checksum\n");
     

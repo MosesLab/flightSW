@@ -31,27 +31,27 @@ void buildLookupTable(){
 	}
 }
 
-char calcCheckSum(Packet p){
+char calcCheckSum(Packet * p){
 	char parityByte = encode(STARTBIT);	//this variable is XORed with all bytes to complete rectangle code
 
 	int i;
 	for(i = 0; i < 6; i++){
-		parityByte ^= encode(p.timeStamp[i]);
+		parityByte ^= encode(p->timeStamp[i]);
 	}
 
-	parityByte ^= p.type[0];	//this is incorrect according to documentation
+	parityByte ^= p->type[0];	//this is incorrect according to documentation
 	//parityByte ^= encode(type);	//this is correct
 
 	for(i = 0; i < 3; i++){
-		parityByte ^= encode(p.subtype[i]);
+		parityByte ^= encode(p->subtype[i]);
 	}
 
 	for(i = 0; i < 2; i++){
-		parityByte ^= encode(p.dataLength[i]);
+		parityByte ^= encode(p->dataLength[i]);
 	}
 
-	for(i = 0; i < p.dataSize; i++){
-		parityByte ^= encode(p.data[i]);
+	for(i = 0; i < p->dataSize; i++){
+		parityByte ^= encode(p->data[i]);
 	}
 
 	return parityByte;
