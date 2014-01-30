@@ -88,25 +88,28 @@ Packet readPacket(int fd, Packet p){
         readData(fd, &temp, 1);
     }
     if(error != ""){
-        printf("Bad Packet Data");
-    }
-    p.valid = p.valid & tempValid;
-    
+        printf("Bad Packet Data\n");
+    }    
     tempValid = readData(fd, p.timeStamp, 6);
     p.valid = p.valid & tempValid;
-    
+    if(tempValid != TRUE) printf("Bad Timestamp\n");
+        
     tempValid = readData(fd, p.type, 1);
     p.valid = p.valid & tempValid;
+    if(tempValid != TRUE) printf("Bad type\n");
     
     tempValid = readData(fd, p.subtype, 3);
     p.valid = p.valid & tempValid;
+    if(tempValid != TRUE) printf("Bad subtype\n");
     
     tempValid = readData(fd, p.dataLength, 2);
     p.valid = p.valid & tempValid;
+    if(tempValid != TRUE) printf("Bad data length\n");
     p.dataSize = ahtoi(p.dataLength, 2);
     
     tempValid = readData(fd, p.data, p.dataSize);
     p.valid = p.valid & tempValid;
+    if(tempValid != TRUE) printf("Bad data\n");
     
     readData(fd, p.checksum, 1);
     readData(fd, &temp, 1);
@@ -116,6 +119,7 @@ Packet readPacket(int fd, Packet p){
     }
     tempValid = (p.checksum[0] == calcCheckSum(p));
     p.valid = p.valid & tempValid;
+    if(tempValid != TRUE) printf("Bad checksum\n");
     
     return p;
 }
