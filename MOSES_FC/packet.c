@@ -53,7 +53,9 @@ char calcCheckSum(Packet * p){
 	for(i = 0; i < p->dataSize; i++){
 		parityByte ^= encode(p->data[i]);
 	}
-
+        
+        
+        printf("%c\n", parityByte);
 	return parityByte;
 }
 
