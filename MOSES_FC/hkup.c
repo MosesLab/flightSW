@@ -18,29 +18,16 @@ void * hkupThread(void * arg){
     
     while(ts_alive){
 	Packet new_packet;
-        new_packet = readPacket(fup, new_packet);
+        Packet * p = &new_packet;
+        readPacket(fup, p);
         
-        enqueue(&hkupQueue, &new_packet);
+        enqueue(&hkupQueue, p);
         
     }
     
     return;
 }
 
-void *hkupSimThread(void * arg){
-    
-        Packet p;
-
-        while(ts_alive){
-            Packet new_packet = p;
-	    p.valid = TRUE;
-            enqueue(&hkupQueue, &new_packet);
-            
-            sleep(2);
-        }
-        
-        return;
-}
 
 void init_serial_connection(){
 	/*Open serial device for reading*/
