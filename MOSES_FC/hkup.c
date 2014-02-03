@@ -73,9 +73,9 @@ void init_serial_connection(){
 
 }
 
-Packet readPacket(int fd, Packet p){
+Packet readPacket(int fd, Packet * p){
     int tempValid = TRUE;
-    p.valid = TRUE;
+    p->valid = TRUE;
     char temp;
     char * error = "";
     
@@ -87,35 +87,35 @@ Packet readPacket(int fd, Packet p){
     if(error != ""){
         printf("Bad Packet Data\n");
     }    
-    tempValid = readData(fd, p.timeStamp, 6);
-    p.valid = p.valid & tempValid;
+    tempValid = readData(fd, p->timeStamp, 6);
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad Timestamp\n");
         
-    tempValid = readData(fd, p.type, 1);
-    p.valid = p.valid & tempValid;
+    tempValid = readData(fd, p->type, 1);
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad type\n");
     
-    tempValid = readData(fd, p.subtype, 3);
-    p.valid = p.valid & tempValid;
+    tempValid = readData(fd, p->subtype, 3);
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad subtype\n");
     
-    tempValid = readData(fd, p.dataLength, 2);
-    p.valid = p.valid & tempValid;
+    tempValid = readData(fd, p->dataLength, 2);
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad data length\n");
-    p.dataSize = ahtoi(p.dataLength, 2);
+    p->dataSize = ahtoi(p->dataLength, 2);
     
-    tempValid = readData(fd, p.data, p.dataSize);
-    p.valid = p.valid & tempValid;
+    tempValid = readData(fd, p->data, p->dataSize);
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad data\n");
     
-    readData(fd, p.checksum, 1);
+    readData(fd, p->checksum, 1);
     readData(fd, &temp, 1);
     
     while(temp != ENDBIT){
         readData(fd, &temp, 1);
     }
-    tempValid = (p.checksum[0] == calcCheckSum(&p));
-    p.valid = p.valid & tempValid;
+    tempValid = (p->checksum[0] == calcCheckSum(p));
+    p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad checksum\n");
     
     return p;
@@ -137,6 +137,7 @@ int readData(int fd, char * data, int len){
         
         if(temp != encode(data[i])){
             result = FALSE;
+            printf("Bad packet Encoding");
         }
     }
     data[len] = '\0';
