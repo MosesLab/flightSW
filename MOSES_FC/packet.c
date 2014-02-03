@@ -54,7 +54,7 @@ char calcCheckSum(Packet * p){
 		parityByte ^= encode(p->data[i]);
 	}
 
-	return parityByte;
+	return encode(parityByte);
 }
 
 
