@@ -39,8 +39,8 @@ char calcCheckSum(Packet * p){
 		parityByte ^= encode(p->timeStamp[i]);
 	}
 
-	parityByte ^= p->type[0];	//this is incorrect according to documentation
-	//parityByte ^= encode(type);	//this is correct
+	//parityByte ^= p->type[0];	//this is incorrect according to documentation
+	parityByte ^= encode(p->type[0]);	//this is correct
 
 	for(i = 0; i < 3; i++){
 		parityByte ^= encode(p->subtype[i]);
@@ -54,7 +54,7 @@ char calcCheckSum(Packet * p){
 		parityByte ^= encode(p->data[i]);
 	}
 
-	return encode(parityByte);
+	return parityByte;
 }
 
 
