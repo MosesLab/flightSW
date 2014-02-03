@@ -8,6 +8,7 @@
 /****************************************/
 #include "packetType.h"
 #include <math.h>
+#include "system.h"
 
 
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
