@@ -60,7 +60,7 @@ void init_serial_connection(){
 
 }
 
-Packet readPacket(int fd, Packet * p){
+void readPacket(int fd, Packet * p){
     int tempValid = TRUE;
     p->valid = TRUE;
     char temp;
@@ -105,7 +105,7 @@ Packet readPacket(int fd, Packet * p){
     p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad checksum\n");
     
-    return p;
+    //return p;
 }
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len){
