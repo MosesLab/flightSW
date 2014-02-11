@@ -35,6 +35,7 @@ void enqueue(LockingQueue * queue, Packet * p) {
 Packet dequeue(LockingQueue * queue) { 
     struct timespec timeToWait;
     struct timeval now;
+    Packet p;
     
     gettimeofday(&now, NULL);
     timeToWait.tv_sec = now.tv_sec + 2;
@@ -46,9 +47,13 @@ Packet dequeue(LockingQueue * queue) {
     while((queue->count == 0) && ts_alive){
         pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);
     }
-    Packet p = *(queue->first);
-    queue->first = (Packet *)p.next;
-    queue->count--;
+    
+    /*check if program is still active*/
+    if(ts_alive){
+        p = *(queue->first);
+        queue->first = (Packet *)p.next;
+        queue->count--;
+    }
     
     pthread_mutex_unlock(&queue->lock);
     
