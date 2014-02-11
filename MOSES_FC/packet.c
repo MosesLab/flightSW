@@ -60,16 +60,16 @@ char calcCheckSum(Packet * p){
 }
 
 
-void init_serial_connection(){
+int init_serial_connection(){
 	/*Open serial device for reading*/
-        fup = open(HKUP, O_RDONLY | O_NOCTTY);
-        if (fup < 0)
+        fd = open(HKUP, O_RDONLY | O_NOCTTY);
+        if (fd < 0)
         {
                 perror(HKUP);
                 exit(-1);
         }
         /*save current serial port settings*/
-        tcgetattr(fup, &oldtio_up);
+        tcgetattr(fd, &oldtio_up);
 
         /*clear struct for new port settings*/
         bzero(&newtio_up, sizeof(newtio_up));
@@ -86,8 +86,8 @@ void init_serial_connection(){
         newtio_up.c_cc[VTIME] = 1;
         newtio_up.c_cc[VMIN] = 255;
 
-        tcflush(fup, TCIFLUSH);
-        tcsetattr(fup ,TCSANOW, &newtio_up);
+        tcflush(fd, TCIFLUSH);
+        tcsetattr(fd ,TCSANOW, &newtio_up);
 
 }
 
