@@ -62,7 +62,7 @@ char calcCheckSum(Packet * p){
 
 int init_serial_connection(){
 	/*Open serial device for reading*/
-        fd = open(HKUP, O_RDONLY | O_NOCTTY);
+        int fd = open(HKUP, O_RDONLY | O_NOCTTY);
         if (fd < 0)
         {
                 perror(HKUP);

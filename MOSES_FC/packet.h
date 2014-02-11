@@ -27,6 +27,6 @@ char calcCheckSum(Packet * p);
 int ahtoi(char*, int);
 void itoah(int, char *, int);
 
-void init_serial_connection();	//initialize attributs of serial connection
+int init_serial_connection();	//initialize attributs of serial connection
 void readPacket(int, Packet *);
 int readData(int, char *, int);
