@@ -15,10 +15,7 @@ extern LockingQueue hkupQueue;
 
 
 
-int fup, res;	//variables for reading serial data
-char buf[255];	//serial port buffer
-char packet_array[270];		//final packetr array
-struct termios oldtio_up, newtio_up; //structures for old device settings and new 
+
 
 
 
