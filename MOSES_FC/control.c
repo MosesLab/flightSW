@@ -4,7 +4,7 @@ void * controlThread(void * arg){
     
     lockingQueue_init(&hkupQueue);
     
-    init_serial_connection();
+    int fup = init_serial_connection();
     
     buildLookupTable();
     
