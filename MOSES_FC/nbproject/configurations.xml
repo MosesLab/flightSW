@@ -6,7 +6,7 @@
                    projectFiles="true">
       <itemPath>control.h</itemPath>
       <itemPath>global_variables.h</itemPath>
-      <itemPath>hkup.h</itemPath>
+      <itemPath>hkdown.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
@@ -21,7 +21,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>control.c</itemPath>
-      <itemPath>hkup.c</itemPath>
+      <itemPath>hkdown.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
@@ -66,9 +66,9 @@
       </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="hkup.c" ex="false" tool="0" flavor2="0">
+      <item path="hkdown.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="hkup.h" ex="false" tool="3" flavor2="0">
+      <item path="hkdown.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -116,9 +116,9 @@
       </item>
       <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="hkup.c" ex="false" tool="0" flavor2="0">
+      <item path="hkdown.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="hkup.h" ex="false" tool="3" flavor2="0">
+      <item path="hkdown.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
       </item>
