@@ -32,5 +32,5 @@ int ahtoi(char*, int);
 void itoah(int, char *, int);
 
 int init_serial_connection();	//initialize attributes of serial connection
-Packet * readPacket(int, Packet *);
+void readPacket(int, Packet *);
 int readData(int, char *, int);
