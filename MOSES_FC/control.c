@@ -9,11 +9,10 @@ void * controlThread(void * arg){
     buildLookupTable();
     
     while(ts_alive){
-	Packet new_packet;
-        Packet * p = &new_packet;
-        readPacket(fup, p);
+	Packet p;
+        readPacket(fup, &p);
         
-        enqueue(&hkupQueue, p);
+        enqueue(&hkupQueue, &p);
         
     }
     
