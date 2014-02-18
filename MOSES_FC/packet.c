@@ -137,7 +137,7 @@ void readPacket(int fd, Packet * p){
     p->valid = p->valid & tempValid;
     if(tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
     
-    //return p;
+    return p;
 }
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len){

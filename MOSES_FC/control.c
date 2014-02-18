@@ -11,7 +11,7 @@ void * controlThread(void * arg){
     while(ts_alive){
 	Packet new_packet;
         Packet * p = &new_packet;
-        readPacket(fup, p);
+        p = readPacket(fup, p);
         
         enqueue(&hkupQueue, p);
         
