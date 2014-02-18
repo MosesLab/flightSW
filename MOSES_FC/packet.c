@@ -89,6 +89,7 @@ int init_serial_connection(){
         tcflush(fd, TCIFLUSH);
         tcsetattr(fd ,TCSANOW, &newtio_up);
 
+        return fd;
 }
 
 void readPacket(int fd, Packet * p){
