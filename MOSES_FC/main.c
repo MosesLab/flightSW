@@ -35,8 +35,8 @@ void start_threads(){
     
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    pthread_create(&threads[ControlThread], &attrs, (void * (*)(void*))controlThread, NULL);
     pthread_create(&threads[HkupThread], &attrs, (void * (*)(void*))hkupThread, NULL);
+    pthread_create(&threads[ControlThread], &attrs, (void * (*)(void*))controlThread, NULL);
 
 }
 
