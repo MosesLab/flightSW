@@ -19,7 +19,6 @@ char lookupTable[128];	//this lookup table is global, but since it is only writt
 
 char encode(char dataByte) {return lookupTable[dataByte];}
 char decode(char dataByte) {return (dataByte & 0x7F);}
-int fd;
 int res;	//variables for reading serial data
 char buf[255];	//serial port buffer
 char packet_array[270];		//final packet array

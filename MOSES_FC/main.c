@@ -10,7 +10,7 @@
  * 
  */
 int main(void) {
-    
+    //this is a test
     start_threads();
     
     init_signal_handler();
