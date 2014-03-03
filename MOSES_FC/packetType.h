@@ -5,7 +5,6 @@
  * Created on January 23, 2014, 2:50 PM
  */
 
-#define BAD_PACKET "BAD_PACKET"
 
 #define STARTBIT '%'
 #define ENDBIT '^'

@@ -8,6 +8,7 @@
 #include "system.h"
 #include "lockingQueue.h"
 #include <signal.h>
+#include "hlp.h"
 
 extern volatile sig_atomic_t ts_alive;
 
