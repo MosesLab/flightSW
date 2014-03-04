@@ -31,7 +31,7 @@ void * controlThread(void * arg){
                     printf("Power packet\n");
                     break;
                 case HK_RQS:
-                    printf("HK Request Packet");
+                    printf("HK Request Packet\n");
                     break;
                 default:
                     status = BAD_PACKET;
@@ -43,7 +43,7 @@ void * controlThread(void * arg){
     }
     close(fup);
   
-    
+    lockingQueue_destroy(&hkupQueue)
     
     return;
 }
