@@ -20,7 +20,7 @@ void * hkupThread(void * arg){
         if(p.valid){
                 printf("%s%s%s%s%s%s%d\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.valid);
                 char packetString[15 + p.dataSize];
-                int size = asprintf(&packetString,"%c%s%s%s%s%s%s%s%c\n", STARTBIT, p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, ENDBIT);
+                int size = asprintf(&packetString,"%c%s%s%s%s%s%s%c\n", STARTBIT, p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, ENDBIT);
                 write(fdown, packetString, size);
             //printf("%c%c\n", p.type, p.checksum);
         }
