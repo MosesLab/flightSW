@@ -12,13 +12,16 @@
 #include "hkdown.h"
 
 void * hkupThread(void * arg){
+    fdown = init_hkdown_serial_connection();
     while(ts_alive){
         
         Packet p = dequeue(&hkupQueue);
         
         if(p.valid){
                 printf("%s%s%s%s%s%s%d\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.valid);
-                
+                char packetString[15 + p.dataSize];
+                asprintf(&packetString,"%c%s%s%s%s%s%s%s%c\n", STARTBIT, p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, ENDBIT);
+                write(fdown, packetString, sizeof(packetString));
             //printf("%c%c\n", p.type, p.checksum);
         }
         else{

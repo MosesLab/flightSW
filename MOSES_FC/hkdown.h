@@ -13,6 +13,7 @@ extern volatile sig_atomic_t ts_alive;
 pid_t parent_pid;
 extern LockingQueue hkupQueue;
 
+int fdown;
 
 
 
