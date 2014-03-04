@@ -7,6 +7,7 @@
       <itemPath>control.h</itemPath>
       <itemPath>global_variables.h</itemPath>
       <itemPath>hkdown.h</itemPath>
+      <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
@@ -70,6 +71,8 @@
       </item>
       <item path="hkdown.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="hlp.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
@@ -119,6 +122,8 @@
       <item path="hkdown.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hkdown.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
       </item>
