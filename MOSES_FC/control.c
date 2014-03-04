@@ -4,7 +4,7 @@ void * controlThread(void * arg){
     
     lockingQueue_init(&hkupQueue);
     
-    int fup = init_serial_connection();
+    int fup = init_hkup_serial_connection();
     
     buildLookupTable();
     
@@ -41,7 +41,7 @@ void * controlThread(void * arg){
         enqueue(&hkupQueue, p);
         
     }
-    
+    close(fup);
   
     
     

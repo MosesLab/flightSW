@@ -60,7 +60,7 @@ char calcCheckSum(Packet * p){
 }
 
 
-int init_serial_connection(){
+int init_hkup_serial_connection(){
 	/*Open serial device for reading*/
         int fd = open(HKUP, O_RDONLY | O_NOCTTY);
         if (fd < 0)
@@ -92,6 +92,38 @@ int init_serial_connection(){
         return fd;
 }
 
+int init_hkdown_serial_connection(){
+	/*Open serial device for reading*/
+        int fd = open(HKDOWN, O_WRONLY | O_NOCTTY);
+        if (fd < 0)
+        {
+                perror(HKUP);
+                exit(-1);
+        }
+        /*save current serial port settings*/
+        tcgetattr(fd, &oldtio_up);
+
+        /*clear struct for new port settings*/
+        bzero(&newtio_up, sizeof(newtio_up));
+
+        /*set flags for non-canonical serial connection*/
+        newtio_up.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
+        newtio_up.c_cflag &= ~(PARENB | PARODD);
+        newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
+        //newtio_up.c_iflag |= ISTRIP;
+        newtio_up.c_oflag &= ~OPOST;
+        newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
+
+        /*set non-canonical attributes*/
+        newtio_up.c_cc[VTIME] = 1;
+        newtio_up.c_cc[VMIN] = 255;
+
+        tcflush(fd, TCIFLUSH);
+        tcsetattr(fd ,TCSANOW, &newtio_up);
+
+        return fd;
+}
+
 void readPacket(int fd, Packet * p){
     int tempValid = TRUE;
     p->valid = TRUE;
@@ -104,7 +136,7 @@ void readPacket(int fd, Packet * p){
         readData(fd, &temp, 1);
     }
     if(error != ""){
-        printf("Bad Packet Data\n");
+        //printf("Bad Packet Data\n");
     }    
     tempValid = readData(fd, p->timeStamp, 6);
     p->valid = p->valid & tempValid;

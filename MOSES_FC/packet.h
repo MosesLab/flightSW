@@ -12,7 +12,10 @@
 #include <termios.h>
 
 #define UPBAUD B1200
+#define DOWNBAURD B9600
 #define HKUP "/dev/hkup"
+#define HKDOWN "/dev/hkdown"
+
 
 
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
@@ -31,6 +34,9 @@ char calcCheckSum(Packet * p);
 int ahtoi(char*, int);
 void itoah(int, char *, int);
 
-int init_serial_connection();	//initialize attributes of serial connection
+int init_hkup_serial_connection();	//initialize attributes of serial connection
+int init_hkdown_serial_connection();
 void readPacket(int, Packet *);
 int readData(int, char *, int);
+
+
