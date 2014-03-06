@@ -46,4 +46,5 @@ void * controlThread(void * arg){
     //lockingQueue_destroy(&hkupQueue);
     
     return;
+    
 }
