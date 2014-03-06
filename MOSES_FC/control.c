@@ -43,7 +43,7 @@ void * controlThread(void * arg){
     }
     close(fup);
   
-    lockingQueue_destroy(&hkupQueue);
+    //lockingQueue_destroy(&hkupQueue);
     
     return;
 }
