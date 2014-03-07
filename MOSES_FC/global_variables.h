@@ -1,3 +1,0 @@
-
-
-packetQueue hkupQueue;
