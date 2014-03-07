@@ -16,7 +16,7 @@
 #define HKUP "/dev/hkup"
 #define HKDOWN "/dev/hkdown"
 
-
+extern volatile sig_atomic_t ts_alive;
 
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
 
