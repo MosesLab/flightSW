@@ -185,14 +185,20 @@ int readData(int fd, char * data, int len) {
     char temp;
     int available = 0;
     int result = TRUE;
+    
+    /*change file pointed to fd_set for select*/
+    fd_set set;
+    FD_ZERO (&set);
+    FD_SET(fd, &set);
 
+    /*create timestructure for select function*/
     struct timeval timeToWait;
     struct timeval now;
     gettimeofday(&now, NULL);
     timeToWait.tv_sec = now.tv_sec + 2;
     timeToWait.tv_usec = 0;
     while (ts_alive) {
-        available = select(1, &fd, NULL, NULL, &timeToWait);
+        available = select(1, &set, NULL, NULL, &timeToWait);   //Use select to be able to exit, and not hang on read()
         if(available) {
             int rsz = read(fd, data, len);
             while (rsz < len) {
