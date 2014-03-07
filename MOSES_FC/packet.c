@@ -194,8 +194,8 @@ int readData(int fd, char * data, int len) {
 
     /*create timestructure for select function*/
     struct timeval timeout;
-    timeout.tv_sec = 2;
-    timeout.tv_usec = 0;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 10;
     do  {
         available = select(FD_SETSIZE, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
         if(available) { //If select returns true, read the data
