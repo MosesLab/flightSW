@@ -10,6 +10,7 @@
 #include <math.h>
 #include "system.h"
 #include <termios.h>
+#include <signal.h>
 
 #define UPBAUD B1200
 #define DOWNBAURD B9600
