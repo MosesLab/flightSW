@@ -31,7 +31,7 @@ void * hkupThread(void * arg){
     }
     lockingQueue_destroy(&hkupQueue);
     
-    return;
+    return 0;
 }
 
 
