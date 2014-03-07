@@ -11,7 +11,7 @@
 
 #include "hkdown.h"
 
-void * hkupThread(void * arg){
+void * hkdownThread(void * arg){
     fdown = init_hkdown_serial_connection();
     while(ts_alive){
         

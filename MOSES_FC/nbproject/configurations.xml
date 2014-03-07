@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>control.h</itemPath>
-      <itemPath>global_variables.h</itemPath>
       <itemPath>hkdown.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
@@ -65,8 +64,6 @@
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="global_variables.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="hkdown.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hkdown.h" ex="false" tool="3" flavor2="0">
@@ -116,8 +113,6 @@
       <item path="control.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="global_variables.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hkdown.c" ex="false" tool="0" flavor2="0">
       </item>
