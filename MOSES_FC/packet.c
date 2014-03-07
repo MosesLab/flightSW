@@ -195,7 +195,7 @@ int readData(int fd, char * data, int len) {
     struct timeval timeout;
     timeout.tv_sec = 2;
     while (ts_alive) {
-        available = select(fd+1, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
+        available = select(1, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
         if(available) { //If select returns true, read the data
             int rsz = read(fd, data, len);
             while (rsz < len) {
