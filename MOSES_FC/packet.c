@@ -183,8 +183,9 @@ void readPacket(int fd, Packet * p) {
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
     char temp;
-    int available = 0;
+    int available = FALSE;      //see if serial data is available
     int result = TRUE;
+    int loops = 0;
     
     /*change file pointed to fd_set for select*/
     fd_set set;
@@ -196,7 +197,7 @@ int readData(int fd, char * data, int len) {
     timeout.tv_sec = 2;
     timeout.tv_usec = 0;
     do  {
-        available = select(1, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
+        available = select(FD_SETSIZE, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
         if(available) { //If select returns true, read the data
             int rsz = read(fd, data, len);
             while (rsz < len) {
@@ -214,6 +215,7 @@ int readData(int fd, char * data, int len) {
                 }
             }
         }
+        loops++;
     }while (ts_alive && !available);
     data[len] = '\0';
     return result;
