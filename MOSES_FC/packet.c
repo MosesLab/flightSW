@@ -105,7 +105,7 @@ int init_hkdown_serial_connection() {
     /*Open serial device for reading*/
     int fd = open(HKDOWN, O_WRONLY | O_NOCTTY);
     if (fd < 0) {
-        perror(HKUP);
+        perror(HKDOWN);
         exit(-1);
     }
     /*save current serial port settings*/
@@ -190,8 +190,9 @@ void readPacket(int fd, Packet * p) {
             tempValid = (p->checksum[0] == calcCheckSum(p));
             p->valid = p->valid & tempValid;
             if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
-            available = FALSE;
+            
         }
+        available = FALSE;
     }
 
 }
