@@ -51,14 +51,14 @@ char calcCheckSum(Packet * p) {
     }
 
 
-	for(i = 0; i < p->dataSize; i++){
-		parityByte ^= encode(p->data[i]);
-	}
-        
-        parityByte = decode(parityByte);
-        printf("%c\n", parityByte);
-	return parityByte;
-               
+    for (i = 0; i < p->dataSize; i++) {
+        parityByte ^= encode(p->data[i]);
+    }
+
+    parityByte = decode(parityByte);
+    printf("%c\n", parityByte);
+    return parityByte;
+
 
     for (i = 0; i < p->dataSize; i++) {
         parityByte ^= encode(p->data[i]);
@@ -134,89 +134,89 @@ int init_hkdown_serial_connection() {
 
 void readPacket(int fd, Packet * p) {
     int tempValid = TRUE;
+    int available = FALSE; //see if serial data is available
     p->valid = TRUE;
     char temp;
     char * error = "";
 
-    readData(fd, &temp, 1);
-    while (temp != STARTBIT) {
-        error += temp;
-        readData(fd, &temp, 1);
-    }
-    if (error != "") {
-        //printf("Bad Packet Data\n");
-    }
-    tempValid = readData(fd, p->timeStamp, 6);
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad Timestamp\n");
-
-    tempValid = readData(fd, p->type, 1);
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad type\n");
-
-    tempValid = readData(fd, p->subtype, 3);
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad subtype\n");
-
-    tempValid = readData(fd, p->dataLength, 2);
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad data length\n");
-    p->dataSize = ahtoi(p->dataLength, 2);
-
-    tempValid = readData(fd, p->data, p->dataSize);
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad data\n");
-
-    readData(fd, p->checksum, 1);
-    readData(fd, &temp, 1);
-
-    while (temp != ENDBIT) {
-        readData(fd, &temp, 1);
-    }
-    tempValid = (p->checksum[0] == calcCheckSum(p));
-    p->valid = p->valid & tempValid;
-    if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
-
-    //return p;
-}
-
-/*readData returns an array if successful or 0 if an error occurred*/
-int readData(int fd, char * data, int len) {
-    char temp;
-    int available = FALSE;      //see if serial data is available
-    int result = TRUE;
-    int loops = 0;
-    
     /*change file pointed to fd_set for select*/
     fd_set set;
-    FD_ZERO (&set);
+    FD_ZERO(&set);
     FD_SET(fd, &set);
 
     /*create timestructure for select function*/
     struct timeval timeout;
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
-    while (ts_alive && !available){
-        available = select(FD_SETSIZE, &set, NULL, NULL, &timeout);   //Use select to be able to exit, and not hang on read()
-        if(available) { //If select returns true, read the data
-            int rsz = read(fd, data, len);
-            while (rsz < len) {
-                rsz += read(fd, data + rsz, len - rsz);
-            }
 
-            int i;
-            for (i = 0; i < len; i++) {
-                temp = data[i];
-                data[i] = decode(temp);
-
-                if (temp != encode(data[i])) {
-                    result = FALSE;
-                    printf("Bad packet Encoding");
-                }
+    while (ts_alive && !available) {
+        available = select(FD_SETSIZE, &set, NULL, NULL, &timeout); //Use select to be able to exit, and not hang on read()
+        if (available) { //If select returns true, read the data
+            readData(fd, &temp, 1);
+            while (temp != STARTBIT) {
+                error += temp;
+                readData(fd, &temp, 1);
             }
+            if (error != "") {
+                //printf("Bad Packet Data\n");
+            }
+            tempValid = readData(fd, p->timeStamp, 6);
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad Timestamp\n");
+
+            tempValid = readData(fd, p->type, 1);
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad type\n");
+
+            tempValid = readData(fd, p->subtype, 3);
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad subtype\n");
+
+            tempValid = readData(fd, p->dataLength, 2);
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad data length\n");
+            p->dataSize = ahtoi(p->dataLength, 2);
+
+            tempValid = readData(fd, p->data, p->dataSize);
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad data\n");
+
+            readData(fd, p->checksum, 1);
+            readData(fd, &temp, 1);
+
+            while (temp != ENDBIT) {
+                readData(fd, &temp, 1);
+            }
+            tempValid = (p->checksum[0] == calcCheckSum(p));
+            p->valid = p->valid & tempValid;
+            if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
+
         }
-        loops++;
     }
+
+}
+
+/*readData returns an array if successful or 0 if an error occurred*/
+int readData(int fd, char * data, int len) {
+    char temp;
+    int result = TRUE;
+
+    int rsz = read(fd, data, len);
+    while (rsz < len) {
+        rsz += read(fd, data + rsz, len - rsz);
+    }
+
+    int i;
+    for (i = 0; i < len; i++) {
+        temp = data[i];
+        data[i] = decode(temp);
+
+        if (temp != encode(data[i])) {
+            result = FALSE;
+            printf("Bad packet Encoding");
+        }
+    }
+
     data[len] = '\0';
     return result;
 }
