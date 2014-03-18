@@ -149,9 +149,9 @@ void readPacket(int fd, Packet * p) {
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-//    while (ts_alive && !available) {
-//        available = select(FD_SETSIZE, &set, NULL, NULL, &timeout); //Use select to be able to exit, and not hang on read()
-//        if (available) { //If select returns true, read the data
+    while ((ts_alive == TRUE) && (available == FALSE)) {
+        available = select(FD_SETSIZE, &set, NULL, NULL, &timeout); //Use select to be able to exit, and not hang on read()
+        if (available) { //If select returns true, read the data
             readData(fd, &temp, 1);
             while (temp != STARTBIT) {
                 error += temp;
@@ -191,9 +191,9 @@ void readPacket(int fd, Packet * p) {
             p->valid = p->valid & tempValid;
             if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
             
-//        }
-//        available = FALSE;
-//    }
+        }
+        available = FALSE;
+    }
 
 }
 
