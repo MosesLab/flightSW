@@ -241,5 +241,5 @@ int input_timeout(int filedes, unsigned int seconds) {
     timeout.tv_usec = 0;
 
     /*select returns 0 if timeout, 1 if input data is avaialble, -1 if error*/
-    return TEMP_FAILURE_RETRY(select(FD_SETSIZE, &set, NULL, NULL, &timeout));
+    return TEMP_FAILURE_RETRY (select(FD_SETSIZE, &set, NULL, NULL, &timeout));
 }
