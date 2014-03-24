@@ -1,4 +1,5 @@
 #define _GNU_SOURCE 1
+#define _POSIX_SOURCE 1
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -10,6 +11,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 
 
 
