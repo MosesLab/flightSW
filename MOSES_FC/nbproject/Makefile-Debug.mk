@@ -43,7 +43,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-m32 -mtune=arm9
+CFLAGS=-mtune=arm9
 
 # CC Compiler Flags
 CCFLAGS=
