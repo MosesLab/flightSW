@@ -52,7 +52,7 @@
       <compileType>
         <cTool>
           <architecture>1</architecture>
-          <commandLine>-mtune = arm9</commandLine>
+          <commandLine>-mtune=arm9</commandLine>
         </cTool>
         <linkerTool>
           <linkerLibItems>
