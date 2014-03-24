@@ -14,7 +14,6 @@
 #include <string.h>
 #include <sys/time.h>
 
-fuck you gcc;
 
 #define FALSE 0
 #define TRUE 1
