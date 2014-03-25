@@ -1,4 +1,4 @@
-#define _GNU_SOURCE 1
+
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@
 #include <string.h>
 
 
-#define _POSIX_SOURCE 1
+
 
 #define FALSE 0
 #define TRUE 1

@@ -6,6 +6,8 @@
 /*packet struct encapsulates attributes */
 /*of serial command packets		*/
 /****************************************/
+#define _GNU_SOURCE 1
+
 #include "packetType.h"
 #include <math.h>
 #include "system.h"
@@ -13,8 +15,9 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#define _POSIX_SOURCE 1
 #define UPBAUD B1200
-#define DOWNBAURD B9600
+#define DOWNBAUD B9600
 #define HKUP "/dev/hkup"
 #define HKDOWN "/dev/hkdown"
 
