@@ -140,7 +140,7 @@ void readPacket(int fd, Packet * p) {
     volatile int continue_read = FALSE;    
     int input;
     int index = 0;      //use index to make sure it doesn't loop forever looking for input on program exit
-    while (continue_read == FALSE && ts_alive == TRUE && index < 20) {
+    while (continue_read == FALSE && ts_alive == TRUE && index < 5) {
         input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
         if(input > 0){
