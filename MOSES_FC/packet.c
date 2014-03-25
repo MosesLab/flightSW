@@ -137,34 +137,26 @@ void readPacket(int fd, Packet * p) {
     p->valid = TRUE;
     char temp;
     char * error = "";
-
-    //    /*change file pointed to fd_set for select*/
-    //    fd_set set; 
-    //    FD_ZERO(&set);
-    //    FD_SET(fd, &set);
-    //
-    //    /*create timestructure for select function*/
-    //    struct timeval timeout;
-    //    timeout.tv_sec = 1;
-    //    timeout.tv_usec = 0;
-
-
-    //available = select(FD_SETSIZE, &set, NULL, NULL, &timeout); //Use select to be able to exit, and not hang on read()
     volatile int continue_read = FALSE;
+    volatile int clearBuffer = FALSE;
     int input;
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 1);
-        if (input > 0) {
+        if(input > 0){
+            readData(fd, &temp, 1);
+            if(temp == STARTBIT) clearBuffer = TRUE;
+        }
+        if (clearBuffer) {
             ioctl(fd, FIONREAD);
             continue_read = TRUE;
-            readData(fd, &temp, 1);
-            while (temp != STARTBIT) {
-                error += temp;
-                readData(fd, &temp, 1);
-            }
-            if (error != "") {
-                //printf("Bad Packet Data\n");
-            }
+//            readData(fd, &temp, 1);
+//            while (temp != STARTBIT) {
+//                error += temp;
+//                readData(fd, &temp, 1);
+//            }
+//            if (error != "") {
+//                //printf("Bad Packet Data\n");
+//            }
             tempValid = readData(fd, p->timeStamp, 6);
             p->valid = p->valid & tempValid;
             if (tempValid != TRUE) printf("Bad Timestamp\n");
