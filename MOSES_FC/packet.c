@@ -137,11 +137,11 @@ void readPacket(int fd, Packet * p) {
     p->valid = TRUE;
     char temp;
     char * error = "";
-    volatile int continue_read = FALSE;
-    volatile int clearBuffer = FALSE;
+    volatile int continue_read = FALSE;    
     int input;
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 1);
+        volatile int clearBuffer = FALSE;
         if(input > 0){
             readData(fd, &temp, 1);
             if(temp == STARTBIT) clearBuffer = TRUE;
