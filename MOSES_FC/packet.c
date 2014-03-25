@@ -139,12 +139,14 @@ void readPacket(int fd, Packet * p) {
     char * error = "";
     volatile int continue_read = FALSE;    
     int input;
-    while (continue_read == FALSE && ts_alive == TRUE) {
+    int index = 0;      //use index to make sure it doesn't loop forever looking for input on program exit
+    while (continue_read == FALSE && ts_alive == TRUE && index < 20) {
         input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
         if(input > 0){
             readData(fd, &temp, 1);
             if(temp == STARTBIT) clearBuffer = TRUE;
+            index++;
         }
         if (clearBuffer) {
             ioctl(fd, FIONREAD);
@@ -233,6 +235,6 @@ int input_timeout(int filedes, unsigned int seconds) {
     timeout.tv_sec = seconds;
     timeout.tv_usec = 0;
 
-    /*select returns 0 if timeout, 1 if input data is avaialble, -1 if error*/
+    /*select returns 0 if timeout, 1 if input data is available, -1 if error*/
     return TEMP_FAILURE_RETRY(select(FD_SETSIZE, &set, NULL, NULL, &timeout));
 }
