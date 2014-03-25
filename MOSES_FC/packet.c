@@ -148,7 +148,7 @@ void readPacket(int fd, Packet * p) {
     //    timeout.tv_sec = 1;
     //    timeout.tv_usec = 0;
 
-    while ((ts_alive == TRUE)) {
+    if ((ts_alive == TRUE)) {
         //available = select(FD_SETSIZE, &set, NULL, NULL, &timeout); //Use select to be able to exit, and not hang on read()
         volatile int continue_read = FALSE;
         int input;
