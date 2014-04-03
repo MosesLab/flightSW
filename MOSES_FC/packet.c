@@ -139,15 +139,13 @@ void readPacket(int fd, Packet * p) {
     char * error = "";
     volatile int continue_read = FALSE;    
     int input;
-    int index = 0;      //use index to make sure it doesn't loop forever looking for input on program exit
-    while (continue_read == FALSE && ts_alive == TRUE && index < 5) {
-        input = input_timeout(fd, 1);
+    while (continue_read == FALSE && ts_alive == TRUE) {
+        input = input_timeout(fd, 1000000);
         volatile int clearBuffer = FALSE;
         printf("%s %d\n", "Select returned", input);
         if(input > 0){
             readData(fd, &temp, 1);
             if(temp == STARTBIT) clearBuffer = TRUE;
-            index++;
         }
         if (clearBuffer) {
             ioctl(fd, FIONREAD);
