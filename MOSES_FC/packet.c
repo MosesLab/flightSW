@@ -140,7 +140,7 @@ void readPacket(int fd, Packet * p) {
     volatile int continue_read = FALSE;    
     int input;
     while (continue_read == FALSE && ts_alive == TRUE) {
-        input = input_timeout(fd, 1000000);
+        input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
         printf("%s %d\n", "Select returned", input);
         if(input > 0){
