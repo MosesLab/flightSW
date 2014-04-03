@@ -38,7 +38,7 @@ void * controlThread(void * arg){
                     break;
             }
         }
-        enqueue(&hkupQueue, p);
+        if(ts_alive) enqueue(&hkupQueue, p);
         
     }
     close(fup);
