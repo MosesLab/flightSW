@@ -143,6 +143,7 @@ void readPacket(int fd, Packet * p) {
     while (continue_read == FALSE && ts_alive == TRUE && index < 5) {
         input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
+        printf("%s %d\n", "Select returned", input);
         if(input > 0){
             readData(fd, &temp, 1);
             if(temp == STARTBIT) clearBuffer = TRUE;
