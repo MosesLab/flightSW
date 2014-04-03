@@ -136,9 +136,10 @@ void readPacket(int fd, Packet * p) {
     int tempValid = TRUE;
     p->valid = TRUE;
     char temp;
-    char * error = "";  
+    char * error = "";
+    volatile int continue_read = FALSE;    
     int input;
-    while (ts_alive == TRUE) {
+    while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
         printf("%s %d\n", "Select returned", input);
@@ -148,6 +149,7 @@ void readPacket(int fd, Packet * p) {
         }
         if (clearBuffer) {
             ioctl(fd, FIONREAD);
+            continue_read = TRUE;
 //            readData(fd, &temp, 1);
 //            while (temp != STARTBIT) {
 //                error += temp;
@@ -187,6 +189,7 @@ void readPacket(int fd, Packet * p) {
             p->valid = p->valid & tempValid;
             if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
             
+            continue_read = FALSE;
         }
     }
 
