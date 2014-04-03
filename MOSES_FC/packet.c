@@ -188,6 +188,8 @@ void readPacket(int fd, Packet * p) {
             tempValid = (p->checksum[0] == calcCheckSum(p));
             p->valid = p->valid & tempValid;
             if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
+            
+            continue_read = FALSE;
         }
     }
 
