@@ -148,7 +148,7 @@ void readPacket(int fd, Packet * p) {
             if(temp == STARTBIT) clearBuffer = TRUE;
         }
         if (clearBuffer) {
-            
+             ioctl(fd, FIONREAD);
             continue_read = TRUE;
 //            readData(fd, &temp, 1);
 //            while (temp != STARTBIT) {
