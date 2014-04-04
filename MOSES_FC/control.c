@@ -42,8 +42,8 @@ void * controlThread(void * arg){
         if(ts_alive) enqueue(&hkupQueue, p);
         
     }
-    close(fup);
-  
+    /*need to clean up properly but these don't work*/
+    //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
     
     return 0;
