@@ -29,7 +29,6 @@ void * hkdownThread(void * arg){
         }
         printf("\n");
     }
-    lockingQueue_destroy(&hkupQueue);
     
     return 0;
 }
