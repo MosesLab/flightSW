@@ -44,5 +44,6 @@ int init_hkup_serial_connection();	//initialize attributes of serial connection
 int init_hkdown_serial_connection();
 void readPacket(int, Packet *);
 int readData(int, char *, int);
-
+void sendPacket(Packet *, int);
+void sendData(char *, int, int);
 

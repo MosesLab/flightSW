@@ -182,7 +182,7 @@ void readPacket(int fd, Packet * p) {
             readData(fd, p->checksum, 1);
             readData(fd, &temp, 1);
 
-            while (temp != ENDBIT) {
+            while (temp != ENDBYTE) {
                 readData(fd, &temp, 1);
             }
             tempValid = (p->checksum[0] == calcCheckSum(p));
@@ -219,7 +219,7 @@ int readData(int fd, char * data, int len) {
 }
 
 void sendPacket(Packet * p, int fd){
-    p.checksum = calcCheckSum(p);
+    p->checksum = calcCheckSum(p);
     char start = STARTBYTE;
     char end = ENDBYTE;
     char eof = EOF;
