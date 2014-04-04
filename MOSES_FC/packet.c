@@ -218,17 +218,19 @@ int readData(int fd, char * data, int len) {
     return result;
 }
 
-void sendPacket(Packet p, int fd){
+void sendPacket(Packet * p, int fd){
     p.checksum = calcCheckSum(p);
+    char start = STARTBYTE;
+    char end = ENDBYTE;
     char eof = EOF;
     
-    sendData(&STARTBYTE, 1, fd);
+    sendData(&start, 1, fd);
     sendData(p->timeStamp, 6, fd);
     sendData(p->type, 1, fd);
     sendData(p->subtype, 3, fd);
     sendData(p->dataLength, 2, fd);
     sendData(p->checksum, 1, fd);
-    sendData(&ENDBYTE, 1, fd);
+    sendData(&end, 1, fd);
     sendData(&eof, 1, fd);
 }
 
