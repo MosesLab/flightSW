@@ -56,7 +56,6 @@ char calcCheckSum(Packet * p) {
     }
 
     parityByte = decode(parityByte);
-    printf("%c\n", parityByte);
     return parityByte;
 
 
@@ -115,7 +114,7 @@ int init_hkdown_serial_connection() {
     bzero(&newtio_up, sizeof (newtio_up));
 
     /*set flags for non-canonical serial connection*/
-    newtio_up.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
+    newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
     newtio_up.c_cflag &= ~(PARENB | PARODD);
     newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
     //newtio_up.c_iflag |= ISTRIP;
@@ -142,7 +141,6 @@ void readPacket(int fd, Packet * p) {
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 1);
         volatile int clearBuffer = FALSE;
-        printf("%s %d\n", "Select returned", input);
         if(input > 0){
             readData(fd, &temp, 1);
             if(temp == STARTBYTE) clearBuffer = TRUE;
