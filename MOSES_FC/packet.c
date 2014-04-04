@@ -240,6 +240,7 @@ void sendData(char * data, int size, int fd){
     while(i < size){
         temp = encode(data[i]);
 	if(write(fd, &temp, 1) < 1) printf("Write Error:%c\n",temp);
+        i++;
     }
 }
 int input_timeout(int filedes, unsigned int seconds) {
