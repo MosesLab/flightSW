@@ -149,7 +149,7 @@ void readPacket(int fd, Packet * p) {
         }
         if (clearBuffer) {
              ioctl(fd, FIONREAD);
-            continue_read = TRUE;
+             continue_read = TRUE;
 //            readData(fd, &temp, 1);
 //            while (temp != STARTBIT) {
 //                error += temp;
