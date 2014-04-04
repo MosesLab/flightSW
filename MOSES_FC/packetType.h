@@ -6,8 +6,8 @@
  */
 
 
-#define STARTBIT '%'
-#define ENDBIT '^'
+#define STARTBYTE '%'
+#define ENDBYTE '^'
 
 typedef struct {
 

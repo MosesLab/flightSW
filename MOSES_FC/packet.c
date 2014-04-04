@@ -32,7 +32,7 @@ void buildLookupTable() {
 }
 
 char calcCheckSum(Packet * p) {
-    char parityByte = encode(STARTBIT); //this variable is XORed with all bytes to complete rectangle code
+    char parityByte = encode(STARTBYTE); //this variable is XORed with all bytes to complete rectangle code
 
     int i;
     for (i = 0; i < 6; i++) {
@@ -145,11 +145,11 @@ void readPacket(int fd, Packet * p) {
         printf("%s %d\n", "Select returned", input);
         if(input > 0){
             readData(fd, &temp, 1);
-            if(temp == STARTBIT) clearBuffer = TRUE;
+            if(temp == STARTBYTE) clearBuffer = TRUE;
         }
         if (clearBuffer) {
-             ioctl(fd, FIONREAD);
-             continue_read = TRUE;
+            ioctl(fd, FIONREAD);
+            continue_read = TRUE;
 //            readData(fd, &temp, 1);
 //            while (temp != STARTBIT) {
 //                error += temp;
@@ -191,11 +191,6 @@ void readPacket(int fd, Packet * p) {
             ioctl(fd, FIONREAD);
         }
     }
-
-
-
-
-
 }
 
 /*readData returns an array if successful or 0 if an error occurred*/
@@ -223,6 +218,28 @@ int readData(int fd, char * data, int len) {
     return result;
 }
 
+void sendPacket(Packet p, int fd){
+    p.checksum = calcCheckSum(p);
+    char eof = EOF;
+    
+    sendData(&STARTBYTE, 1, fd);
+    sendData(p->timeStamp, 6, fd);
+    sendData(p->type, 1, fd);
+    sendData(p->subtype, 3, fd);
+    sendData(p->dataLength, 2, fd);
+    sendData(p->checksum, 1, fd);
+    sendData(&ENDBYTE, 1, fd);
+    sendData(&eof, 1, fd);
+}
+
+void sendData(char * data, int size, int fd){
+    int i = 0;
+    char temp;
+    while(i < size){
+        temp = encode(data[i]);
+	if(write(fd, &temp, 1) < 1) printf("Write Error:%c\n",temp);
+    }
+}
 int input_timeout(int filedes, unsigned int seconds) {
     fd_set set;
     struct timeval timeout;
