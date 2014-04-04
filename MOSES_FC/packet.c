@@ -219,10 +219,10 @@ int readData(int fd, char * data, int len) {
 }
 
 void sendPacket(Packet * p, int fd){
-    p->checksum = calcCheckSum(p);
+    p->checksum[0] = calcCheckSum(p);
     char start = STARTBYTE;
     char end = ENDBYTE;
-    char eof = EOF;
+    char eof = 0x04;
     
     sendData(&start, 1, fd);
     sendData(p->timeStamp, 6, fd);
