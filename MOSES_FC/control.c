@@ -42,9 +42,9 @@ void * controlThread(void * arg){
         if(ts_alive) enqueue(&hkupQueue, p);
         
     }
-    //close(fup);
+    close(fup);
   
-    //lockingQueue_destroy(&hkupQueue);
+    lockingQueue_destroy(&hkupQueue);
     
     return 0;
     

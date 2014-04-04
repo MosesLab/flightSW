@@ -61,7 +61,7 @@ Packet dequeue(LockingQueue * queue) {
 }
 
 void lockingQueue_destroy(LockingQueue * queue){
-    pthread_mutex_lock(&queue->lock);
-    //pthread_cond_destroy(&queue->cond);
+    //pthread_mutex_lock(&queue->lock);
+    pthread_cond_destroy(&queue->cond);
     pthread_mutex_destroy(&queue->lock);
 }
