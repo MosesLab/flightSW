@@ -23,22 +23,22 @@
 
 extern volatile sig_atomic_t ts_alive;
 
+/*variable declaration*/
 char lookupTable[128];	//this lookup table is global, but since it is only written to once, it does not need to be locked
-
-char encode(char dataByte) {return lookupTable[dataByte];}
-char decode(char dataByte) {return (dataByte & 0x7F);}
 int res;	//variables for reading serial data
 char buf[255];	//serial port buffer
 char packet_array[270];		//final packet array
 struct termios oldtio_up, newtio_up; //structures for old device settings and new 
 
-
+/*function declaration*/
 void buildLookupTable();
 char calcCheckSum(Packet * p);
-
+char encode(char dataByte) {return lookupTable[dataByte];}
+char decode(char dataByte) {return (dataByte & 0x7F);}
 int ahtoi(char*, int);
 void itoah(int, char *, int);
 
+Packet constructPacket(char *, char *, char *, int, char *);
 int init_hkup_serial_connection();	//initialize attributes of serial connection
 int init_hkdown_serial_connection();
 void readPacket(int, Packet *);
