@@ -44,10 +44,10 @@ void * controlThread(void * arg) {
         data[0] = p->type[0];
         strcpy(data + 1, p->subtype);
         if (p->status == GOOD_PACKET) {
-            Packet* nextp = constructPacket(GDPKT, ACK, data);
+            Packet* nextp = constructPacket(GDPKT, ACK, &data);
             enqueue(&hkdownQueue, nextp);
         } else {
-            Packet* nextp = constructPacket(BDPKT, ACK, data);
+            Packet* nextp = constructPacket(BDPKT, ACK, &data);
             enqueue(&hkdownQueue, nextp);
         }
 
