@@ -33,7 +33,7 @@ void * controlThread(void * arg) {
                     printf("HK Request Packet\n");
                     break;
                 default:
-                    printf("Bad Packet");
+                    printf("Bad Packet\n");
                     status = BAD_PACKET;
                     break;
             }

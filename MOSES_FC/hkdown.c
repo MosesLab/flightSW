@@ -18,8 +18,8 @@ void * hkdownThread(void * arg){
         Packet p = dequeue(&hkupQueue);
         
         if(p.valid){
-                printf("%s%s%s%s%s%s%d\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.valid);
-                sendPacket(p, fdown);
+                printf("%s%s%s%s%s%s%d\n\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.valid);
+                sendPacket(&p, fdown);
 //                char packetString[15 + p.dataSize];
 //                int size = asprintf(&packetString,"%c%s%s%s%s%s%s%c\n", STARTBYTE, p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, ENDBYTE);
 //                write(fdown, &packetString, size);
