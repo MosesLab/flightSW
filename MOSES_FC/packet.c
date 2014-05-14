@@ -9,7 +9,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     
     /*allocate space for packet*/
     Packet* p;
-    if((p = (char*) malloc(sizeof(Packet))) == NULL){
+    if((p = (Packet*) malloc(sizeof(Packet))) == NULL){
         puts("malloc failed to allocate packet");
     }
     
@@ -19,6 +19,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     }
     getCurrentTime(timestamp);
     
+    memcpy(p->timeStamp, timestamp, sizeof(timestamp));
     p->timeStamp = timestamp;
     p->type = type;
     p->subtype = subtype;
