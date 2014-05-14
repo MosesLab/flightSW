@@ -21,7 +21,7 @@ typedef struct {
         void * next;
         
 	int dataSize;
-        int valid;
+        int status;
         
 } Packet;
 

@@ -2,7 +2,7 @@
 
 void * controlThread(void * arg) {
 
-    lockingQueue_init(&hkupQueue);
+    lockingQueue_init(&hkdownQueue);
 
     int fup = init_hkup_serial_connection();
 
@@ -13,7 +13,7 @@ void * controlThread(void * arg) {
         Packet new_packet;
         Packet * p = &new_packet;
         readPacket(fup, p);
-        if (!p->valid) {
+        if (!p->status) {
             status = BAD_PACKET;
         } else {
             switch (p->type[0]) {
@@ -38,17 +38,17 @@ void * controlThread(void * arg) {
                     break;
             }
         }
-        if (ts_alive) enqueue(&hkupQueue, p);
+        if (ts_alive) enqueue(&hkdownQueue, p);
 
         char data[16];
-        data[0] = p.type();
+        data[0] = p.type[0];
         strcpy(data + 1, p->subtype);
-        if (status == GOOD_PACKET) {
-            Packet r(GDPKT, ACK, strlen(data) + 1, data);
-            packetQue.push(r);
+        if (p->status == GOOD_PACKET) {
+            Packet* nextp = constructPacket(GDPKT, ACK, data);
+            enqueue(&hkdownQueue, nextp);
         } else {
-            Packet r(BDPKT, ACK, strlen(data) + 1, data);
-            packetQue.push(r);
+            Packet* nextp = constructPacket(BDPKT, ACK, data);
+            enqueue(&hkdownQueue, nextp);
         }
 
 

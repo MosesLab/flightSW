@@ -15,10 +15,10 @@ void * hkdownThread(void * arg){
     fdown = init_hkdown_serial_connection();
     while(ts_alive){
         
-        Packet p = dequeue(&hkupQueue);
+        Packet p = dequeue(&hkdownQueue);
         
-        if(p.valid){
-                printf("%s%s%s%s%s%s%d\n\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.valid);
+        if(p.status){
+                printf("%s%s%s%s%s%s%d\n\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
                 sendPacket(&p, fdown);
 //                char packetString[15 + p.dataSize];
 //                int size = asprintf(&packetString,"%c%s%s%s%s%s%s%c\n", STARTBYTE, p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, ENDBYTE);
