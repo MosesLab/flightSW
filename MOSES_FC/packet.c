@@ -4,8 +4,8 @@
 /*Builds a packet out of provided values*/
 Packet* constructPacket(char* type, char* subtype, char* data){
     int length = strlen(data);  //find length of data string
-    char clength[2];            //allocate buffer for char representation of length
-    itoah(length, clength, 2);  //convert length from int to string
+    char dataLength[2];            //allocate buffer for char representation of length
+    itoah(length, dataLength, 2);  //convert length from int to string
     
     /*allocate space for packet*/
     Packet* p;
@@ -19,13 +19,13 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     }
     getCurrentTime(timestamp);
     
+    /*copy memory into new packet*/
     memcpy(p->timeStamp, timestamp, sizeof(timestamp));
-    p->timeStamp = timestamp;
-    p->type = type;
-    p->subtype = subtype;
-    p->dataLength = clength;
-    p->data = data;
-    
+    memcpy(p->type, type, sizeof(type));
+    memcpy(p->subtype, subtype, sizeof(subtype));
+    memcpy(p->dataLength, dataLength, sizeof(dataLength));
+    memcpy(p->timeStamp, data, sizeof(data));
+
     return p;
 }
 
