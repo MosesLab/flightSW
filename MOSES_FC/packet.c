@@ -9,12 +9,12 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     
     /*allocate space for packet*/
     Packet* p;
-    if((p = (char*) malloc(Packet)) == NULL){
+    if((p = (char*) malloc(sizeof(Packet))) == NULL){
         puts("malloc failed to allocate packet");
     }
     
     char* timestamp;
-    if((timestamp = (char*) malloc(char * 6)) == NULL){
+    if((timestamp = (char*) malloc(sizeof(char) * 6)) == NULL){
         puts("malloc failed to allocate timestamp");
     }
     getCurrentTime(timestamp);
