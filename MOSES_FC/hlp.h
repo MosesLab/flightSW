@@ -25,8 +25,23 @@
 #define PWR      'P'
 #define HK_RQS   'H'
 
-#define BAD_PACKET	-1
-#define GOOD_PACKET	0
+
+//TIMER/UPLINK Subtypes
+#define DARK1      "DK1"
+#define DARK2      "DK2"
+#define DARK3      "DK3"
+#define DARK4      "DK4"
+#define DATASTART  "DST"
+#define DATASTOP   "DSP"
+#define SLEEP	   "SLP"
+#define WAKE	   "WAK"
+#define TEST	   "TST"
+#define ACK        "ACK"
+
+//#define BAD_PACKET	-1
+//#define GOOD_PACKET	0
+#define BAD_PACKET	0
+#define GOOD_PACKET	1
 
 #endif	/* HLP_H */
 

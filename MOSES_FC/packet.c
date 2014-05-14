@@ -2,15 +2,39 @@
 #include "packet.h"
 
 /*Builds a packet out of provided values*/
-Packet* constructPacket(char* type, char* subtype, int length, char* data){
+Packet* constructPacket(char* type, char* subtype, char* data){
+    int length = strlen(data);  //find length of data string
+    char clength[2];            //allocate buffer for char representation of length
+    itoah(length, clength, 2);  //convert length from int to string
+    
+    /*allocate space for packet*/
     Packet* p;
     if((p = (char*) malloc(Packet)) == NULL){
         puts("malloc failed to allocate packet");
     }
+    
+    char* timestamp;
+    if((timestamp = (char*) malloc(char * 6)) == NULL){
+        puts("malloc failed to allocate timestamp");
+    }
+    getCurrentTime(timestamp);
+    
+    p->timeStamp = timestamp;
     p->type = type;
     p->subtype = subtype;
+    p->dataLength = clength;
+    p->data = data;
+    
+    return p;
 }
 
+void getCurrentTime(char* result){
+    	char timeString[30];
+    	time_t curTime = time(NULL);
+    	struct tm *broken = localtime(&curTime);
+    	strftime(timeString,30,"%H%M%S",broken); //format time
+    	memcpy(result,timeString,6);
+}
 /*converts ascii hex to integer value*/
 inline int ahtoi(char * aHex, int len) {
     int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
@@ -146,7 +170,7 @@ int init_hkdown_serial_connection() {
 
 void readPacket(int fd, Packet * p) {
     int tempValid = TRUE;
-    p->valid = TRUE;
+    p->status = TRUE;
     char temp;
     char * error = "";
     
@@ -173,24 +197,24 @@ void readPacket(int fd, Packet * p) {
 //                //printf("Bad Packet Data\n");
 //            }
             tempValid = readData(fd, p->timeStamp, 6);
-            p->valid = p->valid & tempValid;
+            p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
-            p->valid = p->valid & tempValid;
+            p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad type\n");
 
             tempValid = readData(fd, p->subtype, 3);
-            p->valid = p->valid & tempValid;
+            p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
-            p->valid = p->valid & tempValid;
+            p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad data length\n");
             p->dataSize = ahtoi(p->dataLength, 2);
 
             tempValid = readData(fd, p->data, p->dataSize);
-            p->valid = p->valid & tempValid;
+            p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad data\n");
 
             readData(fd, p->checksum, 1);
@@ -200,8 +224,8 @@ void readPacket(int fd, Packet * p) {
                 readData(fd, &temp, 1);
             }
             tempValid = (p->checksum[0] == calcCheckSum(p));
-            p->valid = p->valid & tempValid;
-            if (tempValid != TRUE) printf("Bad checksum %d\n", p->valid);
+            p->status = p->status & tempValid;
+            if (tempValid != TRUE) printf("Bad checksum %d\n", p->status);
             ioctl(fd, FIONREAD);
         }
     }
