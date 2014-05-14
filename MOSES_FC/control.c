@@ -41,7 +41,7 @@ void * controlThread(void * arg) {
         if (ts_alive) enqueue(&hkdownQueue, p);
 
         char data[16];
-        data[0] = p.type[0];
+        data[0] = p->type[0];
         strcpy(data + 1, p->subtype);
         if (p->status == GOOD_PACKET) {
             Packet* nextp = constructPacket(GDPKT, ACK, data);
