@@ -38,7 +38,8 @@ char decode(char dataByte) {return (dataByte & 0x7F);}
 int ahtoi(char*, int);
 void itoah(int, char *, int);
 
-Packet constructPacket(char *, char *, char *, int, char *);
+Packet constructPacket(char *, char *, char *);
+void getCurrentTime(char *);
 int init_hkup_serial_connection();	//initialize attributes of serial connection
 int init_hkdown_serial_connection();
 void readPacket(int, Packet *);
