@@ -43,7 +43,7 @@ Packet dequeue(LockingQueue * queue) {
     Packet p;
 
     gettimeofday(&now, NULL);
-    timeToWait.tv_sec = now.tv_sec + ;
+    timeToWait.tv_sec = now.tv_sec + 1;
     timeToWait.tv_nsec = 0;
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
