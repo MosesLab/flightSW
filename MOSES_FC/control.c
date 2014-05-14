@@ -1,23 +1,22 @@
 #include "control.h"
 
-void * controlThread(void * arg){
-    
+void * controlThread(void * arg) {
+
     lockingQueue_init(&hkupQueue);
-    
+
     int fup = init_hkup_serial_connection();
-    
+
     buildLookupTable();
-    
-    while(ts_alive){
+
+    while (ts_alive) {
         int status = GOOD_PACKET;
-	Packet new_packet;
+        Packet new_packet;
         Packet * p = &new_packet;
         readPacket(fup, p);
-        if(!p->valid){
-                status = BAD_PACKET;
-        }
-        else{
-            switch(p->type[0]){
+        if (!p->valid) {
+            status = BAD_PACKET;
+        } else {
+            switch (p->type[0]) {
                 case SHELL:
                     printf("Shell packet\n");
                     break;
@@ -39,13 +38,25 @@ void * controlThread(void * arg){
                     break;
             }
         }
-        if(ts_alive) enqueue(&hkupQueue, p);
-        
+        if (ts_alive) enqueue(&hkupQueue, p);
+
+        char data[16];
+        data[0] = p.type();
+        strcpy(data + 1, p->subtype);
+        if (status == GOOD_PACKET) {
+            Packet r(GDPKT, ACK, strlen(data) + 1, data);
+            packetQue.push(r);
+        } else {
+            Packet r(BDPKT, ACK, strlen(data) + 1, data);
+            packetQue.push(r);
+        }
+
+
     }
     /*need to clean up properly but these don't work*/
     //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
-    
+
     return 0;
-    
+
 }

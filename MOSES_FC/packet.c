@@ -1,6 +1,17 @@
 
 #include "packet.h"
 
+/*Builds a packet out of provided values*/
+Packet* constructPacket(char* type, char* subtype, int length, char* data){
+    Packet* p;
+    if((p = (char*) malloc(Packet)) == NULL){
+        puts("malloc failed to allocate packet");
+    }
+    p->type = type;
+    p->subtype = subtype;
+}
+
+/*converts ascii hex to integer value*/
 inline int ahtoi(char * aHex, int len) {
     int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
     int i;
@@ -9,6 +20,7 @@ inline int ahtoi(char * aHex, int len) {
     return sum;
 }
 
+/*converts integers to ascii hex value*/
 inline void itoah(int dec, char * aHex, int len) {
     char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
     aHex[len] = '\0';
@@ -18,6 +30,7 @@ inline void itoah(int dec, char * aHex, int len) {
     }
 }
 
+/**/
 void buildLookupTable() {
     int j;
     for (j = 0; j < 128; j++) {
@@ -137,10 +150,13 @@ void readPacket(int fd, Packet * p) {
     p->valid = TRUE;
     char temp;
     char * error = "";
+    
     volatile int continue_read = FALSE;    
     int input;
+    
     while (continue_read == FALSE && ts_alive == TRUE) {
-        input = input_timeout(fd, 1);
+        input = input_timeout(fd, 1);   //Wait until interrupt or timeout 
+        
         volatile int clearBuffer = FALSE;
         printf("%s %d\n", "Select returned", input);
         if(input > 0){
