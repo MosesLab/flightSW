@@ -67,13 +67,13 @@ void * hlp_down(void * arg){
         
         Packet p = dequeue(&hkdownQueue);       //dequeue the next packet once it becomes available
         
-        if(p.status){
-                printf("%s%s%s%s%s%s%d\n\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
+//        if(p.status){
+                printf("%s%s%s%s%s%s%d\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
                 sendPacket(&p, fdown);
-        }
-        else{
-            printf("Bad send Packet\n");
-        }
+//        }
+//        else{
+//            printf("Bad send Packet\n");
+//        }
         printf("\n");
     }    
 }
