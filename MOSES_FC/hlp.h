@@ -12,8 +12,8 @@
 #define CONTROL  'C'
 #define TIMER    'T'
 #define UPLINK   'U'
-#define GDPKT    "G"
-#define BDPKT    "B"
+#define GDPKT    'G'
+#define BDPKT    'B'
 #define HK_RSP   'K'
 #define MDAQ_RSP 'Q' 
 
