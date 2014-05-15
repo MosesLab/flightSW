@@ -11,7 +11,7 @@
 
 
 void uplinkInit(){
-    uplinkMap[] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
+    uplinkMap = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
 }
 
 /*matches a packet subtype with the corresponding index of tmufuncs pointer*/
