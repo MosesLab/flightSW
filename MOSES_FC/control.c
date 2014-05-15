@@ -24,7 +24,7 @@ void * hlp_control(void * arg) {
                     printf("DAQ packet\n");
                     break;
                 case UPLINK:
-                    printf("Uplink packet\n");
+                    printf("HLP Uplink packet\n");
                     break;
                 case PWR:
                     printf("Power packet\n");

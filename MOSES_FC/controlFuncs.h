@@ -13,6 +13,9 @@
 
 #include "system.h"
 #include "hlp.h"
+#include "packetType.h"
+
+char* uplinkMap[];
 
 /*hlp control functions*/
 int hlpUplink(Packet*);
@@ -27,6 +30,7 @@ void tSleep();
 /*uplink control functions*/
 void uplinkInit();
 
+
 void uDataStart();
 void uDataStop();
 void uDark1();
@@ -36,6 +40,8 @@ void uDark4();
 void uSleep();
 void uWake();
 void uTest();
+
+
 
 #endif	/* CONTROLFUNCS_H */
 

@@ -11,10 +11,9 @@
 #include <time.h>
 #include <errno.h>
 #include <string.h>
+#include "defs.h"
 
 
 
 
-#define FALSE 0
-#define TRUE 1
  
