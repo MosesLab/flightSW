@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>control.h</itemPath>
+      <itemPath>controlFuncs.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
       <itemPath>main.h</itemPath>
@@ -20,6 +21,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>control.c</itemPath>
+      <itemPath>controlFuncs.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
@@ -35,8 +37,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>controlFuncs.c</itemPath>
-    <itemPath>controlFuncs.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
