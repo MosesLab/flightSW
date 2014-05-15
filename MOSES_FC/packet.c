@@ -97,14 +97,14 @@ char calcCheckSum(Packet * p) {
     return parityByte;
 
 
-    for (i = 0; i < p->dataSize; i++) {
-        parityByte ^= encode(p->data[i]);
-    }
-
-
-
-    printf("%c\n", parityByte);
-    return parityByte;
+//    for (i = 0; i < p->dataSize; i++) {
+//        parityByte ^= encode(p->data[i]);
+//    }
+//
+//
+//
+//    printf("%c\n", parityByte);
+//    return parityByte;
 }
 
 int init_hkup_serial_connection() {
@@ -249,7 +249,7 @@ int readData(int fd, char * data, int len) {
 
         if (temp != encode(data[i])) {
             result = FALSE;
-            printf("Bad packet Encoding");
+            printf("Bad packet Encoding\n");
         }
     }
 

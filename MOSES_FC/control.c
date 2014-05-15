@@ -33,7 +33,7 @@ void * hlp_control(void * arg) {
                     printf("HK Request Packet\n");
                     break;
                 default:
-                    printf("Bad Packet\n");
+                    printf("Bad Packet type\n");
                     status = BAD_PACKET;
                     break;
             }
@@ -72,7 +72,7 @@ void * hlp_down(void * arg){
                 sendPacket(&p, fdown);
         }
         else{
-            printf("Bad Packet\n");
+            printf("Bad send Packet\n");
         }
         printf("\n");
     }    
