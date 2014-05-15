@@ -7,11 +7,20 @@
 
 #include "system.h"
 #include "lockingQueue.h"
+#include <termios.h>
 #include <signal.h>
 #include "hlp.h"
 
 extern volatile sig_atomic_t ts_alive;
 
 LockingQueue hkdownQueue;
+
+/*hlp_contorl initializations*/
+void* hlp_control(void*);
+
+/*hlp_down thread initializations*/
+int fdown;
+
+void* hlp_down(void*);
 
 //void * controlThread(void *);

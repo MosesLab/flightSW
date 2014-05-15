@@ -10,9 +10,9 @@
  * 
  */
 int main(void) {
-    //this is a test
     start_threads();
     
+    /*Upon program termiation (^c) attempt to join the threads*/
     init_signal_handler();
     sigprocmask(SIG_BLOCK, &mask, &oldmask);
     while(ts_alive){
@@ -26,6 +26,7 @@ int main(void) {
     return 0;
 }
 
+/*signal all threads to exit*/
 void quit_signal(int sig){
     ts_alive = 0;
 }
@@ -35,8 +36,8 @@ void start_threads(){
     
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    pthread_create(&threads[HkdownThread], &attrs, (void * (*)(void*))hkdownThread, NULL);
-    pthread_create(&threads[ControlThread], &attrs, (void * (*)(void*))controlThread, NULL);
+    pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL);
+    pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
 
 }
 
@@ -48,6 +49,7 @@ void join_threads(){
         pthread_join(threads[i], &returns);
     }
 }
+
 
 void init_signal_handler(){
     sigfillset(&oldmask);       //save the old mask

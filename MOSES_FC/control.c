@@ -1,11 +1,9 @@
 #include "control.h"
 
-void * controlThread(void * arg) {
-
+/*hlp_control is a thread that reads packets from the housekeeping uplink and executes the commands contained within the packets */
+void * hlp_control(void * arg) {
     lockingQueue_init(&hkdownQueue);
-
     int fup = init_hkup_serial_connection();
-
     buildLookupTable();
 
     while (ts_alive) {
@@ -53,10 +51,25 @@ void * controlThread(void * arg) {
 
 
     }
-    /*need to clean up properly but these don't work*/
+    /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
+}
 
-    return 0;
-
+/*hlp_down is a thread that waits on a packet from a queue and sends it over the housekeeping downlink*/
+void * hlp_down(void * arg){
+    fdown = init_hkdown_serial_connection();    //Open housekeeping downlink
+    while(ts_alive){
+        
+        Packet p = dequeue(&hkdownQueue);       //dequeue the next packet once it becomes available
+        
+        if(p.status){
+                printf("%s%s%s%s%s%s%d\n\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
+                sendPacket(&p, fdown);
+        }
+        else{
+            printf("Bad Packet\n");
+        }
+        printf("\n");
+    }    
 }

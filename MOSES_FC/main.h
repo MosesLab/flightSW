@@ -18,8 +18,8 @@ struct sigaction quit_action;   //action to be taken when ^C is entered
 sigset_t mask, oldmask;
 
 
-void *hkdownThread(void *);
-void *controlThread(void *);
+void *hlp_down(void *);
+void *hlp_control(void *);
 void *hkupSimThread(void *);
 
 void quit_signal(int);  //signal handler
@@ -28,8 +28,8 @@ void join_threads();
 void init_signal_handler();
 
 enum thread{
-    HkdownThread,
-    ControlThread,
+    hlp_down_thread,
+    hlp_control_thread,
 };
 
 pthread_t threads[NUM_THREADS];

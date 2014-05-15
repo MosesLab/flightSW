@@ -10,11 +10,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hlp.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packetType.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hkdown.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/packetType.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
+            <file>file:/E:/Users/byrdie/Documents/NetBeansProjects/flightSW/MOSES_FC/hkdown.c</file>
         </group>
     </open-files>
 </project-private>

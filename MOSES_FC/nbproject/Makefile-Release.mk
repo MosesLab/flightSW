@@ -36,7 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/control.o \
-	${OBJECTDIR}/hkdown.o \
+	${OBJECTDIR}/controlFuncs.o \
 	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o
@@ -71,10 +71,10 @@ ${OBJECTDIR}/control.o: control.c
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/control.o control.c
 
-${OBJECTDIR}/hkdown.o: hkdown.c 
+${OBJECTDIR}/controlFuncs.o: controlFuncs.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hkdown.o hkdown.c
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
 
 ${OBJECTDIR}/lockingQueue.o: lockingQueue.c 
 	${MKDIR} -p ${OBJECTDIR}
