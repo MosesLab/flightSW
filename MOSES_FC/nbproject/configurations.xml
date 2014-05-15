@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>control.h</itemPath>
       <itemPath>controlFuncs.h</itemPath>
+      <itemPath>defs.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
       <itemPath>main.h</itemPath>
@@ -69,6 +70,8 @@
       </item>
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="defs.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
@@ -118,6 +121,8 @@
       <item path="controlFuncs.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
