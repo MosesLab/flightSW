@@ -38,19 +38,19 @@ void * hlp_control(void * arg) {
                     break;
             }
         }
-        if (ts_alive) enqueue(&hkdownQueue, p);
+        if (ts_alive) {
 
-        char data[16];
-        data[0] = p->type[0];
-        strcpy(data + 1, p->subtype);
-        if (p->status == GOOD_PACKET) {
-            Packet* nextp = constructPacket(GDPKT, ACK, data);
-            enqueue(&hkdownQueue, nextp);
-        } else {
-            Packet* nextp = constructPacket(BDPKT, ACK, data);
-            enqueue(&hkdownQueue, nextp);
+            char data[16];
+            data[0] = p->type[0];
+            strcpy(data + 1, p->subtype);
+            if (p->status == GOOD_PACKET) {
+                Packet* nextp = constructPacket(GDPKT, ACK, data);
+                enqueue(&hkdownQueue, nextp);
+            } else {
+                Packet* nextp = constructPacket(BDPKT, ACK, data);
+                enqueue(&hkdownQueue, nextp);
+            }
         }
-
 
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
@@ -61,19 +61,18 @@ void * hlp_control(void * arg) {
 /* hlp_down is a thread that waits on a packet from a queue and sends it over 
  * the housekeeping downlink
  */
-void * hlp_down(void * arg){
-    fdown = init_hkdown_serial_connection();    //Open housekeeping downlink
-    while(ts_alive){
-        
-        Packet p = dequeue(&hkdownQueue);       //dequeue the next packet once it becomes available
-        
-//        if(p.status){
-                printf("%s%s%s%s%s%s%d\n",p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
-                sendPacket(&p, fdown);
-//        }
-//        else{
-//            printf("Bad send Packet\n");
-//        }
+void * hlp_down(void * arg) {
+    fdown = init_hkdown_serial_connection(); //Open housekeeping downlink
+    while (ts_alive) {
+
+        Packet p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
+
+        if (p.status) {
+            printf("%s%s%s%s%s%s%d\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum, p.status);
+            sendPacket(&p, fdown);
+        } else {
+            printf("Bad send Packet\n");
+        }
         printf("\n");
-    }    
+    }
 }
