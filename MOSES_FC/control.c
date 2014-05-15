@@ -1,6 +1,8 @@
 #include "control.h"
 
-/*hlp_control is a thread that reads packets from the housekeeping uplink and executes the commands contained within the packets */
+/* hlp_control is a thread that reads packets from the housekeeping uplink and 
+ * executes the commands contained within the packets 
+ */
 void * hlp_control(void * arg) {
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
@@ -56,7 +58,9 @@ void * hlp_control(void * arg) {
     //lockingQueue_destroy(&hkupQueue);
 }
 
-/*hlp_down is a thread that waits on a packet from a queue and sends it over the housekeeping downlink*/
+/* hlp_down is a thread that waits on a packet from a queue and sends it over 
+ * the housekeeping downlink
+ */
 void * hlp_down(void * arg){
     fdown = init_hkdown_serial_connection();    //Open housekeeping downlink
     while(ts_alive){
