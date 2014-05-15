@@ -15,7 +15,7 @@
 #include "hlp.h"
 #include "packetType.h"
 
-char* uplinkMap[9];
+char* uplinkMap[];
 
 /*hlp control functions*/
 int hlpUplink(Packet*);
