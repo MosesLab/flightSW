@@ -14,6 +14,7 @@
 #include <termios.h>
 #include <signal.h>
 #include <sys/ioctl.h>
+#include "hlp.h"
 
 #define _POSIX_SOURCE 1
 #define UPBAUD B1200
