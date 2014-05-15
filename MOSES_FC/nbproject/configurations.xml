@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>control.h</itemPath>
-      <itemPath>hkdown.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
       <itemPath>main.h</itemPath>
@@ -21,7 +20,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>control.c</itemPath>
-      <itemPath>hkdown.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
@@ -37,6 +35,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>controlFuncs.c</itemPath>
+    <itemPath>controlFuncs.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
@@ -65,9 +65,9 @@
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="hkdown.c" ex="false" tool="0" flavor2="0">
+      <item path="controlFuncs.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="hkdown.h" ex="false" tool="3" flavor2="0">
+      <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -115,9 +115,9 @@
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="hkdown.c" ex="false" tool="0" flavor2="0">
+      <item path="controlFuncs.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="hkdown.h" ex="false" tool="3" flavor2="0">
+      <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
