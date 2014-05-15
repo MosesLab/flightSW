@@ -15,7 +15,7 @@
 #include "hlp.h"
 #include "packetType.h"
 
-char* uplinkMap[9];
+char* uplinkMap[] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
 
 /*hlp control functions*/
 int hlpUplink(Packet*);
