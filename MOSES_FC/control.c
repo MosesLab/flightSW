@@ -41,7 +41,7 @@ void * hlp_control(void * arg) {
         if (ts_alive) {
             
             puts("Recieved      ");
-            printf("%s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
+            printf("%s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             //enqueue(&hkdownQueue, p);
 
             puts("Sent          ");
