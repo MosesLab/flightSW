@@ -20,11 +20,11 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     getCurrentTime(timestamp);
     
     /*copy memory into new packet*/
-    memcpy(p->timeStamp, timestamp, sizeof(timestamp));
-    memcpy(p->type, type, sizeof(type));
-    memcpy(p->subtype, subtype, sizeof(subtype));
-    memcpy(p->dataLength, dataLength, sizeof(dataLength));
-    memcpy(p->data, data, sizeof(data));
+    memcpy(p->timeStamp, timestamp, 6);
+    memcpy(p->type, type, 1);
+    memcpy(p->subtype, subtype, 3);
+    memcpy(p->dataLength, dataLength, 2);
+    memcpy(p->data, data, dataSize);
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
     
