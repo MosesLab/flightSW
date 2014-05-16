@@ -13,14 +13,15 @@ Packet * constructPacket(char* type, char* subtype, char* data){
         puts("malloc failed to allocate packet");
     }
     
-    char* timestamp;
-    if((timestamp = (char*) malloc(sizeof(char) * 7)) == NULL){
-        puts("malloc failed to allocate timestamp");
-    }
-    getCurrentTime(timestamp);
-    
-    /*copy memory into new packet*/
-    memcpy(p->timeStamp, timestamp, 6);
+//    char* timestamp;
+//    if((timestamp = (char*) malloc(sizeof(char) * 7)) == NULL){
+//        puts("malloc failed to allocate timestamp");
+//    }
+//    getCurrentTime(timestamp);
+//    
+//    /*copy memory into new packet*/
+//    memcpy(p->timeStamp, timestamp, 6);
+    getCurrentTime(p->timeStamp);
     //memcpy(p->type, type, 1);
     p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
@@ -34,7 +35,7 @@ Packet * constructPacket(char* type, char* subtype, char* data){
 }
 
 void getCurrentTime(char* result){
-    	char timeString[7];
+    	char timeString[30];
     	time_t curTime = time(NULL);
     	struct tm *broken = localtime(&curTime);
     	strftime(timeString,30,"%H%M%S",broken); //format time
