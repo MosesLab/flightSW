@@ -27,47 +27,61 @@ int hlpUplink (Packet * p){
 /*Uplink control functions*/
 void uDataStart(){
     puts("Received data start Uplink");
+    //Insert event handling code here
 }
 void uDataStop(){
     puts("Received data stop Uplink");
+    //Insert event handling code here
 }
 void uDark1(){
     puts("Received Dark1 Uplink");
+    //Insert event handling code here
 }
 void uDark2(){
     puts("Received Dark2 Uplink");
+    //Insert event handling code here
 }
 void uDark3(){
     puts("Received Dark3 Uplink");
+    //Insert event handling code here
 }
 void uDark4(){
     puts("Received Dark4 Uplink");
+    //Insert event handling code here
 }
 void uSleep(){
     puts("Received shutdown Uplink");
+    //Insert event handling code here
 }
 void uWake(){
     puts("Received shutdown pending Uplink");
+    //Insert event handling code here
 }
 void uTest(){
     puts("Received test Uplink");
+    //Insert event handling code here
 }
 
 /*Timer control functions*/
 void tDataStart(){
     puts("Received data start Timer");
+    //Insert event handling code here
 }
 void tDataStop(){
     puts("Received data stop Timer");
+    //Insert event handling code here
 }
 void tDark2(){
     puts("Received Dark2 Timer");
+    //Insert event handling code here
 }
 void tDark4(){
     puts("Received Dark4 Timer");
+    //Insert event handling code here
 }
 void tSleep(){
     puts("Received shutdown Timer");
+    //Insert event handling code here
 }
 
 /*initiates function pointers and maps them to corresponding uplink packet subtypes*/
