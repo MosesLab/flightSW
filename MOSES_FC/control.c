@@ -74,6 +74,7 @@ void * hlp_down(void * arg) {
         if (p.status) {
             printf("Sent:       %s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
             sendPacket(&p, fdown);
+            free(&p);
         } else {
             printf("Bad send Packet\n");
         }
