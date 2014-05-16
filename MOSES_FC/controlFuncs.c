@@ -9,6 +9,49 @@
  */
 #include "controlFuncs.h"
 
+
+/*Determines how to execute HLP uplink packets*/
+int hlpUplink (Packet * p){
+    char* target = p->subtype;
+    enum tmu funcResult = findUplink(target);
+    if(funcResult == NoFunc){
+        return BAD_PACKET;
+    }
+    else{
+        (*tmuFuncs[funcResult]);
+        return GOOD_PACKET;
+    }
+    
+}
+
+void uDataStart(){
+    puts("Received data start Uplink");
+}
+void uDataStop(){
+    puts("Received data stop Uplink");
+}
+void uDark1(){
+    puts("Received Dark1 Uplink");
+}
+void uDark2(){
+    puts("Received Dark2 Uplink");
+}
+void uDark3(){
+    puts("Received Dark3 Uplink");
+}
+void uDark4(){
+    puts("Received Dark4 Uplink");
+}
+void uSleep(){
+    puts("Received shutdown Uplink");
+}
+void uWake(){
+    puts("Received shutdown pending Uplink");
+}
+void uTest(){
+    puts("Received test Uplink");
+}
+
 /*initiates function pointers and maps them to corresponding uplink packet subtypes*/
 void uplinkInit(){
     uplinkMap[UDataStart] = DATASTART;
@@ -56,15 +99,4 @@ enum tmu findUplink(char * target){
     return NoFunc;  //return -1 if no matching string is found
 }
 
-/*Determines how to execute HLP uplink packets*/
-int hlpUplink (Packet * p){
-    char* target = p->subtype;
-    enum tmu funcResult = findUplink(target);
-    if(funcResult == NoFunc){
-        return BAD_PACKET;
-    }
-    else{
-        (*tmuFuncs[funcResult]);
-    }
-    
-}
+
