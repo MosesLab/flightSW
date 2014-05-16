@@ -15,7 +15,13 @@
 #include "hlp.h"
 #include "packetType.h"
 
+/*
+ * Array containing uplink subtypes. Used in a map from uplink functions to 
+ * their corresponding uplink subtype
+ */ 
 char* uplinkMap[] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
+
+/*typedef for array of function pointers for HLP uplinks*/
 
 /*hlp control functions*/
 int hlpUplink(Packet*);
