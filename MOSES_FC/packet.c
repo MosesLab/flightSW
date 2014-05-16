@@ -215,7 +215,7 @@ void readPacket(int fd, Packet * p) {
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad data length\n");
-            p->dataSize = ahtoi(p->dataLength, 2);
+            p->dataSize = ahtoi(p->dataLength, 2);      //calculate data size to find how many bytes to read
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
@@ -250,7 +250,8 @@ int readData(int fd, char * data, int len) {
         temp = data[i];
         data[i] = decode(temp);
 
-        if (temp != encode(data[i])) {
+        
+        if (temp != encode(data[i]) || temp != data[i]) {
             result = FALSE;
             printf("Bad packet Encoding\n");
         }
