@@ -14,7 +14,7 @@ Packet * constructPacket(char* type, char* subtype, char* data){
     }
     
     char* timestamp;
-    if((timestamp = (char*) malloc(sizeof(char) * 6)) == NULL){
+    if((timestamp = (char*) malloc(sizeof(char) * 7)) == NULL){
         puts("malloc failed to allocate timestamp");
     }
     getCurrentTime(timestamp);
@@ -34,7 +34,7 @@ Packet * constructPacket(char* type, char* subtype, char* data){
 }
 
 void getCurrentTime(char* result){
-    	char timeString[30];
+    	char timeString[7];
     	time_t curTime = time(NULL);
     	struct tm *broken = localtime(&curTime);
     	strftime(timeString,30,"%H%M%S",broken); //format time
