@@ -35,7 +35,7 @@ void tSleep();
 
 /*uplink control functions*/
 void uplinkInit();
-
+enum tmu findUplink(char *);
 
 void uDataStart();
 void uDataStop();
