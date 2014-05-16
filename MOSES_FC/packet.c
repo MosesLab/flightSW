@@ -251,7 +251,7 @@ int readData(int fd, char * data, int len) {
         data[i] = decode(temp);
 
         
-        if (temp != encode(data[i]) || temp != data[i]) {
+        if (temp != encode(data[i]) && temp != data[i]) {
             result = FALSE;
             printf("Bad packet Encoding\n");
         }
