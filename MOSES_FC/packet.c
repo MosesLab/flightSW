@@ -21,7 +21,8 @@ Packet * constructPacket(char* type, char* subtype, char* data){
     
     /*copy memory into new packet*/
     memcpy(p->timeStamp, timestamp, 6);
-    memcpy(p->type, type, 1);
+    //memcpy(p->type, type, 1);
+    p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
     memcpy(p->data, data, dataSize);
