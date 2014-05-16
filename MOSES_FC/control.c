@@ -40,11 +40,10 @@ void * hlp_control(void * arg) {
         }
         if (ts_alive) {
             
-            puts("Recieved      ");
-            printf("%s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
+
+            printf("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             //enqueue(&hkdownQueue, p);
 
-            puts("Sent          ");
             char data[16];
             data[0] = p->type[0];
             strcpy(data + 1, p->subtype);
@@ -73,7 +72,7 @@ void * hlp_down(void * arg) {
         Packet p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
 
         if (p.status) {
-            printf("%s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
+            printf("Sent:       %s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
             sendPacket(&p, fdown);
         } else {
             printf("Bad send Packet\n");
