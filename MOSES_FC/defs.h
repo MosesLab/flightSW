@@ -26,7 +26,7 @@ enum tmu{
     TDark2,
     TDark4,
     TSleep,
-    NoFunc
+    NoFunc      //Used by the map to return the absence of a matching function
 };
 
 
