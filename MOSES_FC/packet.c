@@ -39,7 +39,7 @@ void getCurrentTime(char* result){
     	time_t curTime = time(NULL);
     	struct tm *broken = localtime(&curTime);
     	strftime(timeString,30,"%H%M%S",broken); //format time
-    	memcpy(result,timeString,6);
+    	memcpy(result,timeString,7);
 }
 /*converts ascii hex to integer value*/
 inline int ahtoi(char * aHex, int len) {
