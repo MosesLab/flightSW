@@ -15,13 +15,15 @@
 #include "hlp.h"
 #include "packetType.h"
 
+#define BAD_UPLINK -1
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
  */ 
-char* uplinkMap[] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
+char* uplinkMap[9] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
 
 /*typedef for array of function pointers for HLP uplinks*/
+void (*tmuFuncs[14])(void);
 
 /*hlp control functions*/
 int hlpUplink(Packet*);

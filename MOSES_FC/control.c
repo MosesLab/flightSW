@@ -7,6 +7,7 @@ void * hlp_control(void * arg) {
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
     buildLookupTable();
+    uplinkInit();
 
     while (ts_alive) {
         int status = GOOD_PACKET;
@@ -25,6 +26,7 @@ void * hlp_control(void * arg) {
                     break;
                 case UPLINK:
                     printf("HLP Uplink packet\n");
+                    hlpUplink(p);
                     break;
                 case PWR:
                     printf("Power packet\n");
@@ -48,7 +50,7 @@ void * hlp_control(void * arg) {
             data[0] = p->type[0];
             strcpy(data + 1, p->subtype);
             if (p->status == GOOD_PACKET) {
-                Packet* nextp = (Packet*) constructPacket(GDPKT, ACK, data);
+                Packet* nextp = (Packet*) constructPacket(GDPKT, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a waring, return type should be Packet*
                 enqueue(&hkdownQueue, nextp);
             } else {
                 Packet* nextp = constructPacket(BDPKT, ACK, data);

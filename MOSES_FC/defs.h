@@ -26,6 +26,7 @@ enum tmu{
     TDark2,
     TDark4,
     TSleep,
+    NoFunc
 };
 
 
