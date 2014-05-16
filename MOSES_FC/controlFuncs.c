@@ -18,7 +18,7 @@ int hlpUplink (Packet * p){
         return BAD_PACKET;
     }
     else{
-        (*tmuFuncs[funcResult]);
+        (*tmuFuncs[funcResult])();
         return GOOD_PACKET;
     }
     
