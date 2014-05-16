@@ -37,7 +37,7 @@ void enqueue(LockingQueue * queue, Packet * p) {
 
 }
 
-Packet dequeue(LockingQueue * queue) {
+Packet* dequeue(LockingQueue * queue) {
     struct timespec timeToWait;
     struct timeval now;
     Packet p;
