@@ -39,11 +39,12 @@ void * hlp_control(void * arg) {
             }
         }
         if (ts_alive) {
-
-            puts("Recieved:     ");
-            enqueue(&hkdownQueue, p);
             
-            puts("Sent:         ");
+            puts("Recieved      ");
+            printf("%s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
+            //enqueue(&hkdownQueue, p);
+
+            puts("Sent          ");
             char data[16];
             data[0] = p->type[0];
             strcpy(data + 1, p->subtype);
