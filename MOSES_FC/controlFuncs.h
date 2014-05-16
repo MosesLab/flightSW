@@ -20,20 +20,13 @@
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
  */ 
-char* uplinkMap[9] = {DATASTART, DATASTOP, DARK1, DARK2, DARK3, DARK4, SLEEP, WAKE, TEST};
+char* uplinkMap[9];
 
 /*typedef for array of function pointers for HLP uplinks*/
 void (*tmuFuncs[14])(void);
 
 /*hlp control functions*/
 int hlpUplink(Packet*);
-
-/*Timer control functions*/
-void tDataStart();
-void tDataStop();
-void tDark2();
-void tDark4();
-void tSleep();
 
 /*uplink control functions*/
 void uplinkInit();
@@ -49,6 +42,12 @@ void uSleep();
 void uWake();
 void uTest();
 
+/*Timer control functions*/
+void tDataStart();
+void tDataStop();
+void tDark2();
+void tDark4();
+void tSleep();
 
 
 #endif	/* CONTROLFUNCS_H */
