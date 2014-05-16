@@ -24,6 +24,7 @@ int hlpUplink (Packet * p){
     
 }
 
+/*Uplink control functions*/
 void uDataStart(){
     puts("Received data start Uplink");
 }
@@ -50,6 +51,23 @@ void uWake(){
 }
 void uTest(){
     puts("Received test Uplink");
+}
+
+/*Timer control functions*/
+void tDataStart(){
+    puts("Received data start Timer");
+}
+void tDataStop(){
+    puts("Received data stop Timer");
+}
+void tDark2(){
+    puts("Received Dark2 Timer");
+}
+void tDark4(){
+    puts("Received Dark4 Timer");
+}
+void tSleep(){
+    puts("Received shutdown Timer");
 }
 
 /*initiates function pointers and maps them to corresponding uplink packet subtypes*/
