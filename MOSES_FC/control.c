@@ -69,12 +69,12 @@ void * hlp_down(void * arg) {
     fdown = init_hkdown_serial_connection(); //Open housekeeping downlink
     while (ts_alive) {
 
-        Packet p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
+        Packet * p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
 
-        if (p.status) {
-            printf("Sent:       %s%s%s%s%s%s\n", p.timeStamp, p.type, p.subtype, p.dataLength, p.data, p.checksum);
-            sendPacket(&p, fdown);
-            free(&p);
+        if (p->status) {
+            printf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
+            sendPacket(p, fdown);
+            free(p);
         } else {
             printf("Bad send Packet\n");
         }
