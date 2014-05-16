@@ -40,7 +40,7 @@ void enqueue(LockingQueue * queue, Packet * p) {
 Packet* dequeue(LockingQueue * queue) {
     struct timespec timeToWait;
     struct timeval now;
-    Packet* p;
+    volatile Packet* p;
 
     gettimeofday(&now, NULL);
     timeToWait.tv_sec = now.tv_sec + 1;
