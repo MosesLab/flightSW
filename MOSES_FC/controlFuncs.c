@@ -13,6 +13,8 @@
 /*Determines how to execute HLP uplink packets*/
 int hlpUplink (Packet * p){
     char* target = p->subtype;
+    
+    /*use uplink map*/
     enum tmu funcResult = findUplink(target);
     if(funcResult == NoFunc){
         return BAD_PACKET;
@@ -24,64 +26,22 @@ int hlpUplink (Packet * p){
     
 }
 
-/*Uplink control functions*/
-void uDataStart(){
-    puts("Received data start Uplink");
-    //Insert event handling code here
-}
-void uDataStop(){
-    puts("Received data stop Uplink");
-    //Insert event handling code here
-}
-void uDark1(){
-    puts("Received Dark1 Uplink");
-    //Insert event handling code here
-}
-void uDark2(){
-    puts("Received Dark2 Uplink");
-    //Insert event handling code here
-}
-void uDark3(){
-    puts("Received Dark3 Uplink");
-    //Insert event handling code here
-}
-void uDark4(){
-    puts("Received Dark4 Uplink");
-    //Insert event handling code here
-}
-void uSleep(){
-    puts("Received shutdown Uplink");
-    //Insert event handling code here
-}
-void uWake(){
-    puts("Received shutdown pending Uplink");
-    //Insert event handling code here
-}
-void uTest(){
-    puts("Received test Uplink");
-    //Insert event handling code here
-}
-
-/*Timer control functions*/
-void tDataStart(){
-    puts("Received data start Timer");
-    //Insert event handling code here
-}
-void tDataStop(){
-    puts("Received data stop Timer");
-    //Insert event handling code here
-}
-void tDark2(){
-    puts("Received Dark2 Timer");
-    //Insert event handling code here
-}
-void tDark4(){
-    puts("Received Dark4 Timer");
-    //Insert event handling code here
-}
-void tSleep(){
-    puts("Received shutdown Timer");
-    //Insert event handling code here
+/*matches a packet subtype with the corresponding index of tmufuncs pointer*/
+enum tmu findUplink(char * target){
+    int size = sizeof(uplinkMap) / sizeof(uplinkMap[0]);     
+    
+    /*loop to find matching string*/
+    int i = 0;
+    while(i < size){
+        if(strcmp(uplinkMap[i], target) == 0){
+            return i;
+        }
+        else{
+            i++;
+        }
+    }
+    
+    return NoFunc;  //return -1 if no matching string is found
 }
 
 /*initiates function pointers and maps them to corresponding uplink packet subtypes*/
@@ -112,23 +72,94 @@ void uplinkInit(){
     tmuFuncs[TSleep] = tSleep;
 }
 
-/*matches a packet subtype with the corresponding index of tmufuncs pointer*/
-enum tmu findUplink(char * target){
-    int size = sizeof(uplinkMap) / sizeof(uplinkMap[0]);     
-    
-    /*loop to find matching string*/
-    int located = FALSE;
-    int i = 0;
-    while(!located && i < size){
-        if(strcmp(uplinkMap[i], target) == 0){
-            return i;
-        }
-        else{
-            i++;
-        }
-    }
-    
-    return NoFunc;  //return -1 if no matching string is found
+/*Uplink control functions*/
+void uDataStart(){
+    puts("Received data start Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DATASTART, NULL);
+    enqueue(&hkdownQueue, p);
 }
+void uDataStop(){
+    puts("Received data stop Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DATASTOP, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uDark1(){
+    puts("Received Dark1 Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DARK1, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uDark2(){
+    puts("Received Dark2 Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DARK2, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uDark3(){
+    puts("Received Dark3 Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DARK3, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uDark4(){
+    puts("Received Dark4 Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, DARK4, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uSleep(){
+    puts("Received shutdown Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, SLEEP, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uWake(){
+    puts("Received shutdown pending Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, WAKE, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void uTest(){
+    puts("Received test Uplink");
+    //Insert uplink handling code here
+    Packet* p = constructPacket(UPLINK, TEST, NULL);
+    enqueue(&hkdownQueue, p);
+}
+
+/*Timer control functions*/
+void tDataStart(){
+    puts("Received data start Timer");
+    //Insert timer handling code here
+    Packet* p = constructPacket(TIMER, DATASTART, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void tDataStop(){
+    puts("Received data stop Timer");
+    //Insert timer handling code here
+    Packet* p = constructPacket(TIMER, DATASTOP, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void tDark2(){
+    puts("Received Dark2 Timer");
+    //Insert timer handling code here
+    Packet* p = constructPacket(TIMER, DARK2, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void tDark4(){
+    puts("Received Dark4 Timer");
+    //Insert timer handling code here
+    Packet* p = constructPacket(TIMER, DARK4, NULL);
+    enqueue(&hkdownQueue, p);
+}
+void tSleep(){
+    puts("Received shutdown Timer");
+    //Insert timer handling code here
+    Packet* p = constructPacket(TIMER, SLEEP, NULL);
+    enqueue(&hkdownQueue, p);
+}
+
+
 
 

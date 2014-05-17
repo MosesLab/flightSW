@@ -63,8 +63,8 @@ void * hlp_control(void * arg) {
     //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
 }
-
-/* hlp_down is a thread that waits on a packet from a queue and sends it over 
+/*
+ * hlp_down is a thread that waits on a packet from a queue and sends it over 
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
@@ -83,3 +83,7 @@ void * hlp_down(void * arg) {
         printf("\n");
     }
 }
+
+/*
+ * 
+ */ 
