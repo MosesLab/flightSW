@@ -18,7 +18,7 @@
 unsigned hash(char*);
 Node* lookup(Node**, char*);
 Node* install(Node**, char*, char*);
-char* strdup(char*);
+char* strdup(char* s);
 
 /*hash: form hash value for string s*/
 unsigned hash(char* s){
