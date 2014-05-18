@@ -10,35 +10,15 @@
 #include "controlFuncs.h"
 
 
-/*Uses a hash table to match packet strings to function pointers*/
-void hlpHashInit(){
-    /*enumerated array of strings for matching with array of functions*/
-  
-    /*allocate space for 85 control strings*/
-    char** stringTable;
-    if((stringTable = (char**) malloc(sizeof(char*) * 85)) == NULL){
-        puts("malloc failed to allocate control string array");
-    }
-    
-    /*allocate space for 85 function pointers*/
-    hlpControl* functionTable;
-    if((functionTable = calloc(85, sizeof(hlpControl))) == NULL){
-        puts("malloc failed to allocate control function array");
-    }
-    
-    /*Uplink control string-function matching*/
-    stringTable[UDataStart] = DATASTART; 
-    functionTable[UDataStart] = uDataStart;
-    
-}
+
 
 int hlpUplink(Packet* p){
-    puts("Uplink packet received");
+    puts("Uplink packet received\n");
 }
 
 /*Uplink control functions*/
 int uDataStart(){
-    puts("Received data start Uplink");
+    puts("Received data start Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DATASTART, NULL);
@@ -46,7 +26,7 @@ int uDataStart(){
     return GOOD_PACKET;
 }
 int uDataStop(){
-    puts("Received data stop Uplink");
+    puts("Received data stop Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DATASTOP, NULL);
@@ -54,7 +34,7 @@ int uDataStop(){
     return GOOD_PACKET;
 }
 int uDark1(){
-    puts("Received Dark1 Uplink");
+    puts("Received Dark1 Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK1, NULL);
@@ -62,7 +42,7 @@ int uDark1(){
     return GOOD_PACKET;
 }
 int uDark2(){
-    puts("Received Dark2 Uplink");
+    puts("Received Dark2 Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK2, NULL);
@@ -70,7 +50,7 @@ int uDark2(){
     return GOOD_PACKET;
 }
 int uDark3(){
-    puts("Received Dark3 Uplink");
+    puts("Received Dark3 Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK3, NULL);
@@ -78,7 +58,7 @@ int uDark3(){
     return GOOD_PACKET;
 }
 int uDark4(){
-    puts("Received Dark4 Uplink");
+    puts("Received Dark4 Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK4, NULL);
@@ -86,7 +66,7 @@ int uDark4(){
     return GOOD_PACKET;
 }
 int uSleep(){
-    puts("Received shutdown Uplink");
+    puts("Received shutdown Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, SLEEP, NULL);
@@ -94,14 +74,14 @@ int uSleep(){
     return GOOD_PACKET;
 }
 int uWake(){
-    puts("Received shutdown pending Uplink");
+    puts("Received shutdown pending Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, WAKE, NULL);
     enqueue(&hkdownQueue, p);
 }
 int uTest(){
-    puts("Received test Uplink");
+    puts("Received test Uplink\n");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, TEST, NULL);
@@ -111,7 +91,7 @@ int uTest(){
 
 /*Timer control functions*/
 int tDataStart(){
-    puts("Received data start Timer");
+    puts("Received data start Timer\n");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DATASTART, NULL);
@@ -119,7 +99,7 @@ int tDataStart(){
     return GOOD_PACKET;
 }
 int tDataStop(){
-    puts("Received data stop Timer");
+    puts("Received data stop Timer\n");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DATASTOP, NULL);
@@ -127,7 +107,7 @@ int tDataStop(){
     return GOOD_PACKET;
 }
 int tDark2(){
-    puts("Received Dark2 Timer");
+    puts("Received Dark2 Timer\n");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DARK2, NULL);
@@ -135,7 +115,7 @@ int tDark2(){
     return GOOD_PACKET;
 }
 int tDark4(){
-    puts("Received Dark4 Timer");
+    puts("Received Dark4 Timer\n");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DARK4, NULL);
@@ -143,15 +123,521 @@ int tDark4(){
     return GOOD_PACKET;
 }
 int tSleep(){
-    puts("Received shutdown Timer");
+    puts("Received shutdown Timer\n");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, SLEEP, NULL);
     enqueue(&hkdownQueue, p);
     return GOOD_PACKET;
 }
+/*
+ *Mission Data Acquisition (MDAQ) control functions 
+ */
+
+/*Associates a sequence name with a signal number*/
+int setSequence(Packet*){
+    puts("Get sequence command received\n");
+}
+/*Uses stem for an output file.*/
+int setOutputName(Packet*){
+    puts("Set output filename command received\n");
+}
+/*Get sequence name that corresponds to the signal number in the data field*/
+int getSeqName(Packet*){
+    puts("Get sequence name command received\n");
+}
+/*Generates a string representation of the sequence file*/
+int getSeqInfo(Packet*){
+    puts("Get sequence info command received\n");
+}
+/*Commands the flight software to return the currently running sequence*/
+int getCurSeqName(Packet*){
+    puts("Get current sequence name command received\n");
+}
+/*Commands the flight software to return the current frame's exposure length*/
+int getCurFrameLen(Packet*){
+    puts("Get current frame length command received\n");
+}
+/*Command the flight software to return the current frame's index number*/
+int getCurFrameIndex(Packet*){
+    puts("Get current frame index command received\n");
+}
+/*Commands the flight software to return the filename of the output file*/
+int getOutputName(Packet*){
+    puts("Get output filename command received\n");
+}
+/*Commands the flight software to determine if he ROE is in self-test mode*/
+int getSelftestStatus(Packet*){
+    puts("Get self-test mode status command received\n");
+}
+/*Commands the flight software to determine if the ROE is in STIMS mode*/
+int getStimsStatus(Packet*){
+    puts("Get STIMS mode status command received\n");
+}
+/*Commands the flight software to determine if Telemetry is enabled*/
+int getTelemStatus(Packet*){
+    puts("Get Telemetry mode status command received\n");
+}
+/*Commands the flight software to determine if Channel 0 data will be recorded*/
+int getCh0Status(Packet*){
+    puts("Get status of channel 0 record command received\n");
+}
+/*Commands the flight software to determine if positive channel data will be recorded*/
+int getPosOnlyStatus(Packet*){
+    puts("Get status of positive channel record command received\n");
+}
+/*Command the flight software to scale the current sequence, multiplying each frame by the
+ floating point value contained within the Data field*/
+int scaleSequence(Packet*){
+    puts("Command to scale sequence received\n");
+}
+/*Commands the flight software to translate the current sequence, adding the 
+ floating point value in the Data field to each frame in the sequence*/
+int translateSeq(Packet*){
+    puts("Command to translate sequence received\n");
+}
+/*Commands the flight software to interrupt the current exposure, find an exposure
+ of the length given in the Data field, and jump to the first exposure matching
+ this criterion*/
+int findAndJump(Packet*){
+    puts("Command to Find and Jump received\n");
+}
+/*Commands the flight software to jump to the exposure with index number given 
+ in the data field*/
+int jumpToExp(Packet*){
+    puts("Command to Jump to exposure received\n");
+}
+/*CONFLICTING INTERFACES*/
+/*HLP Document: Commands the flight software to save the current sequence to the 
+ filename defined in the Data field (possibly "SVC") */
+/*flightSW_2005: Saves the sequence defined in the Data field*/
+int saveSequence(Packet*){
+    puts("Command to save sequence received\n");
+}
+/*Commands the flight software to find exposures with lengths given by the first
+ floating point value in the data field and replace them with the second value 
+ the Data field*/
+int findAndReplace(Packet*){
+    puts("Command to find and replace received\n");
+}
+/*Commands the flight software to start the currently loaded sequence*/
+int beginSequence(Packet*){
+    puts("Command to begin sequence received\n");
+}
+/*Commands the flight software to stop the currently running sequence*/
+int endSequence(Packet*){
+    puts("Command to stop sequence received\n");
+}
+/*Commands the flight software to terminate*/
+int exitSW(Packet*){
+    puts("Command to terminate received\n");
+}
+/*commands the flight software to turn telemetry ON*/
+int telemEnable(Packet*){
+    puts("Command to enable telemetry received\n");
+}
+/*Commands the flight software to turn telemetry OFF*/
+int telemDisable(Packet*){
+    puts("Command to disable telemetry received\n");
+}
+/*Commands the flight software to turn channel 0 ON*/
+int ch0Enable(Packet*){
+    puts("Command to enable Channel 0 received\n");
+}
+/*Commands the flight software to turn Channel 0 OFF*/
+int ch0Disable(Packet*){
+    puts("Command to disable Channel 0 received\n");
+}
+/*Commands the flight software to enable only positive channel*/
+int posOnlyEnable(Packet*){
+    puts("Command to enable only positive channel received\n");
+}
+/*Commands the flight software to disable only positive channel*/
+int posOnlyDisable(Packet*){
+    puts("Command to disable only positive channel received\n");
+}
+/*Commands the flight software to turn STIMS ON*/
+int stimsEnable(Packet*){
+    puts("Command to enable STIMS mode received\n");
+}
+/*Commands the flight software to turn STIMS OFF*/
+int stimsDisable(Packet*){
+    puts("Command to disable STIMS mode received\n");
+}
+/*Commands the flight software to reset the ROE*/
+int resetROE(Packet*){
+    puts("Command to reset ROE received\n");
+}
+/*Exit to default mode*/
+int disableDefaultROE(Packet*){
+    puts("Command to exit to default mode received\n");
+}
+/*Commands the flight software to set the ROE to self-test mode*/
+int enableSelftestROE(Packet*){
+    puts("Command to set ROE to self-test mode received\n");
+}
+/*Command to reset the flight software*/
+int resetSW(Packet*){
+    puts("Command to reset flight software received\n");
+}
+
+/*
+ * Power control functions
+ */ 
+
+/*Command the payload subsystem to power on*/
+int enablePower(Packet*){
+    puts("Command to enable subsystem power received\n");
+}
+/*Command the payload subsystem to power off*/
+int disablePower(Packet*){
+    puts("Command to disable subsystem power received\n");
+}
+/*Query the power status of the payload subsystem*/
+int queryPower(Packet*){
+    puts("Command to query subsystem power received\n");
+}
+
+/*
+ * Housekeeping control functions
+ */ 
+
+/*Request for flight computer +2.0V voltage*/
+int FC_2V_V(Packet*){
+    puts("Request for FC +2.0V voltage received\n");
+}
+/*Request for flight computer +2.5V voltage*/
+int FC_2_5V_V(Packet*){
+    puts("Request for FC +2.5V voltage received\n");
+}
+/*Request for ROE +2.5V voltage*/
+int ROE_2_5V_V(Packet*){
+    puts("Request for ROE +2.5V voltage received\n");
+}
+/*Request for ROE +2.5V current*/
+int ROE_2_5V_I(Packet*){
+    puts("Request for ROE +2.5V current received\n");
+}
+/*Request for flight computer +3.3V voltage*/
+int FC_3_3V_V(Packet*){
+    puts("Request for FC +3.3V voltage received\n");
+}
+/*Request for flight computer +5.0V voltage*/
+int FC_POS_5V_V(Packet*){
+    puts("Request for FC +5.0V voltage received\n");
+}
+/*Request for ROE +5.0V A Channel voltage*/
+int ROE_POS_5V_VA(Packet*){
+    puts("Request for ROE +5.0V A Channel voltage received\n");
+}
+/*Request for ROE +5.0V B Channel voltage*/
+int ROE_POS_5V_VB(Packet*){
+    puts("Request for ROE +5.0V B Channel voltage received\n");
+}
+/*Request for ROE +5.0V D Channel voltage*/
+int ROE_NEG_5V_VD(Packet*){
+    puts("Request for ROE +5.0V D Channel voltage received\n");
+}
+/*Request for ROE +5.0V A Channel current*/
+int ROE_POS_5V_IA(Packet*){
+    puts("Request for ROE +5.0V A Channel current received\n");
+}
+/*Request for ROE +5.0V B Channel current*/
+int ROE_POS_5V_IB(Packet*){
+    puts("Request for ROE +5.0V B Channel current received\n");
+}
+/*Request for ROE +5.0V D Channel current*/
+int ROE_POS_5V_ID(Packet*){
+    puts("Request for ROE +5.0V D Channel current received\n");
+}
+/*Request for ROE -5.0V A Channel voltage*/
+int ROE_NEG_5V_VA(Packet*){
+    puts("Request for ROE -5.0V A Channel voltage received\n");
+}
+/*Request for ROE -5.0V B Channel voltage*/
+int ROE_NEG_5V_VB(Packet*){
+    puts("Request for ROE -5.0V B Channel voltage received\n");
+}
+/*Request for ROE -5.0V A Channel current*/
+int ROE_NEG_5V_IA(Packet*){
+    puts("Request for ROE -5.0V A Channel current received\n");
+}
+/*Request for ROE -5.0V B Channel current*/
+int ROE_NEG_5V_IB(Packet*){
+    puts("Request for ROE -5.0V B Channel current received\n");
+}
+/*Request for flight computer +12V voltage*/
+int FC_12V_V(Packet*){
+    puts("Request for FC +12V voltage received\n");
+}
+/*Request for ROE +12V A Channel voltage*/
+int ROE_12V_VA(Packet*){
+    puts("Request for ROE +12V A Channel voltage received\n");
+}
+/*Request for ROE +12V B Channel voltage*/
+int ROE_12V_VB(Packet*){
+    puts("Request for ROE +12V B Channel voltage received\n");
+}
+/*Request for ROE +12V A Channel current*/
+int ROE_12V_IA(Packet*){
+    puts("Request for ROE +12V A Channel current received\n");
+}
+/*Request for ROE +12V B Channel current*/
+int ROE_12V_IB(Packet*){
+    puts("Request for ROE +12V B Channel current received\n");
+}
+/*Request for ROE +36V A Channel voltage*/
+int ROE_36V_VA(Packet*){
+    puts("Request for ROE +36V A Channel voltage received\n");
+}
+/*Request for ROE +36V B Channel voltage*/
+int ROE_36V_VB(Packet*){
+    puts("Request for ROE +36V B Channel voltage received\n");
+}
+/*Request for ROE +36V A Channel current*/
+int ROE_36V_IA(Packet*){
+    puts("Request for ROE +36V A Channel current received\n");
+}
+/*Request for ROE +36V B Channel current*/
+int ROE_36V_IB(Packet*){
+    puts("Request for ROE +36V B Channel current received\n");
+}
+/*Request for flight computer temperature 1*/
+int FC_TEMP_1(Packet*){
+    puts("Request for FC temp 1 received\n");
+}
+/*Request for flight computer temperature 2*/
+int FC_TEMP_2(Packet*){
+    puts("Request for FC temp 2 received\n");
+}
+/*Request for flight computer temperature 3*/
+int FC_TEMP_3(Packet*){
+    puts("Request for FC temp 3 received\n");
+}
+/*Request for ROE upper temperature*/
+int ROE_TEMP_UPPER(Packet*){
+    puts("Request for ROE upper temperature received\n");
+}
+/*Request for ROE lower temperature*/
+int ROE_TEMP_LOWER(Packet*){
+    puts("Request for ROE lower temperature received\n");
+}
+/*Request for CCDA_VOD current from the ROE*/
+int ROE_CCDA_VOD(Packet*){
+    puts("Request for ROE CCDA_VOD current received\n");
+}
+/*Request for CCDA_VRD current from the ROE*/
+int ROE_CCDA_VRD(Packet*){
+    puts("Request for ROE CCDA_VRD current received\n");
+}
+/*Request for CCDA_VSS current from the ROE*/
+int ROE_CCDA_VSS(Packet*){
+    puts("Request for ROE CCDA_VSS current received\n");
+}
+/*Request for CCDS_VOD current from the ROE*/
+int ROE_CCDS_VOD(Packet*){
+    puts("Request for ROE CCDS_VOD current received\n");
+}
+/*Request for CCDS_VRD current from the ROE*/
+int ROE_CCDS_VRD(Packet*){
+    puts("Request for ROE CCDS_VRD current received\n");
+}
+/*Request for CCDS_VSS current from the ROE*/
+int ROE_CCDS_VSS(Packet*){
+    puts("Request for ROE CCDS_VSS current received\n");
+}
 
 
+/*Uses a hash table to match packet strings to function pointers*/
+void hlpHashInit(){
+    int funcNumber = 85; // number of control functions    
+  
+    /*allocate space for 85 control strings*/
+    char** stringTable;
+    if((stringTable = (char**) malloc(sizeof(char*) * funcNumber)) == NULL){
+        puts("malloc failed to allocate control string array");
+    }
+    
+    /*allocate space for 85 function pointers*/
+    hlpControl* functionTable;
+    if((functionTable = calloc(funcNumber, sizeof(hlpControl))) == NULL){
+        puts("malloc failed to allocate control function array");
+    }
+    
+    /*Uplink control string-function matching*/
+    stringTable[UDataStart] = DATASTART; 
+    stringTable[UDataStop] = DATASTOP; 
+    stringTable[UDark1] = DARK1;
+    stringTable[UDark2] = DARK2;
+    stringTable[UDark3] = DARK3;
+    stringTable[UDark4] = DARK4;
+    stringTable[USleep] = SLEEP;
+    stringTable[UWake] = WAKE;
+    stringTable[UTest] = TEST;
+    stringTable[SetSeq] = ST_SEQUENCE;
+    stringTable[SetOut] = ST_OFN;
+    stringTable[GetSeqName] = GT_SEQ_NM;
+    stringTable[GetSeqInfo] = GT_SEQ_INFO;
+    stringTable[GetCurSeq] = GT_CUR_SEQ;
+    stringTable[GetFrameLen] = GT_CUR_FRML;
+    stringTable[GetFrameInd] = GT_CUR_FRMI;
+    stringTable[GetOut] = GT_OFN;
+    stringTable[GetSelf] = GT_SLFT_STS;
+    stringTable[GetStims] = GT_STM_STS;
+    stringTable[GetTelem] = GT_TLM_STS;
+    stringTable[GetCh0] = GT_CH0_STS;
+    stringTable[GetPosOnly] = GT_POS_STS;
+    stringTable[ScaleSeq] = SCALE_SEQ;
+    stringTable[TransSeq] = TRANS_SEQ;
+    stringTable[FindJump] = FIND_N_JUMP;
+    stringTable[JumpSeq] = JUMP;
+    stringTable[SaveSeq] = SAV_SEQ;
+    //stringTable[SaveCurSeq] = SAV_CUR_SEQ;
+    stringTable[FindReplace] = FIND_N_RPLC;
+    stringTable[BeginSeq] = BEGIN_SEQ;
+    stringTable[EndSeq] = END_SEQ;
+    stringTable[ExitSW] = EXT;
+    stringTable[TelemOn] = TELEM_ON;
+    stringTable[TelemOff] = TELEM_OFF;
+    stringTable[ZeroOn] = CHAN0_ON;
+    stringTable[ZeroOff] = CHAN0_OFF;
+    stringTable[PosOnlyOn] = POSONLY_ON;
+    stringTable[PosOnlyOff] = POSONLY_OFF;
+    stringTable[StimsOn] = STIM_ON;
+    stringTable[StimsOff] = STIM_OFF;
+    stringTable[ResetROE] = RST_ROE;
+    stringTable[RoeDefaultOff] = EXIT_DFLT;
+    stringTable[RoeSelfOn] = SET_SLFTST;
+    stringTable[ResetSW] = RESET_MDAQ;
+    stringTable[PowerOn] = TURN_ON;
+    stringTable[PowerOff] = TURN_OFF;
+    stringTable[PowerQuery] = QUERY;
+    stringTable[FC_2V] = FC_2V_V_STR;
+    stringTable[FC_2_5V] = FC_2_5V_V_STR;
+    stringTable[ROE_2_5V] = ROE_2_5V_V_STR;
+    stringTable[ROE_2_5I] = ROE_2_5V_I_STR;
+    stringTable[FC_3_3V] = FC_3_3V_V_STR;
+    stringTable[FC_P5_5V] = FC_POS_5_5V_V_STR;
+    stringTable[ROE_P5_5VA] = ROE_POS_5_5V_VA_STR;
+    stringTable[ROE_P5_5VB] = ROE_POS_5_5V_VB_STR;
+    stringTable[ROE_P5_5VD] = ROE_POS_5_5V_VD_STR;
+    stringTable[ROE_P5_5IA] = ROE_POS_5_5V_IA_STR;
+    stringTable[ROE_P5_5IB] = ROE_POS_5_5V_IB_STR;
+    stringTable[ROE_P5_5ID] = ROE_POS_5_5V_ID_STR;
+    stringTable[ROE_N5_5VA] = ROE_NEG_5_5V_VA_STR;
+    stringTable[ROE_N5_5VB] = ROE_NEG_5_5V_VB_STR;
+    stringTable[ROE_N5_5IA] = ROE_NEG_5_5V_IA_STR;
+    stringTable[ROE_N5_5IB] = ROE_NEG_5_5V_IB_STR;
+    stringTable[FC_12V] = FC_12V_V_STR;
+    stringTable[ROE_12VA] = ROE_12V_VA_STR;
+    stringTable[ROE_12VB] = ROE_12V_VB_STR;
+    stringTable[ROE_12IA] = ROE_12V_IA_STR;
+    stringTable[ROE_12IB] = ROE_12V_IB_STR;
+    stringTable[ROE_36VA] = ROE_36V_VA_STR;
+    stringTable[ROE_36VB] = ROE_36V_VB_STR;
+    stringTable[ROE_36IA] = ROE_36V_IA_STR;
+    stringTable[ROE_36IB] = ROE_36V_IB_STR;
+    stringTable[FC_T1] = FC_TEMP_1_STR;
+    stringTable[FC_T2] = FC_TEMP_2_STR;
+    stringTable[FC_T3] = FC_TEMP_3_STR;
+    stringTable[ROE_TU] = ROE_TEMP_UPPER_STR;
+    stringTable[ROE_TL] = ROE_TEMP_LOWER_STR;
+    stringTable[ROE_CA_VOD] = ROE_CCDA_VOD_STR;
+    stringTable[ROE_CA_VRD] = ROE_CCDA_VRD_STR;
+    stringTable[ROE_CA_VSS] = ROE_CCDA_VSS_STR;
+    stringTable[ROE_CS_VOD] = ROE_CCDS_VOD_STR;
+    stringTable[ROE_CS_VRD] = ROE_CCDS_VRD_STR;
+    stringTable[ROE_CS_VSS] = ROE_CCDS_VSS_STR;
+    
+    /*array of function pointers to match with control strings*/
+    functionTable[UDataStart] = uDataStart; 
+    functionTable[UDataStop] = uDataStop; 
+    functionTable[UDark1] = uDark1;
+    functionTable[UDark2] = uDark2;
+    functionTable[UDark3] = uDark3;
+    functionTable[UDark4] = uDark4;
+    functionTable[USleep] = uSleep;
+    functionTable[UWake] = uWake;
+    functionTable[UTest] = uTest;
+    functionTable[SetSeq] = setSequence;
+    functionTable[SetOut] = setOutputName;
+    functionTable[GetSeqName] = getSeqName;
+    functionTable[GetSeqInfo] = getSeqInfo;
+    functionTable[GetCurSeq] = getCurSeqName;
+    functionTable[GetFrameLen] = getCurFrameLen;
+    functionTable[GetFrameInd] = getCurFrameIndex;
+    functionTable[GetOut] = getOutputName;
+    functionTable[GetSelf] = getSelftestStatus;
+    functionTable[GetStims] = getStimsStatus;
+    functionTable[GetTelem] = getTelemStatus;
+    functionTable[GetCh0] = getCh0Status;
+    functionTable[GetPosOnly] = getPosOnlyStatus;
+    functionTable[ScaleSeq] = scaleSequence;
+    functionTable[TransSeq] = translateSeq;
+    functionTable[FindJump] = findAndJump;
+    functionTable[JumpSeq] = jump;
+    functionTable[SaveSeq] = saveSequence;
+    //functionTable[SaveCurSeq] = saveCurSeqAs;
+    functionTable[FindReplace] = findAndReplace;
+    functionTable[BeginSeq] = beginSequence;
+    functionTable[EndSeq] = endSequence;
+    functionTable[ExitSW] = exitSW;
+    functionTable[TelemOn] = telemEnable;
+    functionTable[TelemOff] = telemDisable;
+    functionTable[ZeroOn] = ch0Enable;
+    functionTable[ZeroOff] = ch0Disable;
+    functionTable[PosOnlyOn] = posOnlyEnable;
+    functionTable[PosOnlyOff] = posOnlyDisable;
+    functionTable[StimsOn] = stimsEnable;
+    functionTable[StimsOff] = stimsDisable;
+    functionTable[ResetROE] = resetROE;
+    functionTable[RoeDefaultOff] = disableDefaultROE;
+    functionTable[RoeSelfOn] = enableSelftestROE;
+    functionTable[ResetSW] = resetSW;
+    functionTable[PowerOn] = enablePower;
+    functionTable[PowerOff] = disablePower;
+    functionTable[PowerQuery] = queryPower;
+    functionTable[FC_2V] = FC_2V_V;
+    functionTable[FC_2_5V] = FC_2_5V_V;
+    functionTable[ROE_2_5V] = ROE_2_5V_V;
+    functionTable[ROE_2_5I] = ROE_2_5V_I;
+    functionTable[FC_3_3V] = FC_3_3V_V;
+    functionTable[FC_P5_5V] = FC_POS_5V_V;
+    functionTable[ROE_P5_5VA] = ROE_POS_5V_VA;
+    functionTable[ROE_P5_5VB] = ROE_POS_5V_VB;
+    functionTable[ROE_P5_5VD] = ROE_POS_5_5V_VD;
+    functionTable[ROE_P5_5IA] = ROE_POS_5V_IA;
+    functionTable[ROE_P5_5IB] = ROE_POS_5V_IB;
+    functionTable[ROE_P5_5ID] = ROE_POS_5V_ID;
+    functionTable[ROE_N5_5VA] = ROE_NEG_5V_VA;
+    functionTable[ROE_N5_5VB] = ROE_NEG_5V_VB;
+    functionTable[ROE_N5_5IA] = ROE_NEG_5V_IA;
+    functionTable[ROE_N5_5IB] = ROE_NEG_5V_IB;
+    functionTable[FC_12V] = FC_12V_V;
+    functionTable[ROE_12VA] = ROE_12V_VA;
+    functionTable[ROE_12VB] = ROE_12V_VB;
+    functionTable[ROE_12IA] = ROE_12V_IA;
+    functionTable[ROE_12IB] = ROE_12V_IB;
+    functionTable[ROE_36VA] = ROE_36V_VA;
+    functionTable[ROE_36VB] = ROE_36V_VB;
+    functionTable[ROE_36IA] = ROE_36V_IA;
+    functionTable[ROE_36IB] = ROE_36V_IB;
+    functionTable[FC_T1] = FC_TEMP_1;
+    functionTable[FC_T2] = FC_TEMP_2;
+    functionTable[FC_T3] = FC_TEMP_3;
+    functionTable[ROE_TU] = ROE_TEMP_UPPER;
+    functionTable[ROE_TL] = ROE_TEMP_LOWER;
+    functionTable[ROE_CA_VOD] = ROE_CCDA_VOD;
+    functionTable[ROE_CA_VRD] = ROE_CCDA_VRD;
+    functionTable[ROE_CA_VSS] = ROE_CCDA_VSS;
+    functionTable[ROE_CS_VOD] = ROE_CCDS_VOD;
+    functionTable[ROE_CS_VRD] = ROE_CCDS_VRD;
+    functionTable[ROE_CS_VSS] = ROE_CCDS_VSS;
+    
+    
+    
+    
+}
 
 /*Determines how to execute HLP uplink packets*/
 //int hlpUplink (Packet * p){

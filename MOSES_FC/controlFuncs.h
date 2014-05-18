@@ -59,7 +59,7 @@ int tSleep();
 int setSequence(Packet*);       //Set Sequence command
 int setOutputName(Packet*);     //Set output filename command
 int getSeqName(Packet*);       //Get sequence name command
-//int getSeqInfo(Packet*);   //Get Sequence info command
+int getSeqInfo(Packet*);   //Get Sequence info command
 //int getCurSeqNum(Packet*);      //Get current sequence number
 int getCurSeqName(Packet*);     //Get current sequence name
 int getCurFrameLen(Packet*);    //Get current frame length
@@ -73,10 +73,10 @@ int getPosOnlyStatus(Packet*);      //Get positive channel only status
 int scaleSequence(Packet*);     //Scale sequence command
 int translateSeq(Packet*);      //Translate sequence command
 int findAndJump(Packet*);       //Find and jump command
-int jump(Packet*);              //Jump command
+int jumpToExp(Packet*);              //Jump command
 int saveSequence(Packet*);      //Save sequence command
 //int saveCurSequence(Packet*);   //Save current sequence command
-int saveCurSeqAs(Packet*);      //Save current sequence as command
+//int saveCurSeqAs(Packet*);      //Save current sequence as command
 //int loadSequence(Packet*);      //Load sequence
 //int unloadSequence(Packet*);  //Unload sequence
 int findAndReplace(Packet*);    //Find and replace command
@@ -115,17 +115,17 @@ int FC_2_5V_V(Packet*);   //Flight Computer +2.5V voltage measurement
 int ROE_2_5V_V(Packet*);   //ROE +2.5V voltage measurement
 int ROE_2_5V_I(Packet*);  //ROE +2.5V current measurement
 int FC_3_3V_V(Packet*);   //Flight Computer +3.3V voltage measurement
-int FC_POS_5_5V_V(Packet*);     //Flight Computer +5.5V voltage measurement
-int ROE_POS_5_5V_VA(Packet*);   //ROE +5.5V A channel voltage measurement
-int ROE_POS_5_5V_VB(Packet*);   //ROE +5.5V B channel voltage measurement
-int ROE_POS_5_5V_VD(Packet*);   //ROE +5.5V D channel voltage measurement
-int ROE_POS_5_5V_IA(Packet*);   //ROE +5.5V A channel current measurement
-int ROE_POS_5_5V_IB(Packet*);   //ROE +5.5V B channel current measurement
-int ROE_POS_5_5V_ID(Packet*);   //ROE +5.5V D channel current measurement
-int ROE_NEG_5_5V_VA(Packet*);   //ROE -5.5V A channel voltage measurement
-int ROE_NEG_5_5V_VB(Packet*);   //ROE -5.5V B channel voltage measurement
-int ROE_NEG_5_5V_IA(Packet*);   //ROE -5.5V A channel current measurement
-int ROE_NEG_5_5V_IB(Packet*);   //ROE -5.5V B channel current measurement
+int FC_POS_5V_V(Packet*);     //Flight Computer +5.5V voltage measurement
+int ROE_POS_5V_VA(Packet*);   //ROE +5.5V A channel voltage measurement
+int ROE_POS_5V_VB(Packet*);   //ROE +5.5V B channel voltage measurement
+int ROE_POS_5V_VD(Packet*);   //ROE +5.5V D channel voltage measurement
+int ROE_POS_5V_IA(Packet*);   //ROE +5.5V A channel current measurement
+int ROE_POS_5V_IB(Packet*);   //ROE +5.5V B channel current measurement
+int ROE_POS_5V_ID(Packet*);   //ROE +5.5V D channel current measurement
+int ROE_NEG_5V_VA(Packet*);   //ROE -5.5V A channel voltage measurement
+int ROE_NEG_5V_VB(Packet*);   //ROE -5.5V B channel voltage measurement
+int ROE_NEG_5V_IA(Packet*);   //ROE -5.5V A channel current measurement
+int ROE_NEG_5V_IB(Packet*);   //ROE -5.5V B channel current measurement
 int FC_12V_V(Packet*);          //Flight Computer +12V voltage measurement
 int ROE_12V_VA(Packet*);        //ROE +12V A channel voltage measurement
 int ROE_12V_VB(Packet*);        //ROE +12V B channel voltage measurement
@@ -158,31 +158,32 @@ enum control{
     UWake,
     UTest,
     
-    TDataStart,
-    TDataStop,
-    TDark2,
-    TDark4,
-    TSleep,
+//    TDataStart,
+//    TDataStop,
+//    TDark2,
+//    TDark4,
+//    TSleep,
     
-    SetSeq,
-    SetOut,
-    GetSeq,
-    GetCurSeq,
-    GetFrameLen,
-    GetFrameInd,
-    GetOut,
-    GetSelf,
-    GetStims,
-    GetTelem,
-    GetCh0,
-    GetPosOnly,
-    ScaleSeq,
-    TransSeq,
-    FindJump,
-    JumpSeq,
-    SaveSeq,
-    SaveCurSeq,
-    FindReplace,
+    SetSeq,     //Set Sequence Command
+    SetOut,      //Set Ouput Filename Command
+    GetSeqName,     //Get Sequence Name Command
+    GetSeqInfo,         //Get Sequence Info Command
+    GetCurSeq,          //Get Current Sequence Name
+    GetFrameLen,        //Get Current Frame Length
+    GetFrameInd,        //Get Current Frame Index
+    GetOut,             //Get Output Filename
+    GetSelf,            //Get Selftest Mode Status
+    GetStims,           //Get Stims Mode Status
+    GetTelem,           //Get Telemetry Enabled Status
+    GetCh0,             //Get Channel Zero Enabled Status
+    GetPosOnly,         //Get Positive Channel Only Status
+    ScaleSeq,           //Scale Sequence Command
+    TransSeq,           //Translate Sequence Command
+    FindJump,           //Find and Jump Command
+    JumpSeq,            //Jump Command
+    SaveSeq,            //Save Sequence Command
+    //SaveCurSeq,         //Save current Sequence Command
+    FindReplace,        //Find and Replace Command
     BeginSeq,
     EndSeq,
     ExitSW,
