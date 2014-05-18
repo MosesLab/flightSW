@@ -2,13 +2,12 @@
 #include "packet.h"
 
 /*Builds a packet out of provided values, returns packet pointer*/
-Packet * constructPacket(char* type, char* subtype, char* data){
+void constructPacket(Packet* p, char* type, char* subtype, char* data){
     int dataSize = strlen(data);  //find length of data string
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
     
     /*allocate space for packet*/
-    Packet* p;
     if((p = (Packet*) malloc(sizeof(Packet))) == NULL){
         puts("malloc failed to allocate packet");
     }
@@ -31,7 +30,6 @@ Packet * constructPacket(char* type, char* subtype, char* data){
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
     
-    return p;
 }
 
 void getCurrentTime(char* result){

@@ -76,31 +76,36 @@ void uplinkInit(){
 void uDataStart(){
     puts("Received data start Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DATASTART, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DATASTART, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uDataStop(){
     puts("Received data stop Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DATASTOP, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DATASTOP, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uDark1(){
     puts("Received Dark1 Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DARK1, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DARK1, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uDark2(){
     puts("Received Dark2 Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DARK2, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DARK2, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uDark3(){
     puts("Received Dark3 Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DARK3, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DARK3, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uDark4(){
