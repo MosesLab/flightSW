@@ -14,6 +14,7 @@
 #include "system.h"
 #include "hlp.h"
 #include "packetType.h"
+#include "lockingQueue.h"
 
 #define BAD_UPLINK -1
 
