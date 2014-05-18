@@ -10,6 +10,30 @@
 
 #define FALSE 0
 #define TRUE 1
+#define STARTBYTE '%'
+#define ENDBYTE '^'
+
+typedef struct {
+
+	char timeStamp[7];
+	char type[2];
+	char subtype[4];
+	char dataLength[3];
+	char data[256];
+	char checksum[2];
+        
+        void * next;
+        
+	int dataSize;
+        int status;
+        
+} Packet;
+
+typedef struct{
+    void* next; //next entry in the chain
+    char* name; //defined name
+    char* defn; //replacement text
+}Node;
 
 enum tmu{
     UDataStart,
