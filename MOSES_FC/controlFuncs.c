@@ -335,7 +335,7 @@ int ROE_POS_5V_VB(Packet* p){
     puts("Request for ROE +5.0V B Channel voltage received\n");
 }
 /*Request for ROE +5.0V D Channel voltage*/
-int ROE_NEG_5V_VD(Packet* p){
+int ROE_POS_5V_VD(Packet* p){
     puts("Request for ROE +5.0V D Channel voltage received\n");
 }
 /*Request for ROE +5.0V A Channel current*/
