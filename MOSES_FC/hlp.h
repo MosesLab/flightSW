@@ -248,7 +248,7 @@ enum control{
     findReplace,
     beginSeq,
     endSeq,
-    exit,
+    exitSW,
     telemOn,
     telemOff,
     zeroOn,
