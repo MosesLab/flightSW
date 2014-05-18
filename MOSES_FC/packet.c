@@ -1,7 +1,7 @@
 
 #include "packet.h"
 
-/*Builds a packet out of provided values*/
+/*Builds a packet out of provided values, returns packet pointer*/
 Packet * constructPacket(char* type, char* subtype, char* data){
     int dataSize = strlen(data);  //find length of data string
     char dataLength[2];            //allocate buffer for char representation of length
@@ -60,7 +60,7 @@ inline void itoah(int dec, char * aHex, int len) {
     }
 }
 
-/**/
+/*build lookup table to encode parity bit for checksum calculation*/
 void buildLookupTable() {
     int j;
     for (j = 0; j < 128; j++) {
@@ -74,6 +74,7 @@ void buildLookupTable() {
     }
 }
 
+/*calculate checksum for HLP packets*/
 char calcCheckSum(Packet * p) {
     char parityByte = encode(STARTBYTE); //this variable is XORed with all bytes to complete rectangle code
 
@@ -112,6 +113,7 @@ char calcCheckSum(Packet * p) {
 //    return parityByte;
 }
 
+/*Open HLP up serial port for reading*/
 int init_hkup_serial_connection() {
     /*Open serial device for reading*/
     int fd = open(HKUP, O_RDONLY | O_NOCTTY);
@@ -143,6 +145,7 @@ int init_hkup_serial_connection() {
     return fd;
 }
 
+/*Initiate HLP down for writing*/
 int init_hkdown_serial_connection() {
     /*Open serial device for reading*/
     int fd = open(HKDOWN, O_WRONLY | O_NOCTTY);
