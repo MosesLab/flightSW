@@ -7,7 +7,7 @@
  *namely push and pop				*
  ************************************************/
 #include <pthread.h>
-#include "packetType.h"
+#include "system.h"
 #include <signal.h>
 
 extern volatile sig_atomic_t ts_alive;
