@@ -15,17 +15,16 @@
 #include "hlp.h"
 #include "lockingQueue.h"
 
-#define BAD_UPLINK -1
-
 extern LockingQueue hkdownQueue;
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
  */ 
 //char* uplinkMap[9];
+//void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated
 
-
-//void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated 
+/*initialize hash table to find functions based on packet string*/
+void hlpHashInit();
 
 /*hlp control functions: used to control which part of the packet is hashed*/
 int hlpUplink(Packet*);
@@ -111,6 +110,7 @@ int disablePower(Packet*);      //Turn power Off for specified subsystems
 int queryPower(Packet*);        //Query power for specified subsystems
 
 /*HLP housekeeping control functions*/
+int FC_2V_V(Packet*);         //Flight Computer +2.0 voltage measurement
 int FC_2_5V_V(Packet*);   //Flight Computer +2.5V voltage measurement
 int ROE_2_5V_V(Packet*);   //ROE +2.5V voltage measurement
 int ROE_2_5V_I(Packet*);  //ROE +2.5V current measurement
