@@ -1,6 +1,7 @@
 /* 
  * File:   defs.h
- * Author: birdie
+ * Author: Roy Smart
+ * Company: Montana State University, MOSES Lab
  *
  * Created on May 15, 2014, 1:50 PM
  */
@@ -13,8 +14,9 @@
 #define STARTBYTE '%'
 #define ENDBYTE '^'
 
+/*Packet structure for parsing and storing HLP packets*/
 typedef struct {
-
+    /*HLP fields*/
 	char timeStamp[7];
 	char type[2];
 	char subtype[4];
@@ -22,17 +24,17 @@ typedef struct {
 	char data[256];
 	char checksum[2];
         
-        void * next;
-        
+        /*Packet attributes*/
+        void * next;    //next item in the locking queue    
 	int dataSize;
-        int status;
-        
+        int status;        
 } Packet;
 
+/*Node structure for hash table*/
 typedef struct{
-    void* next; //next entry in the chain
+    void* next; //next entry in hash table
     char* name; //defined name
-    char* defn; //replacement text
+    hlpControl* defn; //replacement text
 }Node;
 
 enum tmu{
