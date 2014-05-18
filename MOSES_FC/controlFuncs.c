@@ -22,7 +22,7 @@ void hlpHashInit(){
     
     /*allocate space for 85 function pointers*/
     hlpControl* functionTable;
-    if((functionTable = (hlpControl*) malloc(sizeof(hlpControl) * 85)) == NULL){
+    if((functionTable = calloc(85, sizeof(hlpControl))) == NULL){
         puts("malloc failed to allocate control function array");
     }
     
