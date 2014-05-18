@@ -111,25 +111,29 @@ void uDark3(){
 void uDark4(){
     puts("Received Dark4 Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, DARK4, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, DARK4, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uSleep(){
     puts("Received shutdown Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, SLEEP, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, SLEEP, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uWake(){
     puts("Received shutdown pending Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, WAKE, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, WAKE, NULL);
     enqueue(&hkdownQueue, p);
 }
 void uTest(){
     puts("Received test Uplink");
     //Insert uplink handling code here
-    Packet* p = constructPacket(UPLINK, TEST, NULL);
+    Packet* p;
+    constructPacket(p, UPLINK, TEST, NULL);
     enqueue(&hkdownQueue, p);
 }
 
@@ -137,31 +141,36 @@ void uTest(){
 void tDataStart(){
     puts("Received data start Timer");
     //Insert timer handling code here
-    Packet* p = constructPacket(TIMER, DATASTART, NULL);
+    Packet* p;
+    constructPacket(p, TIMER, DATASTART, NULL);
     enqueue(&hkdownQueue, p);
 }
 void tDataStop(){
     puts("Received data stop Timer");
     //Insert timer handling code here
-    Packet* p = constructPacket(TIMER, DATASTOP, NULL);
+    Packet* p;
+    constructPacket(p, TIMER, DATASTOP, NULL);
     enqueue(&hkdownQueue, p);
 }
 void tDark2(){
     puts("Received Dark2 Timer");
     //Insert timer handling code here
-    Packet* p = constructPacket(TIMER, DARK2, NULL);
+    Packet* p;
+    constructPacket(p, TIMER, DARK2, NULL);
     enqueue(&hkdownQueue, p);
 }
 void tDark4(){
     puts("Received Dark4 Timer");
     //Insert timer handling code here
-    Packet* p = constructPacket(TIMER, DARK4, NULL);
+    Packet* p;
+    constructPacket(p, TIMER, DARK4, NULL);
     enqueue(&hkdownQueue, p);
 }
 void tSleep(){
     puts("Received shutdown Timer");
     //Insert timer handling code here
-    Packet* p = constructPacket(TIMER, SLEEP, NULL);
+    Packet* p;
+    constructPacket(p, TIMER, SLEEP, NULL);
     enqueue(&hkdownQueue, p);
 }
 
