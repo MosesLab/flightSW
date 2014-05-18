@@ -24,8 +24,7 @@ extern LockingQueue hkdownQueue;
  */ 
 char* uplinkMap[9];
 
-/*typedef for array of function pointers for HLP packets*/
-typedef int(*hlpControl)(Packet*);
+
 //void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated 
 
 /*hlp control functions: used to control which part of the packet is hashed*/
