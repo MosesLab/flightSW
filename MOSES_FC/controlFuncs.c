@@ -22,6 +22,10 @@ void hlpHashInit(){
     controlStrings[UDataStart] = DATASTART;
 }
 
+int hlpUplink(Packet* p){
+    puts("Uplink packet received");
+}
+
 /*Uplink control functions*/
 void uDataStart(){
     puts("Received data start Uplink");
