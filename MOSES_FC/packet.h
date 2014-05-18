@@ -8,7 +8,6 @@
 /****************************************/
 #define _GNU_SOURCE 1
 
-#include "packetType.h"
 #include <math.h>
 #include "system.h"
 #include <termios.h>
