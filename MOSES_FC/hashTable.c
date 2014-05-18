@@ -17,7 +17,7 @@
 /*functions*/
 unsigned hash(char*);
 Node* lookup(Node**, char*);
-Node* install(Node**, char*);
+Node* install(Node**, char*, char*);
 char* strdup(char*);
 
 /*hash: form hash value for string s*/
@@ -44,7 +44,7 @@ Node* lookup(Node** hTable, char* s){
 Node* install(Node** hTable, char* name, char* defn){
     Node* np;
     unsigned hashval;
-    if((np = lookup(name)) == NULL){    //Not found
+    if((np = lookup(hTable, name)) == NULL){    //Not found
         np = (Node*) malloc(sizeof(*np));
         if(np == NULL || (np->name = strdup(name)) == NULL){
             return NULL;
