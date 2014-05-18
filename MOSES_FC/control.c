@@ -10,7 +10,7 @@ void * hlp_control(void * arg) {
     uplinkInit();
 
     while (ts_alive) {
-        int status = GOOD_PACKET;
+        int status = GOOD_PACKET;       //used by control functions to store validity of packet
         Packet new_packet;
         Packet * p = &new_packet;
         readPacket(fup, p);
@@ -26,7 +26,7 @@ void * hlp_control(void * arg) {
                     break;
                 case UPLINK:
                     printf("HLP Uplink packet\n");
-                    hlpUplink(p);
+                    status = hlpUplink(p);
                     break;
                 case PWR:
                     printf("Power packet\n");

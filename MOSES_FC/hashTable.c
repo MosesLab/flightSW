@@ -9,7 +9,6 @@
  * information contained within the packets 
  */ 
 #include "system.h"
-#include "nodeType.h"
 
 #define HASHSIZE 101
 
@@ -40,7 +39,7 @@ Node* lookup(Node** hTable, char* s){
 }
 
 /*install: put name and definition in hashtable*/
-Node* install(Node** hTable, char* name, char* defn){
+Node* install(Node** hTable, char* name, hlpControl* defn){
     Node* np;
     unsigned hashval;
     if((np = lookup(hTable, name)) == NULL){    //Not found
@@ -55,7 +54,7 @@ Node* install(Node** hTable, char* name, char* defn){
     else{       //Already in hashtable
         free((void*) np->defn); //Free previous definition
     }
-    if((np->defn = strdup(defn)) == NULL){
+    if((np->defn = defn) == NULL){
         return NULL;
     }
     return np;  
