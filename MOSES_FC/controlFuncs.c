@@ -14,63 +14,63 @@
 int hlpUplink (Packet * p){
     char* target = p->subtype;
     
-    /*use uplink map*/
-    enum tmu funcResult = findUplink(target);
-    if(funcResult == NoFunc){
-        return BAD_PACKET;
-    }
-    else{
-        (*tmuFuncs[funcResult])();
-        return GOOD_PACKET;
-    }
+//    /*use uplink map*/
+//    enum tmu funcResult = findUplink(target);
+//    if(funcResult == NoFunc){
+//        return BAD_PACKET;
+//    }
+//    else{
+//        (*tmuFuncs[funcResult])();
+//        return GOOD_PACKET;
+//    }
     
 }
 
-/*matches a packet subtype with the corresponding index of tmufuncs pointer*/
-enum tmu findUplink(char * target){
-    int size = sizeof(uplinkMap) / sizeof(uplinkMap[0]);     
-    
-    /*loop to find matching string*/
-    int i = 0;
-    while(i < size){
-        if(strcmp(uplinkMap[i], target) == 0){
-            return i;
-        }
-        else{
-            i++;
-        }
-    }
-    
-    return NoFunc;  //return -1 if no matching string is found
-}
+///*matches a packet subtype with the corresponding index of tmufuncs pointer*/
+//enum tmu findUplink(char * target){
+//    int size = sizeof(uplinkMap) / sizeof(uplinkMap[0]);     
+//    
+//    /*loop to find matching string*/
+//    int i = 0;
+//    while(i < size){
+//        if(strcmp(uplinkMap[i], target) == 0){
+//            return i;
+//        }
+//        else{
+//            i++;
+//        }
+//    }
+//    
+//    return NoFunc;  //return -1 if no matching string is found
+//}
 
 /*initiates function pointers and maps them to corresponding uplink packet subtypes*/
-void uplinkInit(){
-    uplinkMap[UDataStart] = DATASTART;
-    uplinkMap[UDataStop] = DATASTOP;
-    uplinkMap[UDark1] = DARK1;
-    uplinkMap[UDark2] = DARK2;
-    uplinkMap[UDark3] = DARK3;
-    uplinkMap[UDark4] = DARK4;
-    uplinkMap[USleep] = SLEEP;
-    uplinkMap[UWake] = WAKE;
-    uplinkMap[UTest] = TEST;
-    
-    tmuFuncs[UDataStart] = uDataStart;
-    tmuFuncs[UDataStop] = uDataStop;
-    tmuFuncs[UDark1] = uDark1;
-    tmuFuncs[UDark2] = uDark2;
-    tmuFuncs[UDark3] = uDark3;
-    tmuFuncs[UDark4] = uDark4;
-    tmuFuncs[USleep] = uSleep;
-    tmuFuncs[UWake] = uWake;
-    tmuFuncs[UTest] = uTest;
-    tmuFuncs[TDataStart] = tDataStart;
-    tmuFuncs[TDataStop] = tDataStop;
-    tmuFuncs[TDark2] = tDark2;
-    tmuFuncs[TDark4] = tDark4;
-    tmuFuncs[TSleep] = tSleep;
-}
+//void uplinkInit(){
+//    uplinkMap[UDataStart] = DATASTART;
+//    uplinkMap[UDataStop] = DATASTOP;
+//    uplinkMap[UDark1] = DARK1;
+//    uplinkMap[UDark2] = DARK2;
+//    uplinkMap[UDark3] = DARK3;
+//    uplinkMap[UDark4] = DARK4;
+//    uplinkMap[USleep] = SLEEP;
+//    uplinkMap[UWake] = WAKE;
+//    uplinkMap[UTest] = TEST;
+//    
+//    tmuFuncs[UDataStart] = uDataStart;
+//    tmuFuncs[UDataStop] = uDataStop;
+//    tmuFuncs[UDark1] = uDark1;
+//    tmuFuncs[UDark2] = uDark2;
+//    tmuFuncs[UDark3] = uDark3;
+//    tmuFuncs[UDark4] = uDark4;
+//    tmuFuncs[USleep] = uSleep;
+//    tmuFuncs[UWake] = uWake;
+//    tmuFuncs[UTest] = uTest;
+//    tmuFuncs[TDataStart] = tDataStart;
+//    tmuFuncs[TDataStop] = tDataStop;
+//    tmuFuncs[TDark2] = tDark2;
+//    tmuFuncs[TDark4] = tDark4;
+//    tmuFuncs[TSleep] = tSleep;
+//}
 
 /*Uplink control functions*/
 void uDataStart(){

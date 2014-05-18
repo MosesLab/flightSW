@@ -22,7 +22,7 @@ extern LockingQueue hkdownQueue;
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
  */ 
-char* uplinkMap[9];
+//char* uplinkMap[9];
 
 
 //void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated 
@@ -35,7 +35,7 @@ int hlpPower(Packet*);
 int hlpHK(Packet*);
 
 /*HLP uplink control functions*/
-void uplinkInit();
+//void uplinkInit();
 //enum tmu findUplink(char *);
 void uDataStart();
 void uDataStop();
