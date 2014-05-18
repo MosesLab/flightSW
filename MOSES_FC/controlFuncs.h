@@ -16,6 +16,8 @@
 #include "packetType.h"
 
 #define BAD_UPLINK -1
+
+extern LockingQueue hkdownQueue;
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
