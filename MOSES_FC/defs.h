@@ -40,23 +40,24 @@ typedef struct{
     hlpControl* defn; //replacement text
 }Node;
 
-enum tmu{
-    UDataStart,
-    UDataStop,
-    UDark1,
-    UDark2,
-    UDark3,
-    UDark4,
-    USleep,
-    UWake,
-    UTest,    
-    TDataStart,
-    TDataStop,
-    TDark2,
-    TDark4,
-    TSleep,
-    NoFunc      //Used by the map to return the absence of a matching function
-};
+/*obsfucated timer and uplink map*/
+//enum tmu{
+//    UDataStart,
+//    UDataStop,
+//    UDark1,
+//    UDark2,
+//    UDark3,
+//    UDark4,
+//    USleep,
+//    UWake,
+//    UTest,    
+//    TDataStart,
+//    TDataStop,
+//    TDark2,
+//    TDark4,
+//    TSleep,
+//    NoFunc      //Used by the map to return the absence of a matching function
+//};
 
 
 #endif	/* DEFS_H */
