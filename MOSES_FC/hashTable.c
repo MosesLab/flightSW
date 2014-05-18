@@ -14,12 +14,6 @@
 #define HASHSIZE 101
 
 
-/*functions*/
-unsigned hash(char*);
-Node* lookup(Node**, char*);
-Node* install(Node**, char*, char*);
-char* strdup(char* s);
-
 /*hash: form hash value for string s*/
 unsigned hash(char* s){
     unsigned hashval;
@@ -38,6 +32,16 @@ Node* lookup(Node** hTable, char* s){
         }
     }
     return NULL;        //Not Found
+}
+
+/*Make a duplicate of string s*/
+char* strdup(char* s){
+    char* p;
+    p = (char*)malloc(strlen(s)+1);
+    if(p != NULL){
+        strcpy(p,s);
+    }
+    return p;
 }
 
 /*install: put name and definition in hashtable*/
@@ -62,13 +66,5 @@ Node* install(Node** hTable, char* name, char* defn){
     return np;  
 }
 
-/*Make a duplicate of string s*/
-char* strdup(char* s){
-    char* p;
-    p = (char*)malloc(strlen(s)+1);
-    if( != NULL){
-        strcpy(p,s);
-    }
-    return p;
-}
+
 
