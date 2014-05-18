@@ -605,7 +605,7 @@ void hlpHashInit(){
     functionTable[FC_P5_5V] = FC_POS_5V_V;
     functionTable[ROE_P5_5VA] = ROE_POS_5V_VA;
     functionTable[ROE_P5_5VB] = ROE_POS_5V_VB;
-    functionTable[ROE_P5_5VD] = ROE_POS_5_5V_VD;
+    functionTable[ROE_P5_5VD] = ROE_POS_5V_VD;
     functionTable[ROE_P5_5IA] = ROE_POS_5V_IA;
     functionTable[ROE_P5_5IB] = ROE_POS_5V_IB;
     functionTable[ROE_P5_5ID] = ROE_POS_5V_ID;
