@@ -16,7 +16,7 @@
 /*functions*/
 unsigned hash(char*);
 Node* lookup(Node**, char*);
-Node* install(Node**, char*, char*);
+Node* install(Node**, char*, hlpControl*);
 
 /*hash: form hash value for string s*/
 unsigned hash(char* s){
