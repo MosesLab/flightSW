@@ -30,6 +30,9 @@ typedef struct {
         int status;        
 } Packet;
 
+/*typedef for array of function pointers for HLP packets*/
+typedef int(*hlpControl)(Packet*);
+
 /*Node structure for hash table*/
 typedef struct{
     void* next; //next entry in hash table
