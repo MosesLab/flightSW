@@ -7,7 +7,7 @@ void * hlp_control(void * arg) {
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
     buildLookupTable();
-    uplinkInit();
+    //uplinkInit();     obsufucated tmu map
 
     while (ts_alive) {
         int status = GOOD_PACKET;       //used by control functions to store validity of packet
