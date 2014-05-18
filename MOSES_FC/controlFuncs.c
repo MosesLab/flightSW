@@ -135,149 +135,149 @@ int tSleep(){
  */
 
 /*Associates a sequence name with a signal number*/
-int setSequence(Packet*){
+int setSequence(Packet* p){
     puts("Get sequence command received\n");
 }
 /*Uses stem for an output file.*/
-int setOutputName(Packet*){
+int setOutputName(Packet* p){
     puts("Set output filename command received\n");
 }
 /*Get sequence name that corresponds to the signal number in the data field*/
-int getSeqName(Packet*){
+int getSeqName(Packet* p){
     puts("Get sequence name command received\n");
 }
 /*Generates a string representation of the sequence file*/
-int getSeqInfo(Packet*){
+int getSeqInfo(Packet* p){
     puts("Get sequence info command received\n");
 }
 /*Commands the flight software to return the currently running sequence*/
-int getCurSeqName(Packet*){
+int getCurSeqName(Packet* p){
     puts("Get current sequence name command received\n");
 }
 /*Commands the flight software to return the current frame's exposure length*/
-int getCurFrameLen(Packet*){
+int getCurFrameLen(Packet* p){
     puts("Get current frame length command received\n");
 }
 /*Command the flight software to return the current frame's index number*/
-int getCurFrameIndex(Packet*){
+int getCurFrameIndex(Packet* p){
     puts("Get current frame index command received\n");
 }
 /*Commands the flight software to return the filename of the output file*/
-int getOutputName(Packet*){
+int getOutputName(Packet* p){
     puts("Get output filename command received\n");
 }
 /*Commands the flight software to determine if he ROE is in self-test mode*/
-int getSelftestStatus(Packet*){
+int getSelftestStatus(Packet* p){
     puts("Get self-test mode status command received\n");
 }
 /*Commands the flight software to determine if the ROE is in STIMS mode*/
-int getStimsStatus(Packet*){
+int getStimsStatus(Packet* p){
     puts("Get STIMS mode status command received\n");
 }
 /*Commands the flight software to determine if Telemetry is enabled*/
-int getTelemStatus(Packet*){
+int getTelemStatus(Packet* p){
     puts("Get Telemetry mode status command received\n");
 }
 /*Commands the flight software to determine if Channel 0 data will be recorded*/
-int getCh0Status(Packet*){
+int getCh0Status(Packet* p){
     puts("Get status of channel 0 record command received\n");
 }
 /*Commands the flight software to determine if positive channel data will be recorded*/
-int getPosOnlyStatus(Packet*){
+int getPosOnlyStatus(Packet* p){
     puts("Get status of positive channel record command received\n");
 }
 /*Command the flight software to scale the current sequence, multiplying each frame by the
  floating point value contained within the Data field*/
-int scaleSequence(Packet*){
+int scaleSequence(Packet* p){
     puts("Command to scale sequence received\n");
 }
 /*Commands the flight software to translate the current sequence, adding the 
  floating point value in the Data field to each frame in the sequence*/
-int translateSeq(Packet*){
+int translateSeq(Packet* p){
     puts("Command to translate sequence received\n");
 }
 /*Commands the flight software to interrupt the current exposure, find an exposure
  of the length given in the Data field, and jump to the first exposure matching
  this criterion*/
-int findAndJump(Packet*){
+int findAndJump(Packet* p){
     puts("Command to Find and Jump received\n");
 }
 /*Commands the flight software to jump to the exposure with index number given 
  in the data field*/
-int jumpToExp(Packet*){
+int jumpToExp(Packet* p){
     puts("Command to Jump to exposure received\n");
 }
 /*CONFLICTING INTERFACES*/
 /*HLP Document: Commands the flight software to save the current sequence to the 
  filename defined in the Data field (possibly "SVC") */
 /*flightSW_2005: Saves the sequence defined in the Data field*/
-int saveSequence(Packet*){
+int saveSequence(Packet* p){
     puts("Command to save sequence received\n");
 }
 /*Commands the flight software to find exposures with lengths given by the first
  floating point value in the data field and replace them with the second value 
  the Data field*/
-int findAndReplace(Packet*){
+int findAndReplace(Packet* p){
     puts("Command to find and replace received\n");
 }
 /*Commands the flight software to start the currently loaded sequence*/
-int beginSequence(Packet*){
+int beginSequence(Packet* p){
     puts("Command to begin sequence received\n");
 }
 /*Commands the flight software to stop the currently running sequence*/
-int endSequence(Packet*){
+int endSequence(Packet* p){
     puts("Command to stop sequence received\n");
 }
 /*Commands the flight software to terminate*/
-int exitSW(Packet*){
+int exitSW(Packet* p){
     puts("Command to terminate received\n");
 }
 /*commands the flight software to turn telemetry ON*/
-int telemEnable(Packet*){
+int telemEnable(Packet* p){
     puts("Command to enable telemetry received\n");
 }
 /*Commands the flight software to turn telemetry OFF*/
-int telemDisable(Packet*){
+int telemDisable(Packet* p){
     puts("Command to disable telemetry received\n");
 }
 /*Commands the flight software to turn channel 0 ON*/
-int ch0Enable(Packet*){
+int ch0Enable(Packet* p){
     puts("Command to enable Channel 0 received\n");
 }
 /*Commands the flight software to turn Channel 0 OFF*/
-int ch0Disable(Packet*){
+int ch0Disable(Packet* p){
     puts("Command to disable Channel 0 received\n");
 }
 /*Commands the flight software to enable only positive channel*/
-int posOnlyEnable(Packet*){
+int posOnlyEnable(Packet* p){
     puts("Command to enable only positive channel received\n");
 }
 /*Commands the flight software to disable only positive channel*/
-int posOnlyDisable(Packet*){
+int posOnlyDisable(Packet* p){
     puts("Command to disable only positive channel received\n");
 }
 /*Commands the flight software to turn STIMS ON*/
-int stimsEnable(Packet*){
+int stimsEnable(Packet* p){
     puts("Command to enable STIMS mode received\n");
 }
 /*Commands the flight software to turn STIMS OFF*/
-int stimsDisable(Packet*){
+int stimsDisable(Packet* p){
     puts("Command to disable STIMS mode received\n");
 }
 /*Commands the flight software to reset the ROE*/
-int resetROE(Packet*){
+int resetROE(Packet* p){
     puts("Command to reset ROE received\n");
 }
 /*Exit to default mode*/
-int disableDefaultROE(Packet*){
+int disableDefaultROE(Packet* p){
     puts("Command to exit to default mode received\n");
 }
 /*Commands the flight software to set the ROE to self-test mode*/
-int enableSelftestROE(Packet*){
+int enableSelftestROE(Packet* p){
     puts("Command to set ROE to self-test mode received\n");
 }
 /*Command to reset the flight software*/
-int resetSW(Packet*){
+int resetSW(Packet* p){
     puts("Command to reset flight software received\n");
 }
 
@@ -286,15 +286,15 @@ int resetSW(Packet*){
  */ 
 
 /*Command the payload subsystem to power on*/
-int enablePower(Packet*){
+int enablePower(Packet* p){
     puts("Command to enable subsystem power received\n");
 }
 /*Command the payload subsystem to power off*/
-int disablePower(Packet*){
+int disablePower(Packet* p){
     puts("Command to disable subsystem power received\n");
 }
 /*Query the power status of the payload subsystem*/
-int queryPower(Packet*){
+int queryPower(Packet* p){
     puts("Command to query subsystem power received\n");
 }
 
@@ -303,147 +303,147 @@ int queryPower(Packet*){
  */ 
 
 /*Request for flight computer +2.0V voltage*/
-int FC_2V_V(Packet*){
+int FC_2V_V(Packet* p){
     puts("Request for FC +2.0V voltage received\n");
 }
 /*Request for flight computer +2.5V voltage*/
-int FC_2_5V_V(Packet*){
+int FC_2_5V_V(Packet* p){
     puts("Request for FC +2.5V voltage received\n");
 }
 /*Request for ROE +2.5V voltage*/
-int ROE_2_5V_V(Packet*){
+int ROE_2_5V_V(Packet* p){
     puts("Request for ROE +2.5V voltage received\n");
 }
 /*Request for ROE +2.5V current*/
-int ROE_2_5V_I(Packet*){
+int ROE_2_5V_I(Packet* p){
     puts("Request for ROE +2.5V current received\n");
 }
 /*Request for flight computer +3.3V voltage*/
-int FC_3_3V_V(Packet*){
+int FC_3_3V_V(Packet* p){
     puts("Request for FC +3.3V voltage received\n");
 }
 /*Request for flight computer +5.0V voltage*/
-int FC_POS_5V_V(Packet*){
+int FC_POS_5V_V(Packet* p){
     puts("Request for FC +5.0V voltage received\n");
 }
 /*Request for ROE +5.0V A Channel voltage*/
-int ROE_POS_5V_VA(Packet*){
+int ROE_POS_5V_VA(Packet* p){
     puts("Request for ROE +5.0V A Channel voltage received\n");
 }
 /*Request for ROE +5.0V B Channel voltage*/
-int ROE_POS_5V_VB(Packet*){
+int ROE_POS_5V_VB(Packet* p){
     puts("Request for ROE +5.0V B Channel voltage received\n");
 }
 /*Request for ROE +5.0V D Channel voltage*/
-int ROE_NEG_5V_VD(Packet*){
+int ROE_NEG_5V_VD(Packet* p){
     puts("Request for ROE +5.0V D Channel voltage received\n");
 }
 /*Request for ROE +5.0V A Channel current*/
-int ROE_POS_5V_IA(Packet*){
+int ROE_POS_5V_IA(Packet* p){
     puts("Request for ROE +5.0V A Channel current received\n");
 }
 /*Request for ROE +5.0V B Channel current*/
-int ROE_POS_5V_IB(Packet*){
+int ROE_POS_5V_IB(Packet* p){
     puts("Request for ROE +5.0V B Channel current received\n");
 }
 /*Request for ROE +5.0V D Channel current*/
-int ROE_POS_5V_ID(Packet*){
+int ROE_POS_5V_ID(Packet* p){
     puts("Request for ROE +5.0V D Channel current received\n");
 }
 /*Request for ROE -5.0V A Channel voltage*/
-int ROE_NEG_5V_VA(Packet*){
+int ROE_NEG_5V_VA(Packet* p){
     puts("Request for ROE -5.0V A Channel voltage received\n");
 }
 /*Request for ROE -5.0V B Channel voltage*/
-int ROE_NEG_5V_VB(Packet*){
+int ROE_NEG_5V_VB(Packet* p){
     puts("Request for ROE -5.0V B Channel voltage received\n");
 }
 /*Request for ROE -5.0V A Channel current*/
-int ROE_NEG_5V_IA(Packet*){
+int ROE_NEG_5V_IA(Packet* p){
     puts("Request for ROE -5.0V A Channel current received\n");
 }
 /*Request for ROE -5.0V B Channel current*/
-int ROE_NEG_5V_IB(Packet*){
+int ROE_NEG_5V_IB(Packet* p){
     puts("Request for ROE -5.0V B Channel current received\n");
 }
 /*Request for flight computer +12V voltage*/
-int FC_12V_V(Packet*){
+int FC_12V_V(Packet* p){
     puts("Request for FC +12V voltage received\n");
 }
 /*Request for ROE +12V A Channel voltage*/
-int ROE_12V_VA(Packet*){
+int ROE_12V_VA(Packet* p){
     puts("Request for ROE +12V A Channel voltage received\n");
 }
 /*Request for ROE +12V B Channel voltage*/
-int ROE_12V_VB(Packet*){
+int ROE_12V_VB(Packet* p){
     puts("Request for ROE +12V B Channel voltage received\n");
 }
 /*Request for ROE +12V A Channel current*/
-int ROE_12V_IA(Packet*){
+int ROE_12V_IA(Packet* p){
     puts("Request for ROE +12V A Channel current received\n");
 }
 /*Request for ROE +12V B Channel current*/
-int ROE_12V_IB(Packet*){
+int ROE_12V_IB(Packet* p){
     puts("Request for ROE +12V B Channel current received\n");
 }
 /*Request for ROE +36V A Channel voltage*/
-int ROE_36V_VA(Packet*){
+int ROE_36V_VA(Packet* p){
     puts("Request for ROE +36V A Channel voltage received\n");
 }
 /*Request for ROE +36V B Channel voltage*/
-int ROE_36V_VB(Packet*){
+int ROE_36V_VB(Packet* p){
     puts("Request for ROE +36V B Channel voltage received\n");
 }
 /*Request for ROE +36V A Channel current*/
-int ROE_36V_IA(Packet*){
+int ROE_36V_IA(Packet* p){
     puts("Request for ROE +36V A Channel current received\n");
 }
 /*Request for ROE +36V B Channel current*/
-int ROE_36V_IB(Packet*){
+int ROE_36V_IB(Packet* p){
     puts("Request for ROE +36V B Channel current received\n");
 }
 /*Request for flight computer temperature 1*/
-int FC_TEMP_1(Packet*){
+int FC_TEMP_1(Packet* p){
     puts("Request for FC temp 1 received\n");
 }
 /*Request for flight computer temperature 2*/
-int FC_TEMP_2(Packet*){
+int FC_TEMP_2(Packet* p){
     puts("Request for FC temp 2 received\n");
 }
 /*Request for flight computer temperature 3*/
-int FC_TEMP_3(Packet*){
+int FC_TEMP_3(Packet* p){
     puts("Request for FC temp 3 received\n");
 }
 /*Request for ROE upper temperature*/
-int ROE_TEMP_UPPER(Packet*){
+int ROE_TEMP_UPPER(Packet* p){
     puts("Request for ROE upper temperature received\n");
 }
 /*Request for ROE lower temperature*/
-int ROE_TEMP_LOWER(Packet*){
+int ROE_TEMP_LOWER(Packet* p){
     puts("Request for ROE lower temperature received\n");
 }
 /*Request for CCDA_VOD current from the ROE*/
-int ROE_CCDA_VOD(Packet*){
+int ROE_CCDA_VOD(Packet* p){
     puts("Request for ROE CCDA_VOD current received\n");
 }
 /*Request for CCDA_VRD current from the ROE*/
-int ROE_CCDA_VRD(Packet*){
+int ROE_CCDA_VRD(Packet* p){
     puts("Request for ROE CCDA_VRD current received\n");
 }
 /*Request for CCDA_VSS current from the ROE*/
-int ROE_CCDA_VSS(Packet*){
+int ROE_CCDA_VSS(Packet* p){
     puts("Request for ROE CCDA_VSS current received\n");
 }
 /*Request for CCDS_VOD current from the ROE*/
-int ROE_CCDS_VOD(Packet*){
+int ROE_CCDS_VOD(Packet* p){
     puts("Request for ROE CCDS_VOD current received\n");
 }
 /*Request for CCDS_VRD current from the ROE*/
-int ROE_CCDS_VRD(Packet*){
+int ROE_CCDS_VRD(Packet* p){
     puts("Request for ROE CCDS_VRD current received\n");
 }
 /*Request for CCDS_VSS current from the ROE*/
-int ROE_CCDS_VSS(Packet*){
+int ROE_CCDS_VSS(Packet* p){
     puts("Request for ROE CCDS_VSS current received\n");
 }
 
