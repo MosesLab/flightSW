@@ -36,22 +36,22 @@ int hlpHK(Packet*);
 /*HLP uplink control functions*/
 //void uplinkInit();
 //enum tmu findUplink(char *);
-void uDataStart();
-void uDataStop();
-void uDark1();
-void uDark2();
-void uDark3();
-void uDark4();
-void uSleep();
-void uWake();
-void uTest();
+int uDataStart();
+int uDataStop();
+int uDark1();
+int uDark2();
+int uDark3();
+int uDark4();
+int uSleep();
+int uWake();
+int uTest();
 
 /*Timer control functions*/
-void tDataStart();
-void tDataStop();
-void tDark2();
-void tDark4();
-void tSleep();
+int tDataStart();
+int tDataStop();
+int tDark2();
+int tDark4();
+int tSleep();
 
 /*HLP shell control functions*/
 

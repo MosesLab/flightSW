@@ -37,105 +37,118 @@ int hlpUplink(Packet* p){
 }
 
 /*Uplink control functions*/
-void uDataStart(){
+int uDataStart(){
     puts("Received data start Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DATASTART, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uDataStop(){
+int uDataStop(){
     puts("Received data stop Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DATASTOP, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uDark1(){
+int uDark1(){
     puts("Received Dark1 Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK1, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uDark2(){
+int uDark2(){
     puts("Received Dark2 Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK2, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uDark3(){
+int uDark3(){
     puts("Received Dark3 Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK3, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uDark4(){
+int uDark4(){
     puts("Received Dark4 Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, DARK4, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uSleep(){
+int uSleep(){
     puts("Received shutdown Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, SLEEP, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void uWake(){
+int uWake(){
     puts("Received shutdown pending Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, WAKE, NULL);
     enqueue(&hkdownQueue, p);
 }
-void uTest(){
+int uTest(){
     puts("Received test Uplink");
     //Insert uplink handling code here
     Packet* p;
     constructPacket(p, UPLINK, TEST, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
 
 /*Timer control functions*/
-void tDataStart(){
+int tDataStart(){
     puts("Received data start Timer");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DATASTART, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void tDataStop(){
+int tDataStop(){
     puts("Received data stop Timer");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DATASTOP, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void tDark2(){
+int tDark2(){
     puts("Received Dark2 Timer");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DARK2, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void tDark4(){
+int tDark4(){
     puts("Received Dark4 Timer");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, DARK4, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
-void tSleep(){
+int tSleep(){
     puts("Received shutdown Timer");
     //Insert timer handling code here
     Packet* p;
     constructPacket(p, TIMER, SLEEP, NULL);
     enqueue(&hkdownQueue, p);
+    return GOOD_PACKET;
 }
 
 
