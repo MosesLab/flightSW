@@ -8,6 +8,7 @@ void * hlp_control(void * arg) {
     int fup = init_hkup_serial_connection();
     buildLookupTable();
     //uplinkInit();     obsufucated tmu map
+    hlpHashInit();
 
     while (ts_alive) {
         int status = GOOD_PACKET;       //used by control functions to store validity of packet

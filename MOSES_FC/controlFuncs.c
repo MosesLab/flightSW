@@ -15,11 +15,21 @@ void hlpHashInit(){
     /*enumerated array of strings for matching with array of functions*/
   
     /*allocate space for 85 control strings*/
-    char** controlStrings;
-    if((controlStrings = (char**) malloc(sizeof(char*) * 85)) == NULL){
+    char** stringTable;
+    if((stringTable = (char**) malloc(sizeof(char*) * 85)) == NULL){
         puts("malloc failed to allocate control string array");
     }
-    controlStrings[UDataStart] = DATASTART;
+    
+    /*allocate space for 85 function pointers*/
+    hlpControl* functionTable;
+    if((functionTable = (hlpControl*) malloc(sizeof(hlpControl) * 85)) == NULL){
+        puts("malloc failed to allocate control function array");
+    }
+    
+    /*Uplink control string-function matching*/
+    stringTable[UDataStart] = DATASTART; 
+    functionTable[UDataStart] = uDataStart;
+    
 }
 
 int hlpUplink(Packet* p){
