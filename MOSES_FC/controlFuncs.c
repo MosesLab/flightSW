@@ -13,7 +13,8 @@
 
 
 int hlpUplink(Packet* p){
-    Node* np = lookup(hlpHashTable, p->subtype);
+    Node* np;
+    lookup(hlpHashTable, np, p->subtype);
     int status = (*np->defn)(p);
     return status;
 }

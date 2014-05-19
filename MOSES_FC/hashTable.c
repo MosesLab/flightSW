@@ -15,7 +15,7 @@ extern int hashsize;
 
 /*functions*/
 unsigned hash(char*);
-Node* lookup(Node**, char*);
+void lookup(Node**, Node*, char*);
 Node* installNode(Node**, char*, hlpControl*);
 
 /*hash: form hash value for string s*/
@@ -28,8 +28,8 @@ unsigned hash(char* s){
 }
 
 /*lookup: look for s in hashtable*/
-Node* lookup(Node** hTable, char* s){
-    Node* np;
+void lookup(Node** hTable, Node* np, char* s){
+    //Node* np;
     for(np = hTable[hash(s)]; np != NULL; np = np->next){
         if(strcmp(s, np->name) == 0){
             return np;  //Found
