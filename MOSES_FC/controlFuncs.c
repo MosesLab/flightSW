@@ -14,7 +14,7 @@
 
 int hlpUplink(Packet* p){
     Node* np;
-    lookup(hlpHashTable, np, p->subtype);       //Lookup corresponding function in table
+    np = lookup(hlpHashTable, np, p->subtype);       //Lookup corresponding function in table
     int status = (*np->defn)(p);        //Call control function
     return status;
 }
