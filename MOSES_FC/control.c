@@ -52,10 +52,10 @@ void * hlp_control(void * arg) {
             strcpy(data + 1, p->subtype);
             Packet* nextp;
             if (p->status == GOOD_PACKET) {
-                constructPacket(nextp, GDPKT, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a waring, return type should be Packet*
+                nextp = constructPacket(nextp, GDPKT, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a waring, return type should be Packet*
                 enqueue(&hkdownQueue, nextp);
             } else {
-                constructPacket(nextp, BDPKT, ACK, data);
+                nextp = constructPacket(nextp, BDPKT, ACK, data);
                 enqueue(&hkdownQueue, nextp);
             }
         }

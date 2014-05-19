@@ -2,7 +2,7 @@
 #include "packet.h"
 
 /*Builds a packet out of provided values, returns packet pointer*/
-void constructPacket(Packet* p, char* type, char* subtype, char* data){
+Packet* constructPacket(Packet* p, char* type, char* subtype, char* data){
     int dataSize = strlen(data);  //find length of data string
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
@@ -31,7 +31,7 @@ void constructPacket(Packet* p, char* type, char* subtype, char* data){
     p->dataSize = dataSize;
     p->next = NULL;
     
-    
+    return p;
 }
 
 void getCurrentTime(char* result){
