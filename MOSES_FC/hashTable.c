@@ -10,13 +10,13 @@
  */ 
 #include "system.h"
 
-#define HASHSIZE 101
+extern int hashsize;
 
 
 /*functions*/
 unsigned hash(char*);
 Node* lookup(Node**, char*);
-Node* install(Node**, char*, hlpControl*);
+Node* installNode(Node**, char*, hlpControl*);
 
 /*hash: form hash value for string s*/
 unsigned hash(char* s){
@@ -24,7 +24,7 @@ unsigned hash(char* s){
     for(hashval = 0; *s != '\0'; s++){
         hashval = *s + 31 * hashval;
     }
-    return hashval % HASHSIZE;
+    return hashval % hashsize;
 }
 
 /*lookup: look for s in hashtable*/
@@ -39,7 +39,7 @@ Node* lookup(Node** hTable, char* s){
 }
 
 /*install: put name and definition in hashtable*/
-Node* install(Node** hTable, char* name, hlpControl* defn){
+Node* installNode(Node** hTable, char* name, hlpControl* defn){
     Node* np;
     unsigned hashval;
     if((np = lookup(hTable, name)) == NULL){    //Not found

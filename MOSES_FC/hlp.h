@@ -52,8 +52,8 @@
 #define GT_CUR_SEQ  "GCS"
 #define GT_CUR_FRML "GFL"
 #define GT_CUR_FRMI "GFI" 
-#define GT_CUR_SEQ_INFO "GCI" //New ?
-#define GT_CUR_SEQ_NUM  "GCN" //New ?
+//#define GT_CUR_SEQ_INFO "GCI" //New ?
+//#define GT_CUR_SEQ_NUM  "GCN" //New ?
 #define GT_OFN      "GOF"
 #define GT_SLFT_STS "GST"
 #define GT_STM_STS  "GSM"
@@ -64,9 +64,9 @@
 #define TRANS_SEQ   "TRN"
 #define FIND_N_JUMP "FNJ"
 #define JUMP        "JMP"
-#define SAV_CUR_SEQ "SVC" //New
+//#define SAV_CUR_SEQ "SVC" //New
 #define SAV_SEQ     "SAV" //New
-#define SAV_CUR_SEQ_AS "SVA" //New	
+//#define SAV_CUR_SEQ_AS "SVA" //New	
 #define LOAD_SEQ    "LDS" //New
 #define UNLOAD_SEQ  "ULD" //New
 #define FIND_N_RPLC "FNR"
@@ -81,20 +81,20 @@
 #define CHAN0_OFF   "C0F"
 #define POSONLY_ON  "PON"
 #define POSONLY_OFF "POF"
-#define READOUT_CCD "ROC" //New
+//#define READOUT_CCD "ROC" //New
 #define STIM_ON     "STN"
 #define STIM_OFF    "STF"
 #define RST_ROE     "RRR"
 #define EXIT_DFLT   "XDF"
 #define SET_SLFTST  "SLF"
 #define RESET_MDAQ  "RST" //Not Implemented
-#define FIRESIG     "COM"
-#define STOP_EXP    "EXP"
-#define SHUTTER_OPN "SHO"
-#define SHUTTER_CLS "SHC"
-#define GET_AE      "RAE"
-#define SET_AE      "SAE"
-#define GT_SHUTTER  "GSH"
+//#define FIRESIG     "COM"
+//#define STOP_EXP    "EXP"
+//#define SHUTTER_OPN "SHO"
+//#define SHUTTER_CLS "SHC"
+//#define GET_AE      "RAE"
+//#define SET_AE      "SAE"
+//#define GT_SHUTTER  "GSH"
 
 //Power Subtypes
 #define TURN_ON	   "TON"

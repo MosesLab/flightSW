@@ -450,7 +450,7 @@ int ROE_CCDS_VSS(Packet* p){
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit(){
-    int funcNumber = 85; // number of control functions    
+      
   
     /*allocate space for 85 control strings*/
     char** stringTable;
@@ -634,9 +634,16 @@ void hlpHashInit(){
     functionTable[ROE_CS_VRD] = ROE_CCDS_VRD;
     functionTable[ROE_CS_VSS] = ROE_CCDS_VSS;
     
+    /*initialize memory for function hash table*/
+    if((hlpHashTable = (Node**) malloc(sizeof(Node*) * hashsize)) == NULL){
+        puts("malloc failed to allocate hash table");
+    }
     
-    
-    
+    /*fill hash table with array of strings matching function pointers*/
+    int i;
+    for(i = 0; i < funcNumber; i++){
+        installNode(hlpHashTable, stringTable[i], functionTable[i]);
+    }   
 }
 
 /*Determines how to execute HLP uplink packets*/
