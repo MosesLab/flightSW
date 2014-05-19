@@ -152,11 +152,11 @@
 #define ROE_P36VA_C  "IA"
 #define ROE_P36VB_C  "IB"
 
-#define TEMP1 '1'
-#define TEMP2 '2'
-#define TEMP3 '3'
-#define UPPER 'U'
-#define LOWER 'L'
+#define TEMP1 "1"
+#define TEMP2 "2"
+#define TEMP3 "3"
+#define UPPER "U"
+#define LOWER "L"
 
 /*Packet strings received for housekeeping packets */
 #define FC_2V_V_STR POS2_0V

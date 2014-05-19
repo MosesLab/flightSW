@@ -575,7 +575,7 @@ void hlpHashInit(){
     functionTable[ScaleSeq] = scaleSequence;
     functionTable[TransSeq] = translateSeq;
     functionTable[FindJump] = findAndJump;
-    functionTable[JumpSeq] = jump;
+    functionTable[JumpSeq] = jumpToExp;
     functionTable[SaveSeq] = saveSequence;
     //functionTable[SaveCurSeq] = saveCurSeqAs;
     functionTable[FindReplace] = findAndReplace;
