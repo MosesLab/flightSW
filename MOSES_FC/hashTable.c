@@ -15,7 +15,7 @@ extern int hashsize;
 
 /*functions*/
 unsigned hash(char*);
-void lookup(Node**, Node*, char*);
+Node* lookup(Node**, Node*, char*);
 Node* installNode(Node**, char*, hlpControl*);
 
 /*hash: form hash value for string s*/
