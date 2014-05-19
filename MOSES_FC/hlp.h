@@ -11,7 +11,7 @@
 //Packet Types --SENT
 #define CONTROL  'C'
 #define TIMER    'T'
-#define UPLINK   'U'
+#define UPLINK   "U"
 #define GDPKT    "G"
 #define BDPKT    "B"
 #define HK_RSP   'K'
