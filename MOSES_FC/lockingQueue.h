@@ -13,8 +13,8 @@
 extern volatile sig_atomic_t ts_alive;
 
 typedef struct {
-    Packet *first;
-    Packet *last;
+    Packet* first;
+    Packet* last;
     int count;  //current number of items
     
     pthread_condattr_t cattr;
