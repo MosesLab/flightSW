@@ -28,8 +28,8 @@ unsigned hash(char* s){
 }
 
 /*lookup: look for s in hashtable*/
-void lookup(Node** hTable, Node* np, char* s){
-    //Node* np;
+Node* lookup(Node** hTable, Node* npr, char* s){
+    Node* np;
     for(np = hTable[hash(s)]; np != NULL; np = np->next){
         if(strcmp(s, np->name) == 0){
             return np;  //Found
@@ -42,7 +42,7 @@ void lookup(Node** hTable, Node* np, char* s){
 Node* installNode(Node** hTable, char* name, hlpControl* defn){
     Node* np;
     unsigned hashval;
-    if((np = lookup(hTable, name)) == NULL){    //Not found
+    if((np = lookup(hTable, np, name)) == NULL){    //Not found
         np = (Node*) malloc(sizeof(*np));
         if(np == NULL || (np->name = strdup(name)) == NULL){
             return NULL;
