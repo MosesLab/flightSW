@@ -29,6 +29,8 @@ void constructPacket(Packet* p, char* type, char* subtype, char* data){
     p->checksum[0] = 0;
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
+    p->next = NULL;
+    
     
 }
 
