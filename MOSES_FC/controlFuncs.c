@@ -24,7 +24,7 @@ int uDataStart(Packet* p){
     puts("Received data start Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DATASTART, NULL);
+    newp = constructPacket(newp, UPLINK, DATASTART, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -32,7 +32,7 @@ int uDataStop(Packet* p){
     puts("Received data stop Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DATASTOP, NULL);
+    newp = constructPacket(newp, UPLINK, DATASTOP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -40,7 +40,7 @@ int uDark1(){
     puts("Received Dark1 Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DARK1, NULL);
+    newp = constructPacket(newp, UPLINK, DARK1, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -48,7 +48,7 @@ int uDark2(Packet* p){
     puts("Received Dark2 Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DARK2, NULL);
+    newp = constructPacket(newp, UPLINK, DARK2, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -56,7 +56,7 @@ int uDark3(Packet* p){
     puts("Received Dark3 Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DARK3, NULL);
+    newp = constructPacket(newp, UPLINK, DARK3, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -64,7 +64,7 @@ int uDark4(Packet* p){
     puts("Received Dark4 Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, DARK4, NULL);
+    newp = constructPacket(newp, UPLINK, DARK4, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -72,7 +72,7 @@ int uSleep(Packet* p){
     puts("Received shutdown Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, SLEEP, NULL);
+    newp = constructPacket(newp, UPLINK, SLEEP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -80,14 +80,14 @@ int uWake(Packet* p){
     puts("Received shutdown pending Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, WAKE, NULL);
+    newp = constructPacket(newp, UPLINK, WAKE, NULL);
     enqueue(&hkdownQueue, newp);
 }
 int uTest(Packet* p){
     puts("Received test Uplink\n");
     //Insert uplink handling code here
     Packet* newp;
-    constructPacket(newp, UPLINK, TEST, NULL);
+    newp = constructPacket(newp, UPLINK, TEST, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -97,7 +97,7 @@ int tDataStart(Packet* p){
     puts("Received data start Timer\n");
     //Insert timer handling code here
     Packet* newp;
-    constructPacket(newp, TIMER, DATASTART, NULL);
+    newp = constructPacket(newp, TIMER, DATASTART, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -105,7 +105,7 @@ int tDataStop(Packet* p){
     puts("Received data stop Timer\n");
     //Insert timer handling code here
     Packet* newp;
-    constructPacket(newp, TIMER, DATASTOP, NULL);
+    newp = constructPacket(newp, TIMER, DATASTOP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -113,7 +113,7 @@ int tDark2(Packet* p){
     puts("Received Dark2 Timer\n");
     //Insert timer handling code here
     Packet* newp;
-    constructPacket(newp, TIMER, DARK2, NULL);
+    newp = constructPacket(newp, TIMER, DARK2, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -121,7 +121,7 @@ int tDark4(Packet* p){
     puts("Received Dark4 Timer\n");
     //Insert timer handling code here
     Packet* newp;
-    constructPacket(newp, TIMER, DARK4, NULL);
+    newp = constructPacket(newp, TIMER, DARK4, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -129,7 +129,7 @@ int tSleep(Packet* p){
     puts("Received shutdown Timer\n");
     //Insert timer handling code here
     Packet* newp;
-    constructPacket(newp, TIMER, SLEEP, NULL);
+    newp = constructPacket(newp, TIMER, SLEEP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
