@@ -28,6 +28,7 @@ Packet* constructPacket(Packet* p, char type, char* subtype, char* data){
     getCurrentTime(p->timeStamp);
     //memcpy(p->type, type, 1);
     p->type[0] = type;
+    p->type[1] = NULL;
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
     memcpy(p->data, data, dataSize);
