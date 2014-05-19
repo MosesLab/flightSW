@@ -3,7 +3,12 @@
 
 /*Builds a packet out of provided values, returns packet pointer*/
 Packet* constructPacket(Packet* p, char* type, char* subtype, char* data){
-    int dataSize = strlen(data);  //find length of data string
+    int dataSize;
+    if(data != NULL){
+        dataSize = strlen(data);  //find length of data string
+    } else {
+        dataSize = 0;
+    }
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
     
