@@ -37,7 +37,7 @@ typedef int(*hlpControl)(Packet*);
 typedef struct{
     void* next; //next entry in hash table
     char* name; //defined name
-    hlpControl* defn; //functional definition
+    hlpControl defn; //functional definition
 }Node;
 
 /*obsfucated timer and uplink map*/
