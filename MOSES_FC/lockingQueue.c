@@ -37,10 +37,10 @@ void enqueue(LockingQueue * queue, Packet * p) {
 
 }
 
-Packet* dequeue(LockingQueue * queue) {
+Packet dequeue(LockingQueue * queue) {
     struct timespec timeToWait;
     struct timeval now;
-    Packet* p;
+    Packet p;
 
     gettimeofday(&now, NULL);
     timeToWait.tv_sec = now.tv_sec + 1;
@@ -54,8 +54,8 @@ Packet* dequeue(LockingQueue * queue) {
 
     /*check if program is still active*/
     if (ts_alive) {
-        p = queue->first;
-        queue->first = (Packet*) p->next;
+        p = queue.first;
+        queue->first = (Packet*) p.next;
         queue->count--;
     }
 
