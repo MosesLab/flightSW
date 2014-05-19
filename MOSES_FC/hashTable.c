@@ -28,8 +28,7 @@ unsigned hash(char* s){
 }
 
 /*lookup: look for s in hashtable*/
-Node* lookup(Node** hTable, Node* npr, char* s){
-    Node* np;
+Node* lookup(Node** hTable, Node* np, char* s){
     for(np = hTable[hash(s)]; np != NULL; np = np->next){
         if(strcmp(s, np->name) == 0){
             return np;  //Found
