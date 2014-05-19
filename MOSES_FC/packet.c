@@ -188,7 +188,7 @@ void readPacket(int fd, Packet * p) {
     
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 1);   //Wait until interrupt or timeout 
-        if(input==0) puts("select returned");
+        //if(input==0) puts("select returned");
         volatile int clearBuffer = FALSE;
         if(input > 0){
             readData(fd, &temp, 1);
