@@ -46,7 +46,7 @@ Node* lookup(Node** hTable, Node* np, char* s){
 }
 
 /*install: put name and definition in hashtable*/
-Node* installNode(Node** hTable, char* name, hlpControl* defn){
+Node* installNode(Node** hTable, char* name, hlpControl defn){
     Node* np;
     unsigned hashval;
     if((np = lookup(hTable, np, name)) == NULL){    //Not found
