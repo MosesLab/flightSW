@@ -52,7 +52,7 @@ Node* installNode(Node** hTable, char* name, hlpControl* defn){
         hTable[hashval] = np;
     }
     else{       //Already in hashtable
-        free((hlpControl*) np->defn); //Free previous definition
+        free((void*) np->defn); //Free previous definition
     }
     if((np->defn = defn) == NULL){
         return NULL;
