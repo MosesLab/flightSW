@@ -54,7 +54,7 @@ Packet dequeue(LockingQueue * queue) {
 
     /*check if program is still active*/
     if (ts_alive) {
-        p = queue.first;
+        p = *(queue->first);
         queue->first = (Packet*) p.next;
         queue->count--;
     }
