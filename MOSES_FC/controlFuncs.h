@@ -25,7 +25,7 @@ extern LockingQueue hkdownQueue;
 
 /*initialize hash table to find functions based on packet string*/
 const int funcNumber = 85; // number of control functions  
-const int hashsize = funcNumber * 2;
+int hashsize;
 Node** hlpHashTable;
 void hlpHashInit();
 
