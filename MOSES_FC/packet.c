@@ -2,7 +2,7 @@
 #include "packet.h"
 
 /*Builds a packet out of provided values, returns packet pointer*/
-Packet* constructPacket(Packet* p, char* type, char* subtype, char* data){
+Packet* constructPacket(Packet* p, char type, char* subtype, char* data){
     int dataSize;
     if(data != NULL){
         dataSize = strlen(data);  //find length of data string
@@ -27,7 +27,7 @@ Packet* constructPacket(Packet* p, char* type, char* subtype, char* data){
 //    memcpy(p->timeStamp, timestamp, 6);
     getCurrentTime(p->timeStamp);
     //memcpy(p->type, type, 1);
-    p->type[0] = type[0];
+    p->type[0] = type;
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
     memcpy(p->data, data, dataSize);
