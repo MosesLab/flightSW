@@ -28,50 +28,50 @@ int execPacket(Packet* p){
 int uDataStart(Packet* p){
     puts("Received data start Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DATASTART, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DATASTART, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uDataStop(Packet* p){
     puts("Received data stop Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DATASTOP, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DATASTOP, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uDark1(){
     puts("Received Dark1 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DARK1, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DARK1, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uDark2(Packet* p){
     puts("Received Dark2 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DARK2, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DARK2, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uDark3(Packet* p){
     puts("Received Dark3 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DARK3, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DARK3, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uDark4(Packet* p){
     puts("Received Dark4 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, DARK4, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, DARK4, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uSleep(Packet* p){
     puts("Received shutdown Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, SLEEP, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, SLEEP, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int uWake(Packet* p){
@@ -83,8 +83,8 @@ int uWake(Packet* p){
 int uTest(Packet* p){
     puts("Received test Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(UPLINK_S, TEST, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(UPLINK_S, TEST, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 
@@ -92,36 +92,36 @@ int uTest(Packet* p){
 int tDataStart(Packet* p){
     puts("Received data start Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(TIMER_S, DATASTART, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(TIMER_S, DATASTART, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int tDataStop(Packet* p){
     puts("Received data stop Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(TIMER_S, DATASTOP, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(TIMER_S, DATASTOP, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int tDark2(Packet* p){
     puts("Received Dark2 Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(TIMER_S, DARK2, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(TIMER_S, DARK2, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int tDark4(Packet* p){
     puts("Received Dark4 Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(TIMER_S, DARK4, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(TIMER_S, DARK4, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 int tSleep(Packet* p){
     puts("Received shutdown Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(TIMER_S, SLEEP, NULL);
-    enqueue(&hkdownQueue, newp);
+    Packet* r = constructPacket(TIMER_S, SLEEP, NULL);
+    enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
 /*
@@ -131,66 +131,101 @@ int tSleep(Packet* p){
 /*Associates a sequence name with a signal number*/
 int setSequence(Packet* p){
     puts("Set sequence command received");
+    //Insert set sequence code here
     return GOOD_PACKET;
 }
 /*Uses stem for an output file.*/
 int setOutputName(Packet* p){
     puts("Set output filename command received");
+    //insert control code here
     return GOOD_PACKET;
 }
 /*Get sequence name that corresponds to the signal number in the data field*/
 int getSeqName(Packet* p){
     puts("Get sequence name command received");
+    //Insert control code here
+    char* name = "testname";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_SEQ_NM, name);
     return GOOD_PACKET;
 }
 /*Generates a string representation of the sequence file*/
 int getSeqInfo(Packet* p){
     puts("Get sequence info command received");
+    //Insert control code here
+    char* info = "testinfo";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
     return GOOD_PACKET;
 }
 /*Commands the flight software to return the currently running sequence*/
 int getCurSeqName(Packet* p){
     puts("Get current sequence name command received");
+    //Insert control code here
+    char* name = "testname";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_CUR_SEQ, name);
     return GOOD_PACKET;
 }
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(Packet* p){
-    puts("Get current frame length command received");
+    puts("Get current frame length command received"); 
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);   
     return GOOD_PACKET;
 }
 /*Command the flight software to return the current frame's index number*/
 int getCurFrameIndex(Packet* p){
     puts("Get current frame index command received");
+    //Insert control code here  
+    char* response = "0";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);    
     return GOOD_PACKET;
 }
 /*Commands the flight software to return the filename of the output file*/
 int getOutputName(Packet* p){
     puts("Get output filename command received");
+    //Insert control code here  
+    char* response = "testOuputFilename";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_OFN, response);    
     return GOOD_PACKET;
 }
 /*Commands the flight software to determine if he ROE is in self-test mode*/
 int getSelftestStatus(Packet* p){
     puts("Get self-test mode status command received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_SLFT_STS, response);    
     return GOOD_PACKET;
 }
 /*Commands the flight software to determine if the ROE is in STIMS mode*/
 int getStimsStatus(Packet* p){
     puts("Get STIMS mode status command received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_STM_STS, response);    
     return GOOD_PACKET;
 }
 /*Commands the flight software to determine if Telemetry is enabled*/
 int getTelemStatus(Packet* p){
     puts("Get Telemetry mode status command received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_TLM_STS, response);    
     return GOOD_PACKET;
 }
 /*Commands the flight software to determine if Channel 0 data will be recorded*/
 int getCh0Status(Packet* p){
     puts("Get status of channel 0 record command received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_CH0_STS, response); 
     return GOOD_PACKET;
 }
 /*Commands the flight software to determine if positive channel data will be recorded*/
 int getPosOnlyStatus(Packet* p){
     puts("Get status of positive channel record command received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, GT_POS_STS, response); 
     return GOOD_PACKET;
 }
 /*Command the flight software to scale the current sequence, multiplying each frame by the
@@ -210,12 +245,18 @@ int translateSeq(Packet* p){
  this criterion*/
 int findAndJump(Packet* p){
     puts("Command to Find and Jump received");
+    //Insert control code here  
+    char* response = "0";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response); 
     return GOOD_PACKET;
 }
 /*Commands the flight software to jump to the exposure with index number given 
  in the data field*/
 int jumpToExp(Packet* p){
     puts("Command to Jump to exposure received");
+    //Insert control code here  
+    char* response = "0";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, JUMP, response); 
     return GOOD_PACKET;
 }
 /*CONFLICTING INTERFACES*/
@@ -231,6 +272,9 @@ int saveSequence(Packet* p){
  the Data field*/
 int findAndReplace(Packet* p){
     puts("Command to find and replace received");
+    //Insert control code here  
+    char* response = "0,0";    //test EGSE
+    Packet* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response); 
     return GOOD_PACKET;
 }
 /*Commands the flight software to start the currently loaded sequence*/
@@ -316,16 +360,25 @@ int resetSW(Packet* p){
 /*Command the payload subsystem to power on*/
 int enablePower(Packet* p){
     puts("Command to enable subsystem power received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(PWR, STATUS_ON, response); 
     return GOOD_PACKET;
 }
 /*Command the payload subsystem to power off*/
 int disablePower(Packet* p){
     puts("Command to disable subsystem power received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(PWR, STATUS_OFF, response); 
     return GOOD_PACKET;
 }
 /*Query the power status of the payload subsystem*/
 int queryPower(Packet* p){
     puts("Command to query subsystem power received");
+    //Insert control code here  
+    char* response = "test";    //test EGSE
+    Packet* r = constructPacket(PWR, STATUS_OFF, response);
     return GOOD_PACKET;
 }
 
@@ -336,181 +389,289 @@ int queryPower(Packet* p){
 /*Request for flight computer +2.0V voltage*/
 int FC_2V_V(Packet* p){
     puts("Request for FC +2.0V voltage received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS2_0V, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer +2.5V voltage*/
 int FC_2_5V_V(Packet* p){
     puts("Request for FC +2.5V voltage received");
+    //Insert control code here  
+    char* response = FC_P2_5V_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS2_5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +2.5V voltage*/
 int ROE_2_5V_V(Packet* p){
     puts("Request for ROE +2.5V voltage received");
+    //Insert control code here  
+    char* response = ROE_P2_5VD_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS2_5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +2.5V current*/
 int ROE_2_5V_I(Packet* p){
     puts("Request for ROE +2.5V current received");
+    //Insert control code here  
+    char* response = ROE_P2_5VD_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS2_5V, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer +3.3V voltage*/
 int FC_3_3V_V(Packet* p){
     puts("Request for FC +3.3V voltage received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS3_3V, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer +5.0V voltage*/
 int FC_POS_5V_V(Packet* p){
     puts("Request for FC +5.0V voltage received");
+    //Insert control code here  
+    char* response = FC_P5V_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(Packet* p){
     puts("Request for ROE +5.0V A Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P5VAA_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V B Channel voltage*/
 int ROE_POS_5V_VB(Packet* p){
     puts("Request for ROE +5.0V B Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P5VAB_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V D Channel voltage*/
 int ROE_POS_5V_VD(Packet* p){
     puts("Request for ROE +5.0V D Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P5VD_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V A Channel current*/
 int ROE_POS_5V_IA(Packet* p){
     puts("Request for ROE +5.0V A Channel current received");
+    //Insert control code here  
+    char* response = ROE_P5VAA_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V B Channel current*/
 int ROE_POS_5V_IB(Packet* p){
     puts("Request for ROE +5.0V B Channel current received");
+    //Insert control code here  
+    char* response = ROE_P5VAB_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +5.0V D Channel current*/
 int ROE_POS_5V_ID(Packet* p){
     puts("Request for ROE +5.0V D Channel current received");
+    //Insert control code here  
+    char* response = ROE_P5VD_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE -5.0V A Channel voltage*/
 int ROE_NEG_5V_VA(Packet* p){
     puts("Request for ROE -5.0V A Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_N5VAA_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, NEG5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE -5.0V B Channel voltage*/
 int ROE_NEG_5V_VB(Packet* p){
     puts("Request for ROE -5.0V B Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_N5VAB_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, NEG5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE -5.0V A Channel current*/
 int ROE_NEG_5V_IA(Packet* p){
     puts("Request for ROE -5.0V A Channel current received");
+    //Insert control code here  
+    char* response = ROE_N5VAA_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, NEG5V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE -5.0V B Channel current*/
 int ROE_NEG_5V_IB(Packet* p){
     puts("Request for ROE -5.0V B Channel current received");
+    //Insert control code here  
+    char* response = ROE_N5VAB_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, NEG5V, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer +12V voltage*/
 int FC_12V_V(Packet* p){
     puts("Request for FC +12V voltage received");
+    //Insert control code here  
+    char* response = FC_P12V_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS12V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +12V A Channel voltage*/
 int ROE_12V_VA(Packet* p){
     puts("Request for ROE +12V A Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P12VA_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS12V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +12V B Channel voltage*/
 int ROE_12V_VB(Packet* p){
     puts("Request for ROE +12V B Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P12VB_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS12V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +12V A Channel current*/
 int ROE_12V_IA(Packet* p){
     puts("Request for ROE +12V A Channel current received");
+    //Insert control code here  
+    char* response = ROE_P12VA_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS12V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +12V B Channel current*/
 int ROE_12V_IB(Packet* p){
     puts("Request for ROE +12V B Channel current received");
+    //Insert control code here  
+    char* response = ROE_P12VB_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS12V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +36V A Channel voltage*/
 int ROE_36V_VA(Packet* p){
     puts("Request for ROE +36V A Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P36VA_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS36V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +36V B Channel voltage*/
 int ROE_36V_VB(Packet* p){
     puts("Request for ROE +36V B Channel voltage received");
+    //Insert control code here  
+    char* response = ROE_P36VB_V "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS36V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +36V A Channel current*/
 int ROE_36V_IA(Packet* p){
     puts("Request for ROE +36V A Channel current received");
+    //Insert control code here  
+    char* response = ROE_P36VA_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS36V, response);
     return GOOD_PACKET;
 }
 /*Request for ROE +36V B Channel current*/
 int ROE_36V_IB(Packet* p){
     puts("Request for ROE +36V B Channel current received");
+    //Insert control code here  
+    char* response = ROE_P36VB_C "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, POS36V, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer temperature 1*/
 int FC_TEMP_1(Packet* p){
     puts("Request for FC temp 1 received");
+    //Insert control code here  
+    char* response = TEMP1 "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, TEMP, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer temperature 2*/
 int FC_TEMP_2(Packet* p){
     puts("Request for FC temp 2 received");
+    //Insert control code here  
+    char* response = TEMP2 "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, TEMP, response);
     return GOOD_PACKET;
 }
 /*Request for flight computer temperature 3*/
 int FC_TEMP_3(Packet* p){
     puts("Request for FC temp 3 received");
+    //Insert control code here  
+    char* response = TEMP3 "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, TEMP, response);
     return GOOD_PACKET;
 }
 /*Request for ROE upper temperature*/
 int ROE_TEMP_UPPER(Packet* p){
     puts("Request for ROE upper temperature received");
+    //Insert control code here  
+    char* response = UPPER "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, TEMP, response);
     return GOOD_PACKET;
 }
 /*Request for ROE lower temperature*/
 int ROE_TEMP_LOWER(Packet* p){
     puts("Request for ROE lower temperature received");
+    //Insert control code here  
+    char* response = LOWER "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, TEMP, response);
     return GOOD_PACKET;
 }
 /*Request for CCDA_VOD current from the ROE*/
 int ROE_CCDA_VOD(Packet* p){
     puts("Request for ROE CCDA_VOD current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDA_VOD, response);
     return GOOD_PACKET;
 }
 /*Request for CCDA_VRD current from the ROE*/
 int ROE_CCDA_VRD(Packet* p){
     puts("Request for ROE CCDA_VRD current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDA_VRD, response);
     return GOOD_PACKET;
 }
 /*Request for CCDA_VSS current from the ROE*/
 int ROE_CCDA_VSS(Packet* p){
     puts("Request for ROE CCDA_VSS current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDA_VSS, response);
     return GOOD_PACKET;
 }
 /*Request for CCDS_VOD current from the ROE*/
 int ROE_CCDS_VOD(Packet* p){
     puts("Request for ROE CCDS_VOD current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDB_VOD, response);
     return GOOD_PACKET;
 }
 /*Request for CCDS_VRD current from the ROE*/
 int ROE_CCDS_VRD(Packet* p){
     puts("Request for ROE CCDS_VRD current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDB_VRD, response);
     return GOOD_PACKET;
 }
 /*Request for CCDS_VSS current from the ROE*/
 int ROE_CCDS_VSS(Packet* p){
     puts("Request for ROE CCDS_VSS current received");
+    //Insert control code here  
+    char* response = "0.0";    //test EGSE
+    Packet* r = constructPacket(HK_RSP, CCDB_VSS, response);
     return GOOD_PACKET;
 }
 

@@ -29,14 +29,9 @@ extern LockingQueue hkdownQueue;
 const int funcNumber = 82; // number of control functions  
 int hashsize;
 Node** hlpHashTable;
-void hlpHashInit();
 
-/*hlp control functions: used to control which part of the packet is hashed*/
+void hlpHashInit();
 int execPacket(Packet*);
-//int hlpShell(Packet*);
-//int hlpDaq(Packet*);
-//int hlpPower(Packet*);
-//int hlpHK(Packet*);
 
 /*HLP uplink control functions*/
 int uDataStart();
