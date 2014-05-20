@@ -14,7 +14,7 @@ extern int hashsize;
 
 /*functions*/
 unsigned hash(char*);
-Node* lookup(Node**, Node*, char*);
+Node* lookup(Node**, char*);
 Node* installNode(Node**, char*, hlpControl);
 
 #endif	/* HASHTABLE_H */

@@ -16,21 +16,19 @@
  * function by looking up the control string in the hash table
  */ 
 int hlpUplink(Packet* p){
-    Node* np;
-    np = lookup(hlpHashTable, np, p->subtype);       //Lookup corresponding function in table
+    Node* np = lookup(hlpHashTable, p->subtype);       //Lookup corresponding function in table
     int status = (*(np->func))(p);        //Call control function
     return status;
 }
 
 /*determines control string for power packets*/
 int hlpPower(Packet* p){
-    Node* np;
     /*construct control string*/
     char control[4];
     control[0] = p->type[0];
     strcpy(control + 1, p->subtype);
     
-    np = lookup(hlpHashTable, np, control);     //Lookup corresponding function in table
+    Node* np = lookup(hlpHashTable, control);     //Lookup corresponding function in table
     int status = (*(np->func))(p);        //Call control function
     return status;
 }
@@ -53,48 +51,48 @@ int uDataStop(Packet* p){
 int uDark1(){
     puts("Received Dark1 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, DARK1, NULL);
+    Packet* newp = constructPacket(UPLINK_S, DARK1, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uDark2(Packet* p){
     puts("Received Dark2 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, DARK2, NULL);
+    Packet* newp = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uDark3(Packet* p){
     puts("Received Dark3 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, DARK3, NULL);
+    Packet* newp = constructPacket(UPLINK_S, DARK3, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uDark4(Packet* p){
     puts("Received Dark4 Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, DARK4, NULL);
+    Packet* newp = constructPacket(UPLINK_S, DARK4, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uSleep(Packet* p){
     puts("Received shutdown Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, SLEEP, NULL);
+    Packet* newp = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uWake(Packet* p){
     puts("Received shutdown pending Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, WAKE, NULL);
+    Packet* newp = constructPacket(UPLINK_S, WAKE, NULL);
     enqueue(&hkdownQueue, newp);
 }
 int uTest(Packet* p){
     puts("Received test Uplink");
     //Insert uplink handling code here
-    Packet* newp = constructPacket(newp, UPLINK_S, TEST, NULL);
+    Packet* newp = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
@@ -103,35 +101,35 @@ int uTest(Packet* p){
 int tDataStart(Packet* p){
     puts("Received data start Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(newp, TIMER, DATASTART, NULL);
+    Packet* newp = constructPacket(TIMER_S, DATASTART, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int tDataStop(Packet* p){
     puts("Received data stop Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(newp, TIMER, DATASTOP, NULL);
+    Packet* newp = constructPacket(TIMER_S, DATASTOP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int tDark2(Packet* p){
     puts("Received Dark2 Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(newp, TIMER, DARK2, NULL);
+    Packet* newp = constructPacket(TIMER_S, DARK2, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int tDark4(Packet* p){
     puts("Received Dark4 Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(newp, TIMER, DARK4, NULL);
+    Packet* newp = constructPacket(TIMER_S, DARK4, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int tSleep(Packet* p){
     puts("Received shutdown Timer");
     //Insert timer handling code here
-    Packet* newp = constructPacket(newp, TIMER, SLEEP, NULL);
+    Packet* newp = constructPacket(TIMER_S, SLEEP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
