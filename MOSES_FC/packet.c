@@ -8,6 +8,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
         dataSize = strlen(data);  //find length of data string
     } else {
         dataSize = 0;
+        data[0] = NULL;
     }
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
@@ -18,16 +19,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
         puts("malloc failed to allocate packet");
     }
     
-//    char* timestamp;
-//    if((timestamp = (char*) malloc(sizeof(char) * 7)) == NULL){
-//        puts("malloc failed to allocate timestamp");
-//    }
-//    getCurrentTime(timestamp);
-//    
-//    /*copy memory into new packet*/
-//    memcpy(p->timeStamp, timestamp, 6);
     getCurrentTime(p->timeStamp);
-    //memcpy(p->type, type, 1);
     p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
@@ -206,14 +198,7 @@ void readPacket(int fd, Packet * p) {
         if (clearBuffer) {
             ioctl(fd, FIONREAD);
             continue_read = TRUE;
-//            readData(fd, &temp, 1);
-//            while (temp != STARTBIT) {
-//                error += temp;
-//                readData(fd, &temp, 1);
-//            }
-//            if (error != "") {
-//                //printf("Bad Packet Data\n");
-//            }
+            printf("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) printf("Bad Timestamp\n");

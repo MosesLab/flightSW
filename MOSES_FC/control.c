@@ -14,7 +14,7 @@ void * hlp_control(void * arg) {
         //int status = GOOD_PACKET; //used by control functions to store validity of packet
         Packet new_packet;
         Packet * p = &new_packet;
-        printf("\n");
+
         readPacket(fup, p);
 
         switch (p->type[0]) {
