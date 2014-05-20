@@ -14,7 +14,7 @@ void * hlp_control(void * arg) {
         //int status = GOOD_PACKET; //used by control functions to store validity of packet
         Packet new_packet;
         Packet * p = &new_packet;
-        printf("\n");
+        
         readPacket(fup, p);
 
         switch (p->type[0]) {
@@ -23,27 +23,30 @@ void * hlp_control(void * arg) {
                 break;
             case MDAQ_RQS:
                 printf("DAQ packet\n");
-                p->control[0] = p->type[0];
-                strcpy(p->control + 1, p->subtype); //Construct control string
+                p->control = concat(2, p->type, p->subtype);
+                //strcpy(p->control + 1, p->subtype); //Construct control string
                 p->status = execPacket(p);
                 break;
             case UPLINK:
                 printf("HLP Uplink packet\n");
-                p->control[0] = p->type[0];
-                strcpy(p->control + 1, p->subtype); //Construct control string                    
+                p->control = concat(2, p->type, p->subtype);
+//                p->control[0] = p->type[0];
+//                strcpy(p->control + 1, p->subtype); //Construct control string                    
                 p->status = execPacket(p);
                 break;
             case PWR:
                 printf("Power packet\n");
-                p->control[0] = p->type[0];
-                strcpy(p->control + 1, p->subtype); //Construct control string
+                p->control = concat(2, p->type, p->subtype);
+//                p->control[0] = p->type[0];
+//                strcpy(p->control + 1, p->subtype); //Construct control string
                 p->status = execPacket(p);
                 break;
             case HK_RQS:
                 printf("HK Request Packet\n");
-                p->control[0] = p->type[0];
-                strcpy(p->control + 1, p->subtype);
-                strcpy(p->control + 4, p->data); //Construct control string
+                p->control = concat(3, p->type, p->subtype, p->data);
+//                p->control[0] = p->type[0];
+//                strcpy(p->control + 1, p->subtype);
+//                strcpy(p->control + 4, p->data); //Construct control string
                 p->status = execPacket(p);
                 break;
             default:
@@ -69,6 +72,7 @@ void * hlp_control(void * arg) {
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
+            printf("\n");
         }
 
     }
