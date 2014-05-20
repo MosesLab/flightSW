@@ -9,21 +9,22 @@
 #define	HLP_H
 
 //Packet Types --SENT
-#define CONTROL  'C'
-#define TIMER    'T'
-#define HK_RSP   'K'
-#define MDAQ_RSP 'Q' 
+//#define CONTROL  'C'
+//#define TIMER    'T'
+//#define HK_RSP   'K'
+//#define MDAQ_RSP 'Q' 
 
 //Both
-#define SHELL    'S'
+
 
 //Recieved
 #define UPLINK   'U'
 #define MDAQ_RQS 'M'
 #define PWR      'P'
 #define HK_RQS   'H'
+#define SHELL    'S'
 
-/*type strings*/
+/*Sent*/
 #define UPLINK_S        "U"
 #define TIMER_S         "T"
 #define PWR_S           "P"
@@ -31,6 +32,9 @@
 #define BDPKT           "B"
 #define MDAQ_RQS_S      "M"
 #define HK_RQS_S        "H"
+#define HK_RSP         "K"
+#define MDAQ_RSP        "Q" 
+#define SHELL_S         "S"
 
 //Control
 #define QUIT	   "QIT"
