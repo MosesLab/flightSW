@@ -27,6 +27,7 @@
 
 /*type strings*/
 #define UPLINK_S        "U"
+#define TIMER_S         "T"
 #define PWR_S           "P"
 
 //Control
