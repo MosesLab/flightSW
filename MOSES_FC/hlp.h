@@ -26,7 +26,8 @@
 #define HK_RQS   'H'
 
 /*type strings*/
-#define PWR_S   "P"
+#define UPLINK_S        "U"
+#define PWR_S           "P"
 
 //Control
 #define QUIT	   "QIT"
