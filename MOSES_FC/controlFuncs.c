@@ -15,20 +15,8 @@
  * Determines control string for uplink packets and finds the corresponding 
  * function by looking up the control string in the hash table
  */ 
-int hlpUplink(Packet* p){
-    Node* np = lookup(hlpHashTable, p->subtype);       //Lookup corresponding function in table
-    int status = (*(np->func))(p);        //Call control function
-    return status;
-}
-
-/*determines control string for power packets*/
-int hlpPower(Packet* p){
-    /*construct control string*/
-    char control[5];
-    control[0] = p->type[0];
-    strcpy(control + 1, p->subtype);
-    
-    Node* np = lookup(hlpHashTable, control);     //Lookup corresponding function in table
+int hlpControl(Packet* p){  
+    Node* np = lookup(hlpHashTable, p->control);       //Lookup corresponding function in table
     int status = (*(np->func))(p);        //Call control function
     return status;
 }
@@ -535,89 +523,89 @@ void hlpHashInit(){
     }
     
     /*Uplink control string-function matching*/
-    stringTable[UDataStart] = DATASTART; 
-    stringTable[UDataStop] = DATASTOP; 
-    stringTable[UDark1] = DARK1;
-    stringTable[UDark2] = DARK2;
-    stringTable[UDark3] = DARK3;
-    stringTable[UDark4] = DARK4;
-    stringTable[USleep] = SLEEP;
-    stringTable[UWake] = WAKE;
-    stringTable[UTest] = TEST;
-    stringTable[SetSeq] = ST_SEQUENCE;
-    stringTable[SetOut] = ST_OFN;
-    stringTable[GetSeqName] = GT_SEQ_NM;
-    stringTable[GetSeqInfo] = GT_SEQ_INFO;
-    stringTable[GetCurSeq] = GT_CUR_SEQ;
-    stringTable[GetFrameLen] = GT_CUR_FRML;
-    stringTable[GetFrameInd] = GT_CUR_FRMI;
-    stringTable[GetOut] = GT_OFN;
-    stringTable[GetSelf] = GT_SLFT_STS;
-    stringTable[GetStims] = GT_STM_STS;
-    stringTable[GetTelem] = GT_TLM_STS;
-    stringTable[GetCh0] = GT_CH0_STS;
-    stringTable[GetPosOnly] = GT_POS_STS;
-    stringTable[ScaleSeq] = SCALE_SEQ;
-    stringTable[TransSeq] = TRANS_SEQ;
-    stringTable[FindJump] = FIND_N_JUMP;
-    stringTable[JumpSeq] = JUMP;
-    stringTable[SaveSeq] = SAV_SEQ;
+    stringTable[UDataStart] = UPLINK_S DATASTART; 
+    stringTable[UDataStop] =  UPLINK_S DATASTOP; 
+    stringTable[UDark1] =  UPLINK_S DARK1;
+    stringTable[UDark2] = UPLINK_S DARK2;
+    stringTable[UDark3] = UPLINK_S DARK3;
+    stringTable[UDark4] = UPLINK_S DARK4;
+    stringTable[USleep] = UPLINK_S SLEEP;
+    stringTable[UWake] = UPLINK_S WAKE;
+    stringTable[UTest] = UPLINK_S TEST;
+    stringTable[SetSeq] = MDAQ_RQS_S ST_SEQUENCE;
+    stringTable[SetOut] = MDAQ_RQS_S ST_OFN;
+    stringTable[GetSeqName] = MDAQ_RQS_S GT_SEQ_NM;
+    stringTable[GetSeqInfo] = MDAQ_RQS_S GT_SEQ_INFO;
+    stringTable[GetCurSeq] = MDAQ_RQS_S GT_CUR_SEQ;
+    stringTable[GetFrameLen] = MDAQ_RQS_S GT_CUR_FRML;
+    stringTable[GetFrameInd] = MDAQ_RQS_S GT_CUR_FRMI;
+    stringTable[GetOut] = MDAQ_RQS_S GT_OFN;
+    stringTable[GetSelf] = MDAQ_RQS_S GT_SLFT_STS;
+    stringTable[GetStims] = MDAQ_RQS_S GT_STM_STS;
+    stringTable[GetTelem] = MDAQ_RQS_S GT_TLM_STS;
+    stringTable[GetCh0] = MDAQ_RQS_S GT_CH0_STS;
+    stringTable[GetPosOnly] = MDAQ_RQS_S GT_POS_STS;
+    stringTable[ScaleSeq] = MDAQ_RQS_S SCALE_SEQ;
+    stringTable[TransSeq] = MDAQ_RQS_S TRANS_SEQ;
+    stringTable[FindJump] = MDAQ_RQS_S FIND_N_JUMP;
+    stringTable[JumpSeq] = MDAQ_RQS_S JUMP;
+    stringTable[SaveSeq] = MDAQ_RQS_S SAV_SEQ;
     //stringTable[SaveCurSeq] = SAV_CUR_SEQ;
-    stringTable[FindReplace] = FIND_N_RPLC;
-    stringTable[BeginSeq] = BEGIN_SEQ;
-    stringTable[EndSeq] = END_SEQ;
-    stringTable[ExitSW] = EXT;
-    stringTable[TelemOn] = TELEM_ON;
-    stringTable[TelemOff] = TELEM_OFF;
-    stringTable[ZeroOn] = CHAN0_ON;
-    stringTable[ZeroOff] = CHAN0_OFF;
-    stringTable[PosOnlyOn] = POSONLY_ON;
-    stringTable[PosOnlyOff] = POSONLY_OFF;
-    stringTable[StimsOn] = STIM_ON;
-    stringTable[StimsOff] = STIM_OFF;
-    stringTable[ResetROE] = RST_ROE;
-    stringTable[RoeDefaultOff] = EXIT_DFLT;
-    stringTable[RoeSelfOn] = SET_SLFTST;
-    stringTable[ResetSW] = RESET_MDAQ;
+    stringTable[FindReplace] = MDAQ_RQS_S FIND_N_RPLC;
+    stringTable[BeginSeq] = MDAQ_RQS_S BEGIN_SEQ;
+    stringTable[EndSeq] = MDAQ_RQS_S END_SEQ;
+    stringTable[ExitSW] = MDAQ_RQS_S EXT;
+    stringTable[TelemOn] = MDAQ_RQS_S TELEM_ON;
+    stringTable[TelemOff] = MDAQ_RQS_S TELEM_OFF;
+    stringTable[ZeroOn] = MDAQ_RQS_S CHAN0_ON;
+    stringTable[ZeroOff] = MDAQ_RQS_S CHAN0_OFF;
+    stringTable[PosOnlyOn] = MDAQ_RQS_S POSONLY_ON;
+    stringTable[PosOnlyOff] = MDAQ_RQS_S POSONLY_OFF;
+    stringTable[StimsOn] = MDAQ_RQS_S STIM_ON;
+    stringTable[StimsOff] = MDAQ_RQS_S STIM_OFF;
+    stringTable[ResetROE] = MDAQ_RQS_S RST_ROE;
+    stringTable[RoeDefaultOff] = MDAQ_RQS_S EXIT_DFLT;
+    stringTable[RoeSelfOn] = MDAQ_RQS_S SET_SLFTST;
+    stringTable[ResetSW] = MDAQ_RQS_S RESET_MDAQ;
     stringTable[PowerOn] = PWR_S TURN_ON;
     stringTable[PowerOff] = PWR_S TURN_OFF;
     stringTable[PowerQuery] = PWR_S QUERY;
-    stringTable[FC_2V] = FC_2V_V_STR;
-    stringTable[FC_2_5V] = FC_2_5V_V_STR;
-    stringTable[ROE_2_5V] = ROE_2_5V_V_STR;
-    stringTable[ROE_2_5I] = ROE_2_5V_I_STR;
-    stringTable[FC_3_3V] = FC_3_3V_V_STR;
-    stringTable[FC_P5_5V] = FC_POS_5_5V_V_STR;
-    stringTable[ROE_P5_5VA] = ROE_POS_5_5V_VA_STR;
-    stringTable[ROE_P5_5VB] = ROE_POS_5_5V_VB_STR;
-    stringTable[ROE_P5_5VD] = ROE_POS_5_5V_VD_STR;
-    stringTable[ROE_P5_5IA] = ROE_POS_5_5V_IA_STR;
-    stringTable[ROE_P5_5IB] = ROE_POS_5_5V_IB_STR;
-    stringTable[ROE_P5_5ID] = ROE_POS_5_5V_ID_STR;
-    stringTable[ROE_N5_5VA] = ROE_NEG_5_5V_VA_STR;
-    stringTable[ROE_N5_5VB] = ROE_NEG_5_5V_VB_STR;
-    stringTable[ROE_N5_5IA] = ROE_NEG_5_5V_IA_STR;
-    stringTable[ROE_N5_5IB] = ROE_NEG_5_5V_IB_STR;
-    stringTable[FC_12V] = FC_12V_V_STR;
-    stringTable[ROE_12VA] = ROE_12V_VA_STR;
-    stringTable[ROE_12VB] = ROE_12V_VB_STR;
-    stringTable[ROE_12IA] = ROE_12V_IA_STR;
-    stringTable[ROE_12IB] = ROE_12V_IB_STR;
-    stringTable[ROE_36VA] = ROE_36V_VA_STR;
-    stringTable[ROE_36VB] = ROE_36V_VB_STR;
-    stringTable[ROE_36IA] = ROE_36V_IA_STR;
-    stringTable[ROE_36IB] = ROE_36V_IB_STR;
-    stringTable[FC_T1] = FC_TEMP_1_STR;
-    stringTable[FC_T2] = FC_TEMP_2_STR;
-    stringTable[FC_T3] = FC_TEMP_3_STR;
-    stringTable[ROE_TU] = ROE_TEMP_UPPER_STR;
-    stringTable[ROE_TL] = ROE_TEMP_LOWER_STR;
-    stringTable[ROE_CA_VOD] = ROE_CCDA_VOD_STR;
-    stringTable[ROE_CA_VRD] = ROE_CCDA_VRD_STR;
-    stringTable[ROE_CA_VSS] = ROE_CCDA_VSS_STR;
-    stringTable[ROE_CS_VOD] = ROE_CCDS_VOD_STR;
-    stringTable[ROE_CS_VRD] = ROE_CCDS_VRD_STR;
-    stringTable[ROE_CS_VSS] = ROE_CCDS_VSS_STR;
+    stringTable[FC_2V] = HK_RQS_S POS2_0V;
+    stringTable[FC_2_5V] = HK_RQS_S POS2_5V FC_P2_5V_V;
+    stringTable[ROE_2_5V] = HK_RQS_S POS2_5V ROE_P2_5VD_V;
+    stringTable[ROE_2_5I] = HK_RQS_S POS2_5V ROE_P2_5VD_C;
+    stringTable[FC_3_3V] = HK_RQS_S POS3_3V;
+    stringTable[FC_P5_5V] = HK_RQS_S POS5V FC_P5V_V;
+    stringTable[ROE_P5_5VA] = HK_RQS_S POS5V ROE_P5VAA_V;
+    stringTable[ROE_P5_5VB] = HK_RQS_S POS5V ROE_P5VAB_V;
+    stringTable[ROE_P5_5VD] = HK_RQS_S POS5V ROE_P5VD_V;
+    stringTable[ROE_P5_5IA] = HK_RQS_S POS5V ROE_P5VAA_C;
+    stringTable[ROE_P5_5IB] = HK_RQS_S POS5V ROE_P5VAB_C;
+    stringTable[ROE_P5_5ID] = HK_RQS_S POS5V ROE_P5VD_C;
+    stringTable[ROE_N5_5VA] = HK_RQS_S NEG5V ROE_N5VAA_V;
+    stringTable[ROE_N5_5VB] = HK_RQS_S NEG5V ROE_N5VAB_V;
+    stringTable[ROE_N5_5IA] = HK_RQS_S NEG5V ROE_N5VAA_C;
+    stringTable[ROE_N5_5IB] = HK_RQS_S NEG5V ROE_N5VAB_C;
+    stringTable[FC_12V] = HK_RQS_S POS12V FC_P12V_V;
+    stringTable[ROE_12VA] = HK_RQS_S POS12V ROE_P12VA_V;
+    stringTable[ROE_12VB] = HK_RQS_S POS12V ROE_P12VB_V;
+    stringTable[ROE_12IA] = HK_RQS_S POS12V ROE_P12VA_C;
+    stringTable[ROE_12IB] = HK_RQS_S POS12V ROE_P12VB_C;
+    stringTable[ROE_36VA] = HK_RQS_S POS36V ROE_P36VA_V;
+    stringTable[ROE_36VB] = HK_RQS_S POS36V ROE_P36VB_V;
+    stringTable[ROE_36IA] = HK_RQS_S POS36V ROE_P36VA_C;
+    stringTable[ROE_36IB] = HK_RQS_S POS36V ROE_P36VB_C;
+    stringTable[FC_T1] = HK_RQS_S TEMP TEMP1;
+    stringTable[FC_T2] = HK_RQS_S TEMP TEMP2;
+    stringTable[FC_T3] = HK_RQS_S TEMP TEMP3;
+    stringTable[ROE_TU] = HK_RQS_S TEMP UPPER;
+    stringTable[ROE_TL] = HK_RQS_S TEMP LOWER;
+    stringTable[ROE_CA_VOD] = HK_RQS_S CCDA_VOD;
+    stringTable[ROE_CA_VRD] = HK_RQS_S CCDA_VRD;
+    stringTable[ROE_CA_VSS] = HK_RQS_S CCDA_VSS;
+    stringTable[ROE_CS_VOD] = HK_RQS_S CCDB_VOD;
+    stringTable[ROE_CS_VRD] = HK_RQS_S CCDB_VRD;
+    stringTable[ROE_CS_VSS] = HK_RQS_S CCDB_VSS;
     
      /*allocate space for function pointers*/
     hlpControl* functionTable;

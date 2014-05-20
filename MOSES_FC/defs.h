@@ -27,7 +27,8 @@ typedef struct {
         /*Packet attributes*/
         void * next;    //next item in the locking queue    
 	int dataSize;
-        int status;        
+        int status;  
+        char control[7];
 } Packet;
 
 /*typedef for array of function pointers for HLP packets*/
