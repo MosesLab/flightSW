@@ -5,7 +5,7 @@
 Packet* constructPacket(char* type, char* subtype, char* data){
     int dataSize;
     if(data != NULL){
-        dataSize = strlen(data);  //find length of data string
+        dataSize = strlen(data) + 1;  //find length of data string
     } else {
         dataSize = 0;
     }
@@ -22,7 +22,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
-    if(data != NULL) memcpy(p->data, data, dataSize+1);
+    if(data != NULL) memcpy(p->data, data, dataSize);
     p->checksum[0] = 0;
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
