@@ -130,7 +130,7 @@ int tSleep(Packet* p){
 
 /*Associates a sequence name with a signal number*/
 int setSequence(Packet* p){
-    puts("Get sequence command received");
+    puts("Set sequence command received");
     return GOOD_PACKET;
 }
 /*Uses stem for an output file.*/
