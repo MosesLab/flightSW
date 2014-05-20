@@ -39,16 +39,14 @@ int hlpPower(Packet* p){
 int uDataStart(Packet* p){
     puts("Received data start Uplink");
     //Insert uplink handling code here
-    Packet* newp;
-    newp = constructPacket(newp, UPLINK, DATASTART, NULL);
+    Packet* newp = constructPacket(UPLINK, DATASTART, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }
 int uDataStop(Packet* p){
     puts("Received data stop Uplink");
     //Insert uplink handling code here
-    Packet* newp;
-    newp = constructPacket(newp, UPLINK, DATASTOP, NULL);
+    Packet*newp = constructPacket(UPLINK, DATASTOP, NULL);
     enqueue(&hkdownQueue, newp);
     return GOOD_PACKET;
 }

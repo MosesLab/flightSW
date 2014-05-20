@@ -8,15 +8,7 @@
  * pointers that execute the appropriate control sequence based off of  
  * information contained within the packets 
  */ 
-#include "system.h"
-
-extern int hashsize;
-
-
-/*functions*/
-unsigned hash(char*);
-Node* lookup(Node**, Node*, char*);
-Node* installNode(Node**, char*, hlpControl);
+#include "hashTable.h"
 
 /*hash: form hash value for string s*/
 unsigned hash(char* s){
