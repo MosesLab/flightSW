@@ -11,9 +11,6 @@
 //Packet Types --SENT
 #define CONTROL  'C'
 #define TIMER    'T'
-#define UPLINK   'U'
-#define GDPKT    'G'
-#define BDPKT    'B'
 #define HK_RSP   'K'
 #define MDAQ_RSP 'Q' 
 
@@ -21,6 +18,7 @@
 #define SHELL    'S'
 
 //Recieved
+#define UPLINK   'U'
 #define MDAQ_RQS 'M'
 #define PWR      'P'
 #define HK_RQS   'H'
@@ -29,6 +27,8 @@
 #define UPLINK_S        "U"
 #define TIMER_S         "T"
 #define PWR_S           "P"
+#define GDPKT           "G"
+#define BDPKT           "B"
 
 //Control
 #define QUIT	   "QIT"
