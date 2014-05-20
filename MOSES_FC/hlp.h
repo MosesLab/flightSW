@@ -29,6 +29,8 @@
 #define PWR_S           "P"
 #define GDPKT           "G"
 #define BDPKT           "B"
+#define MDAQ_RQS_S      "M"
+#define HK_RQS_S        "H"
 
 //Control
 #define QUIT	   "QIT"

@@ -9,12 +9,13 @@ void * hlp_control(void * arg) {
     buildLookupTable();
     //uplinkInit();     obsufucated tmu map
     hlpHashInit();
-    puts("\n");
+
     while (ts_alive) {
-        int status = GOOD_PACKET;       //used by control functions to store validity of packet
+        //int status = GOOD_PACKET; //used by control functions to store validity of packet
         Packet new_packet;
         Packet * p = &new_packet;
         readPacket(fup, p);
+        printf("\n");
         if (!p->status) {
             status = BAD_PACKET;
         } else {
@@ -24,26 +25,37 @@ void * hlp_control(void * arg) {
                     break;
                 case MDAQ_RQS:
                     printf("DAQ packet\n");
+                    p->control[0] = p->type[0];
+                    strcpy(p->control + 1, p->subtype); //Construct control string
+                    p->status = hlpControl(p);
                     break;
                 case UPLINK:
                     printf("HLP Uplink packet\n");
-                    status = hlpUplink(p);
+                    p->control[0] = p->type[0];
+                    strcpy(p->control + 1, p->subtype); //Construct control string                    
+                    p->status = hlpControl(p);
                     break;
                 case PWR:
                     printf("Power packet\n");
-                    status = hlpPower(p);
+                    p->control[0] = p->type[0];
+                    strcpy(p->control + 1, p->subtype); //Construct control string
+                    p->status = hlpControl(p);
                     break;
                 case HK_RQS:
                     printf("HK Request Packet\n");
+                    p->control[0] = p->type[0];
+                    strcpy(p->control + 1, p->subtype);
+                    strcpy(p->control + 4, p->data); //Construct control string
+                    p->status = hlpControl(p);
                     break;
                 default:
                     printf("Bad Packet type\n");
-                    status = BAD_PACKET;
+                    p->status = BAD_PACKET;
                     break;
             }
         }
         if (ts_alive) {
-            
+
 
             printf("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             //enqueue(&hkdownQueue, p);
@@ -66,6 +78,7 @@ void * hlp_control(void * arg) {
     //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
 }
+
 /*
  * hlp_down is a thread that waits on a packet from a queue and sends it over 
  * the housekeeping downlink
@@ -89,4 +102,4 @@ void * hlp_down(void * arg) {
 
 /*
  * 
- */ 
+ */
