@@ -17,7 +17,7 @@ unsigned hash(char*);
 Node* lookup(Node**, char*);
 Node* installNode(Node**, char*, hlpControl);
 
-char* concat(int, ...)
+char* concat(int, ...);
 
 #endif	/* HASHTABLE_H */
 
