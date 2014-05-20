@@ -595,9 +595,9 @@ void hlpHashInit(){
     stringTable[RoeDefaultOff] = EXIT_DFLT;
     stringTable[RoeSelfOn] = SET_SLFTST;
     stringTable[ResetSW] = RESET_MDAQ;
-    stringTable[PowerOn] = PWR TURN_ON;
-    stringTable[PowerOff] = PWR TURN_OFF;
-    stringTable[PowerQuery] = PWR QUERY;
+    stringTable[PowerOn] = PWR_S TURN_ON;
+    stringTable[PowerOff] = PWR_S TURN_OFF;
+    stringTable[PowerQuery] = PWR_S QUERY;
     stringTable[FC_2V] = FC_2V_V_STR;
     stringTable[FC_2_5V] = FC_2_5V_V_STR;
     stringTable[ROE_2_5V] = ROE_2_5V_V_STR;
