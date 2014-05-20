@@ -40,6 +40,9 @@ Packet* constructPacket(Packet* p, char type, char* subtype, char* data){
     return p;
 }
 
+char encode(char dataByte) {return lookupTable[dataByte];}
+char decode(char dataByte) {return (dataByte & 0x7F);}
+
 void getCurrentTime(char* result){
     	char timeString[30];
     	time_t curTime = time(NULL);
