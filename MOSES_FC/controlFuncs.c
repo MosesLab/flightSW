@@ -18,7 +18,7 @@
 int execPacket(Packet* p){  
     Node* np = lookup(hlpHashTable, p->control);       //Lookup corresponding function in table
     if(np == NULL){
-        return BAD_PACKET;
+        return BAD_PACKET;      //bad acknowlege if unsuccessful in finding control string in hash table
     }
     int status = (*(np->func))(p);        //Call control function
     return status;
