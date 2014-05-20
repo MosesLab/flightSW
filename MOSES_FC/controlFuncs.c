@@ -514,6 +514,7 @@ int ROE_CCDS_VSS(Packet* p){
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit(){
+    funcNumber = 82;
      hashsize = funcNumber *2; 
   
     /*allocate space for control strings*/
