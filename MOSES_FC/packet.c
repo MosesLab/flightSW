@@ -8,7 +8,6 @@ Packet* constructPacket(char* type, char* subtype, char* data){
         dataSize = strlen(data);  //find length of data string
     } else {
         dataSize = 0;
-        data[0] = NULL;
     }
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
@@ -23,7 +22,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
-    memcpy(p->data, data, dataSize);
+    if(data != NULL) memcpy(p->data, data, dataSize);
     p->checksum[0] = 0;
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
