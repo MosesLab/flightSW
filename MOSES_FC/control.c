@@ -54,7 +54,7 @@ void * hlp_control(void * arg) {
             //enqueue(&hkdownQueue, p);
 
             char* data;
-            data = concat(p->type, p->subtype);
+            data = concat(2, p->type, p->subtype);
             
             char* ackType;
             if (p->status == GOOD_PACKET) {
