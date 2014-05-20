@@ -22,7 +22,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     p->type[0] = type[0];
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
-    if(data != NULL) memcpy(p->data, data, dataSize);
+    if(data != NULL) memcpy(p->data, data, dataSize+1);
     p->checksum[0] = 0;
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
