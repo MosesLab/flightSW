@@ -22,19 +22,19 @@ unsigned hash(char* s){
 /*lookup: look for s in hashtable*/
 Node* lookup(Node** hTable, char* s){
     Node* np = hTable[hash(s)];
-    while(np != NULL){        
-        if(strcmp(s, np->name) == 0){
-            return np;  //Found
-        }
-        np = np->next;
-    }
-    return NULL;        //Not Found
-//    for(np = hTable[hash(s)]; np != NULL; np = np->next){
+//    while(np != NULL){        
 //        if(strcmp(s, np->name) == 0){
 //            return np;  //Found
 //        }
+//        np = np->next;
 //    }
 //    return NULL;        //Not Found
+    for(np = hTable[hash(s)]; np != NULL; np = np->next){
+        if(strcmp(s, np->name) == 0){
+            return np;  //Found
+        }
+    }
+    return NULL;        //Not Found
 }
 
 /*install: put name and definition in hashtable*/
