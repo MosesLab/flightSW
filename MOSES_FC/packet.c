@@ -270,7 +270,7 @@ void sendPacket(Packet * p, int fd){
     sendData(p->type, 1, fd);
     sendData(p->subtype, 3, fd);
     sendData(p->dataLength, 2, fd);
-    sendData(p->data, p->dataSize, fd)
+    sendData(p->data, p->dataSize, fd);
     sendData(p->checksum, 1, fd);
     sendData(&end, 1, fd);
     sendData(&eof, 1, fd);
