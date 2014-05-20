@@ -32,7 +32,7 @@ Node** hlpHashTable;
 void hlpHashInit();
 
 /*hlp control functions: used to control which part of the packet is hashed*/
-int hlpControl(Packet*);
+int execPacket(Packet*);
 //int hlpShell(Packet*);
 //int hlpDaq(Packet*);
 //int hlpPower(Packet*);

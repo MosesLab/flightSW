@@ -16,44 +16,42 @@ void * hlp_control(void * arg) {
         Packet * p = &new_packet;
         readPacket(fup, p);
         printf("\n");
-        if (!p->status) {
-            status = BAD_PACKET;
-        } else {
-            switch (p->type[0]) {
-                case SHELL:
-                    printf("Shell packet\n");
-                    break;
-                case MDAQ_RQS:
-                    printf("DAQ packet\n");
-                    p->control[0] = p->type[0];
-                    strcpy(p->control + 1, p->subtype); //Construct control string
-                    p->status = hlpControl(p);
-                    break;
-                case UPLINK:
-                    printf("HLP Uplink packet\n");
-                    p->control[0] = p->type[0];
-                    strcpy(p->control + 1, p->subtype); //Construct control string                    
-                    p->status = hlpControl(p);
-                    break;
-                case PWR:
-                    printf("Power packet\n");
-                    p->control[0] = p->type[0];
-                    strcpy(p->control + 1, p->subtype); //Construct control string
-                    p->status = hlpControl(p);
-                    break;
-                case HK_RQS:
-                    printf("HK Request Packet\n");
-                    p->control[0] = p->type[0];
-                    strcpy(p->control + 1, p->subtype);
-                    strcpy(p->control + 4, p->data); //Construct control string
-                    p->status = hlpControl(p);
-                    break;
-                default:
-                    printf("Bad Packet type\n");
-                    p->status = BAD_PACKET;
-                    break;
-            }
+
+        switch (p->type[0]) {
+            case SHELL:
+                printf("Shell packet\n");
+                break;
+            case MDAQ_RQS:
+                printf("DAQ packet\n");
+                p->control[0] = p->type[0];
+                strcpy(p->control + 1, p->subtype); //Construct control string
+                p->status = execPacket(p);
+                break;
+            case UPLINK:
+                printf("HLP Uplink packet\n");
+                p->control[0] = p->type[0];
+                strcpy(p->control + 1, p->subtype); //Construct control string                    
+                p->status = execPacket(p);
+                break;
+            case PWR:
+                printf("Power packet\n");
+                p->control[0] = p->type[0];
+                strcpy(p->control + 1, p->subtype); //Construct control string
+                p->status = execPacket(p);
+                break;
+            case HK_RQS:
+                printf("HK Request Packet\n");
+                p->control[0] = p->type[0];
+                strcpy(p->control + 1, p->subtype);
+                strcpy(p->control + 4, p->data); //Construct control string
+                p->status = execPacket(p);
+                break;
+            default:
+                printf("Bad Packet type\n");
+                p->status = BAD_PACKET;
+                break;
         }
+
         if (ts_alive) {
 
 
