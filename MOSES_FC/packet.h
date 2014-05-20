@@ -33,8 +33,8 @@ struct termios oldtio_up, newtio_up; //structures for old device settings and ne
 /*function declaration*/
 void buildLookupTable();
 char calcCheckSum(Packet * p);
-char encode(char dataByte) {return lookupTable[dataByte];}
-char decode(char dataByte) {return (dataByte & 0x7F);}
+char encode(char);
+char decode(char);
 int ahtoi(char*, int);
 void itoah(int, char *, int);
 
