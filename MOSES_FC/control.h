@@ -11,6 +11,7 @@
 #include <signal.h>
 #include "hlp.h"
 #include "packet.h"
+#include "hashTable.h"
 
 extern volatile sig_atomic_t ts_alive;
 
