@@ -24,7 +24,7 @@ int hlpUplink(Packet* p){
 /*determines control string for power packets*/
 int hlpPower(Packet* p){
     /*construct control string*/
-    char control[4];
+    char control[5];
     control[0] = p->type[0];
     strcpy(control + 1, p->subtype);
     
