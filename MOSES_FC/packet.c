@@ -7,7 +7,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     if(data != NULL){
         dataSize = strlen(data) + 1;  //find length of data string
     } else {
-        dataSize = 0;
+        dataSize = 1;
     }
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
@@ -84,7 +84,7 @@ char calcCheckSum(Packet * p) {
     }
 
     //parityByte ^= p->type[0];	//this is incorrect according to documentation
-    parityByte ^= (p->type[0]); //this is correct
+    parityByte ^= encode(p->type[0]); //this is correct
 
     for (i = 0; i < 3; i++) {
         parityByte ^= encode(p->subtype[i]);
