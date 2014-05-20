@@ -24,29 +24,21 @@ void * hlp_control(void * arg) {
             case MDAQ_RQS:
                 printf("DAQ packet\n");
                 p->control = concat(2, p->type, p->subtype);
-                //strcpy(p->control + 1, p->subtype); //Construct control string
                 p->status = execPacket(p);
                 break;
             case UPLINK:
                 printf("HLP Uplink packet\n");
-                p->control = concat(2, p->type, p->subtype);
-//                p->control[0] = p->type[0];
-//                strcpy(p->control + 1, p->subtype); //Construct control string                    
+                p->control = concat(2, p->type, p->subtype);                  
                 p->status = execPacket(p);
                 break;
             case PWR:
                 printf("Power packet\n");
                 p->control = concat(2, p->type, p->subtype);
-//                p->control[0] = p->type[0];
-//                strcpy(p->control + 1, p->subtype); //Construct control string
                 p->status = execPacket(p);
                 break;
             case HK_RQS:
                 printf("HK Request Packet\n");
                 p->control = concat(3, p->type, p->subtype, p->data);
-//                p->control[0] = p->type[0];
-//                strcpy(p->control + 1, p->subtype);
-//                strcpy(p->control + 4, p->data); //Construct control string
                 p->status = execPacket(p);
                 break;
             default:
@@ -61,9 +53,9 @@ void * hlp_control(void * arg) {
             printf("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             //enqueue(&hkdownQueue, p);
 
-            char data[16];
-            data[0] = p->type[0];
-            strcpy(data + 1, p->subtype);
+            char* data;
+            data = concat(p->type, p->subtype);
+            
             char* ackType;
             if (p->status == GOOD_PACKET) {
                 ackType = GDPKT;
