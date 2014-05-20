@@ -50,7 +50,7 @@ void * hlp_control(void * arg) {
             char data[16];
             data[0] = p->type[0];
             strcpy(data + 1, p->subtype);
-            char ackType;
+            char* ackType;
             if (p->status == GOOD_PACKET) {
                 ackType = GDPKT;
             } else {
