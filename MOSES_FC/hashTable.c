@@ -41,7 +41,7 @@ Node* lookup(Node** hTable, char* s){
 Node* installNode(Node** hTable, char* name, hlpControl defn){
     Node* np;
     unsigned hashval;
-    if((np = lookup(hTable, np, name)) == NULL){    //Not found
+    if((np = lookup(hTable, name)) == NULL){    //Not found
         np = (Node*) malloc(sizeof(*np));
         if(np == NULL || (np->name = strdup(name)) == NULL){
             return NULL;
