@@ -10,6 +10,7 @@
 #include <termios.h>
 #include <signal.h>
 #include "hlp.h"
+#include "packet.h"
 
 extern volatile sig_atomic_t ts_alive;
 
