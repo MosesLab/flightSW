@@ -9,7 +9,7 @@ void * hlp_control(void * arg) {
     buildLookupTable();
     //uplinkInit();     obsufucated tmu map
     hlpHashInit();
-
+    printf("\n");
     while (ts_alive) {
         int status = GOOD_PACKET;       //used by control functions to store validity of packet
         Packet new_packet;
@@ -83,7 +83,7 @@ void * hlp_down(void * arg) {
         } else {
             printf("Bad send Packet\n");
         }
-        printf("\n");
+
     }
 }
 

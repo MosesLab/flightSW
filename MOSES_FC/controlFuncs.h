@@ -14,6 +14,7 @@
 #include "system.h"
 #include "hlp.h"
 #include "lockingQueue.h"
+#include "packet.h"
 
 extern LockingQueue hkdownQueue;
 /*
