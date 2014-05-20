@@ -35,6 +35,7 @@
 #define HK_RSP         "K"
 #define MDAQ_RSP        "Q" 
 #define SHELL_S         "S"
+#define PWR_S             "P"
 
 //Control
 #define QUIT	   "QIT"
