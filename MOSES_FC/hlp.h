@@ -138,7 +138,7 @@
 #define ROE_P5VD_V   "VD"
 #define ROE_P5VAA_C  "IA"
 #define ROE_P5VAB_C  "IB"
-#define ROE_P5VD_C   "ID"
+#define ROE_P5VD_C   "IC"       //
 
 #define ROE_N5VAA_V  "VA"
 #define ROE_N5VAB_V  "VB"
