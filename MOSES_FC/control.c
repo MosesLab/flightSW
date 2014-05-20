@@ -14,7 +14,7 @@ void * hlp_control(void * arg) {
         //int status = GOOD_PACKET; //used by control functions to store validity of packet
         Packet new_packet;
         Packet * p = &new_packet;
-        
+        printf("\n");
         readPacket(fup, p);
 
         switch (p->type[0]) {
@@ -61,10 +61,11 @@ void * hlp_control(void * arg) {
                 ackType = GDPKT;
             } else {
                 ackType = BDPKT;
+                puts("BAD PACKET EXECUTION");
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
-            printf("\n");
+            
         }
 
     }
