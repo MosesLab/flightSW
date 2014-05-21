@@ -7,7 +7,6 @@ void * hlp_control(void * arg) {
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
     buildLookupTable();
-    //uplinkInit();     obsufucated tmu map
     hlpHashInit();
 
     while (ts_alive) {
@@ -18,7 +17,7 @@ void * hlp_control(void * arg) {
         }
 
         readPacket(fup, p);
-
+        /*the Type of packet determines how */
         switch (p->type[0]) {
             case SHELL:
                 printf("Shell packet\n");
@@ -85,11 +84,11 @@ void * hlp_down(void * arg) {
     while (ts_alive) {
 
         Packet * p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
-
+        if (!ts_alive) break;   //If the program has terminated, break out of the loop
         if (p->status) {
-            printf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             sendPacket(p, fdown);
-            free(p);
+            printf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);            
+            free(p);    //Clean up after packet is sent
         } else {
             printf("Bad send Packet\n");
         }
