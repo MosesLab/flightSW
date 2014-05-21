@@ -10,9 +10,12 @@ void * hlp_control(void * arg) {
     hlpHashInit();
 
     while (ts_alive) {
-        //int status = GOOD_PACKET; //used by control functions to store validity of packet
-        Packet new_packet;
-        Packet * p = &new_packet;
+        /*allocate space for packet*/
+        Packet* p;
+        if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
+            puts("malloc failed to allocate packet");
+        }
+
         readPacket(fup, p);
         /*the Type of packet determines how */
         switch (p->type[0]) {
@@ -26,7 +29,7 @@ void * hlp_control(void * arg) {
                 break;
             case UPLINK:
                 printf("HLP Uplink packet\n");
-                p->control = concat(2, p->type, p->subtype);                  
+                p->control = concat(2, p->type, p->subtype);
                 p->status = execPacket(p);
                 break;
             case PWR:
@@ -53,7 +56,7 @@ void * hlp_control(void * arg) {
 
             char* data;
             data = concat(2, p->type, p->subtype);
-            
+
             char* ackType;
             if (p->status == GOOD_PACKET) {
                 ackType = GDPKT;
@@ -61,9 +64,9 @@ void * hlp_control(void * arg) {
                 ackType = BDPKT;
                 puts("BAD PACKET EXECUTION");
             }
-            Packet* rp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
-            enqueue(&hkdownQueue, rp);
-            
+            Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
+            enqueue(&hkdownQueue, nextp);
+            free(p);    //clean up after packet is processed
         }
 
     }
