@@ -7,7 +7,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     if(data != NULL){
         dataSize = strlen(data) + 1;  //find length of data string
     } else {
-        dataSize = 1;
+        dataSize = 0;
     }
     char dataLength[2];            //allocate buffer for char representation of length
     itoah(dataSize, dataLength, 2);  //convert length from int to string
@@ -23,7 +23,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     memcpy(p->subtype, subtype, 3);
     memcpy(p->dataLength, dataLength, 2);
     if(data != NULL) memcpy(p->data, data, dataSize);
-    p->checksum[0] = 0;
+    p->checksum[0] = calcCheckSum(p);
     p->status = GOOD_PACKET;
     p->dataSize = dataSize;
     p->next = NULL;
@@ -83,8 +83,8 @@ char calcCheckSum(Packet * p) {
         parityByte ^= encode(p->timeStamp[i]);
     }
 
-    //parityByte ^= p->type[0];	//this is incorrect according to documentation
-    parityByte ^= encode(p->type[0]); //this is correct
+    //parityByte ^= p->type[0];	
+    parityByte ^= encode(p->type[0]);
 
     for (i = 0; i < 3; i++) {
         parityByte ^= encode(p->subtype[i]);
@@ -94,12 +94,12 @@ char calcCheckSum(Packet * p) {
         parityByte ^= encode(p->dataLength[i]);
     }
 
-
-    for (i = 0; i < p->dataSize; i++) {
+    for(i=0; i < p->dataSize - 1; i++){
+    //for (i = 0; i < p->dataSize; i++) {       //test EGSE checksum error
         parityByte ^= encode(p->data[i]);
     }
 
-    parityByte = decode(parityByte);
+    parityByte = decode(parityByte);    //decode because all chars are encoded before being sent
     return parityByte;
 
 
@@ -260,7 +260,7 @@ int readData(int fd, char * data, int len) {
 }
 
 void sendPacket(Packet * p, int fd){
-    p->checksum[0] = calcCheckSum(p);
+    
     char start = STARTBYTE;
     char end = ENDBYTE;
     char eof = 0x04;

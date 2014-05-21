@@ -418,8 +418,7 @@ int resetSW(Packet* p) {
 int enablePower(Packet* p) {
     puts("Command to enable subsystem power received");
     //Insert control code here  
-    char* response = "test"; //test EGSE
-    Packet* r = constructPacket(PWR_S, STATUS_ON, response);
+    Packet* r = constructPacket(PWR_S, STATUS_ON, p->data);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
@@ -428,8 +427,7 @@ int enablePower(Packet* p) {
 int disablePower(Packet* p) {
     puts("Command to disable subsystem power received");
     //Insert control code here  
-    char* response = "test"; //test EGSE
-    Packet* r = constructPacket(PWR_S, STATUS_OFF, response);
+    Packet* r = constructPacket(PWR_S, STATUS_OFF, p->data);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
@@ -438,8 +436,7 @@ int disablePower(Packet* p) {
 int queryPower(Packet* p) {
     puts("Command to query subsystem power received");
     //Insert control code here  
-    char* response = "test"; //test EGSE
-    Packet* r = constructPacket(PWR_S, STATUS_OFF, response);
+    Packet* r = constructPacket(PWR_S, STATUS_OFF, p->data);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
