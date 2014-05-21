@@ -94,8 +94,8 @@ char calcCheckSum(Packet * p) {
         parityByte ^= encode(p->dataLength[i]);
     }
 
-    for(i=0; i < p->dataSize - 1; i++){
-    //for (i = 0; i < p->dataSize; i++) {       //test EGSE checksum error
+//    for(i=0; i < p->dataSize - 1; i++){
+    for (i = 0; i < p->dataSize; i++) {       //test EGSE checksum error
         parityByte ^= encode(p->data[i]);
     }
 
