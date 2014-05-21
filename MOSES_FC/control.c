@@ -81,7 +81,7 @@ void * hlp_down(void * arg) {
     while (ts_alive) {
 
         Packet * p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
-
+        if (!ts_alive) break;   //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
             printf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);            
