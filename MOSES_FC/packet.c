@@ -83,8 +83,8 @@ char calcCheckSum(Packet * p) {
         parityByte ^= encode(p->timeStamp[i]);
     }
 
-    //parityByte ^= p->type[0];	
-    parityByte ^= encode(p->type[0]);
+    parityByte ^= p->type[0];	
+    //parityByte ^= encode(p->type[0]);
 
     for (i = 0; i < 3; i++) {
         parityByte ^= encode(p->subtype[i]);
