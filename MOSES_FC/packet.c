@@ -19,13 +19,14 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     }
     
     getCurrentTime(p->timeStamp);
-    p->type[0] = type[0];
-    memcpy(p->subtype, subtype, 3);
-    memcpy(p->dataLength, dataLength, 2);
+    //p->type[0] = type[0];
+    memcpy(p->type, type, 2);
+    memcpy(p->subtype, subtype, 4);
+    memcpy(p->dataLength, dataLength, 3);
     if(data != NULL) memcpy(p->data, data, dataSize + 1);
-    p->checksum[0] = calcCheckSum(p);
-    p->status = GOOD_PACKET;
     p->dataSize = dataSize;
+    p->checksum[0] = calcCheckSum(p);
+    p->status = GOOD_PACKET;    
     p->next = NULL;
     
     return p;
