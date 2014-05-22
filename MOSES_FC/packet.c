@@ -23,8 +23,8 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     memcpy(p->type, type, 2);
     memcpy(p->subtype, subtype, 4);
     memcpy(p->dataLength, dataLength, 3);
-    if(data != NULL) memcpy(p->data, data, dataSize + 1);
     p->dataSize = dataSize;
+    if(data != NULL) memcpy(p->data, data, dataSize + 1);   
     p->checksum[0] = calcCheckSum(p);
     p->checksum[1] = '\0';
     p->status = GOOD_PACKET;    
