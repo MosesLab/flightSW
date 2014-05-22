@@ -13,7 +13,7 @@ void * hlp_control(void * arg) {
         /*allocate space for packet*/
         Packet* p;
         if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
-            record("malloc failed to allocate packet");
+            record("malloc failed to allocate packet\n");
         }
 
         readPacket(fup, p);
@@ -61,7 +61,7 @@ void * hlp_control(void * arg) {
                 ackType = GDPKT;
             } else {
                 ackType = BDPKT;
-                record("BAD PACKET EXECUTION");
+                record("BAD PACKET EXECUTION\n");
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
