@@ -234,6 +234,8 @@ void readPacket(int fd, Packet * p) {
     }
 }
 
+void
+
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
     char temp;
