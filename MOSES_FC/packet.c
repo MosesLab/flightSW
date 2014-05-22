@@ -42,6 +42,14 @@ void getCurrentTime(char* result){
     	strftime(timeString,30,"%H%M%S",broken); //format time
     	memcpy(result,timeString,7);
 }
+
+/*records a packet to a log file*/
+void recordPacket(Packet* p){
+    char* pString;
+    asprintf(&pString, "%s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
+    record(pString);
+    free(pString);      //clean up string after recording
+}
 /*converts ascii hex to integer value*/
 inline int ahtoi(char * aHex, int len) {
     int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
