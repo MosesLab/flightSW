@@ -5,7 +5,7 @@
  * Created on May 19, 2014, 11:58 AM
  */
 
-#include "ProgramLogger.h"
+#include "logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

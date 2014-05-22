@@ -10,6 +10,7 @@
       <itemPath>hashTable.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
+      <itemPath>logger.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
       <itemPath>system.h</itemPath>
@@ -25,6 +26,7 @@
       <itemPath>controlFuncs.c</itemPath>
       <itemPath>hashTable.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
+      <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
     </logicalFolder>
@@ -83,6 +85,10 @@
       </item>
       <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="logger.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
         <cTool>
           <commandLine>-lm -pthread</commandLine>
@@ -136,6 +142,10 @@
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="logger.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="logger.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
