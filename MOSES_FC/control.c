@@ -51,8 +51,7 @@ void * hlp_control(void * arg) {
         if (ts_alive) {
 
 
-            record(sprintf("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum));
-            //enqueue(&hkdownQueue, p);
+            recordPacket(p);
 
             char* data;
             data = concat(2, p->type, p->subtype);
@@ -87,7 +86,8 @@ void * hlp_down(void * arg) {
         if (!ts_alive) break;   //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
-            record(sprintf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum));            
+            recordPacket(p);    //save packet to logfile for debugging
+            //record(asprintf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum));            
             free(p);    //Clean up after packet is sent
         } else {
             record("Bad send Packet\n");
