@@ -236,7 +236,7 @@ void readPacket(int fd, Packet * p) {
             }
             tempValid = (p->checksum[0] == calcCheckSum(p));
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad checksum %d\n", p->status);
+            if (tempValid != TRUE) record("Bad checksum\n");
             ioctl(fd, FIONREAD);
         }
     }
@@ -260,7 +260,7 @@ int readData(int fd, char * data, int len) {
         
         if (temp != encode(data[i]) && temp != data[i]) {
             result = FALSE;
-            record("Bad packet Encoding %d\n", len);
+            record("Bad packet Encoding\n");
         }
     }
 
@@ -290,7 +290,7 @@ void sendData(char * data, int size, int fd){
     char temp;
     while(i < size){
         temp = encode(data[i]);
-	if(write(fd, &temp, 1) < 1) record("Write Error:%c\n",temp);
+	if(write(fd, &temp, 1) < 1) record("Write Error: hlp_down\n");
         i++;
     }
 }
