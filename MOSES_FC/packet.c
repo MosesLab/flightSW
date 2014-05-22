@@ -15,7 +15,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     /*allocate space for packet*/
     Packet* p;
     if((p = (Packet*) malloc(sizeof(Packet))) == NULL){
-        puts("malloc failed to allocate packet");
+        record("malloc failed to allocate packet");
     }
     
     getCurrentTime(p->timeStamp);
@@ -198,27 +198,27 @@ void readPacket(int fd, Packet * p) {
         if (clearBuffer) {
             ioctl(fd, FIONREAD);
             continue_read = TRUE;
-            printf("\n");
+            record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad Timestamp\n");
+            if (tempValid != TRUE) record("Bad Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad type\n");
+            if (tempValid != TRUE) record("Bad type\n");
 
             tempValid = readData(fd, p->subtype, 3);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad subtype\n");
+            if (tempValid != TRUE) record("Bad subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad data length\n");
+            if (tempValid != TRUE) record("Bad data length\n");
             p->dataSize = ahtoi(p->dataLength, 2);      //calculate data size to find how many bytes to read
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad data\n");
+            if (tempValid != TRUE) record("Bad data\n");
 
             readData(fd, p->checksum, 1);
             readData(fd, &temp, 1);
@@ -228,11 +228,13 @@ void readPacket(int fd, Packet * p) {
             }
             tempValid = (p->checksum[0] == calcCheckSum(p));
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) printf("Bad checksum %d\n", p->status);
+            if (tempValid != TRUE) record("Bad checksum %d\n", p->status);
             ioctl(fd, FIONREAD);
         }
     }
 }
+
+void
 
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
@@ -252,7 +254,7 @@ int readData(int fd, char * data, int len) {
         
         if (temp != encode(data[i]) && temp != data[i]) {
             result = FALSE;
-            printf("Bad packet Encoding %d\n", len);
+            record("Bad packet Encoding %d\n", len);
         }
     }
 
@@ -282,7 +284,7 @@ void sendData(char * data, int size, int fd){
     char temp;
     while(i < size){
         temp = encode(data[i]);
-	if(write(fd, &temp, 1) < 1) printf("Write Error:%c\n",temp);
+	if(write(fd, &temp, 1) < 1) record("Write Error:%c\n",temp);
         i++;
     }
 }

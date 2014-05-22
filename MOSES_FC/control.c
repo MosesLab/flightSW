@@ -13,7 +13,7 @@ void * hlp_control(void * arg) {
         /*allocate space for packet*/
         Packet* p;
         if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
-            puts("malloc failed to allocate packet");
+            record("malloc failed to allocate packet");
         }
 
         readPacket(fup, p);
@@ -51,7 +51,7 @@ void * hlp_control(void * arg) {
         if (ts_alive) {
 
 
-            printf("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
+            record("Received:   %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);
             //enqueue(&hkdownQueue, p);
 
             char* data;
@@ -62,7 +62,7 @@ void * hlp_control(void * arg) {
                 ackType = GDPKT;
             } else {
                 ackType = BDPKT;
-                puts("BAD PACKET EXECUTION");
+                record("BAD PACKET EXECUTION");
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
@@ -87,10 +87,10 @@ void * hlp_down(void * arg) {
         if (!ts_alive) break;   //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
-            printf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);            
+            record("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum);            
             free(p);    //Clean up after packet is sent
         } else {
-            printf("Bad send Packet\n");
+            record("Bad send Packet\n");
         }
 
     }
