@@ -16,12 +16,11 @@
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hlp.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packetType.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
         </group>
