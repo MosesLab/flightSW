@@ -46,7 +46,8 @@ void join_threads(){
     
     int i;
     for(i = 0; i < NUM_THREADS; i++){
-        pthread_join(threads[i], &returns);
+        //pthread_join(threads[i], &returns);
+        pthread_cancel(threads[i]);
     }
 }
 
