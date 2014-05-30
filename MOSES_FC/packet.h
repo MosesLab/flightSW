@@ -20,6 +20,8 @@
 #define DOWNBAUD B9600
 #define HKUP "/dev/hkup"
 #define HKDOWN "/dev/hkdown"
+//#define HKUP "/dev/ttyUSB0"
+//#define HKDOWN "/dev/ttyUSB1"
 
 extern volatile sig_atomic_t ts_alive;
 
