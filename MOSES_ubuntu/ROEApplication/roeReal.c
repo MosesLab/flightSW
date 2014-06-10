@@ -6,7 +6,7 @@
  * Description: Software representation of the     *
  *              Read Out Electronics(ROE).         *
  **************************************************/
-/*#include "roe.h"
+#include "roe.h"
 #include <errno.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"
-#include "logger.h"*/
+#include "logger.h"
 
 int activateROEReal() {
     pthread_mutex_lock(&roe.mx);
@@ -230,19 +230,19 @@ int readOutReal(char* block, int delay) {
 
     //do readout stuff 
     char command[2] = {START_CSG, block};
-
-    for (int i = 0; i < 2; i++) //Write the command to the serial link
+    int i;
+    for (i = 0; i < 2; i++) //Write the command to the serial link
         if (write(roe.roeLink, (char *) &command[i], 1) != 1) return -1;
 
     usleep(delay); //Wait for the command to complete
-    char ack;
-    if (recieveAck(roe.roeLink, &ack, 1) == -1) {
-        mx.unlock();
-        return -1; //Get Acknowledgement of Command
-    }
+    //char ack;
+    //if (recieveAck(roe.roeLink, &ack, 1) == -1) {
+    //    pthread_mutex_unlock(&roe.mx);
+    //    return -1; //Get Acknowledgement of Command
+    //}
     char status;
     if (readRoe(roe.roeLink, &status, 1) == -1) {
-        mx.unlock();
+        pthread_mutex_unlock(&roe.mx);
         return -1; //Get Status of Command Execution
     }
 
@@ -270,21 +270,24 @@ int getHKReal(char* hkparam) {
 
     //do gethk stuff 
     char command[2] = {ROE_HK_REQ, hkparam};
-
-    for (int i = 0; i < 2; i++) //Write the command to the serial link 
+    int i;
+    for (i = 0; i < 2; i++) //Write the command to the serial link 
         if (write(roe.roeLink, (char *) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe.mx);
+            record("getHK error\n");
             return -1;
         }
 
     char response;
     if (recieveAck(roe.roeLink, (char *) &response, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe.mx);
+        record("getHK error\n");
         return -1; //Get Ack
     }
     char value;
     if (readRoe(roe.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe.mx);
+        record("getHK error\n");
         return -1; //Read HK Value	mx.unlock();
     }
     pthread_mutex_unlock(&roe.mx);
@@ -342,21 +345,19 @@ int manualWriteReal(char* msg, int size) {
 }
 
 int readRoe(int fd, char *data, int size) {
-    printf("inside read ROE\n");
     //Times out after 50000 tries
     int timeout;
     int input;
     input = input_timeout(fd, 1);
-    printf("%d", input);
     if (input > 0) {
         if (read(fd, data, size) != -1) {
-            printf("data read, exiting readRoe\n");
+            //printf("data read, exiting readRoe\n");
             return 0;
         }
     }
 
 
-    printf("exiting readRoe\n");
+    //printf("readRoe Error\n");
     return -1;
 }
 

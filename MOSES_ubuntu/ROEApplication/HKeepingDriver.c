@@ -20,7 +20,7 @@ int SendHKCmds(void)
     sprintf(buffer,"%s : %d\n", "VPOS5VD",      getHKReal(VPOS5VD));
     record(buffer); //ROE +5VD Voltage
     
-    usleep(10000);
+    /*usleep(10000);
     sprintf(buffer,"%s : %d\n", "VPOS2_5VD",    getHKReal(VPOS2_5VD));
     record(buffer); //ROE +2.5VD Voltage
     
@@ -152,7 +152,7 @@ int SendHKCmds(void)
     
     //sprintf(buffer,"%s : %s", END_OF_FRAME getHKReal(END_OF_FRAME));
     //record(buffer); //ROE +5VAB Voltage
-    
+    */
     
     record("Done sending HK commands\n");
     return 0;
