@@ -37,8 +37,8 @@ void buildLookupTable();
 char calcCheckSum(Packet * p);
 char encode(char);
 char decode(char);
-int ahtoi(char*, int);
-void itoah(int, char *, int);
+inline int ahtoi(char*, int);
+inline void itoah(int, char *, int);
 
 Packet* constructPacket(char*, char *, char *);
 void getCurrentTime(char *);
