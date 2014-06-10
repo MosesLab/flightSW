@@ -22,6 +22,7 @@
       <itemPath>HLPDriver.c</itemPath>
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>newfile.c</itemPath>
       <itemPath>roeReal.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -68,6 +69,8 @@
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="newfile.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="roe.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roeReal.c" ex="false" tool="0" flavor2="0">
@@ -110,6 +113,8 @@
       <item path="main.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="newfile.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe.h" ex="false" tool="3" flavor2="0">
       </item>

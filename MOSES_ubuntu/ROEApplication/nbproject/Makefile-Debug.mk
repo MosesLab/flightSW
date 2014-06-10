@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/HLPDriver.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/newfile.o \
 	${OBJECTDIR}/roeReal.o
 
 
@@ -85,6 +86,11 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/newfile.o: newfile.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/newfile.o newfile.c
 
 ${OBJECTDIR}/roeReal.o: roeReal.c 
 	${MKDIR} -p ${OBJECTDIR}
