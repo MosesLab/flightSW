@@ -27,6 +27,7 @@
 #define ROE_TOE  	0x03FF	//Time Out Error
 #define DEFAULT  	1
 #define MANUAL  	0
+#define ROE_DEV         "/dev/ttyS3"
 
 #include <fcntl.h>
 #include <pthread.h>
@@ -62,20 +63,21 @@ struct ReadOutElectronics
 
 struct ReadOutElectronics roe;
 
-int activateROEReal();
-int deactivateReal();
-int exitDefaultReal();
-int selftestModeReal();
-int stimOnReal();
-int stimOffReal();
-int resetReal();
-int readOutReal(char* block, int delay);
-int flushReal();
-int getHKReal(char* hkparam);
-char* getAEReal();
-int setAEReal(char* paramstring);
-int manualWriteReal(char* msg, int size);
+int activateROE();
+int deactivate();
+int exitDefault();
+int selftestMode();
+int stimOn();
+int stimOff();
+int reset();
+int readOut(char* block, int delay);
+int flush();
+int getHK(char* hkparam);
+char* getAE();
+int setAE(char* paramstring);
+int manualWrite(char* msg, int size);
 int recieveAck(int fd,char *data,int size,char target);
+//int recieveAck(int fd,char *data,int size,char target = 0x03);
 int readRoe(int fd, char *data, int size);
 
 #ifdef	__cplusplus

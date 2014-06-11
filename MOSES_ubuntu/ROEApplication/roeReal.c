@@ -16,11 +16,11 @@
 #include "main.h"
 #include "logger.h"
 
-int activateROEReal() {
+int activateROE() {
     pthread_mutex_lock(&roe.mx);
     if (roe.active == FALSE) {
         //Open Serial Device
-        if ((roe.roeLink = open("/dev/roe", O_RDWR | O_NOCTTY | O_NDELAY) == -1)) {
+        if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY) == -1)) {
 
             record("Failed to Open Serial Port to ROE\n");
             pthread_mutex_unlock(&roe.mx);
@@ -34,13 +34,12 @@ int activateROEReal() {
         tcgetattr(roe.roeLink, &options);
         cfsetispeed(&options, B9600); //Set to 9600 Baud
         cfsetospeed(&options, B9600); //Set to 9600 Baud
-
-        //options.c_lflag &= ~ICANON; /* Set non-canonical mode */
-        options.c_cc[VMIN] = 0;
-        options.c_cc[VTIME] = 10; /* Set timeout of 10.0 seconds */
+        
+        //options.c_cc[VMIN] = 0;
+        //options.c_cc[VTIME] = 10; /* Set timeout of 10.0 seconds */
 
         options.c_cflag |= (CLOCAL | CREAD); //Enable Receiver and ignore modem
-        //	control lines.
+                                             //	control lines.
         options.c_cflag &= ~PARENB; //No Parity generation or checking
         options.c_cflag &= ~CSTOPB; //One Stop bit not two
         options.c_cflag &= ~CSIZE; //Clear preexisting size information
@@ -58,7 +57,7 @@ int activateROEReal() {
     return 0;
 }
 
-int deactivateReal() {
+int deactivate() {
     pthread_mutex_lock(&roe.mx);
     if (roe.active == TRUE) {
         close(roe.roeLink);
@@ -74,7 +73,7 @@ int deactivateReal() {
 
 //Exit Roe default mode and enter manual mode
 
-int exitDefaultReal() {
+int exitDefault() {
     pthread_mutex_lock(&roe.mx);
 
     //New Roe Program
@@ -128,11 +127,11 @@ int exitDefaultReal() {
     }
     usleep(500000); //Wait for command to finish
     char ack;
-    //if(recieveAck(roe.roeLink,&ack,1) == -1)
-    //{
-    //	pthread_mutex_unlock(&roe.mx);
-    //	return -1; //Get Ackownledgement of Command
-    //}
+    if(recieveAck(roe.roeLink,&ack,1,0x03) == -1)
+    {
+    	pthread_mutex_unlock(&roe.mx);
+    	return -1; //Get Acknowledgment of Command
+    }
     char status;
     if (readRoe(roe.roeLink, &status, 1) == -1) {
         record("Exit Default Error\n");
@@ -166,7 +165,7 @@ int exitDefaultReal() {
 
 //Put Roe into Selftest Mode
 
-int selftestModeReal() {
+/*int selftestMode() {
     pthread_mutex_lock(&roe.mx);
 
     //do selftestmode stuff 
@@ -174,11 +173,11 @@ int selftestModeReal() {
     pthread_mutex_unlock(&roe.mx);
     record("Entering Self Test Mode\n");
     return 0;
-}
+}*/
 
 //Turn on the Stims
 
-int stimOnReal() {
+/*int stimOn() {
     pthread_mutex_lock(&roe.mx);
 
     //do stimon stuff 
@@ -186,11 +185,11 @@ int stimOnReal() {
     pthread_mutex_unlock(&roe.mx);
     record("Entering Stims Mode\n");
     return 0;
-}
+}*/
 
 //Turn off the Stims
 
-int stimOffReal() {
+/*int stimOff() {
     pthread_mutex_lock(&roe.mx);
 
     //do stimoff stuff 
@@ -198,11 +197,11 @@ int stimOffReal() {
     pthread_mutex_unlock(&roe.mx);
     record("Exiting Stims Mode\n");
     return 0;
-}
+}*/
 
 //Reset Roe back to default mode
 
-int resetReal() {
+int reset() {
     pthread_mutex_lock(&roe.mx);
 
     //do reset stuff 
@@ -225,7 +224,7 @@ int resetReal() {
         Refure to the Preamble in the header file for legal blocks 
         and their descriptions. */
 
-int readOutReal(char* block, int delay) {
+/*int readOut(char* block, int delay) {
     pthread_mutex_lock(&roe.mx);
 
     //do readout stuff 
@@ -249,11 +248,11 @@ int readOutReal(char* block, int delay) {
     pthread_mutex_unlock(&roe.mx);
     record("Reading Out CCD's\n");
     return 0;
-}
+}*/
 
 //flush the ccd's
 
-int flushReal() {
+/*int flush() {
     pthread_mutex_lock(&roe.mx);
 
     //do flush stuff 
@@ -261,11 +260,11 @@ int flushReal() {
     pthread_mutex_unlock(&roe.mx);
     record("Flushing CCD's\n");
     return 0;
-}
+}*/
 
 //Request House Keeping data from roe;
 
-int getHKReal(char* hkparam) {
+int getHK(char* hkparam) {
     pthread_mutex_lock(&roe.mx);
 
     //do gethk stuff 
@@ -300,7 +299,7 @@ int getHKReal(char* hkparam) {
 
 //Request the Analogue Electronics
 
-char* getAEReal() {
+/*char* getAE() {
     pthread_mutex_lock(&roe.mx);
 
     //do getAE stuff 
@@ -308,7 +307,7 @@ char* getAEReal() {
     pthread_mutex_unlock(&roe.mx);
 
     return 0;
-    /*char aTable[17] = "0123456789ABCDEF";
+    char aTable[17] = "0123456789ABCDEF";
     unsigned char params[8] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
     char* result = "";
     for(int i = 0; i < 8; i++)
@@ -317,12 +316,12 @@ char* getAEReal() {
             result += aTable[params[i]%16];
             //result += aTable[params[i]/16];
     }
-    return result;*/
-}
+    return result;
+}*/
 
 //Set the Analogue Electronics
 
-int setAEReal(char* paramstring) {
+/*int setAE(char* paramstring) {
     pthread_mutex_lock(&roe.mx);
 
     //do setAE stuff 
@@ -330,11 +329,11 @@ int setAEReal(char* paramstring) {
     pthread_mutex_unlock(&roe.mx);
     record("Setting AE Params.\n");
     return 0;
-}
+}*/
 
 //write string to roe
 
-int manualWriteReal(char* msg, int size) {
+/*int manualWrite(char* msg, int size) {
     pthread_mutex_lock(&roe.mx);
 
     //do manual Write stuff 
@@ -342,7 +341,7 @@ int manualWriteReal(char* msg, int size) {
     pthread_mutex_unlock(&roe.mx);
     record("Writing manual string to ROE.\n");
     return 0;
-}
+}*/
 
 int readRoe(int fd, char *data, int size) {
     //Times out after 50000 tries

@@ -17,140 +17,140 @@ int SendHKCmds(void)
     char buffer[30];
     record("HK Thread started\n");
     
-    sprintf(buffer,"%s : %d\n", "VPOS5VD",      getHKReal(VPOS5VD));
+    sprintf(buffer,"%s : %d\n", "VPOS5VD",      getHK(VPOS5VD));
     record(buffer); //ROE +5VD Voltage
     
     /*usleep(10000);
-    sprintf(buffer,"%s : %d\n", "VPOS2_5VD",    getHKReal(VPOS2_5VD));
+    sprintf(buffer,"%s : %d\n", "VPOS2_5VD",    getHK(VPOS2_5VD));
     record(buffer); //ROE +2.5VD Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS5VA_A",   getHKReal(VPOS5VA_A));
+    sprintf(buffer,"%s : %d\n", "VPOS5VA_A",   getHK(VPOS5VA_A));
     record(buffer); //ROE +5VAA Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS5VA_B",    getHKReal(VPOS5VA_B));
+    sprintf(buffer,"%s : %d\n", "VPOS5VA_B",    getHK(VPOS5VA_B));
     record(buffer); //ROE +5VAB Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VNEG5VA_A",    getHKReal(VNEG5VA_A));
+    sprintf(buffer,"%s : %d\n", "VNEG5VA_A",    getHK(VNEG5VA_A));
     record(buffer); //ROE -5VAA Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VNEG5VA_B",    getHKReal(VNEG5VA_B));
+    sprintf(buffer,"%s : %d\n", "VNEG5VA_B",    getHK(VNEG5VA_B));
     record(buffer); //ROE -5VAB Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS36V_A",    getHKReal(VPOS36V_A));
+    sprintf(buffer,"%s : %d\n", "VPOS36V_A",    getHK(VPOS36V_A));
     record(buffer); //ROE +36VA Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS36V_B",    getHKReal(VPOS36V_B));
+    sprintf(buffer,"%s : %d\n", "VPOS36V_B",    getHK(VPOS36V_B));
     record(buffer); //ROE +36VB Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS12V_A",    getHKReal(VPOS12V_A));
+    sprintf(buffer,"%s : %d\n", "VPOS12V_A",    getHK(VPOS12V_A));
     record(buffer); //ROE +12VA Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VPOS12V_B",    getHKReal(VPOS12V_B));
+    sprintf(buffer,"%s : %d\n", "VPOS12V_B",    getHK(VPOS12V_B));
     record(buffer); //ROE +12VB Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CCDA_VODC",    getHKReal(CCDA_VODC));
+    sprintf(buffer,"%s : %d\n", "CCDA_VODC",    getHK(CCDA_VODC));
     record(buffer); //Roe CCDA_VOD Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CCDA_VRDC",    getHKReal(CCDA_VRDC));
+    sprintf(buffer,"%s : %d\n", "CCDA_VRDC",    getHK(CCDA_VRDC));
     record(buffer); //Roe CCDA_VRD Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CCDA_VSSC",    getHKReal(CCDA_VSSC ));
+    sprintf(buffer,"%s : %d\n", "CCDA_VSSC",    getHK(CCDA_VSSC ));
     record(buffer); //Roe CCDA_VSS Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS5VD",      getHKReal(CPOS5VD));
+    sprintf(buffer,"%s : %d\n", "CPOS5VD",      getHK(CPOS5VD));
     record(buffer); //ROE +5VD Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS2_5VD",    getHKReal(CPOS2_5VD));
+    sprintf(buffer,"%s : %d\n", "CPOS2_5VD",    getHK(CPOS2_5VD));
     record(buffer); //ROE +2.5VD Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS5VA_A",    getHKReal(CPOS5VA_A));
+    sprintf(buffer,"%s : %d\n", "CPOS5VA_A",    getHK(CPOS5VA_A));
     record(buffer); //ROE +5VAA Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS5VA_B",    getHKReal(CPOS5VA_B));
+    sprintf(buffer,"%s : %d\n", "CPOS5VA_B",    getHK(CPOS5VA_B));
     record(buffer); //ROE +5VAB Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CNEG5VA_A",    getHKReal(CNEG5VA_A));
+    sprintf(buffer,"%s : %d\n", "CNEG5VA_A",    getHK(CNEG5VA_A));
     record(buffer); //ROE -5VAA Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CNEG5VA_B",    getHKReal(CNEG5VA_B));
+    sprintf(buffer,"%s : %d\n", "CNEG5VA_B",    getHK(CNEG5VA_B));
     record(buffer); //ROE -5VAB Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS36V_A",   getHKReal(CPOS36V_A));
+    sprintf(buffer,"%s : %d\n", "CPOS36V_A",   getHK(CPOS36V_A));
     record(buffer); //ROE +36VA Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS36V_B",    getHKReal(CPOS36V_B));
+    sprintf(buffer,"%s : %d\n", "CPOS36V_B",    getHK(CPOS36V_B));
     record(buffer); //ROE +36VB Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS12V_A",    getHKReal(CPOS12V_A));
+    sprintf(buffer,"%s : %d\n", "CPOS12V_A",    getHK(CPOS12V_A));
     record(buffer); //ROE +12VA Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "CPOS12V_B",    getHKReal(CPOS12V_B));
+    sprintf(buffer,"%s : %d\n", "CPOS12V_B",    getHK(CPOS12V_B));
     record(buffer); //ROE +12VB Current
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "UPPER_TEMP",   getHKReal(UPPER_TEMP));
+    sprintf(buffer,"%s : %d\n", "UPPER_TEMP",   getHK(UPPER_TEMP));
     record(buffer); //ROE Upper Temp
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "LOWER_TEMP",  getHKReal(LOWER_TEMP));
+    sprintf(buffer,"%s : %d\n", "LOWER_TEMP",  getHK(LOWER_TEMP));
     record(buffer); //ROE Upper Temp
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VNEG10V_A",    getHKReal(VNEG10V_A));
+    sprintf(buffer,"%s : %d\n", "VNEG10V_A",    getHK(VNEG10V_A));
     record(buffer); //ROE -10VA Voltage
     
     usleep(10000);
     
-    sprintf(buffer,"%s : %d\n", "VNEG10V_B",    getHKReal(VNEG10V_B));
+    sprintf(buffer,"%s : %d\n", "VNEG10V_B",    getHK(VNEG10V_B));
     record(buffer); //ROE -10VB Voltage
     
     
-    //sprintf(buffer,"%s : %s", END_OF_FRAME getHKReal(END_OF_FRAME));
+    //sprintf(buffer,"%s : %s", END_OF_FRAME getHK(END_OF_FRAME));
     //record(buffer); //ROE +5VAB Voltage
     */
     

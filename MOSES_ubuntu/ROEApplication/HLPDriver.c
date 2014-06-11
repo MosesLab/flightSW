@@ -12,40 +12,41 @@
 
 int SendHLPCmds()
 {
-    char* foo = "foo";
+    //char* foo = "foo";
     record("HLP thread started\n");
     
-    activateROEReal(); usleep(10000);
+    activateROE(); usleep(100000);
     
-    exitDefaultReal(); usleep(10000);
+    exitDefault(); usleep(100000);
     
-    resetReal();       usleep(10000);
     
-    deactivateReal();  usleep(10000);
+    //resetReal();       usleep(10000);
     
-    //selftestModeReal();
+    //deactivate();  usleep(10000);
+    
+    //selftestMode();
     //usleep(10000);
-    //stimOnReal();
+    //stimOn();
     //usleep(10000);
-    //stimOffReal();
+    //stimOff();
     //usleep(10000);
-    //resetReal();
+    //reset();
     //usleep(10000);
-    //readOutReal(foo, 5);
+    //readOut(foo, 5);
     //usleep(10000);
-    //flushReal();
-    usleep(10000);
-    //getHKReal(foo); usleep(10000);
+    //flush();
+    //usleep(10000);
+    //getHK(foo); usleep(10000);
     
-    //getAEReal();
-    
-    //usleep(10000);
-    
-    //setAEReal(foo);
+    //getAE();
     
     //usleep(10000);
     
-    //manualWriteReal(foo, 5);
+    //setAE(foo);
+    
+    //usleep(10000);
+    
+    //manualWrite(foo, 5);
     
     usleep(10000);
     
