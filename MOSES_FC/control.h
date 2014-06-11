@@ -22,7 +22,7 @@ void* hlp_control(void*);
 
 /*hlp_down thread initializations*/
 int fdown;
-
 void* hlp_down(void*);
 
-//void * controlThread(void *);
+/*housekeeping initializations*/
+void * hlp_housekeeping(void * arg);
