@@ -104,7 +104,7 @@ void * hlp_housekeeping(void * arg){
     while(ts_alive){
         Packet * p = constructPacket(GDPKT, ACK, NULL);
         enqueue(&hkdownQueue, p);
-        
+        printf("\n");
         sleep(1);
     }
 }
