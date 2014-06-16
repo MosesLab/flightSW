@@ -54,6 +54,9 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandLine>-march=i486 -O2</commandLine>
+        </cTool>
         <linkerTool>
           <linkerLibItems>
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>

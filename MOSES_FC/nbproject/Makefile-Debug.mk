@@ -45,7 +45,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-march=i486 -O2
 
 # CC Compiler Flags
 CCFLAGS=
