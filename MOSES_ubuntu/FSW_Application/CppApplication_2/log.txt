@@ -1,0 +1,443 @@
+Tue Jun 17 17:43:43 2014 Program started
+Tue Jun 17 17:43:43 2014 Signal handler initiated.
+Tue Jun 17 17:43:43 2014 Inside EMSim!
+Tue Jun 17 17:43:43 2014 ScienceTimeline thread started.
+Tue Jun 17 17:43:43 2014 Current sequence: sequences/dark1demo 
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 8 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 8 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 8 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 62 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:43:43 2014 Done with exposure, perform data collection
+Tue Jun 17 17:43:43 2014 Writing data to disk.
+Tue Jun 17 17:43:43 2014 Tue Jun 17 17:43:43 2014 Done with sequences (exit thread)
+Tue Jun 17 17:43:43 2014 Done with scienceTimeline
+Tue Jun 17 17:43:44 2014 Threads returned, program done.
+Tue Jun 17 17:44:40 2014 Program started
+Tue Jun 17 17:44:40 2014 Signal handler initiated.
+Tue Jun 17 17:44:40 2014 Inside EMSim!
+Tue Jun 17 17:44:40 2014 ScienceTimeline thread started.
+Tue Jun 17 17:44:40 2014 Current sequence: sequences/dark1demo 
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 39 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 716 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 40 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 42 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 41 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 40 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Actual Time: 0 seconds, 39 microseconds
+Tue Jun 17 17:44:40 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:40 2014 Writing data to disk.
+Tue Jun 17 17:44:40 2014 Tue Jun 17 17:44:40 2014 Done with sequences (exit thread)
+Tue Jun 17 17:44:40 2014 Done with scienceTimeline
+Tue Jun 17 17:44:41 2014 Threads returned, program done.
+Tue Jun 17 17:44:58 2014 Program started
+Tue Jun 17 17:44:58 2014 Signal handler initiated.
+Tue Jun 17 17:44:58 2014 ScienceTimeline thread started.
+Tue Jun 17 17:44:58 2014 Inside EMSim!
+Tue Jun 17 17:44:58 2014 Current sequence: sequences/dark1demo 
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 16 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Actual Time: 0 seconds, 8 microseconds
+Tue Jun 17 17:44:58 2014 Done with exposure, perform data collection
+Tue Jun 17 17:44:58 2014 Writing data to disk.
+Tue Jun 17 17:44:58 2014 Tue Jun 17 17:44:58 2014 Done with sequences (exit thread)
+Tue Jun 17 17:44:58 2014 Done with scienceTimeline
+Tue Jun 17 17:44:59 2014 Threads returned, program done.
+Tue Jun 17 17:47:22 2014 Program started
+Tue Jun 17 17:47:22 2014 Signal handler initiated.
+Tue Jun 17 17:47:22 2014 Inside EMSim!
+Tue Jun 17 17:47:22 2014 ScienceTimeline thread started.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 7 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Actual Time: 0 seconds, 6 microseconds
+Tue Jun 17 17:47:22 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:22 2014 Writing data to disk.
+Tue Jun 17 17:47:22 2014 Tue Jun 17 17:47:22 2014 Done with sequences (exit thread)
+Tue Jun 17 17:47:22 2014 Done with scienceTimeline
+Tue Jun 17 17:47:23 2014 Threads returned, program done.
+Tue Jun 17 17:47:54 2014 Program started
+Tue Jun 17 17:47:54 2014 Signal handler initiated.
+Tue Jun 17 17:47:54 2014 Inside EMSim!
+Tue Jun 17 17:47:54 2014 ScienceTimeline thread started.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 18 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 20 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 17 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Actual Time: 0 seconds, 19 microseconds
+Tue Jun 17 17:47:54 2014 Done with exposure, perform data collection
+Tue Jun 17 17:47:54 2014 Writing data to disk.
+Tue Jun 17 17:47:54 2014 Tue Jun 17 17:47:54 2014 Done with sequences (exit thread)
+Tue Jun 17 17:47:54 2014 Done with scienceTimeline
+Tue Jun 17 17:47:55 2014 Threads returned, program done.
