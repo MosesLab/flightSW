@@ -1,7 +1,7 @@
 
 #include "roe_image.h"
 
-roeImage_t* constructImage(char* name, int data[][IMAGE_HEIGHT], int size){
+roeImage_t* constructImage(char* name, int ** data, int size){
     int dataSize;
     
     //itoah(dataSize, dataLength, 2);  //convert length from int to string

@@ -25,9 +25,10 @@ void* science(void* arg){
         perror("cannot watch image directory");
         exit(EXIT_FAILURE);
     }
-
-    DIR *dir = opendir(imagepath);              //Populate Linked List of nodes
-    if (ts_alive){
+    while (ts_alive){
+        
+        DIR *dir = opendir(imagepath);          //Looping Open/Close to simulate infinite images in folder 
+        
         while ((dPath = readdir(dir)) != NULL) {
             char *buffer = malloc(strlen(imagepath) + strlen(dPath->d_name) + 1);
             if (buffer == NULL) {
@@ -45,20 +46,8 @@ void* science(void* arg){
             
             }
         }
-    }
-    while (ts_alive) {
-        input_len = read(notify_fd, buffer2, EVENT_BUFFER_LENGTH);
-        if (input_len <= 0) {
-            perror("error reading from inotify fd");
-            exit(EXIT_FAILURE);
-        }
         
-        bufPtr = buffer2;
-        while (bufPtr < buffer2 + input_len) {
-            event = (struct inotify_event *) bufPtr;
-            printf("new image created in \n", imagepath);
-            bufPtr += sizeof (struct inotify_event) +event->len;
-        }
+        closedir(dir);                          //Looping Open/Close to simulate infinite images in folder  
         
     }
     return NULL;
@@ -71,14 +60,20 @@ void* telem(void* arg){
     
     while (ts_alive){
         if (roeQueue.count != 0) {
+            /*dequeue*/
             fp = fopen(roeQueue.first->filePath, "r");         //Open file data
             if (fp == NULL) {
                 printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             }
-                                                                //Read file name
+           
+            int i, j;                                               
             char * tempName = strrchr(roeQueue.first->filePath, '/') + 1;
             int l = 2048, h = 1024;        
-            int tempData[h][l];
+//            int tempData[h][l];
+            int **  tempData = malloc(sizeof(int*) * l);
+            for(i = 0; i < l; i++){
+                tempData[i] = malloc(sizeof(int) * h * 3);
+            }
             
 //            int **tempData2 = malloc(h * sizeof(int *));
 //            for (i = 0; i < h; i++) { 
@@ -86,21 +81,21 @@ void* telem(void* arg){
 //            }
             
             int index = 0;                                      //Create data structure
-            int i, j;
-             while (rc != EOF) {                                //Open image data
-                 for (i=0;i<(h * 3);i++){
-                    for (j=0;j<l;j++){                      //Read image data
-                        tempData[i][j] = 0;
-                        //rc = fread((&tempData[i][j]), (size_t) 2, 1, fp); 
+            
+//            while (rc != EOF) {                                //Open image data
+                for (i=0; i < l; i++){
+                    for (j=0; j < (h*3) ; j++){                      //Read image data
+                        tempData[i][j] = 1;
+                        rc = fread((&tempData[i][j]), (size_t) 2, 1, fp); 
                     }
-                    index++;
-                    if (index > ((h * 3) - 1)) { break; }
+//                    index++;
+//                    if (index > ((h * 3) - 1)) { break; }
                  }
                  //rc = fread((tempData2[index]), sizeof(int), (l), fp);
                  //index++;
                  //if (index > 1023){ break; }
             
-             }
+//             }
 
             if (!ts_alive) break;                               //If the program has terminated, break out of the loop
 

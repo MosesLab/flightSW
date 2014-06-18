@@ -30,7 +30,7 @@ typedef struct imgPtr {                         //Create image path node
     struct imgPtr * next;
 } imgPtr_t;
 
-roeImage_t* constructImage(char*, int data[][IMAGE_HEIGHT], int);
+roeImage_t* constructImage(char*, int **, int);
 void recordImage(roeImage_t*);
 void sendImage(roeImage_t *, int);
 
