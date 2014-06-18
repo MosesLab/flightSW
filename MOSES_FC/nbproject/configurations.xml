@@ -15,6 +15,9 @@
       <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
       <itemPath>roe_image.h</itemPath>
+      <itemPath>send_TM.h</itemPath>
+      <itemPath>send_TM_sim.h</itemPath>
+      <itemPath>synclink.h</itemPath>
       <itemPath>system.h</itemPath>
       <itemPath>tm_queue.h</itemPath>
     </logicalFolder>
@@ -34,6 +37,8 @@
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
       <itemPath>roe_image.c</itemPath>
+      <itemPath>send_TM.c</itemPath>
+      <itemPath>send_TM_sim.c</itemPath>
       <itemPath>tm_queue.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -111,6 +116,16 @@
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="send_TM.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM_sim.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM_sim.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="synclink.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tm_queue.c" ex="false" tool="0" flavor2="0">
@@ -178,6 +193,16 @@
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM_sim.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM_sim.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="synclink.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>

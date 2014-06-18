@@ -44,6 +44,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o \
 	${OBJECTDIR}/roe_image.o \
+	${OBJECTDIR}/send_TM.o \
+	${OBJECTDIR}/send_TM_sim.o \
 	${OBJECTDIR}/tm_queue.o
 
 
@@ -115,6 +117,16 @@ ${OBJECTDIR}/roe_image.o: roe_image.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
+
+${OBJECTDIR}/send_TM.o: send_TM.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM.o send_TM.c
+
+${OBJECTDIR}/send_TM_sim.o: send_TM_sim.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM_sim.o send_TM_sim.c
 
 ${OBJECTDIR}/tm_queue.o: tm_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
