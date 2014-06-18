@@ -17,6 +17,8 @@ void * hlp_control(void * arg) {
         }
 
         readPacket(fup, p);
+        
+        if (ts_alive) {
         /*the Type of packet determines how */
         switch (p->type[0]) {
             case SHELL:
@@ -48,7 +50,7 @@ void * hlp_control(void * arg) {
                 break;
         }
 
-        if (ts_alive) {
+        
 
 
             recordPacket(p);

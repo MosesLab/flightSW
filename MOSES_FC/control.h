@@ -12,10 +12,12 @@
 #include "hlp.h"
 #include "packet.h"
 #include "hashTable.h"
+#include "tm_queue.h"
 
 extern volatile sig_atomic_t ts_alive;
 
 LockingQueue hkdownQueue;
+tm_queue_t roeQueue;
 
 /*hlp_contorl initializations*/
 void* hlp_control(void*);

@@ -37,11 +37,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/controlFuncs.o \
+	${OBJECTDIR}/control_sim.o \
 	${OBJECTDIR}/hashTable.o \
 	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/packet.o
+	${OBJECTDIR}/packet.o \
+	${OBJECTDIR}/roe_image.o \
+	${OBJECTDIR}/tm_queue.o
 
 
 # C Compiler Flags
@@ -78,6 +81,11 @@ ${OBJECTDIR}/controlFuncs.o: controlFuncs.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
 
+${OBJECTDIR}/control_sim.o: control_sim.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/control_sim.o control_sim.c
+
 ${OBJECTDIR}/hashTable.o: hashTable.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -102,6 +110,16 @@ ${OBJECTDIR}/packet.o: packet.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/packet.o packet.c
+
+${OBJECTDIR}/roe_image.o: roe_image.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
+
+${OBJECTDIR}/tm_queue.o: tm_queue.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tm_queue.o tm_queue.c
 
 # Subprojects
 .build-subprojects:
