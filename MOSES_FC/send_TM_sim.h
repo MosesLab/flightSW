@@ -10,7 +10,8 @@
 
 #include "tm_queue.h"
 
-int send_images_sim(int, char**, tm_queue_t);
+int synclink_init_sim();
+int send_image_sim(tm_queue_t, char*);
 void display_usage_sim(void);
 
 extern volatile sig_atomic_t ts_alive;

@@ -18,7 +18,7 @@
 #include <errno.h>
 #include <sys/time.h>
 
-#include "send_TM.h"
+#include "send_TM_sim.h"
 #include "synclink.h"
 
 #ifndef N_HDLC
@@ -37,155 +37,85 @@ void display_usage_sim(void) {
 }
 
 
-int send_images_sim(int argc, char ** argv, tm_queue_t roeQueue){
+int synclink_init_sim(){
+    
+//    /* Fork and exec the fsynth program to set the clock source on the SyncLink
+//     * to use the synthesized 20 MHz clock from the onboard frequency synthesizer
+//     * chip, for accurate generation of a 10 Mbps datastream. fsynth needs to be
+//     * in the PATH. 
+//     */
+//
+//    pid_t pid = fork();
+//
+//    if (pid == -1) {
+//        perror("Fork failure");
+//        exit(EXIT_FAILURE);
+//    }
+//
+//    if (pid == 0) {
+//        execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
+//        perror("execlp"); //selected in code
+//        _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
+//        //here then the exec failed
+//    } else if (pid > 0) {
+//        wait(); //Wait for child to finish
+//    }
+//
+//    printf("send HDLC data on %s\n", devname);
+//
+//    /* open serial device with O_NONBLOCK to ignore DCD input */
+//    fd = open(outputpath, O_TRUNC, 0);
+//    if (fd < 0) {
+//        printf("open error=%d %s\n", errno, strerror(errno));
+//        return fd;
+//    }
+//    
+//    printf("Turn off RTS and DTR\n");
+//    sigs = TIOCM_RTS + TIOCM_DTR;
+//    rc = ioctl(fd, TIOCMBIC, &sigs);
+//    if (rc < 0) {
+//        printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+//        return rc;
+//    }
+//
+//    
+//
+//    return 1;
+    
+}
+
+int send_image_sim(tm_queue_t roeQueue, char* imgName) {
+    /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
+     * from the file into the data buffer, then sending the data buffer to the device 
+     * via a write call.
+     */
     
     int fd;                                     //Initialize Variables
     int rc;
-    int sigs, idle;
-    int i;
-    int ldisc = N_HDLC;
-    int imageAmount = roeQueue.count;
-    int killTrigger = 0;
-    MGSL_PARAMS params;
     int size = 1024;
     unsigned char databuf[1024];
     unsigned char temp[1024];
-    unsigned char endbuf[] = "smart";           //Used this string as end-frame to terminate seperate files
-    char *devname;
+    unsigned char endbuf[] = "smart";
     char *imagename;
     FILE *fp;
     int count = 0;                              //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
-    
+
     char* outputpath = "/students/jackson.remington/esus/testFiles/testOutput/";
-    char* imagepath = "/students/jackson.remington/esus/testFiles/imageFiles/";
+    char* outputFile = malloc(strlen(outputpath) + strlen(imgName) + 1);
+    strcpy(outputFile, outputpath);
+    strcat(outputFile, imgName);
+    
     char* xmlfile = "/students/jackson.remington/esus/testFiles/xmlFiles/imageindex.xml";
     
-    /*Check for correct arguments*/
-    if (argc > 2 || argc < 1) {
-        printf("Incorrect number of arguments\n");
-        display_usage_sim();
-        return 1;
-    }
-
-    /*Set device name, either from command line or use default value*/
-    if (argc == 3)
-        devname = argv[1];
-    else
-        devname = "/dev/ttyUSB0"; //Set the default name of the SyncLink device
-    
-    /* Fork and exec the fsynth program to set the clock source on the SyncLink
-     * to use the synthesized 20 MHz clock from the onboard frequency synthesizer
-     * chip, for accurate generation of a 10 Mbps datastream. fsynth needs to be
-     * in the PATH. 
-     */
-
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("Fork failure");
-        exit(EXIT_FAILURE);
-    }
-
-    if (pid == 0) {
-        execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
-        perror("execlp"); //selected in code
-        _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
-        //here then the exec failed
-    } else if (pid > 0) {
-        wait(); //Wait for child to finish
-    }
-
-    printf("send HDLC data on %s\n", devname);
-
-    /* open serial device with O_NONBLOCK to ignore DCD input */
-    fd = open(outputpath, O_TRUNC, 0);
+    fd = open(outputFile, O_CREAT, 0);
     if (fd < 0) {
         printf("open error=%d %s\n", errno, strerror(errno));
         return fd;
     }
-
-    /*
-     * set N_HDLC line discipline
-     *
-     * A line discipline is a software layer between a tty device driver
-     * and user application that performs intermediate processing,
-     * formatting, and buffering of data.
-     */
-//    rc = ioctl(fd, TIOCSETD, &ldisc);
-//    if (rc < 0) {
-//        printf("set line discipline error=%d %s\n",
-//                errno, strerror(errno));
-//        return rc;
-//    }
-//
-//    /* get current device parameters */
-//    rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
-//    if (rc < 0) {
-//        printf("ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
-//                errno, strerror(errno));
-//        return rc;
-//    }
-
-    /*
-     * modify device parameters
-     *
-     * HDLC/SDLC mode, loopback disabled (external loopback connector), NRZIs encoding
-     * Data transmit clock sourced from BRG
-     * Output 10000000bps clock on auxclk output
-     * No hardware CRC
-     */
-
-    params.mode = MGSL_MODE_HDLC;
-    params.loopback = 0;
-    params.flags = HDLC_FLAG_RXC_RXCPIN + HDLC_FLAG_TXC_BRG;
-    params.encoding = HDLC_ENCODING_NRZ;
-    params.clock_speed = 10000000;
-    params.crc_type = HDLC_CRC_16_CCITT;
-    params.preamble = HDLC_PREAMBLE_PATTERN_ONES;
-    params.preamble_length = HDLC_PREAMBLE_LENGTH_16BITS;
-
-//    /* set current device parameters */
-//    rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
-//    if (rc < 0) {
-//        printf("ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
-//                errno, strerror(errno));
-//        return rc;
-//    }
-//
-//    /* set transmit idle pattern (sent between frames) */
-//    idle = HDLC_TXIDLE_ALT_ZEROS_ONES;
-//    rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
-//    if (rc < 0) {
-//        printf("ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
-//                errno, strerror(errno));
-//        return rc;
-//    }
-//
-//
-//
-//    /* set device to blocking mode for reads and writes */
-//    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
-//
-//    printf("Turn on RTS and DTR serial outputs\n");
-//    sigs = TIOCM_RTS + TIOCM_DTR;
-//    rc = ioctl(fd, TIOCMBIS, &sigs);
-//    if (rc < 0) {
-//        printf("assert DTR/RTS error=%d %s\n",
-//                errno, strerror(errno));
-//        return rc;
-//    }
-//
-//    /*enable transmitter*/
-//    int enable = 1;
-//    rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
-
-    /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
-     * from the file into the data buffer, then sending the data buffer to the device 
-     * via a write call.
-     */
-    while(ts_alive){
+    
+    if(ts_alive){
         if (roeQueue.count != 0){
             count = 0;
             int xmlTrigger = 1;
@@ -233,7 +163,6 @@ int send_images_sim(int argc, char ** argv, tm_queue_t roeQueue){
             rc = write(fd, endbuf, 5);
             if (rc < 0) {
                 printf("write error=%d %s\n", errno, strerror(errno));
-                break;
             }
 
             /*block until all data sent*/
@@ -252,28 +181,14 @@ int send_images_sim(int argc, char ** argv, tm_queue_t roeQueue){
         
         }
         else {
-            
-            if(killTrigger == 1){               //If everything is done
-                break;                          
-            }
-            
-            sleep(2);
-            
+            printf("roeQueue is empty;\n");
         }
     }
     
-    printf("Turn off RTS and DTR\n");
-    sigs = TIOCM_RTS + TIOCM_DTR;
-    rc = ioctl(fd, TIOCMBIC, &sigs);
-    if (rc < 0) {
-        printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
-        return rc;
-    }
-
+    else printf("ts_alive = false;\n"); return 0;
+    
     /* Close the device and the image file*/
     close(fd);
     fclose(fp);
-
-    return 0;
-    
+    return 1;
 }

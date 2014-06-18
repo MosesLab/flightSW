@@ -54,7 +54,6 @@ void* science(void* arg){
 }
 
 void* telem(void* arg){
-    //fdown = init_hkdown_serial_connection();                  //Open housekeeping downlink
     FILE *fp;
     int rc;
     
@@ -65,58 +64,48 @@ void* telem(void* arg){
             if (fp == NULL) {
                 printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             }
-           
-            int i, j;                                               
-            char * tempName = strrchr(roeQueue.first->filePath, '/') + 1;
-            int l = 2048, h = 1024;        
-//            int tempData[h][l];
-            int **  tempData = malloc(sizeof(int*) * l);
-            for(i = 0; i < l; i++){
-                tempData[i] = malloc(sizeof(int) * h * 3);
-            }
+            else fclose(fp);
+            char * tempName = strrchr(roeQueue.first->filePath, '/') + 1;  
             
+//            int i, j;
+//            int l = 2048, h = 1024;        
+//            int tempData[h][l];
+//            int **  tempData = malloc(sizeof(int*) * l);
+//            for(i = 0; i < l; i++){
+//                tempData[i] = malloc(sizeof(int) * h * 3);
+//            }
+//            
 //            int **tempData2 = malloc(h * sizeof(int *));
 //            for (i = 0; i < h; i++) { 
 //                tempData2[i] = malloc(l * sizeof(int)); 
 //            }
             
-            int index = 0;                                      //Create data structure
-            
+//            int index = 0;                                      //Create data structure
+//            
 //            while (rc != EOF) {                                //Open image data
-                for (i=0; i < l; i++){
-                    for (j=0; j < (h*3) ; j++){                      //Read image data
-                        tempData[i][j] = 1;
-                        rc = fread((&tempData[i][j]), (size_t) 2, 1, fp); 
-                    }
+//                for (i=0; i < l; i++){
+//                    for (j=0; j < (h*3) ; j++){                      //Read image data
+//                        tempData[i][j] = 1;
+//                        rc = fread((&tempData[i][j]), (size_t) 2, 1, fp); 
+//                    }
 //                    index++;
 //                    if (index > ((h * 3) - 1)) { break; }
-                 }
-                 //rc = fread((tempData2[index]), sizeof(int), (l), fp);
-                 //index++;
-                 //if (index > 1023){ break; }
-            
+//                 }
+//                 //rc = fread((tempData2[index]), sizeof(int), (l), fp);
+//                 //index++;
+//                 //if (index > 1023){ break; }
+//            
 //             }
-
-            if (!ts_alive) break;                               //If the program has terminated, break out of the loop
 
             if ((&roeQueue)->first != NULL){  
                 
                 fseek(fp, 0, SEEK_END); // seek to end of file
                 int size = ftell(fp); // get current file pointer
                 fseek(fp, 0, SEEK_SET);
-                roeImage_t* r = constructImage(tempName, tempData, size);
 
-                /*enqueue onto hkdown queue here*/
-//                if (r->status) {
-//                    sendImage(r, fdown);
-//                    //recordPacket(r);                        //save packet to logfile for debugging
-//                    //record(asprintf("Sent:       %s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum));            
-//                    free(r);                                    //Clean up after packet is sent
-//                } else {
-//                    record("Bad send Packet\n");
-//                }
-
+                send_image_sim(&roeQueue, tempName);
                 tm_dequeue(&roeQueue);                             //dequeue the next packet once it becomes available
+                
             }
         }
         else {
@@ -127,13 +116,6 @@ void* telem(void* arg){
             timeToWait.tv_sec = now.tv_sec + 1;
             timeToWait.tv_nsec = 0;
 
-            /*jackson what are you doing here? the dequeue operation should do this for you*/
-                                                                /*The thread must be locked for pthread_cond_timedwait() to work*/
-//            pthread_mutex_lock(&roeQueue.lock);
-//            while (roeQueue.count == 0){                       //unlocks the mutex and waits on the conditional variable
-//                pthread_cond_timedwait(&roeQueue.cond, &roeQueue.lock, &timeToWait);        
-//                //pthread_cond_wait(&queue->cond, &queue->lock);
-//            }
         }
     }
     return NULL;
