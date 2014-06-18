@@ -19,7 +19,7 @@
 //#include <memory.h>
 //#include <limits.h>
 #include "system.h"
-#include "lockingQueue.h"
+//#include "lockingQueue.h"
 #include "hlp.h"
 #include "packet.h"
 #include "hashTable.h"
@@ -29,6 +29,9 @@
 tm_queue_t roeQueue;
 
 extern volatile sig_atomic_t ts_alive;
+
+void* science(void*);
+void* telem(void*);
 
 #endif	/* CONTROL_SIM_H */
 

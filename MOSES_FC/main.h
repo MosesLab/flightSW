@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include "control.h"
+#include "control_sim.h"
 
 #define NUM_THREADS 3
 

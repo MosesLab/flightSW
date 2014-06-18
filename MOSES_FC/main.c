@@ -36,9 +36,12 @@ void start_threads(){
     
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL);
-    pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
+    //pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL);
+    //pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
     //pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
+        /*roeTesting below!*/
+    pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))science, NULL);
+    pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))telem, NULL);
 
 }
 
