@@ -7,12 +7,7 @@
  *              Read Out Electronics(ROE).         *
  **************************************************/
 #include "roe.h"
-#include <errno.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "main.h"
 #include "logger.h"
 
@@ -20,33 +15,29 @@ int activateROE() {
     pthread_mutex_lock(&roe.mx);
     if (roe.active == FALSE) {
         //Open Serial Device
-        if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY) == -1)) {
+        if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY) == -1)) {
 
             record("Failed to Open Serial Port to ROE\n");
             pthread_mutex_unlock(&roe.mx);
             return 0;
         }
 
-        int flags = fcntl(roe.roeLink, F_GETFL, 0);
-        //Configuring the Serial port
-        fcntl(roe.roeLink, F_SETFL, flags | O_NONBLOCK);
         struct termios options;
-        tcgetattr(roe.roeLink, &options);
-        cfsetispeed(&options, B9600); //Set to 9600 Baud
-        cfsetospeed(&options, B9600); //Set to 9600 Baud
-        
-        //options.c_cc[VMIN] = 0;
-        //options.c_cc[VTIME] = 10; /* Set timeout of 10.0 seconds */
+        //tcgetattr(roe.roeLink, &options);
+        bzero(&options, sizeof (options));
 
-        options.c_cflag |= (CLOCAL | CREAD); //Enable Receiver and ignore modem
-                                             //	control lines.
-        options.c_cflag &= ~PARENB; //No Parity generation or checking
-        options.c_cflag &= ~CSTOPB; //One Stop bit not two
-        options.c_cflag &= ~CSIZE; //Clear preexisting size information
-        options.c_cflag |= CS8; //use 8bit bytes
-        options.c_oflag &= ~OPOST; //Enable implementation-defined output processing.
-        //disable canonicle mode, don't echo characters, and disable signal generation		
-        options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        options.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
+        options.c_cflag &= ~(PARENB | PARODD);
+        options.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
+        //options.c_iflag |= ISTRIP;
+        options.c_oflag &= ~OPOST;
+        options.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
+
+        /*set non-canonical attributes*/
+        options.c_cc[VTIME] = 1;
+        options.c_cc[VMIN] = 255;
+        
+        tcflush(roe.roeLink, TCIFLUSH);
         tcsetattr(roe.roeLink, TCSANOW, &options); //Apply new settings
         record("Connection established. DEFAULT MODE\n");
     }
@@ -119,7 +110,7 @@ int exitDefault() {
         0xDC, 0xDC, 0x00, 0x54, 0x00, 0x2F, 0x0F, 0x00,
         0x00, 0x00, 0x00};
 
-    char* command = EXIT_DEFAULT;
+    char command = EXIT_DEFAULT;
     if (write(roe.roeLink, (void *) &command, 1) != 1) //Write Command to ROE Link
     {
         record("Exit Default Error\n");
@@ -146,21 +137,20 @@ int exitDefault() {
 
     int roeCustomRead = 1;
     //if(ops1.roe_custom_read == TRUE)
-    while(1)
-    {
-    //if (roeCustomRead) {
+    while (1) {
+        //if (roeCustomRead) {
         //if (status != -1) {
-            int i;
-            for (i = 0; i < blockSize; i++)
-                write(roe.roeLink, &block1[i], sizeof (block1[i]));
-            for (i = 0; i < blockSize; i++)
-                write(roe.roeLink, &block2[i], sizeof (block2[i]));
-            for (i = 0; i < blockSize; i++)
-                write(roe.roeLink, &block3[i], sizeof (block3[i]));
-            for (i = 0; i < blockSize; i++)
-                write(roe.roeLink, &block4[i], sizeof (block4[i]));
+        int i;
+        for (i = 0; i < blockSize; i++)
+            write(roe.roeLink, &block1[i], sizeof (block1[i]));
+        for (i = 0; i < blockSize; i++)
+            write(roe.roeLink, &block2[i], sizeof (block2[i]));
+        for (i = 0; i < blockSize; i++)
+            write(roe.roeLink, &block3[i], sizeof (block3[i]));
+        for (i = 0; i < blockSize; i++)
+            write(roe.roeLink, &block4[i], sizeof (block4[i]));
         //}
-    //}
+        //}
     }
 
     pthread_mutex_unlock(&roe.mx);
@@ -210,7 +200,7 @@ int reset() {
     pthread_mutex_lock(&roe.mx);
 
     //do reset stuff 
-    char* command = RESET_ROE;
+    char command = RESET_ROE;
     if (write(roe.roeLink, (void *) &command, 1) != 1) //Write Command to ROE Link
     {
         record("Reset Error\n");
@@ -269,7 +259,7 @@ int reset() {
 
 //Request House Keeping data from roe;
 
-int getHK(char* hkparam) {
+int getHK(char hkparam) {
     pthread_mutex_lock(&roe.mx);
 
     //do gethk stuff 

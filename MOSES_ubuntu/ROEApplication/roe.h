@@ -33,6 +33,13 @@
 #include <pthread.h>
 #include <termios.h>
 #include <time.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct ReadOutElectronics
 {
@@ -72,7 +79,7 @@ int stimOff();
 int reset();
 int readOut(char* block, int delay);
 int flush();
-int getHK(char* hkparam);
+int getHK(char hkparam);
 char* getAE();
 int setAE(char* paramstring);
 int manualWrite(char* msg, int size);
