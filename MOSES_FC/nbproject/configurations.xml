@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>control.h</itemPath>
       <itemPath>controlFuncs.h</itemPath>
-      <itemPath>control_sim.h</itemPath>
       <itemPath>defs.h</itemPath>
       <itemPath>hashTable.h</itemPath>
       <itemPath>hlp.h</itemPath>
@@ -15,25 +14,34 @@
       <itemPath>main.h</itemPath>
       <itemPath>packet.h</itemPath>
       <itemPath>roe_image.h</itemPath>
+      <itemPath>sci_timeline_funcs.h</itemPath>
+      <itemPath>science_timeline.h</itemPath>
+      <itemPath>send_TM.h</itemPath>
+      <itemPath>sequence.h</itemPath>
+      <itemPath>synclink.h</itemPath>
       <itemPath>system.h</itemPath>
       <itemPath>tm_queue.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>moses.conf</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>control.c</itemPath>
       <itemPath>controlFuncs.c</itemPath>
-      <itemPath>control_sim.c</itemPath>
       <itemPath>hashTable.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
       <itemPath>roe_image.c</itemPath>
+      <itemPath>sci_timeline_funcs.c</itemPath>
+      <itemPath>science_timeline.c</itemPath>
+      <itemPath>send_TM.c</itemPath>
+      <itemPath>sequence.c</itemPath>
       <itemPath>tm_queue.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -75,10 +83,6 @@
       </item>
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="control_sim.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="control_sim.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="0">
@@ -102,6 +106,8 @@
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
@@ -109,6 +115,24 @@
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="sci_timeline_funcs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="science_timeline.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="science_timeline.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sequence.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="sequence.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="synclink.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -145,10 +169,6 @@
       </item>
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="control_sim.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="control_sim.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="0">
@@ -169,6 +189,8 @@
       </item>
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
@@ -176,6 +198,24 @@
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="sci_timeline_funcs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="science_timeline.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="science_timeline.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="send_TM.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sequence.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="sequence.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="synclink.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>

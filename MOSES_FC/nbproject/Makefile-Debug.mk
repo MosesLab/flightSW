@@ -37,13 +37,16 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/controlFuncs.o \
-	${OBJECTDIR}/control_sim.o \
 	${OBJECTDIR}/hashTable.o \
 	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o \
 	${OBJECTDIR}/roe_image.o \
+	${OBJECTDIR}/sci_timeline_funcs.o \
+	${OBJECTDIR}/science_timeline.o \
+	${OBJECTDIR}/send_TM.o \
+	${OBJECTDIR}/sequence.o \
 	${OBJECTDIR}/tm_queue.o
 
 
@@ -81,11 +84,6 @@ ${OBJECTDIR}/controlFuncs.o: controlFuncs.c
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
 
-${OBJECTDIR}/control_sim.o: control_sim.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/control_sim.o control_sim.c
-
 ${OBJECTDIR}/hashTable.o: hashTable.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -115,6 +113,26 @@ ${OBJECTDIR}/roe_image.o: roe_image.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
+
+${OBJECTDIR}/sci_timeline_funcs.o: sci_timeline_funcs.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sci_timeline_funcs.o sci_timeline_funcs.c
+
+${OBJECTDIR}/science_timeline.o: science_timeline.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/science_timeline.o science_timeline.c
+
+${OBJECTDIR}/send_TM.o: send_TM.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM.o send_TM.c
+
+${OBJECTDIR}/sequence.o: sequence.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sequence.o sequence.c
 
 ${OBJECTDIR}/tm_queue.o: tm_queue.c 
 	${MKDIR} -p ${OBJECTDIR}

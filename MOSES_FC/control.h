@@ -16,6 +16,10 @@
 
 extern volatile sig_atomic_t ts_alive;
 
+/*struct to control state of experiment*/
+moses_ops_t ops;
+
+
 LockingQueue hkdownQueue;
 tm_queue_t roeQueue;
 
@@ -26,5 +30,7 @@ void* hlp_control(void*);
 int fdown;
 void* hlp_down(void*);
 
-/*housekeeping initializations*/
+/*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
+
+void * telem(void * arg);

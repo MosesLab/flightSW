@@ -30,9 +30,20 @@ typedef struct imgPtr {                         //Create image path node
     struct imgPtr * next;
 } imgPtr_t;
 
-roeImage_t* constructImage(char*, int data[][IMAGE_HEIGHT], int);
-void recordImage(roeImage_t*);
-void sendImage(roeImage_t *, int);
+/*should be obsfucated by sendTM.c*/
+//roeImage_t* constructImage(char*, int data[][IMAGE_HEIGHT], int);
+//void recordImage(roeImage_t*);
+//void sendImage(roeImage_t *, int);
 
-#endif	/* ROE_IMAGE_H */
 
+roeimage_t image;        //should be declared using malloc --RTS
+
+void constructEmpty();
+void constructImage(short** pdata,int* psize,char channels,int pbitpix);
+void init(short** data, int *size,char, int);
+void setData(short **data, int *size, char channels);
+void writeToFile(char* file, char* catalog);
+void pointToEnd(FILE* a);
+
+
+#endif	/* ROEIMAGE_H */

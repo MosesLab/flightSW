@@ -105,8 +105,13 @@ void * hlp_down(void * arg) {
 void * hlp_housekeeping(void * arg){
     while(ts_alive){
         Packet * p = constructPacket(GDPKT, ACK, NULL);
+        recordPacket(p);
         enqueue(&hkdownQueue, p);
-        printf("\n");
         sleep(1);
     }
+}
+
+/*High speed telemetry thread for use with synclink USB adapter*/
+void * telem(void * arg){
+    /*jackson: dequeue and call sendTM from here*/
 }
