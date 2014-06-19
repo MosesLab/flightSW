@@ -13,9 +13,9 @@
 
 int activateROE() {
     pthread_mutex_lock(&roe.mx);
-    if (roe.active == FALSE) {
+    //if (roe.active == FALSE) {
         //Open Serial Device
-        if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY) == -1)) {
+    /*    if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY) == -1)) {
 
             record("Failed to Open Serial Port to ROE\n");
             pthread_mutex_unlock(&roe.mx);
@@ -23,7 +23,7 @@ int activateROE() {
         }
 
         struct termios options;
-        //tcgetattr(roe.roeLink, &options);
+        tcgetattr(roe.roeLink, &options);
         bzero(&options, sizeof (options));
 
         options.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
@@ -32,15 +32,16 @@ int activateROE() {
         //options.c_iflag |= ISTRIP;
         options.c_oflag &= ~OPOST;
         options.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
+        //options.c_lflag &= DEFECHO;
 
-        /*set non-canonical attributes*/
+        /*set non-canonical attributes*//*
         options.c_cc[VTIME] = 1;
         options.c_cc[VMIN] = 255;
         
         tcflush(roe.roeLink, TCIFLUSH);
         tcsetattr(roe.roeLink, TCSANOW, &options); //Apply new settings
         record("Connection established. DEFAULT MODE\n");
-    }
+    }*/
 
     roe.active = TRUE;
     pthread_mutex_unlock(&roe.mx);
