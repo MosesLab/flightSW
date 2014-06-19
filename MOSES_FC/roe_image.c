@@ -70,8 +70,8 @@ void writeToFile(char* file, char* catalog) {
     /*Check to see if file exists or not*/
     FILE *checkxml;
     if ((checkxml = fopen(catalog, "r")) == NULL) {
-        printf("newfile = 1\n");
-        newfile = 1;
+        //printf("newfile = 1 \n");
+        newfile = 1; 
     } else {
         fclose(checkxml);
     }
@@ -82,7 +82,7 @@ FILE * outxml;
 outxml = fopen(catalog, "a");
 int foundline = 0;
 char line[100];
-printf("new file: %d\n", newfile);
+//printf("new file: %d\n", newfile);
 if (!newfile) {
        /* Set the cursor to before </CATALOG>*/
 }

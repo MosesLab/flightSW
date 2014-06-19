@@ -10,6 +10,7 @@
 #include "defs.h"
 //#include "system.h"
 
+int seq_map_size;
 
 sequence_t sequenceMap[5];
 

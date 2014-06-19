@@ -35,7 +35,7 @@ char * config_strings[NUM_THREADS + NUM_IO];
 void quit_signal(int);  //signal handler
 void start_threads();
 void join_threads();
-void init_signal_handler();
+void init_quit_signal_handler();
 void config_strings_init();
 void read_moses_config();
 

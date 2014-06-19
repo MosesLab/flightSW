@@ -4,7 +4,7 @@
  * executes the commands contained within the packets 
  */
 void * hlp_control(void * arg) {
-    record("HLP control thread started.\n");
+    record("-->HLP control thread started....\n\n");
     
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
@@ -23,11 +23,14 @@ void * hlp_control(void * arg) {
     //char _sequence3[21]	= "sequence/datademo";
     char _sequence4[21]	= "sequence/dark3demo";
     char _sequence5[21]	= "sequence/dark4demo";
+    
     sequenceMap[0] = constructSequence(_sequence1);
-    sequenceMap[1] = constructSequence(_sequence2);
-   // sequenceMap[2] = constructSequence(_sequence3);
-    sequenceMap[3] = constructSequence(_sequence4);
-    sequenceMap[4] = constructSequence(_sequence5);
+//    sequenceMap[1] = constructSequence(_sequence2);
+//   // sequenceMap[2] = constructSequence(_sequence3);
+//    sequenceMap[3] = constructSequence(_sequence4);
+//    sequenceMap[4] = constructSequence(_sequence5);
+    
+    seq_map_size = 1;   //only for testing, this needs to better integrated into data structure
 
     while (ts_alive) {
         /*allocate space for packet*/
@@ -38,8 +41,15 @@ void * hlp_control(void * arg) {
         
         /*test starting data with SIGUSR1*/
         Packet * t = constructPacket(UPLINK_S, DATASTART, NULL);
-        sleep(5);
+        sleep(3);
         uDataStart(t);
+        uDataStart(t);
+        
+        
+        sleep(15);
+        sequenceMap[0] = constructSequence(_sequence2);
+        uDataStart(t);
+        /*end SIGUSR1 testing*/
 
         readPacket(fup, p);
         
@@ -108,6 +118,7 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
+    record("-->HLP Down thread started....\n\n");
     fdown = init_hkdown_serial_connection(); //Open housekeeping downlink
     while (ts_alive) {
 
@@ -129,6 +140,7 @@ void * hlp_down(void * arg) {
  * experiment
  */
 void * hlp_housekeeping(void * arg){
+    record("-->HLP Housekeeping thread started....\n\n");
     while(ts_alive){
         Packet * p = constructPacket(GDPKT, ACK, NULL);
         recordPacket(p);
@@ -139,5 +151,6 @@ void * hlp_housekeeping(void * arg){
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg){
+    record("-->High-speed Telemetry thread started....\n\n");
     /*jackson: dequeue and call sendTM from here*/
 }

@@ -17,13 +17,17 @@ int main(void) {
     config_strings_init();   
     
     /*read in configuration values*/
-    read_moses_config();     //not implemented yet
+    //read_moses_config();     //not implemented yet
 
+    record("*****************************************************\n");
+    record("MOSES FLIGHT SOFTWARE\n");
+    record("*****************************************************\n");
+    
     /*start threads indicated by configuration file*/
     start_threads();
 
     /*Upon program termiation (^c) attempt to join the threads*/
-    init_signal_handler();
+    init_quit_signal_handler();
     sigprocmask(SIG_BLOCK, &mask, &oldmask);
     while (ts_alive) {
         sigsuspend(&oldmask); // wait here until the program is killed
@@ -32,6 +36,8 @@ int main(void) {
 
     /*SIGINT caught, ending program*/
     join_threads();
+    
+    record("FLIGHT SOFTWARE EXITED\n\n\n");
 
     return 0;
 }
@@ -43,13 +49,14 @@ void quit_signal(int sig) {
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads() {
-
+    
+    
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    //pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL); //shouldn't be enabled for debug
+    pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL); //shouldn't be enabled for debug
     pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
-    //pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);       
-    pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
+    pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);       
+    //pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
     
     
 }
@@ -64,7 +71,7 @@ void join_threads() {
     }
 }
 
-void init_signal_handler() {
+void init_quit_signal_handler() {
     sigfillset(&oldmask); //save the old mask
     sigemptyset(&mask); //create a blank new mask
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
@@ -92,21 +99,28 @@ void config_strings_init() {
 /*read in configuration file for thread and I/O attributes*/
 void read_moses_config(){
     /*read configuration file*/
-    FILE * f_config = fopen(config_path, "r");
+    FILE * config_fp = fopen(config_path, "r");
     
     int rc = 0;
     while (rc != EOF) {
         char new_char;
         int next_value;
-        rc = fscanf(f_config, "%c", &new_char);
-        char * line = NULL; //pointer to insert read line
+        /*check to see if comment and rewind file pointer to beginning of line*/
+        rc = fscanf(config_fp, "%c", &new_char);
+        if(rc == EOF) break;
+        rc = ungetc(new_char, config_fp);
+        
+        
+        
+        char *line = NULL, *remaining_line = NULL; //pointer to insert read line
         size_t line_len = 0; //size of read data
 
-        if (new_char == '#') { //This is a commented line, don't read data
-            rc = getline(&line, &line_len, f_config);
+        if (new_char == '#' || new_char == '\n' || new_char == ' ') { //This is a commented line, don't read data
+            rc = getline(&line, &line_len, config_fp);
         } else {        //Uncommented line, value into correct place in array
-            rc = getdelim(&line, &line_len, (int)'=', f_config);
-            rc = fscanf(f_config, "%i", &next_value);
+            rc = getdelim(&line, &line_len, (int)'=', config_fp);
+            rc = fscanf(config_fp, "%i", &next_value);
+            rc = getline(&remaining_line, &line_len, config_fp);
             printf("%s%d\n", line, next_value);
         }
     }

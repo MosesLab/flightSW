@@ -10,32 +10,8 @@
 
 #include "science_timeline.h"
 
-void runsig() {
-    char msg[100]; // for writing strings
-    printf(msg, "seq_run: %d, seq_pause: %d\n", ops.seq_run, ops.seq_pause);
-    ops.seq_run = TRUE;
-    ops.seq_pause = FALSE;
-    printf(msg, "seq_run: %d, seq_pause: %d\n", ops.seq_run, ops.seq_pause);
-}
-
-/*this function sets up the signal handler to run
-  runsig when a signal is received from the experiment manager*/
-void init_signal_handler_stl() {
-
-    sigfillset(&oldmaskstl); //save the old mask
-    sigemptyset(&maskstl); //create a blank new mask
-    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
-//    run_action.sa_handler = runsig;
-//    run_action.sa_mask = oldmaskstl;
-//    run_action.sa_flags = 0;
-//
-//    sigaction(SIGUSR1, &run_action, NULL);
-    record("Signal handler initiated.\n");
-    
-}
-
 void * science_timeline(void * arg) {
-    record("ScienceTimeline thread started.\n");
+    record("-->Science Timeline thread started....\n\n");
 
     init_signal_handler_stl();
 
@@ -43,7 +19,7 @@ void * science_timeline(void * arg) {
     int i, j, k;
     short *BUFFER[4]; //[2200000];  
 
-    
+
 
     //sigsuspend(&oldmaskstl); 
 
@@ -62,15 +38,20 @@ void * science_timeline(void * arg) {
     while (ts_alive) {
 
         if (ops.seq_run == FALSE) {
-            record("Sequence stopped\n");
-            
+            record("Sequence stopped, wait for signal to start\n");
+
             pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
             sigwait(&maskstl, &caught_signal);
             pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
             
+            ops.sequence = sequence1; // start off with the first sequence TESTING!!!!
+
+            ops.seq_run = TRUE;
+            ops.seq_pause = FALSE;
+
             /*running signal handler out of context, should probably be changed*/
-            runsig();
-            
+            //runsig();
+
             record("SIGUSR1 received, starting sequence\n");
         }
         /* if ROE active, set to known state (exit default, reset, exit default) */
@@ -153,12 +134,12 @@ void * science_timeline(void * arg) {
             if (ops.dma_write == 1)
                 write_data(duration, num, BUFFER, index);
 
-            sprintf(msg, "Exposure of %3.3lf seconds complete %d.\n", currentSequence.exposureTimes[i], i);
+            sprintf(msg, "Exposure of %3.3lf seconds complete %d.\n\n", currentSequence.exposureTimes[i], i);
             record(msg);
         }/* end for each exposure */
 
         /* done with sequence, push packet with info */
-        sprintf(msg, "Done with sequence %s\n", currentSequence.sequenceName);
+        sprintf(msg, "Done with sequence %s\n\n\n", currentSequence.sequenceName);
         record(msg);
 
         //a = (Packet*)constructPacket("MDAQ_RSP","END_SEQ",0,(char *)NULL);
@@ -169,12 +150,13 @@ void * science_timeline(void * arg) {
         //ops.seq_pause = TRUE;
 
         /*Move to next sequence*/
-        
+
         ops.sequence++;
-        
-        if (ops.sequence > (sizeof (sequenceMap) / sizeof (sequence_t)) - 1) {
+
+//        if (ops.sequence > (sizeof (sequenceMap) / sizeof (sequence_t)) - 1) {
+            if(ops.sequence > seq_map_size - 1){
             /* We have gone through all of the sequences, exit the program*/
-            record("Done with sequences, wait for signal to start\n");
+            record("Done with sequences\n");
             ops.seq_run = FALSE;
             ops.seq_pause = TRUE;
         }
@@ -190,4 +172,30 @@ void * science_timeline(void * arg) {
 
     record("Done with scienceTimeline\n");
     return NULL;
+}
+
+void runsig() {
+    char msg[100]; // for writing strings
+    printf(msg, "seq_run: %d, seq_pause: %d\n", ops.seq_run, ops.seq_pause);
+    ops.seq_run = TRUE;
+    ops.seq_pause = FALSE;
+    printf(msg, "seq_run: %d, seq_pause: %d\n", ops.seq_run, ops.seq_pause);
+}
+
+/*this function sets up the signal handler to run
+  runsig when a signal is received from the experiment manager*/
+void init_signal_handler_stl() {
+
+    sigfillset(&oldmaskstl); //save the old mask
+    sigemptyset(&maskstl); //create a blank new mask
+    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
+
+    /*no signal dispositions for signals between threads*/
+        run_action.sa_handler = runsig;
+        run_action.sa_mask = oldmaskstl;
+        run_action.sa_flags = 0;
+    
+        sigaction(SIGUSR1, &run_action, NULL);
+    record("Signal handler initiated.\n");
+
 }
