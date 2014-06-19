@@ -146,8 +146,10 @@ int exitDefault() {
 
     int roeCustomRead = 1;
     //if(ops1.roe_custom_read == TRUE)
-    if (roeCustomRead) {
-        if (status != -1) {
+    while(1)
+    {
+    //if (roeCustomRead) {
+        //if (status != -1) {
             int i;
             for (i = 0; i < blockSize; i++)
                 write(roe.roeLink, &block1[i], sizeof (block1[i]));
@@ -157,7 +159,8 @@ int exitDefault() {
                 write(roe.roeLink, &block3[i], sizeof (block3[i]));
             for (i = 0; i < blockSize; i++)
                 write(roe.roeLink, &block4[i], sizeof (block4[i]));
-        }
+        //}
+    //}
     }
 
     pthread_mutex_unlock(&roe.mx);

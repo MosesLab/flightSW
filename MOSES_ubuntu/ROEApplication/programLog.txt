@@ -22,3 +22,57 @@ Thu Jun 19 13:00:41 2014 getHK error
 Thu Jun 19 13:00:41 2014 VPOS5VD : -1
 Thu Jun 19 13:00:41 2014 Done sending HK commands
 Thu Jun 19 13:00:41 2014 Threads returned, program done.
+Thu Jun 19 13:32:00 2014 Program Started
+Thu Jun 19 13:32:00 2014 HLP thread started.
+Thu Jun 19 13:32:00 2014 HK Thread started
+Thu Jun 19 13:32:03 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 13:32:03 2014 Sending command to exit default mode.
+Thu Jun 19 13:32:03 2014 Attempting to exit default mode.
+Thu Jun 19 13:32:03 2014 Exiting Default Mode
+Thu Jun 19 13:32:03 2014 Done driving HLP commands
+Thu Jun 19 13:32:10 2014 getHK error
+Thu Jun 19 13:32:10 2014 VPOS5VD : -1
+Thu Jun 19 13:32:10 2014 Done sending HK commands
+Thu Jun 19 13:32:10 2014 Threads returned, program done.
+Thu Jun 19 14:20:44 2014 Program Started
+Thu Jun 19 14:20:44 2014 HLP thread started.
+Thu Jun 19 14:20:44 2014 HK Thread started
+Thu Jun 19 14:20:47 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:20:47 2014 Sending command to exit default mode.
+Thu Jun 19 14:20:47 2014 Attempting to exit default mode.
+Thu Jun 19 14:21:10 2014 Program Started
+Thu Jun 19 14:21:10 2014 HLP thread started.
+Thu Jun 19 14:21:10 2014 HK Thread started
+Thu Jun 19 14:21:13 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:21:13 2014 Sending command to exit default mode.
+Thu Jun 19 14:21:13 2014 Attempting to exit default mode.
+Thu Jun 19 14:22:55 2014 Program Started
+Thu Jun 19 14:22:55 2014 HLP thread started.
+Thu Jun 19 14:22:55 2014 HK Thread started
+Thu Jun 19 14:22:58 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:22:59 2014 Sending command to exit default mode.
+Thu Jun 19 14:22:59 2014 Attempting to exit default mode.
+Thu Jun 19 14:23:25 2014 Program Started
+Thu Jun 19 14:23:25 2014 HLP thread started.
+Thu Jun 19 14:23:25 2014 HK Thread started
+Thu Jun 19 14:23:28 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:23:28 2014 Sending command to exit default mode.
+Thu Jun 19 14:23:28 2014 Attempting to exit default mode.
+Thu Jun 19 14:23:39 2014 Program Started
+Thu Jun 19 14:23:39 2014 HLP thread started.
+Thu Jun 19 14:23:39 2014 HK Thread started
+Thu Jun 19 14:23:42 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:23:42 2014 Sending command to exit default mode.
+Thu Jun 19 14:23:42 2014 Attempting to exit default mode.
+Thu Jun 19 14:30:13 2014 Program Started
+Thu Jun 19 14:30:13 2014 HLP thread started.
+Thu Jun 19 14:30:13 2014 HK Thread started
+Thu Jun 19 14:30:16 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:30:16 2014 Sending command to exit default mode.
+Thu Jun 19 14:30:16 2014 Attempting to exit default mode.
+Thu Jun 19 14:30:27 2014 Program Started
+Thu Jun 19 14:30:27 2014 HLP thread started.
+Thu Jun 19 14:30:27 2014 HK Thread started
+Thu Jun 19 14:30:30 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 14:30:30 2014 Sending command to exit default mode.
+Thu Jun 19 14:30:30 2014 Attempting to exit default mode.
