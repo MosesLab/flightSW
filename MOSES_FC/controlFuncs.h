@@ -12,6 +12,7 @@
 #define	CONTROLFUNCS_H
 
 #include "system.h"
+#include "moses_threads.h"
 #include "hlp.h"
 #include "lockingQueue.h"
 #include "packet.h"

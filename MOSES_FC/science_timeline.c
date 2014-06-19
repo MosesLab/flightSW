@@ -24,13 +24,14 @@ void init_signal_handler_stl() {
 
     sigfillset(&oldmaskstl); //save the old mask
     sigemptyset(&maskstl); //create a blank new mask
-    sigaddset(&oldmaskstl, SIGUSR1); //add SIGUSR1 to mask
-    run_action.sa_handler = runsig;
-    run_action.sa_mask = oldmaskstl;
-    run_action.sa_flags = 0;
-
-    sigaction(SIGUSR1, &run_action, NULL);
+    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
+//    run_action.sa_handler = runsig;
+//    run_action.sa_mask = oldmaskstl;
+//    run_action.sa_flags = 0;
+//
+//    sigaction(SIGUSR1, &run_action, NULL);
     record("Signal handler initiated.\n");
+    
 }
 
 void * science_timeline(void * arg) {
@@ -42,7 +43,7 @@ void * science_timeline(void * arg) {
     int i, j, k;
     short *BUFFER[4]; //[2200000];  
 
-    pthread_sigmask(SIGUSR1, &maskstl, &oldmaskstl);
+    
 
     //sigsuspend(&oldmaskstl); 
 
@@ -60,10 +61,17 @@ void * science_timeline(void * arg) {
 
     while (ts_alive) {
 
-        if (ops.seq_pause == TRUE) {
-            record("Sequence paused\n");
-            //sigsuspend(&oldmaskstl);   // wait here until signal is sent to unpause
-            record("After SIGUSR1\n");
+        if (ops.seq_run == FALSE) {
+            record("Sequence stopped\n");
+            
+            pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
+            sigwait(&maskstl, &caught_signal);
+            pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
+            
+            /*running signal handler out of context, should probably be changed*/
+            runsig();
+            
+            record("SIGUSR1 received, starting sequence\n");
         }
         /* if ROE active, set to known state (exit default, reset, exit default) */
         //Add code here
@@ -162,14 +170,13 @@ void * science_timeline(void * arg) {
 
         /*Move to next sequence*/
         
-        /*debug for thread testing RTS*/
-        //ops.sequence++;
-        sleep(5);
+        ops.sequence++;
         
         if (ops.sequence > (sizeof (sequenceMap) / sizeof (sequence_t)) - 1) {
             /* We have gone through all of the sequences, exit the program*/
-            record("Done with sequences (exit thread)\n");
-            break;
+            record("Done with sequences, wait for signal to start\n");
+            ops.seq_run = FALSE;
+            ops.seq_pause = TRUE;
         }
     }
     /* delete pixel buffers */

@@ -16,6 +16,12 @@
 #define STARTBYTE '%'
 #define ENDBYTE '^'
 
+#define CH0		0x1	//0x8
+#define CH1		0x2	//0x4
+#define CH2		0x4	//0x2
+#define CH3		0x8	//0x1
+
+
 
 
 /*Packet structure for parsing and storing HLP packets*/

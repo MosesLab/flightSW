@@ -10,21 +10,7 @@
  *              as well as the metadata for the    *
  *              image.                             *
  **************************************************/
-#include <sys/stat.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stddef.h>
-
-#include <fcntl.h>
-#include <errno.h>
 #include "roe_image.h"
-//#include "defs.h"
-
-#define CH0		0x1	//0x8
-#define CH1		0x2	//0x4
-#define CH2		0x4	//0x2
-#define CH3		0x8	//0x1
 
 void constructEmpty() {
 
@@ -92,7 +78,7 @@ void writeToFile(char* file, char* catalog) {
 
 /*Write to XML File, if file does not exist, it will create one
   If file exists, it will append to it*/
-FILE *outxml;
+FILE * outxml;
 outxml = fopen(catalog, "a");
 int foundline = 0;
 char line[100];

@@ -8,6 +8,12 @@
 #ifndef ROE_IMAGE_H
 #define	ROE_IMAGE_H
 
+#include <sys/stat.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <stddef.h>
 #include "system.h"
 #include "hlp.h"

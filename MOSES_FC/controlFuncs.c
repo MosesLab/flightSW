@@ -25,7 +25,10 @@ int execPacket(Packet* p) {
 /*Uplink control functions*/
 int uDataStart(Packet* p) {
     record("Received data start Uplink\n");
-    //Insert uplink handling code here
+    
+    /*send signal to science timeline to start data*/
+    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
     Packet* r = constructPacket(UPLINK_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
