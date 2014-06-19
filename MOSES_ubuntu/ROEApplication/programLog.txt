@@ -88,3 +88,9 @@ Thu Jun 19 15:14:02 2014 HK Thread started
 Thu Jun 19 15:14:05 2014 Failed to Open Serial Port to ROE
 Thu Jun 19 15:14:05 2014 Sending command to exit default mode.
 Thu Jun 19 15:14:05 2014 Attempting to exit default mode.
+Thu Jun 19 15:17:56 2014 Program Started
+Thu Jun 19 15:17:56 2014 HLP thread started.
+Thu Jun 19 15:17:56 2014 HK Thread started
+Thu Jun 19 15:17:59 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 15:18:00 2014 Sending command to exit default mode.
+Thu Jun 19 15:18:00 2014 Attempting to exit default mode.

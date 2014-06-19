@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
     roe.active = FALSE;
     record("Program Started\n");
     start_threads();
+    sleep(100);
     join_threads();
 
     return 0;
