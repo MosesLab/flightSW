@@ -13,10 +13,13 @@
 int SendHLPCmds()
 {
     //char* foo = "foo";
-    record("HLP thread started\n");
+    record("HLP thread started.\n");
+    
+    sleep(3);
     
     activateROE(); usleep(100000);
     
+    record("Sending command to exit default mode.\n");
     exitDefault(); usleep(100000);
     
     

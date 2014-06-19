@@ -64,7 +64,7 @@ int deactivate() {
     }
     roe.active = FALSE;
     pthread_mutex_unlock(&roe.mx);
-    record("ROE Deactivated\n");
+    record("ROE Deactivated.\n");
     return 0;
 }
 
@@ -74,6 +74,7 @@ int deactivate() {
 //Exit Roe default mode and enter manual mode
 
 int exitDefault() {
+    record("Attempting to exit default mode.\n");
     pthread_mutex_lock(&roe.mx);
 
     //New Roe Program
@@ -127,17 +128,18 @@ int exitDefault() {
     }
     usleep(500000); //Wait for command to finish
     char ack;
-    if(recieveAck(roe.roeLink,&ack,1,0x03) == -1)
-    {
-    	pthread_mutex_unlock(&roe.mx);
-    	return -1; //Get Acknowledgment of Command
-    }
+    //if(recieveAck(roe.roeLink,&ack,1,0x03) == -1)
+    //{
+    //    record("Did not receive ack from ROE!\n");
+    //	pthread_mutex_unlock(&roe.mx);
+    //	return -1; //Get Acknowledgment of Command
+    //}
     char status;
-    if (readRoe(roe.roeLink, &status, 1) == -1) {
-        record("Exit Default Error\n");
-        pthread_mutex_unlock(&roe.mx);
-        return -1; //Get Status of Command Execution
-    }
+    //if (readRoe(roe.roeLink, &status, 1) == -1) {
+    //    record("Exit Default Error\n");
+    //    pthread_mutex_unlock(&roe.mx);
+    //    return -1; //Get Status of Command Execution
+    //}
     roe.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.

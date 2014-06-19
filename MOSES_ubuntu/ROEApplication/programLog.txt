@@ -1,54 +1,24 @@
-Wed Jun 11 11:44:54 2014 Program Started
-Wed Jun 11 11:44:54 2014 HLP thread started
-Wed Jun 11 11:44:54 2014 HK Thread started
-Wed Jun 11 11:44:54 2014 Failed to Open Serial Port to ROE
-Wed Jun 11 11:44:59 2014 getHK error
-Wed Jun 11 11:44:59 2014 VPOS5VD : -1
-Wed Jun 11 11:44:59 2014 Done sending HK commands
-Wed Jun 11 11:45:04 2014 Done driving HLP commands
-Wed Jun 11 11:45:04 2014 Threads returned, program done.
-Wed Jun 11 16:57:49 2014 Program Started
-Wed Jun 11 16:57:49 2014 HLP thread started
-Wed Jun 11 16:57:49 2014 Failed to Open Serial Port to ROE
-Wed Jun 11 16:57:49 2014 HK Thread started
-Wed Jun 11 16:57:54 2014 getHK error
-Wed Jun 11 16:57:54 2014 VPOS5VD : -1
-Wed Jun 11 16:57:54 2014 Done sending HK commands
-Wed Jun 11 16:58:00 2014 Done driving HLP commands
-Wed Jun 11 16:58:00 2014 Threads returned, program done.
-Wed Jun 11 17:00:46 2014 Program Started
-Wed Jun 11 17:00:46 2014 HLP thread started
-Wed Jun 11 17:00:46 2014 Failed to Open Serial Port to ROE
-Wed Jun 11 17:00:46 2014 HK Thread started
-Wed Jun 11 17:00:51 2014 getHK error
-Wed Jun 11 17:00:51 2014 VPOS5VD : -1
-Wed Jun 11 17:00:51 2014 Done sending HK commands
-Wed Jun 11 17:00:56 2014 Done driving HLP commands
-Wed Jun 11 17:00:56 2014 Threads returned, program done.
-Thu Jun 12 13:39:53 2014 Program Started
-Thu Jun 12 13:39:53 2014 HLP thread started
-Thu Jun 12 13:39:53 2014 HK Thread started
-Thu Jun 12 13:39:53 2014 Failed to Open Serial Port to ROE
-Thu Jun 12 13:39:58 2014 getHK error
-Thu Jun 12 13:39:58 2014 VPOS5VD : -1
-Thu Jun 12 13:39:58 2014 Done sending HK commands
-Thu Jun 12 13:40:03 2014 Done driving HLP commands
-Thu Jun 12 13:40:03 2014 Threads returned, program done.
-Thu Jun 12 13:41:25 2014 Program Started
-Thu Jun 12 13:41:25 2014 HLP thread started
-Thu Jun 12 13:41:25 2014 Failed to Open Serial Port to ROE
-Thu Jun 12 13:41:25 2014 HK Thread started
-Thu Jun 12 13:41:30 2014 getHK error
-Thu Jun 12 13:41:30 2014 VPOS5VD : -1
-Thu Jun 12 13:41:30 2014 Done sending HK commands
-Thu Jun 12 13:41:36 2014 Done driving HLP commands
-Thu Jun 12 13:41:36 2014 Threads returned, program done.
-Thu Jun 12 13:47:07 2014 Program Started
-Thu Jun 12 13:47:07 2014 HLP thread started
-Thu Jun 12 13:47:07 2014 Failed to Open Serial Port to ROE
-Thu Jun 12 13:47:07 2014 HK Thread started
-Thu Jun 12 13:47:12 2014 getHK error
-Thu Jun 12 13:47:12 2014 VPOS5VD : -1
-Thu Jun 12 13:47:12 2014 Done sending HK commands
-Thu Jun 12 13:47:17 2014 Done driving HLP commands
-Thu Jun 12 13:47:17 2014 Threads returned, program done.
+Thu Jun 19 12:59:26 2014 Program Started
+Thu Jun 19 12:59:26 2014 HLP thread started.
+Thu Jun 19 12:59:26 2014 HK Thread started
+Thu Jun 19 12:59:29 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 12:59:30 2014 Sending command to exit default mode.
+Thu Jun 19 12:59:30 2014 Attempting to exit default mode.
+Thu Jun 19 12:59:30 2014 Exiting Default Mode
+Thu Jun 19 12:59:30 2014 Done driving HLP commands
+Thu Jun 19 12:59:36 2014 getHK error
+Thu Jun 19 12:59:36 2014 VPOS5VD : -1
+Thu Jun 19 12:59:36 2014 Done sending HK commands
+Thu Jun 19 12:59:36 2014 Threads returned, program done.
+Thu Jun 19 13:00:31 2014 Program Started
+Thu Jun 19 13:00:31 2014 HLP thread started.
+Thu Jun 19 13:00:31 2014 HK Thread started
+Thu Jun 19 13:00:34 2014 Failed to Open Serial Port to ROE
+Thu Jun 19 13:00:34 2014 Sending command to exit default mode.
+Thu Jun 19 13:00:34 2014 Attempting to exit default mode.
+Thu Jun 19 13:00:35 2014 Exiting Default Mode
+Thu Jun 19 13:00:35 2014 Done driving HLP commands
+Thu Jun 19 13:00:41 2014 getHK error
+Thu Jun 19 13:00:41 2014 VPOS5VD : -1
+Thu Jun 19 13:00:41 2014 Done sending HK commands
+Thu Jun 19 13:00:41 2014 Threads returned, program done.
