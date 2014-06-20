@@ -242,6 +242,7 @@
         <linkerTool>
           <linkerLibItems>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
