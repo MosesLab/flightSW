@@ -4,6 +4,7 @@
  *
  * Created on June 4, 2014, 3:15 PM
  */
+#include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -18,7 +19,7 @@
  */
 int main(int argc, char** argv) {
 
-    if ((roe.roeLink = open(ROE_DEV, O_RDONLY | O_NOCTTY) == -1)) {
+   /* if ((roe.roeLink = open(ROE_DEV, O_WRONLY | O_NOCTTY) == -1)) {
 
         record("Failed to Open Serial Port to ROE\n");
         //pthread_mutex_unlock(&roe.mx);
@@ -37,7 +38,7 @@ int main(int argc, char** argv) {
     newtio.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
     //newtio.c_lflag = ICANON;
 
-    /*set non-canonical attributes*/
+    /*set non-canonical attributes*//*
     newtio.c_cc[VTIME] = 1;
     newtio.c_cc[VMIN] = 255;
 
@@ -56,9 +57,9 @@ int main(int argc, char** argv) {
             write(roe.roeLink, &block1[i], sizeof (block1[i]));
         }
         counter ++;
-    }
+    }*/
 
-    roe.active = FALSE;
+    //roe.active = FALSE;
     record("Program Started\n");
     start_threads();
     sleep(5);

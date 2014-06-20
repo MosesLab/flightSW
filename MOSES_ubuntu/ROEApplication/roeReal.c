@@ -8,6 +8,13 @@
  **************************************************/
 #include "roe.h"
 
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 #include "logger.h"
 
@@ -15,38 +22,42 @@ int activateROE() {
     pthread_mutex_lock(&roe.mx);
     //if (roe.active == FALSE) {
         //Open Serial Device
-    /*    if ((roe.roeLink = open(ROE_DEV, O_RDWR | O_NOCTTY) == -1)) {
+    struct termios oldtio_up, newtio_up;
+    int fd = open(ROE_DEV, O_WRONLY | O_NOCTTY);
+    if (fd < 0) {
+        printf("Couldnt connect\n");
+        exit(-1);
+    }
+    /*save current serial port settings*/
+    tcgetattr(fd, &oldtio_up);
 
-            record("Failed to Open Serial Port to ROE\n");
-            pthread_mutex_unlock(&roe.mx);
-            return 0;
-        }
+    /*clear struct for new port settings*/
+    bzero(&newtio_up, sizeof (newtio_up));
 
-        struct termios options;
-        tcgetattr(roe.roeLink, &options);
-        bzero(&options, sizeof (options));
+    /*set flags for non-canonical serial connection*/
+    newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
+    newtio_up.c_cflag &= ~(PARENB | PARODD);
+    newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
+    //newtio_up.c_iflag |= ISTRIP;
+    newtio_up.c_oflag &= ~OPOST;
+    newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
 
-        options.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
-        options.c_cflag &= ~(PARENB | PARODD);
-        options.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-        //options.c_iflag |= ISTRIP;
-        options.c_oflag &= ~OPOST;
-        options.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
-        //options.c_lflag &= DEFECHO;
+    /*set non-canonical attributes*/
+    newtio_up.c_cc[VTIME] = 1;
+    newtio_up.c_cc[VMIN] = 255;
 
-        /*set non-canonical attributes*//*
-        options.c_cc[VTIME] = 1;
-        options.c_cc[VMIN] = 255;
-        
-        tcflush(roe.roeLink, TCIFLUSH);
-        tcsetattr(roe.roeLink, TCSANOW, &options); //Apply new settings
-        record("Connection established. DEFAULT MODE\n");
-    }*/
+    tcflush(fd, TCIFLUSH);
+    tcsetattr(fd, TCSANOW, &newtio_up);
 
-    roe.active = TRUE;
-    pthread_mutex_unlock(&roe.mx);
+    printf("sucessfully connected\n");
+    return fd;
+    record("Connection established. DEFAULT MODE\n");
+    }
+
+    //roe.active = TRUE;
+    //pthread_mutex_unlock(&roe.mx);
     record("ROE Active\n");
-    return 0;
+    //return 0;
 }
 
 int deactivate() {
@@ -112,7 +123,7 @@ int exitDefault() {
         0x00, 0x00, 0x00};
 
     char command = EXIT_DEFAULT;
-    if (write(roe.roeLink, (void *) &command, 1) != 1) //Write Command to ROE Link
+    if (write(roe.roeLink, &command, 1) != 1) //Write Command to ROE Link
     {
         record("Exit Default Error\n");
         pthread_mutex_unlock(&roe.mx);
@@ -143,7 +154,7 @@ int exitDefault() {
         //if (status != -1) {
         int i;
         for (i = 0; i < blockSize; i++)
-            write(roe.roeLink, &block1[i], sizeof (block1[i]));
+            if(write(roe.roeLink, &block1[i], sizeof (block1[i])) < 1) printf("error\n");
         for (i = 0; i < blockSize; i++)
             write(roe.roeLink, &block2[i], sizeof (block2[i]));
         for (i = 0; i < blockSize; i++)
