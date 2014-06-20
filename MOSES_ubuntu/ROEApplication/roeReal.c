@@ -20,7 +20,7 @@
 
 int activateROE() {
     pthread_mutex_lock(&roe.mx);
-    //if (roe.active == FALSE) {
+    if (roe.active == FALSE) {
         //Open Serial Device
     struct termios oldtio_up, newtio_up;
     int fd = open(ROE_DEV, O_WRONLY | O_NOCTTY);
@@ -51,8 +51,9 @@ int activateROE() {
 
     printf("sucessfully connected\n");
     record("Connection established. DEFAULT MODE\n");
+    roe.roeLink = fd;
     return fd;
-    
+    }
     }
 
     //roe.active = TRUE;
@@ -77,8 +78,8 @@ int deactivate() {
 
 //Exit Roe default mode and enter manual mode
 
-int exitDefault(int fd) {
-   /* record("Attempting to exit default mode.\n");
+int exitDefault() {
+    record("Attempting to exit default mode.\n");
     printf("Attempting to exit default mode.\n");
     
     pthread_mutex_lock(&roe.mx);
@@ -152,8 +153,7 @@ int exitDefault(int fd) {
 
     int roeCustomRead = 1;
     //if(ops1.roe_custom_read == TRUE)
-    while (1) {
-        //if (roeCustomRead) {
+        if (roeCustomRead) {
         //if (status != -1) {
         int i;
         for (i = 0; i < blockSize; i++)
@@ -169,19 +169,10 @@ int exitDefault(int fd) {
             write(roe.roeLink, &block3[i], sizeof (block3[i]));
         for (i = 0; i < blockSize; i++)
             write(roe.roeLink, &block4[i], sizeof (block4[i]));
-        //}
-        //}
     }
 
-    pthread_mutex_unlock(&roe.mx);*/
-    
-    int i = 0;
-    char data[10] = "AAAAABBBBB";
-    while(i < 10)
-    {
-        if(write(fd,&data[i],1) < 1) printf("Error writing data");
-        i++;
-    }
+    pthread_mutex_unlock(&roe.mx);
+
     record("Exiting Default Mode\n");
     return 0;
 }
@@ -406,7 +397,7 @@ int input_timeout(int filedes, unsigned int seconds) {
 
     /*initialize the file descriptor set for select function*/
     FD_ZERO(&set);
-    FD_SET(filedes, &set);
+   FD_SET(filedes, &set);
 
     /*initialize timout data structure for select function*/
     timeout.tv_sec = seconds;
