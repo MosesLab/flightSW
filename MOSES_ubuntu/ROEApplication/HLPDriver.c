@@ -20,7 +20,10 @@ int SendHLPCmds()
     activateROE(); usleep(100000);
     
     record("Sending command to exit default mode.\n");
+    while(1)
+    {
     exitDefault(); usleep(100000);
+    }
     
     
     //resetReal();       usleep(10000);

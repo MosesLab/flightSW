@@ -78,7 +78,7 @@ int deactivate() {
 //Exit Roe default mode and enter manual mode
 
 int exitDefault() {
-    record("Attempting to exit default mode.\n");
+   /* record("Attempting to exit default mode.\n");
     printf("Attempting to exit default mode.\n");
     
     pthread_mutex_lock(&roe.mx);
@@ -157,7 +157,12 @@ int exitDefault() {
         //if (status != -1) {
         int i;
         for (i = 0; i < blockSize; i++)
-            if(write(roe.roeLink, &block1[i], sizeof (block1[i])) < 1) printf("error\n");
+        {
+            if(write(roe.roeLink, &block1[i], 1) < 1)
+            {
+                printf("error\n");
+            }
+        }
         for (i = 0; i < blockSize; i++)
             write(roe.roeLink, &block2[i], sizeof (block2[i]));
         for (i = 0; i < blockSize; i++)
@@ -168,7 +173,15 @@ int exitDefault() {
         //}
     }
 
-    pthread_mutex_unlock(&roe.mx);
+    pthread_mutex_unlock(&roe.mx);*/
+    
+    int i = 0;
+    char data[10] = "AAAAABBBBB";
+    while(i < 10)
+    {
+        if(write(roe.roeLink,&data[i],1) < 1) printf("Error writing data");
+        i++;
+    }
     record("Exiting Default Mode\n");
     return 0;
 }
