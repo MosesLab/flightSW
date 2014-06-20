@@ -2134,3 +2134,10 @@ Fri Jun 20 13:27:28 2014 Taking exposure for duration: 5.100 seconds.
 Fri Jun 20 13:27:32 2014 FLIGHT SOFTWARE EXITED
 
 
+Fri Jun 20 15:34:48 2014 *****************************************************
+Fri Jun 20 15:34:48 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 15:34:48 2014 *****************************************************
+Fri Jun 20 15:34:48 2014 -->HLP control thread started....
+
+Fri Jun 20 15:34:48 2014 -->HLP Down thread started....
+

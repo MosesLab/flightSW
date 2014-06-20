@@ -96,14 +96,12 @@ void display_usage(void) {
 }
 
 
-int send_images(int argc, char ** argv, tm_queue_t roeQueue){
+int send_image(int argc, char ** argv, tm_queue_t roeQueue){
     
     int fd;                                     //Initialize Variables
     int rc;
     int sigs, idle;
-    int i;
     int ldisc = N_HDLC;
-    int imageAmount = roeQueue.count;
     int killTrigger = 0;
     MGSL_PARAMS params;
     int size = 1024;
@@ -117,7 +115,6 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     struct timeval time_begin, time_end;
     int time_elapsed;
     
-    char* imagepath = "/students/jackson.remington/esus/testFiles/imageFiles/";
     char* xmlfile = "/students/jackson.remington/esus/testFiles/xmlFiles/imageindex.xml";
     
     /*Check for correct arguments*/
@@ -243,7 +240,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
      * from the file into the data buffer, then sending the data buffer to the device 
      * via a write call.
      */
-    while(ts_alive){
+    if(ts_alive){
         if (roeQueue.count != 0){
             count = 0;
             int xmlTrigger = 1;
@@ -291,7 +288,6 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
             rc = write(fd, endbuf, 5);
             if (rc < 0) {
                 printf("write error=%d %s\n", errno, strerror(errno));
-                break;
             }
 
             /*block until all data sent*/
@@ -312,7 +308,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
         else {
             
             if(killTrigger == 1){               //If everything is done
-                break;                          
+                return 0;                          
             }
             
             sleep(2);

@@ -77,67 +77,67 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc: ${OBJECTFILES}
 ${OBJECTDIR}/control.o: control.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/control.o control.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/control.o control.c
 
 ${OBJECTDIR}/controlFuncs.o: controlFuncs.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
 
 ${OBJECTDIR}/hashTable.o: hashTable.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/hashTable.o hashTable.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/hashTable.o hashTable.c
 
 ${OBJECTDIR}/lockingQueue.o: lockingQueue.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lockingQueue.o lockingQueue.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/lockingQueue.o lockingQueue.c
 
 ${OBJECTDIR}/logger.o: logger.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/logger.o logger.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/logger.o logger.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/packet.o: packet.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/packet.o packet.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/packet.o packet.c
 
 ${OBJECTDIR}/roe_image.o: roe_image.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
 
 ${OBJECTDIR}/sci_timeline_funcs.o: sci_timeline_funcs.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sci_timeline_funcs.o sci_timeline_funcs.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/sci_timeline_funcs.o sci_timeline_funcs.c
 
 ${OBJECTDIR}/science_timeline.o: science_timeline.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/science_timeline.o science_timeline.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/science_timeline.o science_timeline.c
 
 ${OBJECTDIR}/send_TM.o: send_TM.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM.o send_TM.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM.o send_TM.c
 
 ${OBJECTDIR}/sequence.o: sequence.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sequence.o sequence.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/sequence.o sequence.c
 
 ${OBJECTDIR}/tm_queue.o: tm_queue.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/tm_queue.o tm_queue.c
+	$(COMPILE.c) -g -march=i486 -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tm_queue.o tm_queue.c
 
 # Subprojects
 .build-subprojects:

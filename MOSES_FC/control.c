@@ -151,5 +151,37 @@ void * hlp_housekeeping(void * arg){
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
-    /*jackson: dequeue and call sendTM from here*/
+    FILE *fp;
+    
+    while (ts_alive){
+        if (roeQueue.count != 0) {
+            char * tempName = strrchr(roeQueue.first->filePath, '/') + 1;
+            fp = fopen(roeQueue.first->filePath, "r");  //Open file
+            
+            if (fp == NULL) {                           //Error opening file
+                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+            }
+            else fclose(fp);
+            if ((&roeQueue)->first != NULL){  
+                
+                fseek(fp, 0, SEEK_END);                 // seek to end of file
+                int size = ftell(fp);                   // get current file size pointer
+                fseek(fp, 0, SEEK_SET);
+
+                send_image(&roeQueue);
+                /*Add a success check before dequeue?*/
+                tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+                
+            }
+        }
+        else {
+            struct timespec timeToWait;
+            struct timeval now;
+
+            gettimeofday(&now, NULL);
+            timeToWait.tv_sec = now.tv_sec + 1;
+            timeToWait.tv_nsec = 0;
+
+        }
+    }
 }
