@@ -152,6 +152,7 @@ void * hlp_housekeeping(void * arg){
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
+    int xmlTrigger = 1;
     
     while (ts_alive){
         if (roeQueue.count != 0) {
@@ -168,10 +169,18 @@ void * telem(void * arg){
                 int size = ftell(fp);                   // get current file size pointer
                 fseek(fp, 0, SEEK_SET);
 
-                send_image(&roeQueue);
-                /*Add a success check before dequeue?*/
-                tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+                int check = send_image(&roeQueue, xmlTrigger);//Send actual Image
                 
+                if (xmlTrigger == 1){
+                    xmlTrigger = 0;
+                }
+                else if (xmlTrigger == 0){
+                    xmlTrigger = 1;
+                }
+                
+                if (check == 0){
+                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+                }
             }
         }
         else {
