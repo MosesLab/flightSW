@@ -50,15 +50,16 @@ int activateROE() {
     tcsetattr(fd, TCSANOW, &newtio_up);
 
     printf("sucessfully connected\n");
-    return fd;
     record("Connection established. DEFAULT MODE\n");
+    return fd;
+    
     }
 
     //roe.active = TRUE;
     //pthread_mutex_unlock(&roe.mx);
-    record("ROE Active\n");
+    //record("ROE Active\n");
     //return 0;
-}
+
 
 int deactivate() {
     pthread_mutex_lock(&roe.mx);
@@ -78,6 +79,8 @@ int deactivate() {
 
 int exitDefault() {
     record("Attempting to exit default mode.\n");
+    printf("Attempting to exit default mode.\n");
+    
     pthread_mutex_lock(&roe.mx);
 
     //New Roe Program

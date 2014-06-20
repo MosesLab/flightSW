@@ -1,0 +1,3 @@
+Fri Jun 20 09:34:20 2014 Program Started
+Fri Jun 20 09:34:20 2014 HLP thread started.
+Fri Jun 20 09:34:20 2014 HK Thread started
