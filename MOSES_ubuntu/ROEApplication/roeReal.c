@@ -78,7 +78,7 @@ int deactivate() {
 
 //Exit Roe default mode and enter manual mode
 
-int exitDefault() {
+int exitDefault(int fd) {
     record("Attempting to exit default mode.\n");
     printf("Attempting to exit default mode.\n");
     
@@ -127,7 +127,7 @@ int exitDefault() {
         0x00, 0x00, 0x00};
 
     char command = EXIT_DEFAULT;
-    if (write(roe.roeLink, &command, 1) != 1) //Write Command to ROE Link
+    if (write(fd, &command, 1) != 1) //Write Command to ROE Link
     {
         record("Exit Default Error\n");
         pthread_mutex_unlock(&roe.mx);
@@ -150,25 +150,27 @@ int exitDefault() {
     roe.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.
-
+    printf("fd: %d   roeLink: %d", fd, roe.roeLink);
     int roeCustomRead = 1;
     //if(ops1.roe_custom_read == TRUE)
+    while(1){
         if (roeCustomRead) {
         //if (status != -1) {
         int i;
         for (i = 0; i < blockSize; i++)
         {
-            if(write(roe.roeLink, &block1[i], 1) < 1)
+            if(write(fd, &block1[i], 1) < 1)
             {
                 printf("error\n");
             }
         }
         for (i = 0; i < blockSize; i++)
-            write(roe.roeLink, &block2[i], sizeof (block2[i]));
+            write(fd, &block2[i], sizeof (block2[i]));
         for (i = 0; i < blockSize; i++)
-            write(roe.roeLink, &block3[i], sizeof (block3[i]));
+            write(fd, &block3[i], sizeof (block3[i]));
         for (i = 0; i < blockSize; i++)
-            write(roe.roeLink, &block4[i], sizeof (block4[i]));
+            write(fd, &block4[i], sizeof (block4[i]));
+    }
     }
 
     pthread_mutex_unlock(&roe.mx);

@@ -72,7 +72,7 @@ struct ReadOutElectronics roe;
 
 int activateROE();
 int deactivate();
-int exitDefault();
+int exitDefault(int fd);
 int selftestMode();
 int stimOn();
 int stimOff();
