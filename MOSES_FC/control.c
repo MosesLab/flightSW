@@ -43,7 +43,6 @@ void * hlp_control(void * arg) {
         Packet * t = constructPacket(UPLINK_S, DATASTART, NULL);
         sleep(3);
         uDataStart(t);
-        uDataStart(t);
         
         
         sleep(15);

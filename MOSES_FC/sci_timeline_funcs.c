@@ -64,7 +64,7 @@ int write_data(int duration, int num, short **BUFFER, int *index)
     char dtime[100];
     char ddate[100];
     
-    char dataDir[10] = "mdata";
+    char dataDir[10] = "/mdata";
     char channels = ops.channels;
     
     /*Initialize the image*/
@@ -90,7 +90,7 @@ int write_data(int duration, int num, short **BUFFER, int *index)
     sprintf(msg,"Writing image file %s\n", filename);
     record(msg);
     /*write the image and metadata to disk*/
-    writeToFile(filename,"mdata/imageindex.xml"); //write the image and metadata to disk
+    writeToFile(filename,"/mdata/imageindex.xml"); //write the image and metadata to disk
     
     /*push the filename onto the telemetry queue*/
     if(ops.tm_write == 1)
