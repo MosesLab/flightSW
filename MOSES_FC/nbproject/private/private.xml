@@ -15,13 +15,15 @@
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control_sim.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control_sim.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.h</file>

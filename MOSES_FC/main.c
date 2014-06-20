@@ -55,7 +55,7 @@ void start_threads() {
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
     pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL); //shouldn't be enabled for debug
     pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
-    pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);       
+    //pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);       
     //pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
     
     

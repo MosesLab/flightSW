@@ -8,6 +8,8 @@
 #include "lockingQueue.h"
 
 void lockingQueue_init(LockingQueue * queue) {
+    queue->first = NULL;        //Initialize queue
+    queue->last = NULL;
     pthread_mutex_init(&queue->lock, NULL); //initialize mutex
 
     /*initialize conditional variable*/

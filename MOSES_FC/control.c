@@ -143,7 +143,7 @@ void * hlp_housekeeping(void * arg){
     record("-->HLP Housekeeping thread started....\n\n");
     while(ts_alive){
         Packet * p = constructPacket(GDPKT, ACK, NULL);
-        recordPacket(p);
+        //recordPacket(p);
         enqueue(&hkdownQueue, p);
         sleep(1);
     }

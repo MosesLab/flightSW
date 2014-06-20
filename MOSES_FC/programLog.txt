@@ -1,0 +1,200 @@
+Fri Jun 20 09:59:33 2014 *****************************************************
+Fri Jun 20 09:59:33 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 09:59:33 2014 *****************************************************
+Fri Jun 20 09:59:33 2014 -->HLP control thread started....
+
+Fri Jun 20 09:59:33 2014 -->HLP Housekeeping thread started....
+
+Fri Jun 20 09:59:33 2014 -->HLP Down thread started....
+
+Fri Jun 20 09:59:33 2014 095933GACK00G
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 Write Error: hlp_down
+Fri Jun 20 09:59:33 2014 095933GACK00G
+Fri Jun 20 09:59:34 2014 095934GACK00)
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 Write Error: hlp_down
+Fri Jun 20 09:59:34 2014 095934GACK00)
+Fri Jun 20 09:59:35 2014 095935GACK00(
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 Write Error: hlp_down
+Fri Jun 20 09:59:35 2014 095935GACK00(
+Fri Jun 20 09:59:36 2014 Received data start Uplink
+Fri Jun 20 09:59:36 2014 095936GACK00+
+Fri Jun 20 10:02:17 2014 *****************************************************
+Fri Jun 20 10:02:17 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 10:02:17 2014 *****************************************************
+Fri Jun 20 10:02:17 2014 -->HLP Down thread started....
+
+Fri Jun 20 10:02:17 2014 -->HLP control thread started....
+
+Fri Jun 20 10:02:17 2014 -->HLP Housekeeping thread started....
+
+Fri Jun 20 10:02:17 2014 100217GACK00.
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 Write Error: hlp_down
+Fri Jun 20 10:02:17 2014 100217GACK00.
+Fri Jun 20 10:02:18 2014 100218GACK00!
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 Write Error: hlp_down
+Fri Jun 20 10:02:18 2014 100218GACK00!
+Fri Jun 20 10:02:19 2014 100219GACK00 
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 Write Error: hlp_down
+Fri Jun 20 10:02:19 2014 100219GACK00 
+Fri Jun 20 10:02:20 2014 Received data start Uplink
+Fri Jun 20 10:02:55 2014 *****************************************************
+Fri Jun 20 10:02:55 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 10:02:55 2014 *****************************************************
+Fri Jun 20 10:02:55 2014 -->HLP Down thread started....
+
+Fri Jun 20 10:02:55 2014 -->HLP control thread started....
+
+Fri Jun 20 10:02:55 2014 -->HLP Housekeeping thread started....
+
+Fri Jun 20 10:03:00 2014 *****************************************************
+Fri Jun 20 10:03:00 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 10:03:00 2014 *****************************************************
+Fri Jun 20 10:03:00 2014 -->HLP control thread started....
+
+Fri Jun 20 10:03:00 2014 -->HLP Housekeeping thread started....
+
+Fri Jun 20 10:03:00 2014 -->HLP Down thread started....
+
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 Write Error: hlp_down
+Fri Jun 20 10:03:00 2014 100300GACK00)
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 Write Error: hlp_down
+Fri Jun 20 10:03:01 2014 100301GACK00(
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 Write Error: hlp_down
+Fri Jun 20 10:03:02 2014 100302GACK00+
+Fri Jun 20 10:03:03 2014 Received data start Uplink
+Fri Jun 20 10:03:03 2014 Write Error: hlp_down
