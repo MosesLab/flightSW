@@ -1894,3 +1894,243 @@ Fri Jun 20 12:44:18 2014 Taking exposure for duration: 2.020 seconds.
 Fri Jun 20 12:44:18 2014 FLIGHT SOFTWARE EXITED
 
 
+Fri Jun 20 13:14:28 2014 *****************************************************
+Fri Jun 20 13:14:28 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 13:14:28 2014 *****************************************************
+Fri Jun 20 13:14:28 2014 -->HLP control thread started....
+
+Fri Jun 20 13:14:28 2014 -->HLP Down thread started....
+
+Fri Jun 20 13:14:28 2014 -->Science Timeline thread started....
+
+Fri Jun 20 13:14:28 2014 Signal handler initiated.
+Fri Jun 20 13:14:28 2014 Sequence stopped, wait for signal to start
+Fri Jun 20 13:14:31 2014 Received data start Uplink
+Fri Jun 20 13:14:31 2014 SIGUSR1 received, starting sequence
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Current sequence: sequence/dark1demo 
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Starting exposure for duration: 3.140 seconds (1 out of 5)
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Taking exposure for duration: 3.140 seconds.
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 Write Error: hlp_down
+Fri Jun 20 13:14:31 2014 131431UDST006
+Fri Jun 20 13:14:34 2014 Computer Time: 3 seconds, 140001 microseconds
+Fri Jun 20 13:14:34 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:14:34 2014 Writing data to disk.
+Fri Jun 20 13:14:34 2014 Image Opened
+Fri Jun 20 13:14:34 2014 Writing image file /mdata/200614131434.roe
+Fri Jun 20 13:14:34 2014 File /mdata/200614131434.roe successfully written to disk.
+Fri Jun 20 13:14:34 2014 Exposure of 3.140 seconds complete 0.
+
+Fri Jun 20 13:14:34 2014 Starting exposure for duration: 1.370 seconds (2 out of 5)
+Fri Jun 20 13:14:34 2014 Taking exposure for duration: 1.370 seconds.
+Fri Jun 20 13:14:36 2014 Computer Time: 2 seconds, 18446744073708921616 microseconds
+Fri Jun 20 13:14:36 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:14:36 2014 Writing data to disk.
+Fri Jun 20 13:14:36 2014 Image Opened
+Fri Jun 20 13:14:36 2014 Writing image file /mdata/200614131436.roe
+Fri Jun 20 13:14:36 2014 File /mdata/200614131436.roe successfully written to disk.
+Fri Jun 20 13:14:36 2014 Exposure of 1.370 seconds complete 1.
+
+Fri Jun 20 13:14:36 2014 Starting exposure for duration: 2.980 seconds (3 out of 5)
+Fri Jun 20 13:14:36 2014 Taking exposure for duration: 2.980 seconds.
+Fri Jun 20 13:14:39 2014 Computer Time: 3 seconds, 18446744073709531616 microseconds
+Fri Jun 20 13:14:39 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:14:39 2014 Writing data to disk.
+Fri Jun 20 13:14:39 2014 Image Opened
+Fri Jun 20 13:14:39 2014 Writing image file /mdata/200614131439.roe
+Fri Jun 20 13:14:39 2014 File /mdata/200614131439.roe successfully written to disk.
+Fri Jun 20 13:14:39 2014 Exposure of 2.980 seconds complete 2.
+
+Fri Jun 20 13:14:39 2014 Starting exposure for duration: 1.050 seconds (4 out of 5)
+Fri Jun 20 13:14:39 2014 Taking exposure for duration: 1.050 seconds.
+Fri Jun 20 13:14:40 2014 Computer Time: 1 seconds, 50000 microseconds
+Fri Jun 20 13:14:40 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:14:40 2014 Writing data to disk.
+Fri Jun 20 13:14:40 2014 Image Opened
+Fri Jun 20 13:14:40 2014 Writing image file /mdata/200614131440.roe
+Fri Jun 20 13:14:40 2014 File /mdata/200614131440.roe successfully written to disk.
+Fri Jun 20 13:14:40 2014 Exposure of 1.050 seconds complete 3.
+
+Fri Jun 20 13:14:40 2014 Starting exposure for duration: 2.020 seconds (5 out of 5)
+Fri Jun 20 13:14:40 2014 Taking exposure for duration: 2.020 seconds.
+Fri Jun 20 13:14:42 2014 Computer Time: 2 seconds, 20000 microseconds
+Fri Jun 20 13:14:42 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:14:42 2014 Writing data to disk.
+Fri Jun 20 13:14:42 2014 Image Opened
+Fri Jun 20 13:14:42 2014 Writing image file /mdata/200614131442.roe
+Fri Jun 20 13:14:42 2014 File /mdata/200614131442.roe successfully written to disk.
+Fri Jun 20 13:14:42 2014 Exposure of 2.020 seconds complete 4.
+
+Fri Jun 20 13:14:42 2014 Done with sequence sequence/dark1demo
+
+
+Fri Jun 20 13:14:42 2014 Done with sequences
+Fri Jun 20 13:14:42 2014 Sequence stopped, wait for signal to start
+Fri Jun 20 13:14:43 2014 FLIGHT SOFTWARE EXITED
+
+
+Fri Jun 20 13:26:59 2014 *****************************************************
+Fri Jun 20 13:26:59 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 13:26:59 2014 *****************************************************
+Fri Jun 20 13:26:59 2014 -->HLP Down thread started....
+
+Fri Jun 20 13:26:59 2014 -->HLP control thread started....
+
+Fri Jun 20 13:26:59 2014 -->Science Timeline thread started....
+
+Fri Jun 20 13:26:59 2014 Signal handler initiated.
+Fri Jun 20 13:26:59 2014 Sequence stopped, wait for signal to start
+Fri Jun 20 13:27:02 2014 Received data start Uplink
+Fri Jun 20 13:27:02 2014 SIGUSR1 received, starting sequence
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Current sequence: sequence/dark1demo 
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Starting exposure for duration: 3.140 seconds (1 out of 5)
+Fri Jun 20 13:27:02 2014 Taking exposure for duration: 3.140 seconds.
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 Write Error: hlp_down
+Fri Jun 20 13:27:02 2014 132702UDST006
+Fri Jun 20 13:27:05 2014 Computer Time: 3 seconds, 140000 microseconds
+Fri Jun 20 13:27:05 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:05 2014 Writing data to disk.
+Fri Jun 20 13:27:05 2014 Image Opened
+Fri Jun 20 13:27:05 2014 Writing image file /mdata/200614132705.roe
+Fri Jun 20 13:27:05 2014 File /mdata/200614132705.roe successfully written to disk.
+Fri Jun 20 13:27:05 2014 Exposure of 3.140 seconds complete 0.
+
+Fri Jun 20 13:27:05 2014 Starting exposure for duration: 1.370 seconds (2 out of 5)
+Fri Jun 20 13:27:05 2014 Taking exposure for duration: 1.370 seconds.
+Fri Jun 20 13:27:07 2014 Computer Time: 2 seconds, 18446744073708921616 microseconds
+Fri Jun 20 13:27:07 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:07 2014 Writing data to disk.
+Fri Jun 20 13:27:07 2014 Image Opened
+Fri Jun 20 13:27:07 2014 Writing image file /mdata/200614132707.roe
+Fri Jun 20 13:27:07 2014 File /mdata/200614132707.roe successfully written to disk.
+Fri Jun 20 13:27:07 2014 Exposure of 1.370 seconds complete 1.
+
+Fri Jun 20 13:27:07 2014 Starting exposure for duration: 2.980 seconds (3 out of 5)
+Fri Jun 20 13:27:07 2014 Taking exposure for duration: 2.980 seconds.
+Fri Jun 20 13:27:10 2014 Computer Time: 3 seconds, 18446744073709531616 microseconds
+Fri Jun 20 13:27:10 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:10 2014 Writing data to disk.
+Fri Jun 20 13:27:10 2014 Image Opened
+Fri Jun 20 13:27:10 2014 Writing image file /mdata/200614132710.roe
+Fri Jun 20 13:27:10 2014 File /mdata/200614132710.roe successfully written to disk.
+Fri Jun 20 13:27:10 2014 Exposure of 2.980 seconds complete 2.
+
+Fri Jun 20 13:27:10 2014 Starting exposure for duration: 1.050 seconds (4 out of 5)
+Fri Jun 20 13:27:10 2014 Taking exposure for duration: 1.050 seconds.
+Fri Jun 20 13:27:11 2014 Computer Time: 1 seconds, 50000 microseconds
+Fri Jun 20 13:27:11 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:11 2014 Writing data to disk.
+Fri Jun 20 13:27:11 2014 Image Opened
+Fri Jun 20 13:27:11 2014 Writing image file /mdata/200614132711.roe
+Fri Jun 20 13:27:11 2014 File /mdata/200614132711.roe successfully written to disk.
+Fri Jun 20 13:27:11 2014 Exposure of 1.050 seconds complete 3.
+
+Fri Jun 20 13:27:11 2014 Starting exposure for duration: 2.020 seconds (5 out of 5)
+Fri Jun 20 13:27:11 2014 Taking exposure for duration: 2.020 seconds.
+Fri Jun 20 13:27:13 2014 Computer Time: 2 seconds, 20000 microseconds
+Fri Jun 20 13:27:13 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:13 2014 Writing data to disk.
+Fri Jun 20 13:27:13 2014 Image Opened
+Fri Jun 20 13:27:13 2014 Writing image file /mdata/200614132713.roe
+Fri Jun 20 13:27:13 2014 File /mdata/200614132713.roe successfully written to disk.
+Fri Jun 20 13:27:13 2014 Exposure of 2.020 seconds complete 4.
+
+Fri Jun 20 13:27:13 2014 Done with sequence sequence/dark1demo
+
+
+Fri Jun 20 13:27:13 2014 Done with sequences
+Fri Jun 20 13:27:13 2014 Sequence stopped, wait for signal to start
+Fri Jun 20 13:27:17 2014 Received data start Uplink
+Fri Jun 20 13:27:17 2014 SIGUSR1 received, starting sequence
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Current sequence: sequence/dark2demo 
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Starting exposure for duration: 1.020 seconds (1 out of 6)
+Fri Jun 20 13:27:17 2014 Taking exposure for duration: 1.020 seconds.
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 Write Error: hlp_down
+Fri Jun 20 13:27:17 2014 132717UDST002
+Fri Jun 20 13:27:18 2014 Computer Time: 1 seconds, 20000 microseconds
+Fri Jun 20 13:27:18 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:18 2014 Writing data to disk.
+Fri Jun 20 13:27:18 2014 Image Opened
+Fri Jun 20 13:27:18 2014 Writing image file /mdata/200614132718.roe
+Fri Jun 20 13:27:18 2014 File /mdata/200614132718.roe successfully written to disk.
+Fri Jun 20 13:27:18 2014 Exposure of 1.020 seconds complete 0.
+
+Fri Jun 20 13:27:18 2014 Starting exposure for duration: 2.040 seconds (2 out of 6)
+Fri Jun 20 13:27:18 2014 Taking exposure for duration: 2.040 seconds.
+Fri Jun 20 13:27:20 2014 Computer Time: 2 seconds, 40000 microseconds
+Fri Jun 20 13:27:20 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:20 2014 Writing data to disk.
+Fri Jun 20 13:27:20 2014 Image Opened
+Fri Jun 20 13:27:20 2014 Writing image file /mdata/200614132720.roe
+Fri Jun 20 13:27:20 2014 File /mdata/200614132720.roe successfully written to disk.
+Fri Jun 20 13:27:20 2014 Exposure of 2.040 seconds complete 1.
+
+Fri Jun 20 13:27:20 2014 Starting exposure for duration: 3.060 seconds (3 out of 6)
+Fri Jun 20 13:27:20 2014 Taking exposure for duration: 3.060 seconds.
+Fri Jun 20 13:27:23 2014 Computer Time: 3 seconds, 60000 microseconds
+Fri Jun 20 13:27:23 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:23 2014 Writing data to disk.
+Fri Jun 20 13:27:23 2014 Image Opened
+Fri Jun 20 13:27:23 2014 Writing image file /mdata/200614132723.roe
+Fri Jun 20 13:27:23 2014 File /mdata/200614132723.roe successfully written to disk.
+Fri Jun 20 13:27:23 2014 Exposure of 3.060 seconds complete 2.
+
+Fri Jun 20 13:27:23 2014 Starting exposure for duration: 4.080 seconds (4 out of 6)
+Fri Jun 20 13:27:23 2014 Taking exposure for duration: 4.080 seconds.
+Fri Jun 20 13:27:28 2014 Computer Time: 5 seconds, 18446744073708631616 microseconds
+Fri Jun 20 13:27:28 2014 Done with exposure, perform data collection.
+Fri Jun 20 13:27:28 2014 Writing data to disk.
+Fri Jun 20 13:27:28 2014 Image Opened
+Fri Jun 20 13:27:28 2014 Writing image file /mdata/200614132728.roe
+Fri Jun 20 13:27:28 2014 File /mdata/200614132728.roe successfully written to disk.
+Fri Jun 20 13:27:28 2014 Exposure of 4.080 seconds complete 3.
+
+Fri Jun 20 13:27:28 2014 Starting exposure for duration: 5.100 seconds (5 out of 6)
+Fri Jun 20 13:27:28 2014 Taking exposure for duration: 5.100 seconds.
+Fri Jun 20 13:27:32 2014 FLIGHT SOFTWARE EXITED
+
+
