@@ -17,7 +17,7 @@ int SendHKCmds(void)
     char buffer[30];
     record("HK Thread started\n");
     
-    sleep(100);
+    sleep(5);
     
     sprintf(buffer,"%s : %d\n", "VPOS5VD",      getHK(VPOS5VD));
     record(buffer); //ROE +5VD Voltage
