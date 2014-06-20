@@ -1835,3 +1835,62 @@ Fri Jun 20 11:31:26 2014 FLIGHT SOFTWARE EXITED
 Fri Jun 20 11:31:28 2014 FLIGHT SOFTWARE EXITED
 
 
+Fri Jun 20 12:44:07 2014 *****************************************************
+Fri Jun 20 12:44:07 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 12:44:07 2014 *****************************************************
+Fri Jun 20 12:44:07 2014 -->HLP Down thread started....
+
+Fri Jun 20 12:44:07 2014 -->HLP control thread started....
+
+Fri Jun 20 12:44:07 2014 -->Science Timeline thread started....
+
+Fri Jun 20 12:44:07 2014 Signal handler initiated.
+Fri Jun 20 12:44:07 2014 Sequence stopped, wait for signal to start
+Fri Jun 20 12:44:10 2014 Received data start Uplink
+Fri Jun 20 12:44:10 2014 SIGUSR1 received, starting sequence
+Fri Jun 20 12:44:10 2014 Current sequence: sequence/dark1demo 
+Fri Jun 20 12:44:10 2014 Starting exposure for duration: 3.140 seconds (1 out of 5)
+Fri Jun 20 12:44:10 2014 Taking exposure for duration: 3.140 seconds.
+Fri Jun 20 12:44:13 2014 Computer Time: 3 seconds, 140000 microseconds
+Fri Jun 20 12:44:13 2014 Done with exposure, perform data collection.
+Fri Jun 20 12:44:13 2014 Writing data to disk.
+Fri Jun 20 12:44:13 2014 Image Opened
+Fri Jun 20 12:44:13 2014 Writing image file /mdata/200614124413.roe
+Fri Jun 20 12:44:13 2014 File /mdata/200614124413.roe successfully written to disk.
+Fri Jun 20 12:44:13 2014 Exposure of 3.140 seconds complete 0.
+
+Fri Jun 20 12:44:13 2014 Starting exposure for duration: 1.370 seconds (2 out of 5)
+Fri Jun 20 12:44:13 2014 Taking exposure for duration: 1.370 seconds.
+Fri Jun 20 12:44:14 2014 Computer Time: 1 seconds, 370000 microseconds
+Fri Jun 20 12:44:14 2014 Done with exposure, perform data collection.
+Fri Jun 20 12:44:14 2014 Writing data to disk.
+Fri Jun 20 12:44:14 2014 Image Opened
+Fri Jun 20 12:44:14 2014 Writing image file /mdata/200614124414.roe
+Fri Jun 20 12:44:14 2014 File /mdata/200614124414.roe successfully written to disk.
+Fri Jun 20 12:44:14 2014 Exposure of 1.370 seconds complete 1.
+
+Fri Jun 20 12:44:14 2014 Starting exposure for duration: 2.980 seconds (3 out of 5)
+Fri Jun 20 12:44:14 2014 Taking exposure for duration: 2.980 seconds.
+Fri Jun 20 12:44:17 2014 Computer Time: 3 seconds, 18446744073709531616 microseconds
+Fri Jun 20 12:44:17 2014 Done with exposure, perform data collection.
+Fri Jun 20 12:44:17 2014 Writing data to disk.
+Fri Jun 20 12:44:17 2014 Image Opened
+Fri Jun 20 12:44:17 2014 Writing image file /mdata/200614124417.roe
+Fri Jun 20 12:44:17 2014 File /mdata/200614124417.roe successfully written to disk.
+Fri Jun 20 12:44:17 2014 Exposure of 2.980 seconds complete 2.
+
+Fri Jun 20 12:44:17 2014 Starting exposure for duration: 1.050 seconds (4 out of 5)
+Fri Jun 20 12:44:17 2014 Taking exposure for duration: 1.050 seconds.
+Fri Jun 20 12:44:18 2014 Computer Time: 1 seconds, 50000 microseconds
+Fri Jun 20 12:44:18 2014 Done with exposure, perform data collection.
+Fri Jun 20 12:44:18 2014 Writing data to disk.
+Fri Jun 20 12:44:18 2014 Image Opened
+Fri Jun 20 12:44:18 2014 Writing image file /mdata/200614124418.roe
+Fri Jun 20 12:44:18 2014 File /mdata/200614124418.roe successfully written to disk.
+Fri Jun 20 12:44:18 2014 Exposure of 1.050 seconds complete 3.
+
+Fri Jun 20 12:44:18 2014 Starting exposure for duration: 2.020 seconds (5 out of 5)
+Fri Jun 20 12:44:18 2014 Taking exposure for duration: 2.020 seconds.
+Fri Jun 20 12:44:18 2014 FLIGHT SOFTWARE EXITED
+
+

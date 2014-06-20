@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/moses_fc
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=mosesfc.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/mosesfc.tar
+# flightDebug configuration
+CND_PLATFORM_flightDebug=GNU-Linux-x86
+CND_ARTIFACT_DIR_flightDebug=dist/flightDebug/GNU-Linux-x86
+CND_ARTIFACT_NAME_flightDebug=moses_fc
+CND_ARTIFACT_PATH_flightDebug=dist/flightDebug/GNU-Linux-x86/moses_fc
+CND_PACKAGE_DIR_flightDebug=dist/flightDebug/GNU-Linux-x86/package
+CND_PACKAGE_NAME_flightDebug=mosesfc.tar
+CND_PACKAGE_PATH_flightDebug=dist/flightDebug/GNU-Linux-x86/package/mosesfc.tar
 #
 # include compiler specific variables
 #
