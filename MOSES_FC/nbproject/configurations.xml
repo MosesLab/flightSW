@@ -239,6 +239,11 @@
         <cTool>
           <commandLine>-march=i486 -O2</commandLine>
         </cTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
       <item path="control.c" ex="false" tool="0" flavor2="0">
       </item>
