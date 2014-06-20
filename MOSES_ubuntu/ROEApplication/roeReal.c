@@ -22,45 +22,44 @@ int activateROE() {
     pthread_mutex_lock(&roe.mx);
     if (roe.active == FALSE) {
         //Open Serial Device
-    struct termios oldtio_up, newtio_up;
-    int fd = open(ROE_DEV, O_WRONLY | O_NOCTTY);
-    if (fd < 0) {
-        printf("Couldnt connect\n");
-        exit(-1);
+        struct termios oldtio_up, newtio_up;
+        int fd = open(ROE_DEV, O_WRONLY | O_NOCTTY);
+        if (fd < 0) {
+            printf("Couldnt connect\n");
+            exit(-1);
+        }
+        /*save current serial port settings*/
+        tcgetattr(fd, &oldtio_up);
+
+        /*clear struct for new port settings*/
+        bzero(&newtio_up, sizeof (newtio_up));
+
+        /*set flags for non-canonical serial connection*/
+        newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
+        newtio_up.c_cflag &= ~(PARENB | PARODD);
+        newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
+        //newtio_up.c_iflag |= ISTRIP;
+        newtio_up.c_oflag &= ~OPOST;
+        newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
+
+        /*set non-canonical attributes*/
+        newtio_up.c_cc[VTIME] = 1;
+        newtio_up.c_cc[VMIN] = 255;
+
+        tcflush(fd, TCIFLUSH);
+        tcsetattr(fd, TCSANOW, &newtio_up);
+
+        printf("sucessfully connected\n");
+        record("Connection established. DEFAULT MODE\n");
+        roe.roeLink = fd;
+        return fd;
     }
-    /*save current serial port settings*/
-    tcgetattr(fd, &oldtio_up);
+}
 
-    /*clear struct for new port settings*/
-    bzero(&newtio_up, sizeof (newtio_up));
-
-    /*set flags for non-canonical serial connection*/
-    newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
-    newtio_up.c_cflag &= ~(PARENB | PARODD);
-    newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-    //newtio_up.c_iflag |= ISTRIP;
-    newtio_up.c_oflag &= ~OPOST;
-    newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
-
-    /*set non-canonical attributes*/
-    newtio_up.c_cc[VTIME] = 1;
-    newtio_up.c_cc[VMIN] = 255;
-
-    tcflush(fd, TCIFLUSH);
-    tcsetattr(fd, TCSANOW, &newtio_up);
-
-    printf("sucessfully connected\n");
-    record("Connection established. DEFAULT MODE\n");
-    roe.roeLink = fd;
-    return fd;
-    }
-    }
-
-    //roe.active = TRUE;
-    //pthread_mutex_unlock(&roe.mx);
-    //record("ROE Active\n");
-    //return 0;
-
+//roe.active = TRUE;
+//pthread_mutex_unlock(&roe.mx);
+//record("ROE Active\n");
+//return 0;
 
 int deactivate() {
     pthread_mutex_lock(&roe.mx);
@@ -81,11 +80,11 @@ int deactivate() {
 int exitDefault(int fd) {
     record("Attempting to exit default mode.\n");
     printf("Attempting to exit default mode.\n");
-    
-    pthread_mutex_lock(&roe.mx);
+
+    //pthread_mutex_lock(&roe.mx);
 
     //New Roe Program
-    int blockSize = 67;
+    /*int blockSize = 67;
     int block1[] = {0x46, 0x08, 0x00, 0x09, 0x12, 0x18, 0x25, 0x28,
         0x30, 0xF8, 0x34, 0xF8, 0x34, 0xF8, 0xF8, 0x80,
         0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xC0, 0xF8, 0x94,
@@ -124,43 +123,41 @@ int exitDefault(int fd) {
         0x0F, 0x0F, 0x00, 0xDC, 0xDC, 0xDC, 0xDC, 0xDC,
         0x54, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0xDC, 0xDC,
         0xDC, 0xDC, 0x00, 0x54, 0x00, 0x2F, 0x0F, 0x00,
-        0x00, 0x00, 0x00};
+        0x00, 0x00, 0x00};*/
 
-    char command = EXIT_DEFAULT;
-    if (write(fd, &command, 1) != 1) //Write Command to ROE Link
-    {
-        record("Exit Default Error\n");
-        pthread_mutex_unlock(&roe.mx);
-        return -1;
-    }
-    usleep(500000); //Wait for command to finish
-    char ack;
+    //char command = EXIT_DEFAULT;
+    //if (write(fd, &command, 1) != 1) //Write Command to ROE Link
+    //{
+    //    record("Exit Default Error\n");
+    //   pthread_mutex_unlock(&roe.mx);
+    //    return -1;
+    //}
+    //usleep(500000); //Wait for command to finish
+    //char ack;
     //if(recieveAck(roe.roeLink,&ack,1,0x03) == -1)
     //{
     //    record("Did not receive ack from ROE!\n");
     //	pthread_mutex_unlock(&roe.mx);
     //	return -1; //Get Acknowledgment of Command
     //}
-    char status;
+    // char status;
     //if (readRoe(roe.roeLink, &status, 1) == -1) {
     //    record("Exit Default Error\n");
     //    pthread_mutex_unlock(&roe.mx);
     //    return -1; //Get Status of Command Execution
     //}
-    roe.mode = MANUAL; //Update variable to reflect current state
+    //roe.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.
-    printf("fd: %d   roeLink: %d", fd, roe.roeLink);
+    printf("fd: %d\n", fd);
     int roeCustomRead = 1;
     //if(ops1.roe_custom_read == TRUE)
-    while(1){
-        if (roeCustomRead) {
+    while (1) {
+        //if (roeCustomRead) {
         //if (status != -1) {
-        int i;
-        for (i = 0; i < blockSize; i++)
-        {
-            if(write(fd, &block1[i], 1) < 1)
-            {
+        /*int i;
+        for (i = 0; i < blockSize; i++) {
+            if (write(fd, &block1[i], 1) < 1) {
                 printf("error\n");
             }
         }
@@ -169,11 +166,19 @@ int exitDefault(int fd) {
         for (i = 0; i < blockSize; i++)
             write(fd, &block3[i], sizeof (block3[i]));
         for (i = 0; i < blockSize; i++)
-            write(fd, &block4[i], sizeof (block4[i]));
-    }
+            write(fd, &block4[i], sizeof (block4[i]));*/
+
+        int i = 0;
+        char data[10] = "AAAAABBBBB";
+        while (i < 10) {
+            if (write(fd, &data[i], 1) < 1) printf("Error writing data");
+            i++;
+        }
+        //}
     }
 
-    pthread_mutex_unlock(&roe.mx);
+
+    //pthread_mutex_unlock(&roe.mx);
 
     record("Exiting Default Mode\n");
     return 0;
@@ -399,7 +404,7 @@ int input_timeout(int filedes, unsigned int seconds) {
 
     /*initialize the file descriptor set for select function*/
     FD_ZERO(&set);
-   FD_SET(filedes, &set);
+    FD_SET(filedes, &set);
 
     /*initialize timout data structure for select function*/
     timeout.tv_sec = seconds;
