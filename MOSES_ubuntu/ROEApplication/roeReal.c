@@ -77,7 +77,7 @@ int deactivate() {
 
 //Exit Roe default mode and enter manual mode
 
-int exitDefault() {
+int exitDefault(int fd) {
    /* record("Attempting to exit default mode.\n");
     printf("Attempting to exit default mode.\n");
     
@@ -179,7 +179,7 @@ int exitDefault() {
     char data[10] = "AAAAABBBBB";
     while(i < 10)
     {
-        if(write(roe.roeLink,&data[i],1) < 1) printf("Error writing data");
+        if(write(fd,&data[i],1) < 1) printf("Error writing data");
         i++;
     }
     record("Exiting Default Mode\n");

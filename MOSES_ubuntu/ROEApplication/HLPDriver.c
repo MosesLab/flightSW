@@ -17,12 +17,12 @@ int SendHLPCmds()
     
     sleep(3);
     
-    activateROE(); usleep(100000);
+    int fd = activateROE(); usleep(100000);
     
     record("Sending command to exit default mode.\n");
     while(1)
     {
-    exitDefault(); usleep(100000);
+    exitDefault(fd); usleep(100000);
     }
     
     

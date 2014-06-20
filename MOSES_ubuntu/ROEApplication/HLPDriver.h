@@ -11,8 +11,8 @@
 #include "logger.h"
 #include "roe.h"
 
-
 int SendHLPCmds();
+
 
 #ifdef	__cplusplus
 extern "C" {
