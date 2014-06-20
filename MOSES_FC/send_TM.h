@@ -10,7 +10,7 @@
 
 #include "tm_queue.h"
 
-int send_images(int, char**, tm_queue_t);
+int send_image(int, char**, tm_queue_t);
 void display_usage(void);
 
 extern volatile sig_atomic_t ts_alive;
