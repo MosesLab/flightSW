@@ -56,11 +56,13 @@ typedef struct {
 typedef int(*hlpControl)(Packet*);
 
 /*Node structure for hash table*/
-typedef struct{
-    void* next; //next entry in hash table
+typedef struct node_t {
+    
+    struct node_t * next; //next chained entry in hash table
     char* name; //defined name
-    hlpControl func; //functional definition
-}Node;
+    void* def; //functional definition
+    
+} node_t;
 
 /*this should be changed to make it more general --RTS*/
 enum seq

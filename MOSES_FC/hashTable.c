@@ -11,17 +11,17 @@
 #include "hashTable.h"
 
 /*hash: form hash value for string s*/
-unsigned hash(char* s){
+unsigned hash(char* s, int size){
     unsigned hashval;
     for(hashval = 0; *s != '\0'; s++){
         hashval = *s + 31 * hashval;
     }
-    return hashval % hashsize;
+    return hashval % size;
 }
 
 /*lookup: look for s in hashtable*/
-Node* lookup(Node** hTable, char* s){
-    Node* np = hTable[hash(s)];
+node_t* lookup(node_t** hTable, char* s, int size){
+    node_t* np = hTable[hash(s, size)];
 //    while(np != NULL){        
 //        if(strcmp(s, np->name) == 0){
 //            return np;  //Found
@@ -29,7 +29,7 @@ Node* lookup(Node** hTable, char* s){
 //        np = np->next;
 //    }
 //    return NULL;        //Not Found
-    for(np = hTable[hash(s)]; np != NULL; np = np->next){
+    for(np = hTable[hash(s, size)]; np != NULL; np = np->next){
         if(strcmp(s, np->name) == 0){
             return np;  //Found
         }
@@ -38,22 +38,22 @@ Node* lookup(Node** hTable, char* s){
 }
 
 /*install: put name and definition in hashtable*/
-Node* installNode(Node** hTable, char* name, hlpControl defn){
-    Node* np;
+node_t* installNode(node_t** hTable, char* name, void * defn, int size){
+    node_t* np;
     unsigned hashval;
-    if((np = lookup(hTable, name)) == NULL){    //Not found
-        np = (Node*) malloc(sizeof(*np));
+    if((np = lookup(hTable, name, size)) == NULL){    //Not found
+        np = (node_t*) malloc(sizeof(*np));
         if(np == NULL || (np->name = strdup(name)) == NULL){
             return NULL;
         }
-        hashval = hash(name);
+        hashval = hash(name, size);
         np->next = hTable[hashval];
         hTable[hashval] = np;
     }
     else{       //Already in hashtable
-        free((void*) np->func); //Free previous definition
+        free((void*) np->def); //Free previous definition
     }
-    if((np->func = defn) == NULL){
+    if((np->def = defn) == NULL){
         return NULL;
     }
     return np;  

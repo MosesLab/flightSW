@@ -14,11 +14,11 @@
  * function by looking up the control string in the hash table
  */
 int execPacket(Packet* p) {
-    Node* np = lookup(hlpHashTable, p->control); //Lookup corresponding function in table
+    node_t* np =lookup(hlpHashTable, p->control, hlp_hash_size); //Lookup corresponding function in table
     if (np == NULL) {
         return BAD_PACKET; //bad acknowlege if unsuccessful in finding control string in hash table
     }
-    int status = (*(np->func))(p); //Call control function
+    int status = (*((hlpControl)np->def))(p); //Call control function, cast from void pointer
     return status;
 }
 
@@ -810,7 +810,7 @@ int ROE_CCDS_VSS(Packet* p) {
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
-    hashsize = funcNumber;
+    hlp_hash_size = funcNumber;
 
     /*allocate space for control strings*/
     char** stringTable;
@@ -995,14 +995,14 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = (Node**) malloc(sizeof (Node*) * hashsize)) == NULL) {
+    if ((hlpHashTable = malloc(sizeof(node_t) * hlp_hash_size)) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
     /*fill hash table with array of strings matching function pointers*/
     int i;
     for (i = 0; i < funcNumber; i++) {
-        installNode(hlpHashTable, stringTable[i], functionTable[i]);
+        installNode(hlpHashTable, stringTable[i], functionTable[i], hlp_hash_size);
     }
 }
 

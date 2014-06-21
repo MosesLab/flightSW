@@ -10,12 +10,11 @@
 
 #include "system.h"
 
-extern int hashsize;
 
 /*functions*/
-unsigned hash(char*);
-Node* lookup(Node**, char*);
-Node* installNode(Node**, char*, hlpControl);
+unsigned hash(char*, int);
+node_t* lookup(node_t**, char* s, int);
+node_t* installNode(node_t**, char*, void *, int);
 
 char* concat(int, ...);
 
