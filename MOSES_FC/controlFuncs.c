@@ -365,13 +365,13 @@ int ch0Disable(Packet* p) {
     return GOOD_PACKET;
 }
 
-/*Commands the flight software to enable only positive channel*/
+/* Commands the flight software to enable only positive channel */
 int posOnlyEnable(Packet* p) {
     record("Command to enable only positive channel received\n");
     return GOOD_PACKET;
 }
 
-/*Commands the flight software to disable only positive channel*/
+/* Commands the flight software to disable only positive channel */
 int posOnlyDisable(Packet* p) {
     record("Command to disable only positive channel received\n");
     return GOOD_PACKET;

@@ -40,14 +40,14 @@ void * hlp_control(void * arg) {
         }
         
         /*test starting data with SIGUSR1*/
-        Packet * t = constructPacket(UPLINK_S, DATASTART, NULL);
-        sleep(3);
-        uDataStart(t);
-        
-        
-        sleep(15);
-        sequenceMap[0] = constructSequence(_sequence2);
-        uDataStart(t);
+//        Packet * t = constructPacket(UPLINK_S, DATASTART, NULL);
+//        sleep(3);
+//        uDataStart(t);
+//        
+//        
+//        sleep(15);
+//        sequenceMap[0] = constructSequence(_sequence2);
+//        uDataStart(t);
         /*end SIGUSR1 testing*/
 
         readPacket(fup, p);
