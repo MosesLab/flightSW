@@ -153,6 +153,8 @@ void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
     int xmlTrigger = 1;
+    synclink_init(0);
+    tm_queue_init(&roeQueue);
     
     while (ts_alive){
         if (roeQueue.count != 0) {

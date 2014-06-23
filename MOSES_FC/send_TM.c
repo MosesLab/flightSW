@@ -242,7 +242,7 @@ int send_image(tm_queue_t roeQueue, int xmlTrigger){
     struct timeval time_begin, time_end;
     int time_elapsed;
     
-    char* xmlfile = "/students/jackson.remington/esus/testFiles/xmlFiles/imageindex.xml";
+    char* xmlfile = "/mdata/imageindex.xml";
 
     /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
      * from the file into the data buffer, then sending the data buffer to the device 
