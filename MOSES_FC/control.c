@@ -133,7 +133,6 @@ void * hlp_down(void * arg) {
         }
 
     }
-    printf("\n");
 }
 
 /*
@@ -148,12 +147,10 @@ void * hlp_housekeeping(void * arg){
         enqueue(&hkdownQueue, p);
         sleep(1);
     }
-    printf("\n");
 }
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     /*jackson: dequeue and call sendTM from here*/
-    printf("\n");
 }
