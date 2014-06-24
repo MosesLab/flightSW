@@ -70,7 +70,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-O2 -Werror</commandLine>
+          <commandLine>-Werror</commandLine>
         </cTool>
         <linkerTool>
           <linkerLibItems>
@@ -322,7 +322,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-march=i486 -O2 -Werror</commandLine>
+          <commandLine>-march=i486 -Werror</commandLine>
         </cTool>
         <linkerTool>
           <linkerLibItems>

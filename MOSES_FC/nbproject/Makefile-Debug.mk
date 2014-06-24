@@ -51,7 +51,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-O2 -Werror
+CFLAGS=-Werror
 
 # CC Compiler Flags
 CCFLAGS=
