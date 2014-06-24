@@ -6,3 +6,4 @@
 # Debug configuration
 # Release configuration
 # flightDebug configuration
+# fd configuration
