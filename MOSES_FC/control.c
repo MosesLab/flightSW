@@ -104,6 +104,7 @@ void * hlp_control(void * arg) {
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
             //free(p);    //Can't do this
+            printf("\n");
         }
 
     }
@@ -132,7 +133,7 @@ void * hlp_down(void * arg) {
         }
 
     }
-    puts(""); 
+    printf("\n");
 }
 
 /*
@@ -147,12 +148,12 @@ void * hlp_housekeeping(void * arg){
         enqueue(&hkdownQueue, p);
         sleep(1);
     }
-    puts("");
+    printf("\n");
 }
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     /*jackson: dequeue and call sendTM from here*/
-    puts("");
+    printf("\n");
 }
