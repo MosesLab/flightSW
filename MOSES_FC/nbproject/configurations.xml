@@ -330,7 +330,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-march=i486 -Werror</commandLine>
+          <commandLine>-march=i486 -O2 -Werror -Wall</commandLine>
         </cTool>
         <linkerTool>
           <linkerLibItems>

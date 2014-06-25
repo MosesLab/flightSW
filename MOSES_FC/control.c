@@ -51,6 +51,7 @@ void * hlp_control(void * arg) {
         /*end SIGUSR1 testing*/
 
         readPacket(fup, p);
+        recordPacket(p);
         
         if (ts_alive) {
         /*case statement not necessary here, can get away with just one call
@@ -89,7 +90,7 @@ void * hlp_control(void * arg) {
         
 
 
-            recordPacket(p);
+            
 
             char* data;
             data = concat(2, p->type, p->subtype);
@@ -103,7 +104,7 @@ void * hlp_control(void * arg) {
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
-            //free(p);    //Can't do this
+            free(p);    //Can't do this
             printf("\n");
         }
 
