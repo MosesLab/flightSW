@@ -56,6 +56,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>nbproject/Makefile-Debug.mk</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
@@ -70,14 +71,14 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-Werror</commandLine>
+          <commandLine>-Werror -Wall</commandLine>
         </cTool>
         <linkerTool>
+          <commandlineTool>gcc</commandlineTool>
           <linkerLibItems>
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
           </linkerLibItems>
-          <commandLine>-static</commandLine>
         </linkerTool>
       </compileType>
       <item path="control.c" ex="false" tool="0" flavor2="0">
@@ -114,6 +115,8 @@
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -200,6 +203,8 @@
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
@@ -281,6 +286,8 @@
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -376,6 +383,8 @@
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="9">
         <cTool>

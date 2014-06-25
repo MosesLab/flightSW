@@ -51,7 +51,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-Werror
+CFLAGS=-Werror -Wall
 
 # CC Compiler Flags
 CCFLAGS=
@@ -72,7 +72,7 @@ LDLIBSOPTIONS=-lm -lpthread
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc ${OBJECTFILES} ${LDLIBSOPTIONS} -static
+	gcc -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/control.o: control.c 
 	${MKDIR} -p ${OBJECTDIR}
