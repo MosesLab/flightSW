@@ -11,7 +11,7 @@
 
 #include <signal.h>
 
-#define _GNU_SOURCE
+#define _GNU_SOURCE 1
 
 #define FALSE 0
 #define TRUE 1
