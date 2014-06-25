@@ -1,6 +1,8 @@
 #ifndef SYSTEM_H
 #define	SYSTEM_H
 
+#define _GNU_SOURCE 1
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -9,10 +9,10 @@
 #ifndef PACKET_H
 #define	PACKET_H
 
-#define _GNU_SOURCE 1
+//#define _GNU_SOURCE 1
 
-#include <math.h>
 #include "system.h"
+#include <math.h>
 #include <termios.h>
 #include <signal.h>
 #include <sys/ioctl.h>
