@@ -102,7 +102,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     unsigned char endbuf[] = "smart";           //Used this string as end-frame to terminate seperate files
     char *devname;
     char *imagename;
-    FILE *fp;
+    FILE *fp = NULL;
     int count = 0;                              //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
