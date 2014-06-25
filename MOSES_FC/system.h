@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define	SYSTEM_H
 
-#define _GNU_SOURCE 1
+#define _GNU_SOURCE 
 
 #include <unistd.h>
 #include <stdlib.h>
