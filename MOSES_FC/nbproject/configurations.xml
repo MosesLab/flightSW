@@ -77,6 +77,7 @@
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
           </linkerLibItems>
+          <commandLine>-static</commandLine>
         </linkerTool>
       </compileType>
       <item path="control.c" ex="false" tool="0" flavor2="0">
