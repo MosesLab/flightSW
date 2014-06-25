@@ -104,10 +104,10 @@ void * hlp_control(void * arg) {
             }
             Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
-            free(p);    //Can't do this
+            
             printf("\n");
         }
-
+        free(p);    //Can't do this
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
