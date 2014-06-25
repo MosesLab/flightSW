@@ -40,13 +40,13 @@ void enqueue(LockingQueue * queue, Packet * p) {
 }
 
 Packet* dequeue(LockingQueue * queue) {
-    struct timespec timeToWait;
+//    struct timespec timeToWait;
     struct timeval now;
     Packet* p;
 
     gettimeofday(&now, NULL);
-    timeToWait.tv_sec = now.tv_sec + 1;
-    timeToWait.tv_nsec = 0;
+//    timeToWait.tv_sec = now.tv_sec + 1;
+//    timeToWait.tv_nsec = 0;
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
     pthread_mutex_lock(&queue->lock);

@@ -65,17 +65,7 @@
  *
  ******************************************************************************/
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <memory.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <termios.h>
-#include <errno.h>
-#include <sys/time.h>
+
 
 #include "send_TM.h"
 #include "synclink.h"
@@ -101,9 +91,9 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     int fd;                                     //Initialize Variables
     int rc;
     int sigs, idle;
-    int i;
+//    int i;
     int ldisc = N_HDLC;
-    int imageAmount = roeQueue.count;
+//    int imageAmount = roeQueue.count;
     int killTrigger = 0;
     MGSL_PARAMS params;
     int size = 1024;
@@ -117,7 +107,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     struct timeval time_begin, time_end;
     int time_elapsed;
     
-    char* imagepath = "/students/jackson.remington/esus/testFiles/imageFiles/";
+//    char* imagepath = "/students/jackson.remington/esus/testFiles/imageFiles/";
     char* xmlfile = "/students/jackson.remington/esus/testFiles/xmlFiles/imageindex.xml";
     
     /*Check for correct arguments*/
@@ -152,7 +142,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
         _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
         //here then the exec failed
     } else if (pid > 0) {
-        wait(); //Wait for child to finish
+        wait(&rc); //Wait for child to finish
     }
 
     printf("send HDLC data on %s\n", devname);

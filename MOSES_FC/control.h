@@ -18,6 +18,7 @@
 #include "tm_queue.h"
 #include "sequence.h"
 #include "moses_threads.h"
+#include "controlFuncs.h"
 
 extern volatile sig_atomic_t ts_alive;
 

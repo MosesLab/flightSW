@@ -44,6 +44,7 @@ inline int ahtoi(char*, int);
 inline void itoah(int, char *, int);
 
 Packet* constructPacket(char*, char *, char *);
+void recordPacket(Packet*);
 void getCurrentTime(char *);
 int init_hkup_serial_connection();	//initialize attributes of serial connection
 int init_hkdown_serial_connection();
@@ -51,5 +52,6 @@ void readPacket(int, Packet *);
 int readData(int, char *, int);
 void sendPacket(Packet *, int);
 void sendData(char *, int, int);
+int input_timeout(int, unsigned int);
 
 #endif /*PACKET_H*/

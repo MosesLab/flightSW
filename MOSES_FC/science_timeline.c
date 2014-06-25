@@ -16,7 +16,7 @@ void * science_timeline(void * arg) {
     init_signal_handler_stl();
 
     char* msg = (char *) malloc(200 * sizeof (char));
-    int i, j, k;
+    int i;
     short *BUFFER[4]; //[2200000];  
 
 
@@ -65,8 +65,8 @@ void * science_timeline(void * arg) {
         /* push packets w/info about current sequence */
         Packet* a = (Packet*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
         Packet* r = (Packet*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
-        //        enqueue(&hkdownQueue, a);
-        //        enqueue(&hkdownQueue, r);
+                enqueue(&hkdownQueue, a);
+                enqueue(&hkdownQueue, r);
 
         /* for each exposure in the sequence */
         for (i = 0; i < currentSequence.numFrames; i++) {

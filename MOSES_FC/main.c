@@ -68,7 +68,7 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    void * returns;
+//    void * returns;
 
     int i;
     for (i = 0; i < NUM_THREADS; i++) {

@@ -27,7 +27,7 @@ extern LockingQueue hkdownQueue;
 //void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated
 
 /*initialize hash table to find functions based on packet string*/
-const int funcNumber = 82; // number of control functions  
+int funcNumber; // number of control functions  
 int hlp_hash_size;
 node_t** hlpHashTable;
 

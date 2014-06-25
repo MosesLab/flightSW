@@ -19,10 +19,10 @@ void * hlp_control(void * arg) {
     
      /*Load the Sequence Map*/
     char _sequence1[21]	= "sequence/dark1demo";
-    char _sequence2[21]	= "sequence/dark2demo";
-    //char _sequence3[21]	= "sequence/datademo";
-    char _sequence4[21]	= "sequence/dark3demo";
-    char _sequence5[21]	= "sequence/dark4demo";
+//    char _sequence2[21]	= "sequence/dark2demo";
+//    //char _sequence3[21]	= "sequence/datademo";
+//    char _sequence4[21]	= "sequence/dark3demo";
+//    char _sequence5[21]	= "sequence/dark4demo";
     
     sequenceMap[0] = constructSequence(_sequence1);
 //    sequenceMap[1] = constructSequence(_sequence2);
@@ -111,6 +111,7 @@ void * hlp_control(void * arg) {
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
     //lockingQueue_destroy(&hkupQueue);
+    return NULL;
 }
 
 /*
@@ -133,6 +134,7 @@ void * hlp_down(void * arg) {
         }
 
     }
+    return NULL;
 }
 
 /*
@@ -147,10 +149,12 @@ void * hlp_housekeeping(void * arg){
         enqueue(&hkdownQueue, p);
         sleep(1);
     }
+    return NULL;
 }
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     /*jackson: dequeue and call sendTM from here*/
+    return NULL;
 }

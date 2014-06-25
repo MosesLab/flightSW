@@ -87,6 +87,7 @@ int uWake(Packet* p) {
     //Insert uplink handling code here
     Packet* newp = constructPacket(UPLINK_S, WAKE, NULL);
     enqueue(&hkdownQueue, newp);
+    return GOOD_PACKET;
 }
 
 int uTest(Packet* p) {
@@ -810,6 +811,7 @@ int ROE_CCDS_VSS(Packet* p) {
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
+    funcNumber = 82;
     hlp_hash_size = funcNumber;
 
     /*allocate space for control strings*/

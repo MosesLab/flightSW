@@ -44,7 +44,7 @@ void init(short** pdata, int *psize, char channels, int pbitpix) {
 
 /* Set the data for this image*/
 void setData(short **pdata, int *psize, char pchannels) {
-    int i, j;
+    int i;
 
     image.channels = pchannels; // set the channel information
 
@@ -64,7 +64,6 @@ void setData(short **pdata, int *psize, char pchannels) {
 
 void writeToFile(char* file, char* catalog) {
     int i;
-    char* msg;
     int newfile = 0;
 
     /*Check to see if file exists or not*/
@@ -80,8 +79,8 @@ void writeToFile(char* file, char* catalog) {
   If file exists, it will append to it*/
 FILE * outxml;
 outxml = fopen(catalog, "a");
-int foundline = 0;
-char line[100];
+//int foundline = 0;
+//char line[100];
 //printf("new file: %d\n", newfile);
 if (!newfile) {
        /* Set the cursor to before </CATALOG>*/

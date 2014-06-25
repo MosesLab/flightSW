@@ -12,7 +12,7 @@
 int takeExposure(double duration, int sig)
 {
     char msg[100];
-    char dtime[32];
+//    char dtime[32];
     struct timeval expstop, expstart;
     //duration is the exposure length in microseconds'
     int dur = (int) (duration*1000000);// - PULSE;
@@ -57,9 +57,9 @@ int takeExposure(double duration, int sig)
 int write_data(int duration, int num, short **BUFFER, int *index)
 {
     char msg[100];
-    char name[100];
+//    char name[100];
     char filename[80];
-    char filepath[80];
+//    char filepath[80];
     char ftimedate[80];
     char dtime[100];
     char ddate[100];

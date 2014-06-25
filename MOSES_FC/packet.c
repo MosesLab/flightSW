@@ -33,7 +33,7 @@ Packet* constructPacket(char* type, char* subtype, char* data){
     return p;
 }
 
-char encode(char dataByte) {return lookupTable[dataByte];}
+char encode(char dataByte) {return lookupTable[(int)dataByte];}
 char decode(char dataByte) {return (dataByte & 0x7F);}
 
 void getCurrentTime(char* result){
@@ -193,7 +193,7 @@ void readPacket(int fd, Packet * p) {
     int tempValid = TRUE;
     p->status = TRUE;
     char temp;
-    char * error = "";
+//    char * error = "";
     
     int continue_read = FALSE;    
     int input;
