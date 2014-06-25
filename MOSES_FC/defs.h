@@ -11,6 +11,8 @@
 
 #include <signal.h>
 
+#define _GNU_SOURCE
+
 #define FALSE 0
 #define TRUE 1
 #define STARTBYTE '%'
