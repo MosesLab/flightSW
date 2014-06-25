@@ -8,6 +8,7 @@
 #ifndef MAIN_H
 #define	MAIN_H
 
+#include <pthread.h>
 #include "system.h"
 #include <signal.h>
 #include "moses_threads.h"
