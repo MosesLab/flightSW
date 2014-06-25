@@ -6,6 +6,9 @@
  *queue.h declares functions to be used by queues*
  *namely push and pop				*
  ************************************************/
+#ifndef LOCKINGQUEUE_H
+#define	LOCKINGQUEUE_H
+
 #include <pthread.h>
 #include "system.h"
 #include <signal.h>
@@ -17,3 +20,4 @@ void enqueue(LockingQueue *, Packet *);
 Packet* dequeue(LockingQueue *);
 void destroy(LockingQueue *);
 
+#endif /*LOCKINGQUEUE_H*/

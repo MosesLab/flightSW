@@ -5,6 +5,8 @@
  * Created on January 24, 2014, 7:39 PM
  */
 
+#ifndef MAIN_H
+#define	MAIN_H
 
 #include "system.h"
 #include <signal.h>
@@ -57,6 +59,6 @@ enum moses_io{
   synclink_interface,
 };
 
-
+#endif /*MAIN_H*/
 
 

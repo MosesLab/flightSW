@@ -5,8 +5,8 @@
  * Created on June 17, 2014, 9:44 PM
  */
 
-#ifndef ROEQUEUE_H
-#define	ROEQUEUE_H
+#ifndef TM_QUEUE_H
+#define	TM_QUEUE_H
 
 #include <signal.h>
 #include <pthread.h>
@@ -32,5 +32,5 @@ void tm_dequeue(tm_queue_t *);
 void tm_queuedestroy(tm_queue_t *);
 
 
-#endif	/* ROEQUEUE_H */
+#endif	/* TM_QUEUE_H */
 

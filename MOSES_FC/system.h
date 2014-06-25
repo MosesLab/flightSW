@@ -1,4 +1,5 @@
-
+#ifndef SYSTEM_H
+#define	SYSTEM_H
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -15,7 +16,7 @@
 #include "defs.h"
 #include "logger.h"
 
-
+#endif /*SYSTEM_H*/
 
 
  

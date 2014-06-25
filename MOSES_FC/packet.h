@@ -6,6 +6,9 @@
 /*packet struct encapsulates attributes */
 /*of serial command packets		*/
 /****************************************/
+#ifndef PACKET_H
+#define	PACKET_H
+
 #define _GNU_SOURCE 1
 
 #include <math.h>
@@ -19,9 +22,9 @@
 #define UPBAUD B1200
 #define DOWNBAUD B9600
 #define HKUP "/dev/ttyS0"
-#define HKDOWN "/dev/ttyS1"
+//#define HKDOWN "/dev/ttyS1"
 //#define HKUP "/dev/ttyUSB0"
-//#define HKDOWN "/dev/ttyUSB1"
+#define HKDOWN "/dev/ttyUSB1"
 
 extern volatile sig_atomic_t ts_alive;
 
@@ -49,3 +52,4 @@ int readData(int, char *, int);
 void sendPacket(Packet *, int);
 void sendData(char *, int, int);
 
+#endif /*PACKET_H*/

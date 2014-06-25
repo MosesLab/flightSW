@@ -195,7 +195,7 @@ void readPacket(int fd, Packet * p) {
     char temp;
     char * error = "";
     
-    volatile int continue_read = FALSE;    
+    int continue_read = FALSE;    
     int input;
     
     while (continue_read == FALSE && ts_alive == TRUE) {

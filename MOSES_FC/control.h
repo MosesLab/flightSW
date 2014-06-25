@@ -5,6 +5,9 @@
  * Created on January 24, 2014, 10:49 PM
  */
 
+#ifndef CONTROL_H
+#define	CONTROL_H
+
 #include "system.h"
 #include "lockingQueue.h"
 #include <termios.h>
@@ -36,3 +39,5 @@ void* hlp_down(void*);
 void * hlp_housekeeping(void * arg);
 
 void * telem(void * arg);
+
+#endif /*CONTROL_H*/
