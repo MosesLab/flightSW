@@ -99,11 +99,6 @@ ${OBJECTDIR}/logger.o: logger.c
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/logger.o logger.c
 
-${OBJECTDIR}/main.o: main.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -lm -pthread -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
-
 ${OBJECTDIR}/packet.o: packet.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -138,6 +133,12 @@ ${OBJECTDIR}/tm_queue.o: tm_queue.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/tm_queue.o tm_queue.c
+	
+${OBJECTDIR}/main.o: main.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -lm -pthread -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+
 
 # Subprojects
 .build-subprojects:
