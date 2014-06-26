@@ -18,9 +18,9 @@ int execPacket(Packet* p) {
     if (np == NULL) {
         return BAD_PACKET; //bad acknowlege if unsuccessful in finding control string in hash table
     }
-//    int status = (*((hlpControl)np->def))(p); //Call control function, cast from void pointer
-//    return status;
-    return 0;
+    int status = (*((hlpControl*)np->def))(p); //Call control function, cast from void pointer
+    return status;
+
 }
 
 /*Uplink control functions*/
@@ -914,7 +914,7 @@ void hlpHashInit() {
 
     /*array of function pointers to match with control strings*/
     functionTable[UDataStart] = &uDataStart;
-    functionTable[UDataStop] = &uDataStop;
+    functionTable[UDataStop] = uDataStop;
     functionTable[UDark1] = &uDark1;
     functionTable[UDark2] = &uDark2;
     functionTable[UDark3] = &uDark3;
