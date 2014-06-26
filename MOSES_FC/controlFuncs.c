@@ -18,8 +18,9 @@ int execPacket(Packet* p) {
     if (np == NULL) {
         return BAD_PACKET; //bad acknowlege if unsuccessful in finding control string in hash table
     }
-    int status = (*((hlpControl)np->def))(p); //Call control function, cast from void pointer
-    return status;
+//    int status = (*((hlpControl)np->def))(p); //Call control function, cast from void pointer
+//    return status;
+    return 0;
 }
 
 /*Uplink control functions*/

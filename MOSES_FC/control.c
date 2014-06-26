@@ -57,35 +57,35 @@ void * hlp_control(void * arg) {
         /*case statement not necessary here, can get away with just one call
          * to execpacket
          */
-//        switch (p->type[0]) {
-//            case SHELL:
-//                printf("Shell packet\n");
-//                break;
-//            case MDAQ_RQS:
-//                printf("DAQ packet\n");
-//                p->control = concat(2, p->type, p->subtype);
-//                p->status = execPacket(p);
-//                break;
-//            case UPLINK:
-//                printf("HLP Uplink packet\n");
-//                p->control = concat(2, p->type, p->subtype);
-//                p->status = execPacket(p);
-//                break;
-//            case PWR:
-//                printf("Power packet\n");
-//                p->control = concat(2, p->type, p->subtype);
-//                p->status = execPacket(p);
-//                break;
-//            case HK_RQS:
-//                printf("HK Request Packet\n");
-//                p->control = concat(3, p->type, p->subtype, p->data);
-//                p->status = execPacket(p);
-//                break;
-//            default:
-//                printf("Bad Packet type\n");
-//                p->status = BAD_PACKET;
-//                break;
-//        }
+        switch (p->type[0]) {
+            case SHELL:
+                printf("Shell packet\n");
+                break;
+            case MDAQ_RQS:
+                printf("DAQ packet\n");
+                p->control = concat(2, p->type, p->subtype);
+                p->status = execPacket(p);
+                break;
+            case UPLINK:
+                printf("HLP Uplink packet\n");
+                p->control = concat(2, p->type, p->subtype);
+                p->status = execPacket(p);
+                break;
+            case PWR:
+                printf("Power packet\n");
+                p->control = concat(2, p->type, p->subtype);
+                p->status = execPacket(p);
+                break;
+            case HK_RQS:
+                printf("HK Request Packet\n");
+                p->control = concat(3, p->type, p->subtype, p->data);
+                p->status = execPacket(p);
+                break;
+            default:
+                printf("Bad Packet type\n");
+                p->status = BAD_PACKET;
+                break;
+        }
 
         
 
