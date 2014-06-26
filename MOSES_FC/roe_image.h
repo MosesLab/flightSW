@@ -8,7 +8,7 @@
 #ifndef ROE_IMAGE_H
 #define	ROE_IMAGE_H
 
-#include <sys/stat.h>
+//#include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

@@ -10,7 +10,7 @@
 #define	DEFS_H
 
 #include <signal.h>
-
+#include <pthread.h>
 
 
 #define FALSE 0
