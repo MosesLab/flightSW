@@ -2134,3 +2134,66 @@ Fri Jun 20 13:27:28 2014 Taking exposure for duration: 5.100 seconds.
 Fri Jun 20 13:27:32 2014 FLIGHT SOFTWARE EXITED
 
 
+Fri Jun 20 15:34:48 2014 *****************************************************
+Fri Jun 20 15:34:48 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 15:34:48 2014 *****************************************************
+Fri Jun 20 15:34:48 2014 -->HLP control thread started....
+
+Fri Jun 20 15:34:48 2014 -->HLP Down thread started....
+
+Fri Jun 20 16:11:47 2014 *****************************************************
+Fri Jun 20 16:11:47 2014 MOSES FLIGHT SOFTWARE
+Fri Jun 20 16:11:47 2014 *****************************************************
+Fri Jun 20 16:11:47 2014 -->HLP control thread started....
+
+Fri Jun 20 16:11:47 2014 -->HLP Down thread started....
+
+Mon Jun 23 14:44:33 2014 *****************************************************
+Mon Jun 23 14:44:33 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 14:44:33 2014 *****************************************************
+Mon Jun 23 14:44:33 2014 -->HLP control thread started....
+
+Mon Jun 23 14:44:33 2014 -->HLP Down thread started....
+
+Mon Jun 23 14:49:25 2014 *****************************************************
+Mon Jun 23 14:49:25 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 14:49:25 2014 *****************************************************
+Mon Jun 23 14:49:25 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:01:24 2014 *****************************************************
+Mon Jun 23 15:01:24 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 15:01:24 2014 *****************************************************
+Mon Jun 23 15:01:24 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:02:57 2014 *****************************************************
+Mon Jun 23 15:02:57 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 15:02:57 2014 *****************************************************
+Mon Jun 23 15:02:57 2014 -->HLP control thread started....
+
+Mon Jun 23 15:02:57 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:03:26 2014 *****************************************************
+Mon Jun 23 15:03:26 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 15:03:26 2014 *****************************************************
+Mon Jun 23 15:03:26 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:03:26 2014 -->HLP control thread started....
+
+Mon Jun 23 15:03:58 2014 *****************************************************
+Mon Jun 23 15:03:58 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 15:03:58 2014 *****************************************************
+Mon Jun 23 15:03:58 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:03:58 2014 -->HLP control thread started....
+
+Mon Jun 23 15:04:13 2014 *****************************************************
+Mon Jun 23 15:04:13 2014 MOSES FLIGHT SOFTWARE
+Mon Jun 23 15:04:13 2014 *****************************************************
+Mon Jun 23 15:04:13 2014 -->HLP Down thread started....
+
+Mon Jun 23 15:04:13 2014 -->HLP control thread started....
+
+Mon Jun 23 15:04:13 2014 -->Science Timeline thread started....
+
+Mon Jun 23 15:04:13 2014 -->High-speed Telemetry thread started....
+

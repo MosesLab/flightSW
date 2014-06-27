@@ -21,15 +21,15 @@
 #define IMAGE_HEIGHT 1024
 #define IMAGE_WIDTH 2048
 
-typedef struct {
-	char *name;
-	int **data[1024][2048 * 3];      //Adjust for data size
-        
-        void *next;                    //next item in the locking queue    
-	int dataSize;
-        int status;  
-        char *control;
-} roeImage_t;
+//typedef struct {
+//	char *name;
+//	int **data[1024][2048 * 3];      //Adjust for data size
+//        
+//        void *next;                    //next item in the locking queue    
+//	int dataSize;
+//        int status;  
+//        char *control;
+//} roeImage_t;
 
 typedef struct imgPtr {                         //Create image path node
     char* filePath;

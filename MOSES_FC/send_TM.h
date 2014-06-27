@@ -24,8 +24,9 @@
 #include <sys/wait.h>
 #include "tm_queue.h"
 
-int send_images(int, char**, tm_queue_t);
+int send_image(tm_queue_t, int);
 void display_usage(void);
+int synclink_init(int);
 
 extern volatile sig_atomic_t ts_alive;
 

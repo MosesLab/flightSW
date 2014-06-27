@@ -85,165 +85,167 @@ void display_usage(void) {
             "Default is /dev/ttyUSB0)\n");
 }
 
-
-int send_images(int argc, char ** argv, tm_queue_t roeQueue){
-    
-    int fd;                                     //Initialize Variables
-    int rc;
-    int sigs, idle;
-//    int i;
-    int ldisc = N_HDLC;
-//    int imageAmount = roeQueue.count;
-    int killTrigger = 0;
-    MGSL_PARAMS params;
-    int size = 1024;
-    unsigned char databuf[1024];
-    unsigned char temp[1024];
-    unsigned char endbuf[] = "smart";           //Used this string as end-frame to terminate seperate files
-    char *devname;
-    char *imagename;
-    FILE *fp = NULL;
-    int count = 0;                              //Number to determine how much data is sent
-    struct timeval time_begin, time_end;
-    int time_elapsed;
-    
-//    char* imagepath = "/students/jackson.remington/esus/testFiles/imageFiles/";
-    char* xmlfile = "/students/jackson.remington/esus/testFiles/xmlFiles/imageindex.xml";
-    
-    /*Check for correct arguments*/
-    if (argc > 2 || argc < 1) {
-        printf("Incorrect number of arguments\n");
-        display_usage();
-        return 1;
-    }
-
-    /*Set device name, either from command line or use default value*/
-    if (argc == 3)
-        devname = argv[1];
-    else
-        devname = "/dev/ttyUSB0"; //Set the default name of the SyncLink device
-    
+int synclink_init(int killSwitch) {
     /* Fork and exec the fsynth program to set the clock source on the SyncLink
      * to use the synthesized 20 MHz clock from the onboard frequency synthesizer
      * chip, for accurate generation of a 10 Mbps datastream. fsynth needs to be
      * in the PATH. 
      */
 
-    pid_t pid = fork();
+    int fd, rc;
+    int sigs, idle;
+    
+    if (killSwitch == 0){
+        
+        char *devname = "/dev/ttyUSB0";
+        int ldisc = N_HDLC;
+        MGSL_PARAMS params;
 
-    if (pid == -1) {
-        perror("Fork failure");
-        exit(EXIT_FAILURE);
+        pid_t pid = fork();
+        if (pid == -1) {                            //Check Fork
+            perror("Fork failure");
+            exit(EXIT_FAILURE);
+        }
+
+        if (pid == 0) {
+            execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
+            perror("execlp");                       //selected in code
+            _exit(EXIT_FAILURE);                    //Child should die after exec call. If it gets
+                                                    //here then the exec failed
+        } else if (pid > 0) {
+            wait();                                 //Wait for child to finish
+        }
+
+        printf("send HDLC data on %s\n", devname);
+
+        /* open serial device with O_NONBLOCK to ignore DCD input */
+        fd = open(devname, O_TRUNC, 0);
+        if (fd < 0) {
+            printf("open error=%d %s\n", errno, strerror(errno));
+            return fd;
+        }
+        
+        /*
+         * set N_HDLC line discipline
+         *
+         * A line discipline is a software layer between a tty device driver
+         * and user application that performs intermediate processing,
+         * formatting, and buffering of data.
+         */
+        rc = ioctl(fd, TIOCSETD, &ldisc);
+        if (rc < 0) {
+            printf("set line discipline error=%d %s\n",
+                    errno, strerror(errno));
+            return rc;
+        }
+
+        /* get current device parameters */
+        rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
+        if (rc < 0) {
+            printf("ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
+                    errno, strerror(errno));
+            return rc;
+        }
+
+        /*
+         * modify device parameters
+         *
+         * HDLC/SDLC mode, loopback disabled (external loopback connector), NRZIs encoding
+         * Data transmit clock sourced from BRG
+         * Output 10000000bps clock on auxclk output
+         * No hardware CRC
+         */
+
+        params.mode = MGSL_MODE_HDLC;
+        params.loopback = 0;
+        params.flags = HDLC_FLAG_RXC_RXCPIN + HDLC_FLAG_TXC_BRG;
+        params.encoding = HDLC_ENCODING_NRZ;
+        params.clock_speed = 10000000;
+        params.crc_type = HDLC_CRC_16_CCITT;
+        params.preamble = HDLC_PREAMBLE_PATTERN_ONES;
+        params.preamble_length = HDLC_PREAMBLE_LENGTH_16BITS;
+
+        /* set current device parameters */
+        rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
+        if (rc < 0) {
+            printf("ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
+                    errno, strerror(errno));
+            return rc;
+        }
+
+        /* set transmit idle pattern (sent between frames) */
+        idle = HDLC_TXIDLE_ALT_ZEROS_ONES;
+        rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
+        if (rc < 0) {
+            printf("ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
+                    errno, strerror(errno));
+            return rc;
+        }
+
+
+
+        /* set device to blocking mode for reads and writes */
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
+
+        printf("Turn on RTS and DTR serial outputs\n");
+        sigs = TIOCM_RTS + TIOCM_DTR;
+        rc = ioctl(fd, TIOCMBIS, &sigs);
+        if (rc < 0) {
+            printf("assert DTR/RTS error=%d %s\n",
+                    errno, strerror(errno));
+            return rc;
+        }
+
+        /*enable transmitter*/
+        int enable = 1;
+        rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
+    }
+    
+    else if(killSwitch == 1) {                          //Turns off synclink
+        printf("synclink killSwitch: Turn off RTS and DTR\n");
+        sigs = TIOCM_RTS + TIOCM_DTR;
+        rc = ioctl(fd, TIOCMBIC, &sigs);
+        if (rc < 0) {
+            printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            return rc;
+        }
     }
 
-    if (pid == 0) {
-        execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
-        perror("execlp"); //selected in code
-        _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
-        //here then the exec failed
-    } else if (pid > 0) {
-        wait(&rc); //Wait for child to finish
-    }
+    
 
-    printf("send HDLC data on %s\n", devname);
+    return 1;
+}
 
-    /* open serial device with O_NONBLOCK to ignore DCD input */
-    fd = open(devname, O_RDWR | O_NONBLOCK, 0);
-    if (fd < 0) {
-        printf("open error=%d %s\n", errno, strerror(errno));
-        return fd;
-    }
-
-    /*
-     * set N_HDLC line discipline
-     *
-     * A line discipline is a software layer between a tty device driver
-     * and user application that performs intermediate processing,
-     * formatting, and buffering of data.
-     */
-    rc = ioctl(fd, TIOCSETD, &ldisc);
-    if (rc < 0) {
-        printf("set line discipline error=%d %s\n",
-                errno, strerror(errno));
-        return rc;
-    }
-
-    /* get current device parameters */
-    rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
-    if (rc < 0) {
-        printf("ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
-                errno, strerror(errno));
-        return rc;
-    }
-
-    /*
-     * modify device parameters
-     *
-     * HDLC/SDLC mode, loopback disabled (external loopback connector), NRZIs encoding
-     * Data transmit clock sourced from BRG
-     * Output 10000000bps clock on auxclk output
-     * No hardware CRC
-     */
-
-    params.mode = MGSL_MODE_HDLC;
-    params.loopback = 0;
-    params.flags = HDLC_FLAG_RXC_RXCPIN + HDLC_FLAG_TXC_BRG;
-    params.encoding = HDLC_ENCODING_NRZ;
-    params.clock_speed = 10000000;
-    params.crc_type = HDLC_CRC_16_CCITT;
-    params.preamble = HDLC_PREAMBLE_PATTERN_ONES;
-    params.preamble_length = HDLC_PREAMBLE_LENGTH_16BITS;
-
-    /* set current device parameters */
-    rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
-    if (rc < 0) {
-        printf("ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
-                errno, strerror(errno));
-        return rc;
-    }
-
-    /* set transmit idle pattern (sent between frames) */
-    idle = HDLC_TXIDLE_ALT_ZEROS_ONES;
-    rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
-    if (rc < 0) {
-        printf("ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
-                errno, strerror(errno));
-        return rc;
-    }
-
-
-
-    /* set device to blocking mode for reads and writes */
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
-
-    printf("Turn on RTS and DTR serial outputs\n");
-    sigs = TIOCM_RTS + TIOCM_DTR;
-    rc = ioctl(fd, TIOCMBIS, &sigs);
-    if (rc < 0) {
-        printf("assert DTR/RTS error=%d %s\n",
-                errno, strerror(errno));
-        return rc;
-    }
-
-    /*enable transmitter*/
-    int enable = 1;
-    rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
+int send_image(tm_queue_t roeQueue, int xmlTrigger){
+    
+    int fd;                                     //Initialize Variables
+    int rc;
+    int killTrigger = 0;
+    int size = 1024;
+    unsigned char databuf[1024];
+    unsigned char temp[1024];
+    unsigned char endbuf[] = "smart";           //Used this string as end-frame to terminate seperate files
+    
+    char *imagename;
+    FILE *fp;
+    int count = 0;                              //Number to determine how much data is sent
+    struct timeval time_begin, time_end;
+    int time_elapsed;
+    
+    char* xmlfile = "/mdata/imageindex.xml";
 
     /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
      * from the file into the data buffer, then sending the data buffer to the device 
      * via a write call.
      */
-    while(ts_alive){
+    if(ts_alive){
         if (roeQueue.count != 0){
             count = 0;
-            int xmlTrigger = 1;
             if (xmlTrigger == 1) {              //If we are on an odd loop send an xml file
                 imagename = xmlfile;
-                xmlTrigger = 0;
             }
             else if (xmlTrigger == 0) {         //If we are on an even loop send an image
                 imagename = roeQueue.first->filePath;
-                xmlTrigger = 1;
             }
                 
             /*Open image file for reading into a buffered stream*/
@@ -281,7 +283,6 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
             rc = write(fd, endbuf, 5);
             if (rc < 0) {
                 printf("write error=%d %s\n", errno, strerror(errno));
-                break;
             }
 
             /*block until all data sent*/
@@ -302,7 +303,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
         else {
             
             if(killTrigger == 1){               //If everything is done
-                break;                          
+                return 0;                          
             }
             
             sleep(2);
@@ -311,7 +312,7 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     }
     
     printf("Turn off RTS and DTR\n");
-    sigs = TIOCM_RTS + TIOCM_DTR;
+    int sigs = TIOCM_RTS + TIOCM_DTR;
     rc = ioctl(fd, TIOCMBIC, &sigs);
     if (rc < 0) {
         printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
@@ -322,6 +323,11 @@ int send_images(int argc, char ** argv, tm_queue_t roeQueue){
     close(fd);
     fclose(fp);
 
-    return 0;
+    
+    if (xmlTrigger == 1){
+        return 1;
+    } else return 0;                            //return send status
+    
+    
     
 }
