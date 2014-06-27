@@ -22,7 +22,7 @@
 #define UPBAUD B1200
 #define DOWNBAUD B9600
 #define HKUP "/dev/ttyS0"
-#define HKDOWN "/dev/ttyS1"
+#define HKDOWN "/dev/ttyS2"
 //#define HKUP "/dev/ttyUSB0"
 //#define HKDOWN "/dev/ttyUSB1"
 

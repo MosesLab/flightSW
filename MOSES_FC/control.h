@@ -29,7 +29,7 @@ moses_ops_t ops;
 LockingQueue hkdownQueue;
 tm_queue_t roeQueue;
 
-/*hlp_contorl initializations*/
+/*hlp_control initializations*/
 void* hlp_control(void*);
 
 /*hlp_down thread initializations*/
