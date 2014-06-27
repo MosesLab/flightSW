@@ -10,32 +10,31 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/send_TM.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/send_TM.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/moses_threads.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/Makefile</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/nbproject/Makefile-Debug.mk</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/send_TM.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/moses.conf</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/send_TM.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sequence.h</file>
         </group>
     </open-files>
 </project-private>
