@@ -33,26 +33,26 @@ void enqueue(LockingQueue * queue, Packet * p) {
     queue->count++;
     
     /*TRY unlocking before broadcasting (may not work)*/
-    pthread_mutex_unlock(&queue->lock);
+   
     pthread_cond_broadcast(&queue->cond); // Wake up consumer waiting for input
-    
+    pthread_mutex_unlock(&queue->lock);
 
 }
 
 Packet* dequeue(LockingQueue * queue) {
-    struct timespec timeToWait;
-    struct timeval now;
+//    struct timespec timeToWait;
+//    struct timeval now;
     Packet* p = NULL;
 
-    gettimeofday(&now, NULL);
-    timeToWait.tv_sec = now.tv_sec + 1;
-    timeToWait.tv_nsec = 0;
+//    gettimeofday(&now, NULL);
+//    timeToWait.tv_sec = now.tv_sec + 1;
+//    timeToWait.tv_nsec = 0;
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
     pthread_mutex_lock(&queue->lock);
     while ((queue->count == 0) && ts_alive) {
-        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
-//        pthread_cond_wait(&queue->cond, &queue->lock);
+//        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
+        pthread_cond_wait(&queue->cond, &queue->lock);
     }
 
     /*check if program is still active*/

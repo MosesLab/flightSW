@@ -45,9 +45,10 @@ typedef struct {
 
 /*structure for thread-safe mutex-protected queue*/
 typedef struct {
+    int count;  //current number of items
     Packet* first;
     Packet* last;
-    int count;  //current number of items
+    
     
     pthread_condattr_t cattr;
     pthread_mutex_t lock;

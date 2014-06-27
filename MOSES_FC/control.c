@@ -6,13 +6,13 @@
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
     
-    printf("Size of packet pointer %ud \n", sizeof(Packet*));
-    printf("Size of int %ud\n", sizeof(int));
-    printf("Size of condattr %ud\n", sizeof(pthread_condattr_t));
-    printf("Size of mutex %ud\n", sizeof(pthread_mutex_t));
-    printf("Size of conditional variable %ud\n", sizeof(pthread_cond_t));
-    printf("Size of Locking Queue %ud\n", sizeof(LockingQueue));
-    
+//    printf("Size of packet pointer %ud \n", sizeof(Packet*));
+//    printf("Size of int %ud\n", sizeof(int));
+//    printf("Size of condattr %ud\n", sizeof(pthread_condattr_t));
+//    printf("Size of mutex %ud\n", sizeof(pthread_mutex_t));
+//    printf("Size of conditional variable %ud\n", sizeof(pthread_cond_t));
+//    printf("Size of Locking Queue %ud\n", sizeof(LockingQueue));
+    printf("control %p \n", &hkdownQueue);
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
     buildLookupTable();
@@ -127,7 +127,9 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
+    printf("down %p \n", &hkdownQueue);
     record("-->HLP Down thread started....\n\n");
+    sleep(1);
     fdown = init_hkdown_serial_connection(); //Open housekeeping downlink
     while (ts_alive) {
 
