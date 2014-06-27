@@ -19,11 +19,11 @@ int main(void) {
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
-    
-    /*read in configuration values*/
-    read_moses_config();   
 
-    
+    /*read in configuration values*/
+    read_moses_config();
+
+
     /*start threads indicated by configuration file*/
     start_threads();
 
@@ -54,13 +54,13 @@ void start_threads() {
 
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    if(config_values[hlp_down_thread] == 1) 
-        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL); 
-    if(config_values[hlp_control_thread] == 1) 
+    if (config_values[hlp_down_thread] == 1)
+        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL);
+    if (config_values[hlp_control_thread] == 1)
         pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
-    if(config_values[hlp_hk_thread] == 1) 
-        pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);       
-    if(config_values[sci_timeline_thread] == 1) 
+    if (config_values[hlp_hk_thread] == 1)
+        pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
+    if (config_values[sci_timeline_thread] == 1)
         pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
 
 
@@ -68,7 +68,7 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-//    void * returns;
+    //    void * returns;
 
     int i;
     for (i = 0; i < NUM_THREADS; i++) {
@@ -92,7 +92,7 @@ void init_quit_signal_handler() {
 /*set up hash table with configuration strings to match values in moses.conf*/
 void config_strings_init() {
     config_size = NUM_THREADS + NUM_IO;
-    
+
     /*allocate strings to match with configuration file*/
     config_strings[hlp_control_thread] = CONTROL_CONF;
     config_strings[hlp_down_thread] = DOWN_CONF;
@@ -116,7 +116,7 @@ void config_strings_init() {
     for (i = 0; i < config_size; i++) {
         int * int_def = malloc(sizeof (int));
         *int_def = i;
-        
+
         /*insert nod into hash table*/
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
@@ -124,12 +124,14 @@ void config_strings_init() {
 
 /*read in configuration file for thread and I/O attributes*/
 void read_moses_config() {
+    record("Reading in configuration file.....");
+    
     /*read configuration file*/
     FILE * config_fp = fopen(config_path, "r");
 
     int rc = 0;
     while (rc != EOF) {
-        char new_char;  //first char of each line
+        char new_char; //first char of each line
         int next_value, string_len = 0;
         /*check to see if comment and rewind file pointer to beginning of line*/
         rc = fscanf(config_fp, "%c", &new_char);
@@ -145,15 +147,19 @@ void read_moses_config() {
             string_len = getdelim(&line, &line_len, (int) '=', config_fp); //read until "=" is reached 
             rc = fscanf(config_fp, "%i", &next_value); //read configuration value
             rc = getline(&remaining_line, &rem_line_len, config_fp); //read remainder of line
-            
-            printf("%s%d\n", line, next_value);
+
+            char* confString = (char *) malloc(200 * sizeof (char));
+            sprintf(confString, "%s%d\n", line, next_value);
+            record(confString);
+            free(confString);
+
             line[string_len - 1] = '\0'; //strip trailing "=" sign
 
             node_t * np = lookup(config_hash_table, line, config_size); //Lookup corresponding function in table
             if (np == NULL) {
                 record(concat(3, "Bad configuration key", line, "\n"));
-            }else{
-                config_values[*((int*)np->def)] = next_value;   //enter values into array of configurations
+            } else {
+                config_values[*((int*) np->def)] = next_value; //enter values into array of configurations
             }
         }
     }
