@@ -227,8 +227,8 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
     unsigned char temp[1024];
     unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
 
-    char *imagename;
-    FILE *fp;
+    char *imagename = NULL;
+    FILE *fp = NULL;
     int count = 0; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
