@@ -19,6 +19,10 @@
 #include "sequence.h"
 #include "moses_threads.h"
 #include "controlFuncs.h"
+#include "send_TM.h"
+
+#define SYNCLINK_START 0
+#define SYNCLINK_END 1
 
 extern volatile sig_atomic_t ts_alive;
 

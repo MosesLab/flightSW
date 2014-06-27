@@ -166,13 +166,13 @@ void * hlp_housekeeping(void * arg){
 void * telem(void * arg){
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
+    int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
-    synclink_init(0);
+    
     tm_queue_init(&roeQueue);
     
     while (ts_alive){
         if (roeQueue.count != 0) {
-            char * tempName = strrchr(roeQueue.first->filePath, '/') + 1;
             fp = fopen(roeQueue.first->filePath, "r");  //Open file
             
             if (fp == NULL) {                           //Error opening file
@@ -182,10 +182,9 @@ void * telem(void * arg){
             if ((&roeQueue)->first != NULL){  
                 
                 fseek(fp, 0, SEEK_END);                 // seek to end of file
-                int size = ftell(fp);                   // get current file size pointer
                 fseek(fp, 0, SEEK_SET);
 
-                int check = send_image(&roeQueue, xmlTrigger);//Send actual Image
+                int check = send_image(&roeQueue, xmlTrigger, synclink_fd);//Send actual Image
                 
                 if (xmlTrigger == 1){
                     xmlTrigger = 0;
@@ -199,14 +198,15 @@ void * telem(void * arg){
                 }
             }
         }
-        else {
-            struct timespec timeToWait;
-            struct timeval now;
-
-            gettimeofday(&now, NULL);
-            timeToWait.tv_sec = now.tv_sec + 1;
-            timeToWait.tv_nsec = 0;
-
-        }
+//        else {
+//            struct timespec timeToWait;
+//            struct timeval now;
+//
+//            gettimeofday(&now, NULL);
+//            timeToWait.tv_sec = now.tv_sec + 1;
+//            timeToWait.tv_nsec = 0;
+//
+//        }
     }
+    return NULL;
 }

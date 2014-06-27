@@ -94,37 +94,40 @@ int synclink_init(int killSwitch) {
 
     int fd, rc;
     int sigs, idle;
+    char *devname = "/dev/ttyUSB0";
     
-    if (killSwitch == 0){
+    /* open serial device with O_NONBLOCK to ignore DCD input */
+    fd = open(devname, O_TRUNC, 0);
+    if (fd < 0) {
+        printf("open error=%d %s\n", errno, strerror(errno));
+        return fd;
+    }
+
+    if (killSwitch == 0) {
+
         
-        char *devname = "/dev/ttyUSB0";
-        int ldisc = N_HDLC;
+        int ldisc = N_HDLC, child_status;
         MGSL_PARAMS params;
 
         pid_t pid = fork();
-        if (pid == -1) {                            //Check Fork
+        if (pid == -1) { //Check Fork
             perror("Fork failure");
             exit(EXIT_FAILURE);
         }
 
         if (pid == 0) {
             execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
-            perror("execlp");                       //selected in code
-            _exit(EXIT_FAILURE);                    //Child should die after exec call. If it gets
-                                                    //here then the exec failed
+            perror("execlp"); //selected in code
+            _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
+            //here then the exec failed
         } else if (pid > 0) {
-            wait();                                 //Wait for child to finish
+            wait(&child_status); //Wait for child to finish
         }
 
         printf("send HDLC data on %s\n", devname);
 
-        /* open serial device with O_NONBLOCK to ignore DCD input */
-        fd = open(devname, O_TRUNC, 0);
-        if (fd < 0) {
-            printf("open error=%d %s\n", errno, strerror(errno));
-            return fd;
-        }
-        
+
+
         /*
          * set N_HDLC line discipline
          *
@@ -200,8 +203,7 @@ int synclink_init(int killSwitch) {
         int enable = 1;
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
     }
-    
-    else if(killSwitch == 1) {                          //Turns off synclink
+    else if (killSwitch == 1) { //Turns off synclink
         printf("synclink killSwitch: Turn off RTS and DTR\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIC, &sigs);
@@ -211,43 +213,41 @@ int synclink_init(int killSwitch) {
         }
     }
 
-    
 
-    return 1;
+
+    return fd;
 }
 
-int send_image(tm_queue_t roeQueue, int xmlTrigger){
-    
-    int fd;                                     //Initialize Variables
+int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
+
     int rc;
     int killTrigger = 0;
     int size = 1024;
     unsigned char databuf[1024];
     unsigned char temp[1024];
-    unsigned char endbuf[] = "smart";           //Used this string as end-frame to terminate seperate files
-    
+    unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
+
     char *imagename;
     FILE *fp;
-    int count = 0;                              //Number to determine how much data is sent
+    int count = 0; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
-    
+
     char* xmlfile = "/mdata/imageindex.xml";
 
     /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
      * from the file into the data buffer, then sending the data buffer to the device 
      * via a write call.
      */
-    if(ts_alive){
-        if (roeQueue.count != 0){
+    if (ts_alive) {
+        if (roeQueue->count != 0) {
             count = 0;
-            if (xmlTrigger == 1) {              //If we are on an odd loop send an xml file
+            if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
                 imagename = xmlfile;
+            } else if (xmlTrigger == 0) { //If we are on an even loop send an image
+                imagename = roeQueue->first->filePath;
             }
-            else if (xmlTrigger == 0) {         //If we are on an even loop send an image
-                imagename = roeQueue.first->filePath;
-            }
-                
+
             /*Open image file for reading into a buffered stream*/
             fp = fopen(imagename, "r");
             if (fp == NULL) {
@@ -297,20 +297,19 @@ int send_image(tm_queue_t roeQueue, int xmlTrigger){
             printf("Sent %d bytes of data from file %s.\n", totalSize, imagename);
             time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
                     + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
-            printf("Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);    
-        
-        }
-        else {
-            
-            if(killTrigger == 1){               //If everything is done
-                return 0;                          
+            printf("Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+
+        } else {
+
+            if (killTrigger == 1) { //If everything is done
+                return 0;
             }
-            
+
             sleep(2);
-            
+
         }
     }
-    
+
     printf("Turn off RTS and DTR\n");
     int sigs = TIOCM_RTS + TIOCM_DTR;
     rc = ioctl(fd, TIOCMBIC, &sigs);
@@ -323,11 +322,11 @@ int send_image(tm_queue_t roeQueue, int xmlTrigger){
     close(fd);
     fclose(fp);
 
-    
-    if (xmlTrigger == 1){
+
+    if (xmlTrigger == 1) {
         return 1;
-    } else return 0;                            //return send status
-    
-    
-    
+    } else return 0; //return send status
+
+
+
 }

@@ -35,7 +35,7 @@ int takeExposure(double duration, int sig)
         //clear pin to avoid excess current
         
         //wait for exposure duration, calculate with the pulse
-        actual = wait(dur) + PULSE;
+        actual = wait_exposure(dur) + PULSE;
         // send close shutter signal to DIO
         
         // wait for interval to close shutter
@@ -48,7 +48,7 @@ int takeExposure(double duration, int sig)
     else // performing dark exposure, just wait
     {
         gettimeofday(&expstart, NULL);
-        actual = wait(dur);//+PULSE);
+        actual = wait_exposure(dur);//+PULSE);
         gettimeofday(&expstop, NULL);
         sprintf(msg,"Computer Time: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
         record(msg);
@@ -108,7 +108,7 @@ int write_data(int duration, int num, short **BUFFER, int *index)
     return 0;
 }
 
-int wait(int microsec)
+int wait_exposure(int microsec)
 {
     /*This function doesnt work*/
     struct timeval start, end;

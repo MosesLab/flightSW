@@ -62,6 +62,8 @@ void start_threads() {
         pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
     if (config_values[sci_timeline_thread] == 1)
         pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
+    if (config_values[telem_thread] == 1)
+        pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
 
 
 }

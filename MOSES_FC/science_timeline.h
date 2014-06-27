@@ -12,6 +12,7 @@
 #include "sequence.h"
 #include "system.h"
 #include "lockingQueue.h"
+#include "sci_timeline_funcs.h"
 //#include "roeImage.h"
 #include "defs.h"
 #include "hlp.h"
@@ -35,9 +36,7 @@ extern moses_ops_t ops; //struct storing operational state
 void run_sig();
 void init_signal_handler_stl();
 void* science_timeline(void *);
-int wait(int);
-int takeExposure(double duration,int sig);
-int write_data(int duration ,int num, short **BUFFER,int *index);
+
 
 
 

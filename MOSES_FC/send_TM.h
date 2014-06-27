@@ -24,7 +24,7 @@
 #include <sys/wait.h>
 #include "tm_queue.h"
 
-int send_image(tm_queue_t, int);
+int send_image(tm_queue_t*, int, int);
 void display_usage(void);
 int synclink_init(int);
 

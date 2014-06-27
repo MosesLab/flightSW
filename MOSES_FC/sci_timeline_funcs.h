@@ -11,6 +11,9 @@
 #include "science_timeline.h"
 #include "roe_image.h"
 
+int wait_exposure(int);
+int takeExposure(double duration,int sig);
+int write_data(int duration ,int num, short **BUFFER,int *index);
 
 #endif	/* SCI_TIMELINE_FUNCS_H */
 
