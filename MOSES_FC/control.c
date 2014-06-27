@@ -6,12 +6,12 @@
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
     
-    printf("Size of packet pointer %ld \n", sizeof(Packet*));
-    printf("Size of int %ld\n", sizeof(int));
-    printf("Size of condattr %ld\n", sizeof(pthread_condattr_t));
-    printf("Size of mutex %ld\n", sizeof(pthread_mutex_t));
-    printf("Size of conditional variable %ld\n", sizeof(pthread_cond_t));
-    printf("Size of Locking Queue %ld\n", sizeof(LockingQueue));
+    printf("Size of packet pointer %ldu \n", sizeof(Packet*));
+    printf("Size of int %ldu\n", sizeof(int));
+    printf("Size of condattr %ldu\n", sizeof(pthread_condattr_t));
+    printf("Size of mutex %ldu\n", sizeof(pthread_mutex_t));
+    printf("Size of conditional variable %ldu\n", sizeof(pthread_cond_t));
+    printf("Size of Locking Queue %ldu\n", sizeof(LockingQueue));
     
     lockingQueue_init(&hkdownQueue);
     int fup = init_hkup_serial_connection();
