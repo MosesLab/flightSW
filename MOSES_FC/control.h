@@ -34,7 +34,7 @@ LockingQueue hkdownQueue;
 tm_queue_t roeQueue;
 
 /*hlp_control initializations*/
-void* hlp_control(void*);
+void* hlp_control(void *);
 
 /*hlp_down thread initializations*/
 int fdown;

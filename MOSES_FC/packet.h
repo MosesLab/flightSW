@@ -21,10 +21,15 @@
 #define _POSIX_SOURCE 1
 #define UPBAUD B1200
 #define DOWNBAUD B9600
-#define HKUP "/dev/ttyS0"
-#define HKDOWN "/dev/ttyS1"
+#define HKUP_REAL "/dev/ttyS0"
+#define HKDOWN_REAL "/dev/ttyS1"
 //#define HKUP "/dev/ttyUSB0"
 //#define HKDOWN "/dev/ttyUSB1"
+#define HKUP_SIM "/dev/pts/2"
+#define HKDOWN_SIM "/dev/pts/6"
+
+#define HKUP 1
+#define HKDOWN 0
 
 extern volatile sig_atomic_t ts_alive;
 
@@ -33,7 +38,7 @@ char lookupTable[128];	//this lookup table is global, but since it is only writt
 int res;                //variables for reading serial data
 char buf[255];          //serial port buffer
 char packet_array[270];		//final packet array
-struct termios oldtio_up, newtio_up; //structures for old device settings and new 
+
 
 /*function declaration*/
 void buildLookupTable();
@@ -46,7 +51,7 @@ inline void itoah(int, char *, int);
 Packet* constructPacket(char*, char *, char *);
 void recordPacket(Packet*);
 void getCurrentTime(char *);
-int init_hkup_serial_connection();	//initialize attributes of serial connection
+int init_serial_connection();	//initialize attributes of serial connection
 int init_hkdown_serial_connection();
 void readPacket(int, Packet *);
 int readData(int, char *, int);

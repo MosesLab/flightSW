@@ -229,7 +229,7 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
 
     char *imagename = NULL;
     FILE *fp = NULL;
-    int count = 0; //Number to determine how much data is sent
+    int frame_count = 0; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
 
@@ -241,7 +241,7 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
      */
     if (ts_alive) {
         if (roeQueue->count != 0) {
-            count = 0;
+            frame_count = 0;
             if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
                 imagename = xmlfile;
             } else if (xmlTrigger == 0) { //If we are on an even loop send an image
@@ -266,7 +266,7 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
             int totalSize = 0;
             unsigned int rd = fread(databuf, 1, size, fp);
             while (rd > 0) { //RTS changed buffer reading function from fgets to fread to allow for binary data
-                if (count == 10) memcpy(temp, databuf, size); //Store the contents of databuf
+                if (frame_count == 10) memcpy(temp, databuf, size); //Store the contents of databuf
                 //into the temp buffer
                 rc = write(fd, databuf, rd);
                 if (rc < 0) {
@@ -275,7 +275,7 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
                 }
                 /* block until all data sent */
                 rc = tcdrain(fd);
-                count++;
+                frame_count++;
                 totalSize += rd;
                 rd = fread(databuf, 1, size, fp);
             }

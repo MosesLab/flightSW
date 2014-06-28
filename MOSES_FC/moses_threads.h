@@ -8,7 +8,7 @@
 #ifndef MOSES_THREADS_H
 #define	MOSES_THREADS_H
 
-
+#include <pthread.h>
 
 #define NUM_THREADS 5
 

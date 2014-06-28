@@ -55,9 +55,9 @@ void start_threads() {
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
     if (config_values[hlp_down_thread] == 1)
-        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void*))hlp_down, NULL);
+        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[NUM_THREADS + hlp_down_interface]);
     if (config_values[hlp_control_thread] == 1)
-        pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void*))hlp_control, NULL);
+        pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void *))hlp_control, &config_values[NUM_THREADS + hlp_up_interface]);
     if (config_values[hlp_hk_thread] == 1)
         pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
     if (config_values[sci_timeline_thread] == 1)
@@ -135,7 +135,7 @@ void read_moses_config() {
     while (rc != EOF) {
         char new_char; //first char of each line
         int next_value, string_len = 0;
-        /*check to see if comment and rewind file pointer to beginning of line*/
+        /*check to see if comment  and rewind file pointer to beginning of line*/
         rc = fscanf(config_fp, "%c", &new_char);
         if (rc == EOF) break;
         rc = ungetc(new_char, config_fp); //put checked char back to read line
@@ -149,7 +149,8 @@ void read_moses_config() {
             string_len = getdelim(&line, &line_len, (int) '=', config_fp); //read until "=" is reached 
             rc = fscanf(config_fp, "%i", &next_value); //read configuration value
             rc = getline(&remaining_line, &rem_line_len, config_fp); //read remainder of line
-
+            
+            /*record configurations to output*/
             char* confString = (char *) malloc(200 * sizeof (char));
             sprintf(confString, "%s%d\n", line, next_value);
             record(confString);
@@ -157,13 +158,14 @@ void read_moses_config() {
 
             line[string_len - 1] = '\0'; //strip trailing "=" sign
 
-            node_t * np = lookup(config_hash_table, line, config_size); //Lookup corresponding function in table
+            node_t * np = lookup(config_hash_table, line, config_size); //Lookup corresponding string in hash table
             if (np == NULL) {
-                record(concat(3, "Bad configuration key", line, "\n"));
+                record(concat(3, "Bad configuration string:", line, "\n"));
             } else {
                 config_values[*((int*) np->def)] = next_value; //enter values into array of configurations
             }
         }
     }
 }
+
 

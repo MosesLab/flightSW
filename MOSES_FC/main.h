@@ -17,7 +17,6 @@
 #include "sequence.h"
 
 #define NUM_IO 4
-
 #define CONTROL_CONF "HLP_CONTROL_THREAD"
 #define DOWN_CONF "HLP_DOWN_THREAD"
 #define HK_CONF "HLP_HK_THREAD"
@@ -36,6 +35,7 @@ volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, s
 struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask;         //masks for SIGINT signal
 
+
 /*configuration variables*/
 char * config_path = "moses.conf";
 int config_size;
@@ -44,14 +44,8 @@ char * config_strings[NUM_THREADS + NUM_IO];
     
 node_t** config_hash_table;
 
-void quit_signal(int);  //signal handler
-void start_threads();
-void join_threads();
-void init_quit_signal_handler();
 void config_strings_init();
 void read_moses_config();
-
-
 
 enum moses_io{
   hlp_up_interface,
@@ -59,6 +53,16 @@ enum moses_io{
   roe_interface,
   synclink_interface,
 };
+
+void quit_signal(int);  //signal handler
+void start_threads();
+void join_threads();
+void init_quit_signal_handler();
+
+
+
+
+
 
 #endif /*MAIN_H*/
 

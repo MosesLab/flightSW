@@ -5,16 +5,28 @@
  */
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
-    
+    int f_up;
 //    printf("Size of packet pointer %ud \n", sizeof(Packet*));
 //    printf("Size of int %ud\n", sizeof(int));
 //    printf("Size of condattr %ud\n", sizeof(pthread_condattr_t));
 //    printf("Size of mutex %ud\n", sizeof(pthread_mutex_t));
 //    printf("Size of conditional variable %ud\n", sizeof(pthread_cond_t));
 //    printf("Size of Locking Queue %ud\n", sizeof(LockingQueue));
+    
     printf("control %p \n", &hkdownQueue);
     lockingQueue_init(&hkdownQueue);
-    int fup = init_hkup_serial_connection();
+    
+   /*Open housekeeping downlink using configuartion file*/
+    if(*(int*)arg == 1){       //Open real housekeeping downlink
+        f_up = init_serial_connection(HKUP, HKUP_REAL); 
+    }
+    else if (*(int*)arg == 2){ //Open simulated housekeeping downlink
+        f_up = init_serial_connection(HKUP, HKUP_SIM); 
+    }
+    else{
+        record("HK down serial connection not configured");
+    }
+    
     buildLookupTable();
     hlpHashInit();
     
@@ -45,19 +57,8 @@ void * hlp_control(void * arg) {
         if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
             record("malloc failed to allocate packet\n");
         }
-        
-        /*test starting data with SIGUSR1*/
-//        Packet * t = constructPacket(UPLINK_S, DATASTART, NULL);
-//        sleep(3);
-//        uDataStart(t);
-//        
-//        
-//        sleep(15);
-//        sequenceMap[0] = constructSequence(_sequence2);
-//        uDataStart(t);
-        /*end SIGUSR1 testing*/
-
-        readPacket(fup, p);
+    
+        readPacket(f_up, p);
         recordPacket(p);
         
         if (ts_alive) {
@@ -94,9 +95,6 @@ void * hlp_control(void * arg) {
                 break;
         }
 
-        
-
-
             
 
             char* data;
@@ -130,7 +128,18 @@ void * hlp_down(void * arg) {
     printf("down %p \n", &hkdownQueue);
     record("-->HLP Down thread started....\n\n");
     sleep(1);
-    fdown = init_hkdown_serial_connection(); //Open housekeeping downlink
+    
+    /*Open housekeeping downlink using configuartion file*/
+    if(*(int*)arg == 1){       //Open real housekeeping downlink
+        fdown = init_serial_connection(HKDOWN, HKDOWN_REAL); 
+    }
+    else if (*(int*)arg == 2){ //Open simulated housekeeping downlink
+        fdown = init_serial_connection(HKDOWN, HKDOWN_SIM); 
+    }
+    else{
+        record("HK down serial connection not configured");
+    }
+    
     while (ts_alive) {
 
         Packet * p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
@@ -173,6 +182,7 @@ void * telem(void * arg){
     
     while (ts_alive){
         if (roeQueue.count != 0) {
+            //dequeue imgPtr_t here
             fp = fopen(roeQueue.first->filePath, "r");  //Open file
             
             if (fp == NULL) {                           //Error opening file
