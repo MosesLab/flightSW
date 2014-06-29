@@ -63,8 +63,8 @@ void * science_timeline(void * arg) {
         record(msg);
 
         /* push packets w/info about current sequence */
-        Packet* a = (Packet*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
-        Packet* r = (Packet*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
+        packet_t* r = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
                 enqueue(&hkdownQueue, a);
                 enqueue(&hkdownQueue, r);
 

@@ -42,7 +42,7 @@ node_t* installNode(node_t** hTable, char* name, void * defn, int size){
     node_t* np;
     unsigned hashval;
     if((np = lookup(hTable, name, size)) == NULL){    //Not found
-        np = (node_t*) malloc(sizeof(*np));
+        np = (node_t*) malloc(sizeof(node_t));
         if(np == NULL || (np->name = strdup(name)) == NULL){
             return NULL;
         }

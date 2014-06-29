@@ -116,14 +116,17 @@ int wait_exposure(int microsec)
     //sec = microsec/1000000;
     //usec = microsec%1000000;
     gettimeofday(&start,NULL);
+    
+    /*this is incorrect, using busy wait*/
+//    while((end.tv_sec*1000000+end.tv_usec) < 
+//	      (start.tv_sec*1000000+start.tv_usec+microsec))
+//    {
+//            gettimeofday(&end, NULL);
+//    }
+    
+    usleep(microsec);
     gettimeofday(&end, NULL);
     
-    while((end.tv_sec*1000000+end.tv_usec) < 
-	      (start.tv_sec*1000000+start.tv_usec+microsec))
-    {
-            gettimeofday(&end, NULL);
-    }
-
     return ((end.tv_sec-start.tv_sec)*1000000 + 
                 (end.tv_usec-start.tv_usec));
 }

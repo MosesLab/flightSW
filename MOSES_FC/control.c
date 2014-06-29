@@ -53,8 +53,8 @@ void * hlp_control(void * arg) {
 
     while (ts_alive) {
         /*allocate space for packet*/
-        Packet* p;
-        if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
+        packet_t* p;
+        if ((p = (packet_t*) malloc(sizeof (packet_t))) == NULL) {
             record("malloc failed to allocate packet\n");
         }
     
@@ -107,12 +107,12 @@ void * hlp_control(void * arg) {
                 ackType = BDPKT;
                 record("BAD PACKET EXECUTION\n");
             }
-            Packet* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
+            packet_t* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
             
             printf("\n");
         }
-//        free(p);    //Can't do this
+        free(p);    //Can't do this
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -142,7 +142,8 @@ void * hlp_down(void * arg) {
     
     while (ts_alive) {
 
-        Packet * p = dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
+        packet_t * p = (packet_t *) dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
+        
         if (!ts_alive) break;   //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
@@ -163,8 +164,7 @@ void * hlp_down(void * arg) {
 void * hlp_housekeeping(void * arg){
     record("-->HLP Housekeeping thread started....\n\n");
     while(ts_alive){
-        Packet * p = constructPacket(GDPKT, ACK, NULL);
-        //recordPacket(p);
+        packet_t * p = constructPacket(GDPKT, ACK, NULL);
         enqueue(&hkdownQueue, p);
         sleep(1);
     }

@@ -16,8 +16,9 @@
 extern volatile sig_atomic_t ts_alive;
 
 void lockingQueue_init(LockingQueue *);
-void enqueue(LockingQueue *, Packet *);
-Packet* dequeue(LockingQueue *);
+node_t * construct_queue_node(void *);
+void enqueue(LockingQueue *, void *);
+void * dequeue(LockingQueue *);
 void destroy(LockingQueue *);
 
 #endif /*LOCKINGQUEUE_H*/

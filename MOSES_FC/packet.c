@@ -2,7 +2,7 @@
 #include "packet.h"
 
 /*Builds a packet out of provided values, returns packet pointer*/
-Packet* constructPacket(char* type, char* subtype, char* data) {
+packet_t* constructPacket(char* type, char* subtype, char* data) {
     int dataSize;
     if (data != NULL) {
         dataSize = strlen(data); //find length of data string
@@ -13,8 +13,8 @@ Packet* constructPacket(char* type, char* subtype, char* data) {
     itoah(dataSize, dataLength, 2); //convert length from int to string
 
     /*allocate space for packet*/
-    Packet* p;
-    if ((p = (Packet*) malloc(sizeof (Packet))) == NULL) {
+    packet_t* p;
+    if ((p = (packet_t*) malloc(sizeof (packet_t))) == NULL) {
         record("malloc failed to allocate packet");
     }
 
@@ -28,7 +28,6 @@ Packet* constructPacket(char* type, char* subtype, char* data) {
     p->checksum[0] = calcCheckSum(p);
     p->checksum[1] = '\0';
     p->status = GOOD_PACKET;
-    p->next = NULL;
 
     return p;
 }
@@ -50,7 +49,7 @@ void getCurrentTime(char* result) {
 }
 
 /*records a packet to a log file*/
-void recordPacket(Packet* p) {
+void recordPacket(packet_t* p) {
     char* pString = (char *) malloc(200 * sizeof (char));
     if (sprintf(pString, "%s%s%s%s%s%s\n", p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum) == 0) {
         record("failed to record packet");
@@ -93,7 +92,7 @@ void buildLookupTable() {
 }
 
 /*calculate checksum for HLP packets*/
-char calcCheckSum(Packet * p) {
+char calcCheckSum(packet_t * p) {
     char parityByte = encode(STARTBYTE); //this variable is XORed with all bytes to complete rectangle code
 
     int i;
@@ -197,7 +196,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 //    return fd;
 //}
 
-void readPacket(int fd, Packet * p) {
+void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
     char temp;
@@ -279,7 +278,7 @@ int readData(int fd, char * data, int len) {
     return result;
 }
 
-void sendPacket(Packet * p, int fd) {
+void sendPacket(packet_t * p, int fd) {
 
     char start = STARTBYTE;
     char end = ENDBYTE;

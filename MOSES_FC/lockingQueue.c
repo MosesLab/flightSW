@@ -19,30 +19,40 @@ void lockingQueue_init(LockingQueue * queue) {
     queue->count = 0;   //amount of objects in the queue
 }
 
-void enqueue(LockingQueue * queue, Packet * p) {
+node_t * construct_queue_node(void * content){
+    node_t* n;
+    if((n = (node_t *)malloc(sizeof(node_t))) == NULL){
+        record("malloc failed to allocate node");
+    }
+    n->def = content;
+    n->next = NULL;     //initialize next node to null
+    return n;
+}
+
+void enqueue(LockingQueue * queue, void * content) {
     pthread_mutex_lock(&queue->lock);
+    
+    node_t * n = construct_queue_node(content);
 
     if (queue->first == NULL) {
-        queue->first = p;
+        queue->first = n;
         queue->last = queue->first;
 
     } else {
-        queue->last->next = p;
-        queue->last = p;
+        queue->last->next = n;
+        queue->last = n;
     }
     queue->count++;
-    
-    /*TRY unlocking before broadcasting (may not work)*/
    
     pthread_cond_broadcast(&queue->cond); // Wake up consumer waiting for input
     pthread_mutex_unlock(&queue->lock);
 
 }
 
-Packet* dequeue(LockingQueue * queue) {
+void * dequeue(LockingQueue * queue) {
 //    struct timespec timeToWait;
 //    struct timeval now;
-    Packet* p = NULL;
+    node_t * n = NULL;
 
 //    gettimeofday(&now, NULL);
 //    timeToWait.tv_sec = now.tv_sec + 1;
@@ -57,14 +67,16 @@ Packet* dequeue(LockingQueue * queue) {
 
     /*check if program is still active*/
     if (ts_alive) {
-        p = queue->first;
-        queue->first = (Packet *) p->next;
+        n = queue->first;
+        queue->first = n->next;
         queue->count--;
     }
 
     pthread_mutex_unlock(&queue->lock);
 
-    return p;
+    void * ptr = n->def;
+    free(n);
+    return ptr;
 }
 
 void lockingQueue_destroy(LockingQueue * queue) {

@@ -28,6 +28,12 @@
 
 /*Packet structure for parsing and storing HLP packets*/
 typedef struct {
+    /*Packet attributes*/
+//        void * next;    //next item in the locking queue    
+	int dataSize;
+        int status;  
+        char* control;
+    
     /*HLP fields*/
 	char timeStamp[7];
 	char type[2];
@@ -36,18 +42,22 @@ typedef struct {
 	char data[256];
 	char checksum[2];
         
-        /*Packet attributes*/
-        void * next;    //next item in the locking queue    
-	int dataSize;
-        int status;  
-        char* control;
-} Packet;
+        
+} packet_t;
+
+typedef struct node_t {
+    
+    struct node_t * next; //next chained entry in hash table
+    char* name; //defined name
+    void* def; //functional definition
+    
+} node_t;
 
 /*structure for thread-safe mutex-protected queue*/
 typedef struct {
     int count;  //current number of items
-    Packet* first;
-    Packet* last;
+   node_t * first;
+   node_t * last;
     
     
     pthread_condattr_t cattr;
@@ -56,16 +66,10 @@ typedef struct {
 } LockingQueue;
 
 /*typedef for array of function pointers for HLP packets*/
-typedef int(*hlpControl)(Packet*);
+typedef int(*hlpControl)(packet_t*);
 
 /*Node structure for hash table*/
-typedef struct node_t {
-    
-    struct node_t * next; //next chained entry in hash table
-    char* name; //defined name
-    void* def; //functional definition
-    
-} node_t;
+
 
 /*this should be changed to make it more general --RTS*/
 enum seq
