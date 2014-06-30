@@ -8,8 +8,7 @@
 **************************************************/
 
 #include "sci_timeline_funcs.h"
-#include "control.h"
-#include "tm_queue.h"
+
 
 int takeExposure(double duration, int sig)
 {
@@ -100,7 +99,7 @@ int write_data(int duration, int num, short **BUFFER, int *index)
         imgPtr_t newPtr;
         newPtr.filePath = filename;
         newPtr.next = NULL;
-        tm_enqueue(&roeQueue, &newPtr);                       //enqueues the path for telem
+        enqueue(&roeQueue, &newPtr);                       //enqueues the path for telem
     }
    
     sprintf(msg,"File %s successfully written to disk.\n",filename);

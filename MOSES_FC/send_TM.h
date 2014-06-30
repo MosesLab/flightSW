@@ -22,9 +22,10 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "tm_queue.h"
+#include "lockingQueue.h"
+#include "roe_image.h"
 
-int send_image(tm_queue_t*, int, int);
+int send_image(imgPtr_t*, int, int);
 void display_usage(void);
 int synclink_init(int);
 

@@ -218,10 +218,10 @@ int synclink_init(int killSwitch) {
     return fd;
 }
 
-int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
+int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
 
     int rc;
-    int killTrigger = 0;
+//    int killTrigger = 0;
     int size = 1024;
     unsigned char databuf[1024];
     unsigned char temp[1024];
@@ -240,12 +240,12 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
      * via a write call.
      */
     if (ts_alive) {
-        if (roeQueue->count != 0) {
+//        if (roeQueue->count != 0) {
             frame_count = 0;
             if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
                 imagename = xmlfile;
             } else if (xmlTrigger == 0) { //If we are on an even loop send an image
-                imagename = roeQueue->first->filePath;
+                imagename = image->filePath;
             }
 
             /*Open image file for reading into a buffered stream*/
@@ -298,16 +298,20 @@ int send_image(tm_queue_t * roeQueue, int xmlTrigger, int fd) {
             time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
                     + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
             printf("Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
-
-        } else {
-
-            if (killTrigger == 1) { //If everything is done
-                return 0;
-            }
-
-            sleep(2);
-
-        }
+            
+            
+/*jackson this is not correct, xmltrigger will automatically be reset when 
+ send_image(3) is placed on the stack. Correct implementation would use a loop that
+ * runs twice, once for the image, once for the xml file */
+//        } else {
+//
+//            if (killTrigger == 1) { //If everything is done
+//                return 0;
+//            }
+//
+//            sleep(2);
+//
+//        }
     }
 
     printf("Turn off RTS and DTR\n");

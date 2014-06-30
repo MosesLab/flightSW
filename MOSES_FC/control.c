@@ -1,4 +1,5 @@
 #include "control.h"
+#include "roe_image.h"
 
 /* hlp_control is a thread that reads packets from the housekeeping uplink and 
  * executes the commands contained within the packets 
@@ -178,15 +179,21 @@ void * telem(void * arg){
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
     
-    tm_queue_init(&roeQueue);
+    lockingQueue_init(&roeQueue);
     
     while (ts_alive){
         if (roeQueue.count != 0) {
             //dequeue imgPtr_t here
-            fp = fopen(roeQueue.first->filePath, "r");  //Open file
+            
+            imgPtr_t * curr_image = (imgPtr_t *) dequeue(&roeQueue);   //RTS
+            char * curr_path = curr_image->filePath;
+            
+//            fp = fopen(roeQueue.first->filePath, "r");  //Open file
+            fp = fopen(curr_path, "r");
             
             if (fp == NULL) {                           //Error opening file
-                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+//                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+                printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
             }
             else fclose(fp);
             if ((&roeQueue)->first != NULL){  
@@ -194,7 +201,7 @@ void * telem(void * arg){
                 fseek(fp, 0, SEEK_END);                 // seek to end of file
                 fseek(fp, 0, SEEK_SET);
 
-                int check = send_image(&roeQueue, xmlTrigger, synclink_fd);//Send actual Image
+                int check = send_image(curr_image, xmlTrigger, synclink_fd);//Send actual Image
                 
                 if (xmlTrigger == 1){
                     xmlTrigger = 0;
@@ -204,7 +211,7 @@ void * telem(void * arg){
                 }
                 
                 if (check == 0){
-                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+//                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
                 }
             }
         }

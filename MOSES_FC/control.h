@@ -15,7 +15,6 @@
 #include "hlp.h"
 #include "packet.h"
 #include "hashTable.h"
-#include "tm_queue.h"
 #include "sequence.h"
 #include "moses_threads.h"
 #include "controlFuncs.h"
@@ -31,7 +30,7 @@ moses_ops_t ops;
 
 
 LockingQueue hkdownQueue;
-tm_queue_t roeQueue;
+LockingQueue roeQueue;
 
 /*hlp_control initializations*/
 void* hlp_control(void *);
