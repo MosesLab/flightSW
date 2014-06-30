@@ -24,7 +24,12 @@ packet_t* constructPacket(char* type, char* subtype, char* data) {
     memcpy(p->subtype, subtype, 4);
     memcpy(p->dataLength, dataLength, 3);
     p->dataSize = dataSize;
-    if (data != NULL) memcpy(p->data, data, dataSize + 1);
+    if (data != NULL){
+        memcpy(p->data, data, dataSize + 1);
+    }
+    else{
+        p->data[0] = '\0';
+    }
     p->checksum[0] = calcCheckSum(p);
     p->checksum[1] = '\0';
     p->status = GOOD_PACKET;
@@ -214,7 +219,7 @@ void readPacket(int fd, packet_t * p) {
             if (temp == STARTBYTE) clearBuffer = TRUE;
         }
         if (clearBuffer) {
-            ioctl(fd, FIONREAD);
+//            ioctl(fd, FIONREAD);
             continue_read = TRUE;
             record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
@@ -247,7 +252,7 @@ void readPacket(int fd, packet_t * p) {
             tempValid = (p->checksum[0] == calcCheckSum(p));
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad checksum\n");
-            ioctl(fd, FIONREAD);
+//            ioctl(fd, FIONREAD);
         }
     }
 }

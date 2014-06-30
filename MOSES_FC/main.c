@@ -70,12 +70,14 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //    void * returns;
+//    void * returns;
 
     int i;
     for (i = 0; i < NUM_THREADS; i++) {
-        //pthread_join(threads[i], &returns);
+        if (threads[i] != 0){
+//            pthread_join(threads[i], &returns);
         pthread_cancel(threads[i]);
+        }
     }
 }
 
@@ -109,7 +111,7 @@ void config_strings_init() {
     config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/
-    if ((config_hash_table = (node_t**) malloc(sizeof (node_t) * config_size)) == NULL) {
+    if ((config_hash_table = calloc(sizeof (node_t) * config_size, 1)) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
@@ -127,7 +129,7 @@ void config_strings_init() {
 /*read in configuration file for thread and I/O attributes*/
 void read_moses_config() {
     record("Reading in configuration file.....");
-    
+
     /*read configuration file*/
     FILE * config_fp = fopen(config_path, "r");
 
@@ -149,7 +151,7 @@ void read_moses_config() {
             string_len = getdelim(&line, &line_len, (int) '=', config_fp); //read until "=" is reached 
             rc = fscanf(config_fp, "%i", &next_value); //read configuration value
             rc = getline(&remaining_line, &rem_line_len, config_fp); //read remainder of line
-            
+
             /*record configurations to output*/
             char* confString = (char *) malloc(200 * sizeof (char));
             sprintf(confString, "%s%d\n", line, next_value);

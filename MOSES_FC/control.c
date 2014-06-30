@@ -112,7 +112,7 @@ void * hlp_control(void * arg) {
             
             printf("\n");
         }
-        free(p);    //Can't do this
+        free(p);    
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  

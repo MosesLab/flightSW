@@ -105,6 +105,13 @@ int write_data(int duration, int num, short **BUFFER, int *index)
    
     sprintf(msg,"File %s successfully written to disk.\n",filename);
     record(msg);
+    
+    /*need to free allocated image to prevent memory leak --RTS*/
+    free(image.data[0]);
+    free(image.data[1]);
+    free(image.data[2]);
+    free(image.data[3]);
+    
     return 0;
 }
 

@@ -813,7 +813,7 @@ int ROE_CCDS_VSS(packet_t* p) {
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
     funcNumber = 82;
-    hlp_hash_size = funcNumber;
+    hlp_hash_size = funcNumber * 2;
 
     /*allocate space for control strings*/
     char** stringTable;
@@ -998,7 +998,7 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = malloc(sizeof(node_t) * hlp_hash_size)) == NULL) {
+    if ((hlpHashTable = calloc(sizeof(node_t) * hlp_hash_size, 1)) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
