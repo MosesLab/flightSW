@@ -5,7 +5,7 @@
  */
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
-    int f_up = NULL;
+    int f_up = 0;
 //    printf("Size of packet pointer %ud \n", sizeof(Packet*));
 //    printf("Size of int %ud\n", sizeof(int));
 //    printf("Size of condattr %ud\n", sizeof(pthread_condattr_t));
