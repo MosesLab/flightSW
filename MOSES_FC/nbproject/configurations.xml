@@ -21,7 +21,6 @@
       <itemPath>sequence.h</itemPath>
       <itemPath>synclink.h</itemPath>
       <itemPath>system.h</itemPath>
-      <itemPath>tm_queue.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -43,7 +42,6 @@
       <itemPath>science_timeline.c</itemPath>
       <itemPath>send_TM.c</itemPath>
       <itemPath>sequence.c</itemPath>
-      <itemPath>tm_queue.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -158,10 +156,6 @@
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="tm_queue.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="tm_queue.h" ex="false" tool="3" flavor2="0">
-      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -245,10 +239,6 @@
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="tm_queue.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="tm_queue.h" ex="false" tool="3" flavor2="0">
-      </item>
     </conf>
     <conf name="flightDebug" type="1">
       <toolsSet>
@@ -328,10 +318,6 @@
       <item path="synclink.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tm_queue.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="tm_queue.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="fd" type="1">
@@ -437,12 +423,6 @@
       <item path="synclink.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="system.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="tm_queue.c" ex="false" tool="0" flavor2="9">
-        <cTool>
-        </cTool>
-      </item>
-      <item path="tm_queue.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
