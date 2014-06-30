@@ -46,7 +46,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/sci_timeline_funcs.o \
 	${OBJECTDIR}/science_timeline.o \
 	${OBJECTDIR}/send_TM.o \
-	${OBJECTDIR}/sequence.o
+	${OBJECTDIR}/sequence.o \
+	${OBJECTDIR}/v_shell.o
 
 
 # C Compiler Flags
@@ -132,6 +133,11 @@ ${OBJECTDIR}/sequence.o: sequence.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/sequence.o sequence.c
+
+${OBJECTDIR}/v_shell.o: v_shell.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/v_shell.o v_shell.c
 
 # Subprojects
 .build-subprojects:
