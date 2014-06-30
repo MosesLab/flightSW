@@ -182,7 +182,7 @@ void * telem(void * arg){
     lockingQueue_init(&roeQueue);
     
     while (ts_alive){
-        if (roeQueue.count != 0) {
+//        if (roeQueue.count != 0) {
             //dequeue imgPtr_t here
             
             imgPtr_t * curr_image = (imgPtr_t *) dequeue(&roeQueue);   //RTS
@@ -214,7 +214,7 @@ void * telem(void * arg){
 //                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
                 }
             }
-        }
+//        }
 //        else {
 //            struct timespec timeToWait;
 //            struct timeval now;
