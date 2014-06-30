@@ -12,6 +12,7 @@
  */
 int main(void) {
 
+    //test
 
     /*init configuration stings*/
     config_strings_init();
