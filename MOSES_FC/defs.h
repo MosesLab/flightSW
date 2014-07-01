@@ -126,6 +126,11 @@ typedef struct
     char  channels;             //channels included in the image;
 }roeimage_t;
 
+typedef struct imgPtr {                         //Create image path node
+    char* filePath;
+    struct imgPtr * next;
+} imgPtr_t;
+
 
 #endif	/* DEFS_H */
 

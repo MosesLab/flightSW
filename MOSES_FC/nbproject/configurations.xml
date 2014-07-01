@@ -26,6 +26,7 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>bashrc</itemPath>
       <itemPath>moses.conf</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -93,6 +94,8 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="bashrc" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="control.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
@@ -183,6 +186,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="bashrc" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="control.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
@@ -267,6 +272,8 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="bashrc" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="control.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
@@ -351,6 +358,8 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="bashrc" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="control.c" ex="false" tool="0" flavor2="9">
         <cTool>
         </cTool>

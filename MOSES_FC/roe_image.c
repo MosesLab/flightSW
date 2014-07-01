@@ -63,82 +63,98 @@ void setData(short **pdata, int *psize, char pchannels) {
 }
 
 void writeToFile(char* file, char* catalog) {
+    printf("inside writetofile\n");
     int i;
+    int linecount = 0;
+//    char* msg;
     int newfile = 0;
+    char xmlarr[10000][200];
+    char* line;
+    size_t len = 0;
+    ssize_t read;
 
     /*Check to see if file exists or not*/
     FILE *checkxml;
-    if ((checkxml = fopen(catalog, "r")) == NULL) {
-        //printf("newfile = 1 \n");
-        newfile = 1; 
-    } else {
-        fclose(checkxml);
+    checkxml = fopen(catalog, "r");
+    fseek(checkxml, 0, SEEK_END);
+    if (ftell(checkxml) == 0) {
+        newfile = 1;
+    }
+    else {
+        newfile = 0;
+    }
+    fclose(checkxml);
+
+    FILE *readxml;
+    readxml = fopen(catalog, "r");
+
+    while ((read = getline(&line, &len, readxml)) != -1) {
+        strncpy(xmlarr[linecount], line, 200);
+        linecount++;
+    }
+    fclose(readxml);
+
+    /*Write to XML File*/
+    FILE * outxml;
+    outxml = fopen(catalog, "r+");
+
+    /*write data from previous xml file*/
+    for (i = 0; i < linecount; i++) {
+        fwrite(xmlarr[i], sizeof (xmlarr[i][0]), strlen(xmlarr[i]), outxml);
+    }
+    
+    if (!newfile) {
+        /* Set the cursor to before </CATALOG>*/
+        fseek(outxml, -11, SEEK_END);
     }
 
-/*Write to XML File, if file does not exist, it will create one
-  If file exists, it will append to it*/
-FILE * outxml;
-outxml = fopen(catalog, "a");
-//int foundline = 0;
-//char line[100];
-//printf("new file: %d\n", newfile);
-if (!newfile) {
-       /* Set the cursor to before </CATALOG>*/
-}
+    /*construct the channels string*/
+    char schannels[5] = "";
+    if ((int) image.channels & CH0)
+        strncat(schannels, "0", 1);
+    if ((int) image.channels & CH1)
+        strncat(schannels, "1", 1);
+    if ((int) image.channels & CH2)
+        strncat(schannels, "2", 1);
+    if ((int) image.channels & CH3)
+        strncat(schannels, "3", 1);
+    
+    if (newfile) {
+        /*Write XML delcaration if new file*/
+        fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
+        fprintf(outxml, "<CATALOG>\n");
+    }
+    fprintf(outxml, "<ROEIMAGE>\n");
+    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image.filename);
+    fprintf(outxml, "\t<NAME>%s</NAME>\n", image.name);
+    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image.bitpix);
+    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image.width);
+    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image.height);
+    fprintf(outxml, "\t<DATE>%s</DATE>\n", image.date);
+    fprintf(outxml, "\t<TIME>%s</TIME>\n", image.time);
+    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image.origin);
+    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image.instrument);
+    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image.observer);
+    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image.object);
+    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image.duration);
+    fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
+    for (i = 0; i < 4; i++) {
+        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image.size[i]);
+    }
+    fprintf(outxml, "</ROEIMAGE>\n");
+    fprintf(outxml, "</CATALOG>\n");
+    
+    fclose(outxml);
 
 
-/*construct the channels string*/
-char schannels[5] = "";
-if ((int) image.channels & CH0)
-    strncat(schannels, "0", 1);
-if ((int) image.channels & CH1)
-    strncat(schannels, "1", 1);
-if ((int) image.channels & CH2)
-    strncat(schannels, "2", 1);
-if ((int) image.channels & CH3)
-    strncat(schannels, "3", 1);
-
-if (newfile) {
-    /*Write XML delcaration if new file*/
-    fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
-    fprintf(outxml, "<CATALOG>\n");
-    newfile = 0;
-}
-
-fprintf(outxml, "<ROEIMAGE>\n");
-fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image.filename);
-fprintf(outxml, "\t<NAME>%s</NAME>\n", image.name);
-fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image.bitpix);
-fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image.width);
-fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image.height);
-fprintf(outxml, "\t<DATE>%s</DATE>\n", image.date);
-fprintf(outxml, "\t<TIME>%s</TIME>\n", image.time);
-fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image.origin);
-fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image.instrument);
-fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image.observer);
-fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image.object);
-fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image.duration);
-fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
-
-for (i = 0; i < 4; i++) {
-    fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image.size[i]);
-}
-
-fprintf(outxml, "</ROEIMAGE>\n");
-if(newfile)
-{
-fprintf(outxml, "</CATALOG>\n");
-}
-fclose(outxml);
-
-/*Write Image Data*/
-FILE *dataOut;
-dataOut = fopen(file, "w");
-for (i = 0; i < 4; i++) {
-    if (image.channels & (char) (1 << i))
-        fwrite(image.data[i], sizeof (short), image.size[i], dataOut);
-}
-fclose(dataOut);
+    /*Write Image Data*/
+    FILE *dataOut;
+    dataOut = fopen(file, "w");
+    for (i = 0; i < 4; i++) {
+        if (image.channels & (char) (1 << i))
+            fwrite(image.data[i], sizeof (short), image.size[i], dataOut);
+    }
+    fclose(dataOut);
 
 }
 

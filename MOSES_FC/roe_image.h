@@ -31,10 +31,7 @@
 //        char *control;
 //} roeImage_t;
 
-typedef struct imgPtr {                         //Create image path node
-    char* filePath;
-    struct imgPtr * next;
-} imgPtr_t;
+
 
 /*should be obsfucated by sendTM.c*/
 //roeImage_t* constructImage(char*, int data[][IMAGE_HEIGHT], int);

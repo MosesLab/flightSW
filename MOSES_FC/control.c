@@ -6,16 +6,16 @@
  */
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
-    int f_up = 0;
-//    printf("Size of packet pointer %ud \n", sizeof(Packet*));
-//    printf("Size of int %ud\n", sizeof(int));
-//    printf("Size of condattr %ud\n", sizeof(pthread_condattr_t));
-//    printf("Size of mutex %ud\n", sizeof(pthread_mutex_t));
-//    printf("Size of conditional variable %ud\n", sizeof(pthread_cond_t));
-//    printf("Size of Locking Queue %ud\n", sizeof(LockingQueue));
     
-    printf("control %p \n", &hkdownQueue);
+    int f_up = 0;
+    
+    /*initialize virtual shell*/
+    vshell_init(shell_in_pipe, shell_out_pipe);
+    
+    /*initialize locking queue for hk down packets*/
     lockingQueue_init(&hkdownQueue);
+    
+    /*initialize*/
     
    /*Open housekeeping downlink using configuartion file*/
     if(*(int*)arg == 1){       //Open real housekeeping downlink
@@ -28,7 +28,10 @@ void * hlp_control(void * arg) {
         record("HK down serial connection not configured");
     }
     
+    /*build lookup table for encoding and decoding packets*/
     buildLookupTable();
+    
+    /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
     
     /*all below should be changed to make it more organized*/
@@ -69,6 +72,9 @@ void * hlp_control(void * arg) {
         switch (p->type[0]) {
             case SHELL:
                 printf("Shell packet\n");
+                /*write to input of virtual shell*/
+                hlp_shell(p);
+                
                 break;
             case MDAQ_RQS:
                 printf("DAQ packet\n");
@@ -155,6 +161,30 @@ void * hlp_down(void * arg) {
         }
 
     }
+    return NULL;
+}
+
+/*
+ * reads data from stdout into hlp packets pushed ont hkdown queue
+ */ 
+void * hlp_shell_out(void * arg){
+    int data = FALSE;
+    char buf[255];
+    
+    while(ts_alive){
+        
+        /*use select() to monitor output pipe*/
+        data = input_timeout(shell_out_pipe[0], 10);
+        
+        if (data != 0){
+            read(shell_out_pipe[0], buf, 255);
+            
+            /*push onto hk down queue*/
+            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
+            enqueue(&hkdownQueue, sr);
+        }
+    }
+    
     return NULL;
 }
 

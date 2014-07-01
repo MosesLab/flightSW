@@ -23,6 +23,21 @@ int execPacket(packet_t* p) {
 
 }
 
+int hlp_shell(packet_t * p){
+    if(strcmp(p->subtype, INPUT)){
+        char command[255];
+        strcpy(command, p->data);
+        
+        /*send shell acknowledge*/
+        packet_t * r = constructPacket(SHELL_S, ACK, command);
+        enqueue(&hkdownQueue, r);
+        return GOOD_PACKET;
+    }
+    else{
+        return BAD_PACKET;
+    }
+}
+
 /*Uplink control functions*/
 int uDataStart(packet_t* p) {
     record("Received data start Uplink\n");

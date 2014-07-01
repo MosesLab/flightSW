@@ -19,6 +19,7 @@
 #include "moses_threads.h"
 #include "controlFuncs.h"
 #include "send_TM.h"
+#include "v_shell.h"
 
 #define SYNCLINK_START 0
 #define SYNCLINK_END 1
@@ -27,6 +28,9 @@ extern volatile sig_atomic_t ts_alive;
 
 /*struct to control state of experiment*/
 moses_ops_t ops;
+
+int shell_in_pipe[2];
+int shell_out_pipe[2];
 
 
 LockingQueue hkdownQueue;
@@ -42,6 +46,8 @@ void* hlp_down(void*);
 /*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
 
-void * telem(void * arg);
+void * telem(void *);
+
+void * hlp_shell_out(void *);
 
 #endif /*CONTROL_H*/

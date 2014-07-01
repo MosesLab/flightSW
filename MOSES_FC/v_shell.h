@@ -11,10 +11,8 @@
 
 #include "system.h"
 
-//#define VSHELL_OUTPUT "vshell_output"
 
-int stdin_pipe[2];
-int stdout_pipe[2];
+
 
 int vshell_init();
 

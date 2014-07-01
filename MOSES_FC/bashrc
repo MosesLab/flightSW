@@ -1,0 +1,14 @@
+# .bashrc
+
+# User specific aliases and functions
+#alias vi='gvim'
+#alias rm='rm -f'
+#alias esus='ssh -X mead@esus.cs.montana.edu'
+
+export PS1="[\u@\h \w]\$"
+#export PATH=$PATH:/j2sdk1.4.2_05/bin
+
+# Source global definitions
+#if [ -f /etc/bashrc ]; then
+#	. /etc/bashrc
+#fi

@@ -53,6 +53,7 @@ int tDark4();
 int tSleep();
 
 /*HLP shell control functions*/
+int hlp_shell(packet_t *);
 
 /*HLP MDAQ control functions*/
 int setSequence(packet_t*);       //Set Sequence command
