@@ -17,8 +17,10 @@
 #include "lockingQueue.h"
 #include "packet.h"
 #include "hashTable.h"
+#include "v_shell.h"
 
 extern LockingQueue hkdownQueue;
+
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 
  * their corresponding uplink subtype
@@ -53,7 +55,7 @@ int tDark4();
 int tSleep();
 
 /*HLP shell control functions*/
-int hlp_shell(packet_t *);
+int hlp_shell(int*, packet_t *);
 
 /*HLP MDAQ control functions*/
 int setSequence(packet_t*);       //Set Sequence command

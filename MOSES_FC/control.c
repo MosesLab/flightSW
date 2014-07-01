@@ -6,54 +6,43 @@
  */
 void * hlp_control(void * arg) {
     record("-->HLP control thread started....\n\n");
-    
+
     int f_up = 0;
-    
+
     /*initialize virtual shell*/
     vshell_init(shell_in_pipe, shell_out_pipe);
-    
+
+    /*initialize virtual shell input*/
+    //    FILE * stdin_stream = fdopen(shell_in_pipe[P_INPUT], "w");
+
     /*initialize locking queue for hk down packets*/
     lockingQueue_init(&hkdownQueue);
-    
-    /*initialize*/
-    
-   /*Open housekeeping downlink using configuartion file*/
-    if(*(int*)arg == 1){       //Open real housekeeping downlink
-        f_up = init_serial_connection(HKUP, HKUP_REAL); 
-    }
-    else if (*(int*)arg == 2){ //Open simulated housekeeping downlink
-        f_up = init_serial_connection(HKUP, HKUP_SIM); 
-    }
-    else{
+
+    /*Open housekeeping downlink using configuartion file*/
+    if (*(int*) arg == 1) { //Open real housekeeping downlink
+        f_up = init_serial_connection(HKUP, HKUP_REAL);
+    } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
+        f_up = init_serial_connection(HKUP, HKUP_SIM);
+    } else {
         record("HK down serial connection not configured");
     }
-    
+
     /*build lookup table for encoding and decoding packets*/
     buildLookupTable();
-    
+
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
-    
+
     /*all below should be changed to make it more organized*/
     ops.seq_pause = TRUE;
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;
-    
-     /*Load the Sequence Map*/
-    char _sequence1[21]	= "sequence/dark1demo";
-//    char _sequence2[21]	= "sequence/dark2demo";
-//    //char _sequence3[21]	= "sequence/datademo";
-//    char _sequence4[21]	= "sequence/dark3demo";
-//    char _sequence5[21]	= "sequence/dark4demo";
-    
-    sequenceMap[0] = constructSequence(_sequence1);
-//    sequenceMap[1] = constructSequence(_sequence2);
-//   // sequenceMap[2] = constructSequence(_sequence3);
-//    sequenceMap[3] = constructSequence(_sequence4);
-//    sequenceMap[4] = constructSequence(_sequence5);
-    
-    seq_map_size = 1;   //only for testing, this needs to better integrated into data structure
+
+    /*Load the Sequence Map*/
+    loadSequences();
+
+    seq_map_size = 1; //only for testing, this needs to better integrated into data structure
 
     while (ts_alive) {
         /*allocate space for packet*/
@@ -61,48 +50,48 @@ void * hlp_control(void * arg) {
         if ((p = (packet_t*) malloc(sizeof (packet_t))) == NULL) {
             record("malloc failed to allocate packet\n");
         }
-    
+
         readPacket(f_up, p);
         recordPacket(p);
-        
-        if (ts_alive) {
-        /*case statement not necessary here, can get away with just one call
-         * to execpacket
-         */
-        switch (p->type[0]) {
-            case SHELL:
-                printf("Shell packet\n");
-                /*write to input of virtual shell*/
-                hlp_shell(p);
-                
-                break;
-            case MDAQ_RQS:
-                printf("DAQ packet\n");
-                p->control = concat(2, p->type, p->subtype);
-                p->status = execPacket(p);
-                break;
-            case UPLINK:
-                printf("HLP Uplink packet\n");
-                p->control = concat(2, p->type, p->subtype);
-                p->status = execPacket(p);
-                break;
-            case PWR:
-                printf("Power packet\n");
-                p->control = concat(2, p->type, p->subtype);
-                p->status = execPacket(p);
-                break;
-            case HK_RQS:
-                printf("HK Request Packet\n");
-                p->control = concat(3, p->type, p->subtype, p->data);
-                p->status = execPacket(p);
-                break;
-            default:
-                printf("Bad Packet type\n");
-                p->status = BAD_PACKET;
-                break;
-        }
 
-            
+        if (ts_alive) {
+            /*case statement not necessary here, can get away with just one call
+             * to execpacket
+             */
+            switch (p->type[0]) {
+                case SHELL:
+                    printf("Shell packet\n");
+                    /*write to input of virtual shell*/
+                    hlp_shell(shell_in_pipe, p);
+
+                    break;
+                case MDAQ_RQS:
+                    printf("DAQ packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case UPLINK:
+                    printf("HLP Uplink packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case PWR:
+                    printf("Power packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case HK_RQS:
+                    printf("HK Request Packet\n");
+                    p->control = concat(3, p->type, p->subtype, p->data);
+                    p->status = execPacket(p);
+                    break;
+                default:
+                    printf("Bad Packet type\n");
+                    p->status = BAD_PACKET;
+                    break;
+            }
+
+
 
             char* data;
             data = concat(2, p->type, p->subtype);
@@ -116,10 +105,10 @@ void * hlp_control(void * arg) {
             }
             packet_t* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
-            
+
             printf("\n");
         }
-//        free(p);    //Why doesn't this work????
+        //        free(p);    //Why doesn't this work????
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -132,30 +121,29 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
-    printf("down %p \n", &hkdownQueue);
+    sleep(1); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
-    sleep(1);
-    
+
+
+
     /*Open housekeeping downlink using configuartion file*/
-    if(*(int*)arg == 1){       //Open real housekeeping downlink
-        fdown = init_serial_connection(HKDOWN, HKDOWN_REAL); 
+    if (*(int*) arg == 1) { //Open real housekeeping downlink
+        fdown = init_serial_connection(HKDOWN, HKDOWN_REAL);
+    } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
+        fdown = init_serial_connection(HKDOWN, HKDOWN_SIM);
+    } else {
+        record("HK down serial connection not configured\n");
     }
-    else if (*(int*)arg == 2){ //Open simulated housekeeping downlink
-        fdown = init_serial_connection(HKDOWN, HKDOWN_SIM); 
-    }
-    else{
-        record("HK down serial connection not configured");
-    }
-    
+
     while (ts_alive) {
 
         packet_t * p = (packet_t *) dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
-        
-        if (!ts_alive) break;   //If the program has terminated, break out of the loop
+
+        if (!ts_alive) break; //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
-            recordPacket(p);    //save packet to logfile for debugging   
-            free(p);    //Clean up after packet is sent
+            recordPacket(p); //save packet to logfile for debugging   
+            free(p); //Clean up after packet is sent
         } else {
             record("Bad hlp_down packet\n");
         }
@@ -166,25 +154,33 @@ void * hlp_down(void * arg) {
 
 /*
  * reads data from stdout into hlp packets pushed ont hkdown queue
- */ 
-void * hlp_shell_out(void * arg){
-    int data = FALSE;
+ */
+void * hlp_shell_out(void * arg) {
+    //    int data = FALSE;
     char buf[255];
-    
-    while(ts_alive){
-        
+
+    /*sleep to allow time for pipe to be initialized */
+    sleep(1);
+
+    record("-->HLP shell output listener thread started...\n\n");
+
+    //    FILE * stdout_stream = fdopen(shell_out_pipe[P_OUTPUT], "r");
+
+
+    while (ts_alive) {
+
         /*use select() to monitor output pipe*/
-        data = input_timeout(shell_out_pipe[0], 10);
-        
-        if (data != 0){
-            read(shell_out_pipe[0], buf, 255);
-            
-            /*push onto hk down queue*/
-            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
-            enqueue(&hkdownQueue, sr);
-        }
+        //        data = input_timeout(shell_out_pipe[0], 1);
+
+        //        if (data != 0) {
+        shell_read(shell_out_pipe, buf);
+
+        /*push onto hk down queue*/
+        packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
+        enqueue(&hkdownQueue, sr);
+        //        }
     }
-    
+
     return NULL;
 }
 
@@ -192,9 +188,9 @@ void * hlp_shell_out(void * arg){
  * hlp_housekeeping loops to send periodic updates of temperatures across
  * experiment
  */
-void * hlp_housekeeping(void * arg){
+void * hlp_housekeeping(void * arg) {
     record("-->HLP Housekeeping thread started....\n\n");
-    while(ts_alive){
+    while (ts_alive) {
         packet_t * p = constructPacket(GDPKT, ACK, NULL);
         enqueue(&hkdownQueue, p);
         sleep(1);
@@ -203,57 +199,55 @@ void * hlp_housekeeping(void * arg){
 }
 
 /*High speed telemetry thread for use with synclink USB adapter*/
-void * telem(void * arg){
+void * telem(void * arg) {
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
-    
-    lockingQueue_init(&roeQueue);
-    
-    while (ts_alive){
-//        if (roeQueue.count != 0) {
-            //dequeue imgPtr_t here
-            
-            imgPtr_t * curr_image = (imgPtr_t *) dequeue(&roeQueue);   //RTS
-            char * curr_path = curr_image->filePath;
-            
-//            fp = fopen(roeQueue.first->filePath, "r");  //Open file
-            fp = fopen(curr_path, "r");
-            
-            if (fp == NULL) {                           //Error opening file
-//                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-                printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
-            }
-            else fclose(fp);
-            if ((&roeQueue)->first != NULL){  
-                
-                fseek(fp, 0, SEEK_END);                 // seek to end of file
-                fseek(fp, 0, SEEK_SET);
 
-                int check = send_image(curr_image, xmlTrigger, synclink_fd);//Send actual Image
-                
-                if (xmlTrigger == 1){
-                    xmlTrigger = 0;
-                }
-                else if (xmlTrigger == 0){
-                    xmlTrigger = 1;
-                }
-                
-                if (check == 0){
-//                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
-                }
+    lockingQueue_init(&roeQueue);
+
+    while (ts_alive) {
+        //        if (roeQueue.count != 0) {
+        //dequeue imgPtr_t here
+
+        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&roeQueue); //RTS
+        char * curr_path = curr_image->filePath;
+
+        //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
+        fp = fopen(curr_path, "r");
+
+        if (fp == NULL) { //Error opening file
+            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
+        } else fclose(fp);
+        if ((&roeQueue)->first != NULL) {
+
+            fseek(fp, 0, SEEK_END); // seek to end of file
+            fseek(fp, 0, SEEK_SET);
+
+            int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
+
+            if (xmlTrigger == 1) {
+                xmlTrigger = 0;
+            } else if (xmlTrigger == 0) {
+                xmlTrigger = 1;
             }
-//        }
-//        else {
-//            struct timespec timeToWait;
-//            struct timeval now;
-//
-//            gettimeofday(&now, NULL);
-//            timeToWait.tv_sec = now.tv_sec + 1;
-//            timeToWait.tv_nsec = 0;
-//
-//        }
+
+            if (check == 0) {
+                //                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+            }
+        }
+        //        }
+        //        else {
+        //            struct timespec timeToWait;
+        //            struct timeval now;
+        //
+        //            gettimeofday(&now, NULL);
+        //            timeToWait.tv_sec = now.tv_sec + 1;
+        //            timeToWait.tv_nsec = 0;
+        //
+        //        }
     }
     return NULL;
 }

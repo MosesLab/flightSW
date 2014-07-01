@@ -12,9 +12,12 @@
 #include "system.h"
 
 
-
+#define P_READ 0
+#define P_WRITE 1
 
 int vshell_init();
+void execute(int *, packet_t *);
+int shell_read(int *, char *);
 
 
 

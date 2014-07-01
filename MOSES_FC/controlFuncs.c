@@ -23,14 +23,19 @@ int execPacket(packet_t* p) {
 
 }
 
-int hlp_shell(packet_t * p){
-    if(strcmp(p->subtype, INPUT)){
-        char command[255];
-        strcpy(command, p->data);
+int hlp_shell(int * pipes, packet_t * p){
+    if(strcmp(p->subtype, INPUT) == 0){
+//        char command[255];
+//        strcpy(command, p->data);
         
         /*send shell acknowledge*/
-        packet_t * r = constructPacket(SHELL_S, ACK, command);
+        packet_t * r = constructPacket(SHELL_S, ACK, p->data);
         enqueue(&hkdownQueue, r);
+        
+        /*write to stdin of virtual shell*/
+//        write(in_stream, p->data, p->dataSize + 1);
+        execute(pipes, p);
+        
         return GOOD_PACKET;
     }
     else{
@@ -67,7 +72,7 @@ int uDark1() {
 }
 
 int uDark2(packet_t* p) {
-    record("Received Dark2 Uplink");
+    record("Received Dark2 Uplink\n");
     //Insert uplink handling code here
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, r);
