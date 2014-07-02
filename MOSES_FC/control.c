@@ -170,7 +170,7 @@ void * hlp_down(void * arg) {
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME,"hlp_shell_output",0,0,0);
     //    int data = FALSE;
-    char buf[255];
+    
 
     /*sleep to allow time for pipe to be initialized */
     sleep(1);
@@ -186,7 +186,7 @@ void * hlp_shell_out(void * arg) {
 //    close(shell_in_pipe[P_WRITE]);
 
     while (ts_alive) {
-
+    char buf[255] = {'\0'};
         /*use select() to monitor output pipe*/
         //        data = input_timeout(shell_out_pipe[0], 1);
 
