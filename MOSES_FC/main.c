@@ -130,7 +130,7 @@ void config_strings_init() {
 
 /*read in configuration file for thread and I/O attributes*/
 void read_moses_config() {
-    record("Reading in configuration file.....");
+    record("Reading in configuration file.....\n");
 
     /*read configuration file*/
     FILE * config_fp = fopen(config_path, "r");

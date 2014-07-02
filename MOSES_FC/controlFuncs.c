@@ -23,10 +23,9 @@ int execPacket(packet_t* p) {
 
 }
 
-int hlp_shell(int * pipes, packet_t * p){
+int hlp_shell(int pipe_fd, packet_t * p){
     if(strcmp(p->subtype, INPUT) == 0){
-//        char command[255];
-//        strcpy(command, p->data);
+        char msg[255];
         
         /*send shell acknowledge*/
         packet_t * r = constructPacket(SHELL_S, ACK, p->data);
@@ -34,7 +33,11 @@ int hlp_shell(int * pipes, packet_t * p){
         
         /*write to stdin of virtual shell*/
 //        write(in_stream, p->data, p->dataSize + 1);
-        execute(pipes, p);
+//        fwrite(p->data, sizeof(char), p->dataSize + 1, pipe_fd);
+        write(pipe_fd, p->data, p->dataSize + 1);
+        
+        sprintf(msg, "Executed command: %s\n", p->data);
+        record(msg);
         
         return GOOD_PACKET;
     }
