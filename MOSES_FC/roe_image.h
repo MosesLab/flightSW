@@ -9,6 +9,7 @@
 #define	ROE_IMAGE_H
 
 //#include <sys/stat.h>
+#include "system.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

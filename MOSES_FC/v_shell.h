@@ -11,8 +11,8 @@
 
 #include "system.h"
 
-#define STDIN_PIPE "/dev/moses_stdin_fifo"
-#define STDOUT_PIPE "/dev/moses_stdout_fifo"
+#define STDIN_PIPE "/home/birdie/moses_stdin_fifo"
+#define STDOUT_PIPE "/home/birdie/moses_stdout_fifo"
 
 #define P_READ 0
 #define P_WRITE 1
