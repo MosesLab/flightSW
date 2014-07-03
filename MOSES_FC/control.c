@@ -5,23 +5,23 @@
  * executes the commands contained within the packets 
  */
 void * hlp_control(void * arg) {
-    prctl(PR_SET_NAME,"hlp_control",0,0,0);
+    prctl(PR_SET_NAME, "hlp_control", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
 
 
     int f_up = 0;
-//    FILE * stdin_ptr;
+    //    FILE * stdin_ptr;
     int stdin_des;
 
     /*initialize virtual shell*/
     vshell_init(shell_in_pipe, shell_out_pipe);
-//    close(shell_in_pipe[P_READ]);
-//    close(shell_out_pipe[P_READ]);
-//    close(shell_out_pipe[P_WRITE]);
-    
-//    stdin_ptr = fopen(STDIN_PIPE, "w");
+    //    close(shell_in_pipe[P_READ]);
+    //    close(shell_out_pipe[P_READ]);
+    //    close(shell_out_pipe[P_WRITE]);
+
+    //    stdin_ptr = fopen(STDIN_PIPE, "w");
     stdin_des = open(STDIN_PIPE, O_WRONLY);
-    
+
 
     /*initialize virtual shell input*/
     //    FILE * stdin_stream = fdopen(shell_in_pipe[P_INPUT], "w");
@@ -132,7 +132,7 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
-    prctl(PR_SET_NAME,"hlp_down",0,0,0);
+    prctl(PR_SET_NAME, "hlp_down", 0, 0, 0);
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
@@ -168,35 +168,33 @@ void * hlp_down(void * arg) {
  * reads data from stdout into hlp packets pushed ont hkdown queue
  */
 void * hlp_shell_out(void * arg) {
-    prctl(PR_SET_NAME,"hlp_shell_output",0,0,0);
+    prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
     //    int data = FALSE;
-    
+    int readData, i;
 
     /*sleep to allow time for pipe to be initialized */
     sleep(1);
 
     record("-->HLP shell output listener thread started...\n\n");
 
-//        FILE * stdout_ptr = fopen(STDOUT_PIPE, "r");
+    //        FILE * stdout_ptr = fopen(STDOUT_PIPE, "r");
     int stdout_des = open(STDOUT_PIPE, O_RDONLY);
-        
-        
-//    close(shell_out_pipe[P_WRITE]);
-//    close(shell_in_pipe[P_READ]);
-//    close(shell_in_pipe[P_WRITE]);
+
 
     while (ts_alive) {
-    char buf[255] = {'\0'};
+        char buf[255];
         /*use select() to monitor output pipe*/
         //        data = input_timeout(shell_out_pipe[0], 1);
 
         //        if (data != 0) {
-//        shell_read(shell_out_pipe, buf);
-        
-//        fread(buf, sizeof(char), 10, stdout_ptr);
-        
-        read(stdout_des, buf, 255);
-//
+
+        readData = read(stdout_des, buf, 255);
+
+        for (i = 0; i < readData; i++) {
+            if (buf[i] < 0x20 || buf[i] > 0x7E)
+                buf[i] = 0x20;
+        }
+        //
         /*push onto hk down queue*/
         packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
         enqueue(&hkdownQueue, sr);
@@ -211,7 +209,7 @@ void * hlp_shell_out(void * arg) {
  * experiment
  */
 void * hlp_housekeeping(void * arg) {
-    prctl(PR_SET_NAME,"hlp_housekeeping",0,0,0);
+    prctl(PR_SET_NAME, "hlp_housekeeping", 0, 0, 0);
     record("-->HLP Housekeeping thread started....\n\n");
     while (ts_alive) {
         packet_t * p = constructPacket(GDPKT, ACK, NULL);
@@ -223,7 +221,7 @@ void * hlp_housekeeping(void * arg) {
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
-    prctl(PR_SET_NAME,"telemetry",0,0,0);
+    prctl(PR_SET_NAME, "telemetry", 0, 0, 0);
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
