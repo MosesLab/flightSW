@@ -195,13 +195,13 @@ void * hlp_shell_out(void * arg) {
             //        for (i = 0; i < readData; i++) {
             //            if (buf[i] < 0x20 || buf[i] > 0x7E)
             //                buf[i] = 0x20;
-        }
+//        }
         //
         /*push onto hk down queue*/
         packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
         enqueue(&hkdownQueue, sr);
-        //        }
-        //        free(buf);
+                }
+//                free(buf);
     }
 
     return NULL;
