@@ -363,6 +363,7 @@ int endSequence(packet_t* p) {
 /*Commands the flight software to terminate*/
 int exitSW(packet_t* p) {
     record("Command to terminate received\n");
+    kill(getpid(), SIGINT);
     return GOOD_PACKET;
 }
 
