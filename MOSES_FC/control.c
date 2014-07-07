@@ -182,6 +182,7 @@ void * hlp_shell_out(void * arg) {
     int stdout_des = open(STDOUT_PIPE, O_RDONLY);
     fcntl(stdout_des, F_SETFL, fcntl(stdout_des, F_GETFL) + ~O_NONBLOCK);
 
+printf("pipe size: %d\n", fcntl(stdout_des, F_GETPIPE_SZ));
 
     while (ts_alive) {
         //        char buf[255];
@@ -190,6 +191,8 @@ void * hlp_shell_out(void * arg) {
 //        data = input_timeout(stdout_des, 1);
 
 //        if (data > 0) {
+         
+         
            
 
             read(stdout_des, buf, 255);

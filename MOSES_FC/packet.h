@@ -21,7 +21,7 @@
 #define _POSIX_SOURCE 1
 #define UPBAUD B1200
 #define DOWNBAUD B9600
-#define HKUP_REAL "/dev/ttyS3"
+#define HKUP_REAL "/dev/ttyS0"
 #define HKDOWN_REAL "/dev/ttyS1"
 //#define HKUP "/dev/ttyUSB0"
 //#define HKDOWN "/dev/ttyUSB1"
