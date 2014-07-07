@@ -169,8 +169,8 @@ void * hlp_down(void * arg) {
  */
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
-    //    int data = FALSE;
-//    int readData, i;
+    int data = FALSE;
+    //    int readData, i;
     char * buf;
 
     /*sleep to allow time for pipe to be initialized */
@@ -183,25 +183,25 @@ void * hlp_shell_out(void * arg) {
 
 
     while (ts_alive) {
-//        char buf[255];
+        //        char buf[255];
         /*use select() to monitor output pipe*/
-        //        data = input_timeout(shell_out_pipe[0], 1);
+        data = input_timeout(stdout_des, 1);
 
-        //        if (data != 0) {
-        buf = calloc(sizeof(char) * 256, 1);
+        if (data > 0) {
+            buf = calloc(sizeof (char) * 256, 1);
 
-        read(stdout_des, buf, 255);
+            read(stdout_des, buf, 255);
 
-//        for (i = 0; i < readData; i++) {
-//            if (buf[i] < 0x20 || buf[i] > 0x7E)
-//                buf[i] = 0x20;
-//        }
+            //        for (i = 0; i < readData; i++) {
+            //            if (buf[i] < 0x20 || buf[i] > 0x7E)
+            //                buf[i] = 0x20;
+        }
         //
         /*push onto hk down queue*/
         packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
         enqueue(&hkdownQueue, sr);
         //        }
-//        free(buf);
+        //        free(buf);
     }
 
     return NULL;
