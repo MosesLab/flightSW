@@ -29,10 +29,13 @@ int vshell_init(int * stdin_pipe, int * stdout_pipe) {
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
-
+        fclose(stdout);
+        fclose(stdin);
+        freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
         freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
         freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
-        freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
+        
+        
         //        close(STDIN_FILENO);
         //        dup2(stdin_pipe[P_READ], STDIN_FILENO);
         //        close(stdin_pipe[P_WRITE]);

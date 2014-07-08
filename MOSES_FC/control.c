@@ -71,33 +71,33 @@ void * hlp_control(void * arg) {
              */
             switch (p->type[0]) {
                 case SHELL:
-                    printf("Shell packet\n");
+//                    printf("Shell packet\n");
                     /*write to input of virtual shell*/
                     hlp_shell(stdin_des, p);
 
                     break;
                 case MDAQ_RQS:
-                    printf("DAQ packet\n");
+//                    printf("DAQ packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case UPLINK:
-                    printf("HLP Uplink packet\n");
+//                    printf("HLP Uplink packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case PWR:
-                    printf("Power packet\n");
+//                    printf("Power packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case HK_RQS:
-                    printf("HK Request Packet\n");
+//                    printf("HK Request Packet\n");
                     p->control = concat(3, p->type, p->subtype, p->data);
                     p->status = execPacket(p);
                     break;
                 default:
-                    printf("Bad Packet type\n");
+//                    printf("Bad Packet type\n");
                     p->status = BAD_PACKET;
                     break;
             }
@@ -169,9 +169,11 @@ void * hlp_down(void * arg) {
  */
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
-//    int data = FALSE;
+    int data = FALSE;
     //    int readData, i;
-    char * buf;
+//    char * buf;
+
+    
 
     /*sleep to allow time for pipe to be initialized */
     sleep(1);
@@ -180,22 +182,23 @@ void * hlp_shell_out(void * arg) {
 
     //        FILE * stdout_ptr = fopen(STDOUT_PIPE, "r");
     int stdout_des = open(STDOUT_PIPE, O_RDONLY);
-    fcntl(stdout_des, F_SETFL, fcntl(stdout_des, F_GETFL) + ~O_NONBLOCK);
+//    fcntl(stdout_des, F_SETFL, fcntl(stdout_des, F_GETFL) + ~O_NONBLOCK);
 
-printf("pipe size: %d\n", fcntl(stdout_des, F_GETPIPE_SZ));
 
     while (ts_alive) {
         //        char buf[255];
-         buf = calloc(sizeof (char) * 256, 1);
+//         buf = calloc(sizeof (char) * 256, 1);
         /*use select() to monitor output pipe*/
-//        data = input_timeout(stdout_des, 1);
+        data = input_timeout(stdout_des, 1);
 
-//        if (data > 0) {
+        if (data > 0) {
          
-         
+           char buf[256] = {0};
            
 
             read(stdout_des, buf, 255);
+            
+//            record(buf);
 
             //        for (i = 0; i < readData; i++) {
             //            if (buf[i] < 0x20 || buf[i] > 0x7E)
@@ -205,8 +208,8 @@ printf("pipe size: %d\n", fcntl(stdout_des, F_GETPIPE_SZ));
             /*push onto hk down queue*/
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
-//        }
-        //                free(buf);
+        }
+//                        free(buf);
     }
 
     return NULL;
