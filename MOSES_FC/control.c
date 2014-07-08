@@ -193,7 +193,7 @@ void * hlp_shell_out(void * arg) {
 
         if (data > 0) {
          
-           char buf[256] = {0};
+           char buf[256] = {'/0'};
            
 
             read(stdout_des, buf, 255);
