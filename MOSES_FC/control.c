@@ -170,9 +170,8 @@ void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
     int data = FALSE;
     //    int readData, i;
-//    char * buf;
 
-    
+    char buf[256];
 
     /*sleep to allow time for pipe to be initialized */
     sleep(1);
@@ -192,7 +191,11 @@ void * hlp_shell_out(void * arg) {
 
         if (data > 0) {
          
-           char buf[256] = {'\0'};
+            /*initialize buffer*/
+            int i;
+            for(i = 0; i < 256; i++){
+                buf[i] = '\0';
+            }
            
 
             read(stdout_des, buf, 255);

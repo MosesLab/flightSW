@@ -9,11 +9,10 @@
         <group>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/moses.conf</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
