@@ -13,6 +13,9 @@
 #include <pthread.h>
 
 
+#define CATALOG "mdata/imageindex.xml"
+#define DATADIR "mdata"
+
 #define FALSE 0
 #define TRUE 1
 #define STARTBYTE '%'
@@ -71,22 +74,10 @@ typedef int(*hlpControl)(packet_t*);
 /*Node structure for hash table*/
 
 
-/*this should be changed to make it more general --RTS*/
-enum seq
-{
-    sequence1,
-    sequence2,
-    sequence3,
-    sequence4,
-    sequence5
-    
-    //etc....
-};
-
 /* This struct will contain the variables that represent the status of the system*/
 typedef struct 
 {
-    enum seq sequence;
+    int sequence;
     char channels;
     sig_atomic_t seq_run;
     sig_atomic_t seq_pause;

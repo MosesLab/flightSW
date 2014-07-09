@@ -46,7 +46,7 @@ void constructEmpty();
 void constructImage(short** pdata,int* psize,char channels,int pbitpix);
 void init(short** data, int *size,char, int);
 void setData(short **data, int *size, char channels);
-void writeToFile(char* file, char* catalog);
+void writeToFile(char* file);
 void pointToEnd(FILE* a);
 
 

@@ -25,7 +25,7 @@ void * science_timeline(void * arg) {
 
     //sigsuspend(&oldmaskstl); 
 
-    ops.sequence = sequence1; // start off with the first sequence;
+    ops.sequence = 1; // start off with the first sequence TESTING;
     /*create pixel buffers */
     for (i = 0; i < 4; i++) {
         BUFFER[i] = (short *) malloc(2200000 * sizeof (short));
@@ -42,11 +42,11 @@ void * science_timeline(void * arg) {
         if (ops.seq_run == FALSE) {
             record("Sequence stopped, wait for signal to start\n");
 
-            pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
-            sigwait(&maskstl, &caught_signal);
-            pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
+            //pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
+            //sigwait(&maskstl, &caught_signal);
+            //pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
             
-            ops.sequence = sequence1; // start off with the first sequence TESTING!!!!
+            //ps.sequence = 1; // start off with the first sequence TESTING!!!!
 
             ops.seq_run = TRUE;
             ops.seq_pause = FALSE;
@@ -56,12 +56,13 @@ void * science_timeline(void * arg) {
 
             record("SIGUSR1 received, starting sequence\n");
         }
+                
         /* if ROE active, set to known state (exit default, reset, exit default) */
         //Add code here
 
         /*establish current sequence */
         currentSequence = sequenceMap[ops.sequence];
-        sprintf(msg, "Current sequence: %s \n", currentSequence.sequenceName);
+        sprintf(msg, "Current sequence: %s %d\n", currentSequence.sequenceName, ops.sequence);
         record(msg);
 
         /* push packets w/info about current sequence */
@@ -71,6 +72,7 @@ void * science_timeline(void * arg) {
                 enqueue(&hkdownQueue, r);
 
         /* for each exposure in the sequence */
+                printf("Number of Frames:%d\n", currentSequence.numFrames);
         for (i = 0; i < currentSequence.numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence.exposureTimes[i], i + 1, currentSequence.numFrames);
             record(msg);
@@ -154,13 +156,15 @@ void * science_timeline(void * arg) {
         /*Move to next sequence*/
 
         ops.sequence++;
-
+        sprintf(msg,"ops.sequence: %d, seq_map_size:%d", ops.sequence, seq_map_size);
+        record(msg);
 //        if (ops.sequence > (sizeof (sequenceMap) / sizeof (sequence_t)) - 1) {
             if(ops.sequence > seq_map_size - 1){
             /* We have gone through all of the sequences, exit the program*/
             record("Done with sequences\n");
             ops.seq_run = FALSE;
             ops.seq_pause = TRUE;
+            ts_alive = 0;
         }
     }
     /* delete pixel buffers */

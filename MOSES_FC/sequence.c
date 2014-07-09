@@ -71,7 +71,7 @@ void loadSequences() {
                 sprintf(strdir, "%s/%s", filepath, dir->d_name);\
                 sequenceMap[i] = constructSequence(strdir);\
                 i++;
-                
+                //seq_map_size = i;  //Need to send this variable to science_timeline
             }
         }
 
