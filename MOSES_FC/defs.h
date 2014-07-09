@@ -80,7 +80,6 @@ typedef struct
     int sequence;
     char channels;
     sig_atomic_t seq_run;
-    sig_atomic_t seq_pause;
     sig_atomic_t roe_power;
     sig_atomic_t roe_custom_read;
     sig_atomic_t dma_write;

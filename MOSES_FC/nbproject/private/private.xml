@@ -11,15 +11,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/david/Desktop/flightSW/MOSES_FC/science_timeline.c</file>
-            <file>file:/home/david/Desktop/flightSW/MOSES_FC/roe_image.c</file>
-            <file>file:/home/david/Desktop/flightSW/MOSES_FC/sci_timeline_funcs.c</file>
-            <file>file:/home/david/Desktop/flightSW/MOSES_FC/sci_timeline_funcs.h</file>
+            <file>file:/home/david/Desktop/flightSW/MOSES_FC/controlFuncs.h</file>
+            <file>file:/home/david/Desktop/flightSW/MOSES_FC/control.h</file>
+            <file>file:/home/david/Desktop/flightSW/MOSES_FC/hashTable.c</file>
             <file>file:/home/david/Desktop/flightSW/MOSES_FC/main.c</file>
             <file>file:/home/david/Desktop/flightSW/MOSES_FC/sequence.c</file>
+            <file>file:/home/david/Desktop/flightSW/MOSES_FC/controlFuncs.c</file>
             <file>file:/home/david/Desktop/flightSW/MOSES_FC/control.c</file>
-            <file>file:/home/david/Desktop/flightSW/MOSES_FC/roe_image.h</file>
-            <file>file:/home/david/Desktop/flightSW/MOSES_FC/sequence.h</file>
             <file>file:/home/david/Desktop/flightSW/MOSES_FC/defs.h</file>
+            <file>file:/home/david/Desktop/flightSW/MOSES_FC/science_timeline.h</file>
         </group>
     </open-files>
 </project-private>

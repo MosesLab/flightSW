@@ -50,8 +50,18 @@ int hlp_shell(int pipe_fd, packet_t * p){
 int uDataStart(packet_t* p) {
     record("Received data start Uplink\n");
     
+    int i;
+    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    {
+        if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
+            ops.sequence = i;
+            }
+    }
+    
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
+
     
     packet_t* r = constructPacket(UPLINK_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
@@ -61,6 +71,9 @@ int uDataStart(packet_t* p) {
 int uDataStop(packet_t* p) {
     record("Received data stop Uplink\n");
     //Insert uplink handling code here
+    
+    ops.seq_run = FALSE;
+    
     packet_t* r = constructPacket(UPLINK_S, DATASTOP, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -69,6 +82,22 @@ int uDataStop(packet_t* p) {
 int uDark1() {
     record("Received Dark1 Uplink\n");
     //Insert uplink handling code here
+    
+    
+    int i;
+    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+            ops.sequence = i;
+            }
+    }
+    
+    sleep(1);
+    /*send signal to science timeline to start data*/
+    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
+
+    
     packet_t* r = constructPacket(UPLINK_S, DARK1, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -77,6 +106,18 @@ int uDark1() {
 int uDark2(packet_t* p) {
     record("Received Dark2 Uplink\n");
     //Insert uplink handling code here
+    
+    int i;
+    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
+            ops.sequence = i;
+            }
+    }
+    
+    /*send signal to science timeline to start data*/
+    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -85,6 +126,18 @@ int uDark2(packet_t* p) {
 int uDark3(packet_t* p) {
     record("Received Dark3 Uplink\n");
     //Insert uplink handling code here
+    
+    int i;
+    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+            ops.sequence = i;
+            }
+    }
+    
+    /*send signal to science timeline to start data*/
+    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
     packet_t* r = constructPacket(UPLINK_S, DARK3, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -93,6 +146,18 @@ int uDark3(packet_t* p) {
 int uDark4(packet_t* p) {
     record("Received Dark4 Uplink\n");
     //Insert uplink handling code here
+    
+    int i;
+    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+            ops.sequence = i;
+            }
+    }
+    
+    /*send signal to science timeline to start data*/
+    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    
     packet_t* r = constructPacket(UPLINK_S, DARK4, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
