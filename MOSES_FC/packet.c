@@ -25,7 +25,7 @@ packet_t* constructPacket(char* type, char* subtype, char* data) {
     memcpy(p->dataLength, dataLength, 3);
     p->dataSize = dataSize;
     if (data != NULL){
-        memcpy(p->data, data, dataSize + 1);
+        memcpy(p->data, data, dataSize);
     }
     else{
         p->data[0] = '\0';
