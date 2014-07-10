@@ -12,8 +12,10 @@
 /*executes bash and attaches stdin and stdout to pipes*/
 int vshell_init(int * stdin_pipe, int * stdout_pipe) {
     /*initialize pipes*/
-    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
-    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
+//    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
+//    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
+    mkfifo(STDIN_PIPE, 0666);
+    mkfifo(STDOUT_PIPE, 0666);
     //    if (pipe(stdin_pipe)) {
     //        fprintf(stderr, "Pipe failed.\n");
     //        return EXIT_FAILURE;
