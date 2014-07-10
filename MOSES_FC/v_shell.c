@@ -29,6 +29,9 @@ int vshell_init(int * stdin_pipe, int * stdout_pipe) {
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
+        fopen(STDIN_PIPE, "r");
+        fopen(STDOUT_PIPE, "w");
+    
         //        fclose(stdout);
         //        fclose(stdin);
         freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
