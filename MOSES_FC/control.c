@@ -50,7 +50,7 @@ void * hlp_control(void * arg) {
     while (ts_alive) {
         /*allocate space for packet*/
         packet_t* p;
-        if ((p = (packet_t*) malloc(sizeof (packet_t))) == NULL) {
+        if ((p = (packet_t*) calloc(sizeof (packet_t), 1)) == NULL) {
             record("malloc failed to allocate packet\n");
         }
 
