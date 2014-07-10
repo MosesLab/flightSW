@@ -27,9 +27,7 @@ int hlp_shell(int pipe_fd, packet_t * p){
     if(strcmp(p->subtype, INPUT) == 0){
         char msg[255];
         
-        /*send shell acknowledge*/
-        packet_t * r = constructPacket(SHELL_S, ACK, p->data);
-        enqueue(&hkdownQueue, r);
+       
         
         /*write to stdin of virtual shell*/
 //        write(in_stream, p->data, p->dataSize + 1);
@@ -38,6 +36,10 @@ int hlp_shell(int pipe_fd, packet_t * p){
         
         sprintf(msg, "Executed command: %s\n", p->data);
         record(msg);
+        
+         /*send shell acknowledge*/
+        packet_t * r = constructPacket(SHELL_S, ACK, p->data);
+        enqueue(&hkdownQueue, r);
         
         return GOOD_PACKET;
     }
