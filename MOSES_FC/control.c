@@ -10,21 +10,13 @@ void * hlp_control(void * arg) {
 
 
     int f_up = 0;
-    //    FILE * stdin_ptr;
     int stdin_des;
 
     /*initialize virtual shell*/
     vshell_init(shell_in_pipe, shell_out_pipe);
-    //    close(shell_in_pipe[P_READ]);
-    //    close(shell_out_pipe[P_READ]);
-    //    close(shell_out_pipe[P_WRITE]);
 
-    //    stdin_ptr = fopen(STDIN_PIPE, "w");
+/*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
-
-
-    /*initialize virtual shell input*/
-    //    FILE * stdin_stream = fdopen(shell_in_pipe[P_INPUT], "w");
 
     /*initialize locking queue for hk down packets*/
     lockingQueue_init(&hkdownQueue);
@@ -58,7 +50,7 @@ void * hlp_control(void * arg) {
     while (ts_alive) {
         /*allocate space for packet*/
         packet_t* p;
-        if ((p = (packet_t*) malloc(sizeof (packet_t))) == NULL) {
+        if ((p = (packet_t*) calloc(sizeof (packet_t), 1)) == NULL) {
             record("malloc failed to allocate packet\n");
         }
 
