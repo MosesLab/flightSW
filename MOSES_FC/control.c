@@ -163,7 +163,7 @@ void * hlp_shell_out(void * arg) {
     int data = FALSE;
     //    int readData, i;
 
-    char buf[256];
+    char * buf;
 
     /*sleep to allow time for pipe to be initialized */
     sleep(1);
@@ -177,18 +177,18 @@ void * hlp_shell_out(void * arg) {
 
     while (ts_alive) {
         //        char buf[255];
-//         buf = calloc(sizeof (char) * 256, 1);
+         buf = calloc(sizeof (char),256);
         /*use select() to monitor output pipe*/
         data = input_timeout(stdout_des, 2);
 
         if (data > 0) {
          
             /*initialize buffer*/
-            int i;
-            for(i = 0; i < 256; i++){
-                buf[i] = '\0';
-            }
-           
+//            int i;
+//            for(i = 0; i < 256; i++){
+//                buf[i] = '\0';
+//            }
+//           
 
             read(stdout_des, buf, 255);
             
