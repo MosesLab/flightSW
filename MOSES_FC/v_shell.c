@@ -29,13 +29,13 @@ int vshell_init(int * stdin_pipe, int * stdout_pipe) {
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
-//        fclose(stdout);
-//        fclose(stdin);
+        //        fclose(stdout);
+        //        fclose(stdin);
         freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
         freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
         freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
-        
-        
+
+
         //        close(STDIN_FILENO);
         //        dup2(stdin_pipe[P_READ], STDIN_FILENO);
         //        close(stdin_pipe[P_WRITE]);
@@ -47,7 +47,8 @@ int vshell_init(int * stdin_pipe, int * stdout_pipe) {
 
         record("Starting shell...\n");
         //Start shelld --  this one uses bash. the ./bashrc file should be used
-        if (execlp("bash", "bash", "--noprofile", "--rcfile", "bashrc", "-i", (char *) 0) == -1) {
+        //        if (execlp("bash", "bash", "--noprofile", "--rcfile", "bashrc", "-i", (char *) 0) == -1) {
+        if (execlp("bash", "bash", "--noprofile", "--rcfile", "bashrc", "-i", "-s", (char *) 0) == -1) {
             record("ERROR in starting virtual shell!\n");
         }
         return -1; //shouldn't return if it worked correctly
