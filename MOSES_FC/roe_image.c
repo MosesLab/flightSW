@@ -70,19 +70,11 @@ void createXML()
     FILE *checkxml;
     printf(CATALOG);
     checkxml = fopen(CATALOG, "a");
-    printf("flag2\n");
     fclose(checkxml);
-    printf("flag3\n");
-    //fseek(checkxml, 0, SEEK_END);
-    //if (ftell(checkxml) == 0) { //File does not exist
-    //    fopen(CATALOG, "a");
-    //}
-    //Otherwise file exists, dont do anything
 }
 
 
 void writeToFile(char* file) {
-    printf("inside writetofile\n");
     int i;
     int linecount = 0;
 //    char* msg;
@@ -91,9 +83,7 @@ void writeToFile(char* file) {
     char* line;
     size_t len = 0;
     ssize_t read;
-    printf("flag1\n");
     createXML();
-    printf("flag4\n");
     /*Check to see if file had data in it*/
     FILE *checkxml;
     checkxml = fopen(CATALOG, "r");
@@ -176,13 +166,3 @@ void writeToFile(char* file) {
     fclose(dataOut);
 
 }
-
-/*void pointToEnd(FILE* a)
-{
-    char line[100];
-        
-
-    }
-    printf("string not found!\n");
-    return;
-}*/

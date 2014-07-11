@@ -53,16 +53,16 @@ void start_threads() {
 
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    //if (config_values[hlp_down_thread] == 1)
-    //    pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[NUM_THREADS + hlp_down_interface]);
+    if (config_values[hlp_down_thread] == 1)
+        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[NUM_THREADS + hlp_down_interface]);
     if (config_values[hlp_control_thread] == 1)
         pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void *))hlp_control, &config_values[NUM_THREADS + hlp_up_interface]);
-    //if (config_values[hlp_hk_thread] == 1)
-    //    pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
-    //if (config_values[sci_timeline_thread] == 1)
+    if (config_values[hlp_hk_thread] == 1)
+        pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
+    if (config_values[sci_timeline_thread] == 1)
         pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
-    //if (config_values[telem_thread] == 1)
-    //    pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
+    if (config_values[telem_thread] == 1)
+        pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
     //if (config_values[hlp_shell_thread] == 1)
     //    pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
 

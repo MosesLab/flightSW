@@ -12,10 +12,6 @@
 #include <signal.h>
 #include <pthread.h>
 
-
-#define CATALOG "mdata/imageindex.xml"
-#define DATADIR "mdata"
-
 #define FALSE 0
 #define TRUE 1
 #define STARTBYTE '%'

@@ -52,9 +52,7 @@ void * hlp_control(void * arg) {
     /*Load the Sequence Map*/
     loadSequences();
 
-    seq_map_size = 4; //only for testing, this needs to better integrated into data structure
-    
-    uDark1();
+    seq_map_size = 1; //only for testing, this needs to better integrated into data structure
 
     while (ts_alive) {
         /*allocate space for packet*/
