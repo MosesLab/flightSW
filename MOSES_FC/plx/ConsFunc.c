@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * File Name:
@@ -11,13 +10,12 @@
  *
  * Revision History:
  *
- *      05-01-13 : PLX SDK v7.10
+ *      04-01-07 : PLX SDK v5.00
  *
  ******************************************************************************/
 
 
-#include <ctype.h>      // For tolower()
-#include <stdarg.h>     // For va_start() & va_end()
+#include <stdarg.h>
 #include "ConsFunc.h"
 #include "PlxTypes.h"
 
@@ -28,11 +26,9 @@
  *            Globals
  ************************************/
 static unsigned char  _Gbl_bThrottleOutput = FALSE;
-static unsigned char  _Gbl_bPausePending   = FALSE;
 static unsigned char  _Gbl_bOutputDisable  = FALSE;
 static unsigned short _Gbl_LineCount       = 0;
 static unsigned short _Gbl_LineCountMax    = DEFAULT_SCREEN_SIZE - SCREEN_THROTTLE_OFFSET;
-
 
 
 
@@ -48,8 +44,69 @@ ConsoleInitialize(
     void
     )
 {
-    ConsoleScreenHeightGet();
-    ConsoleCursorPropertiesSet( CONS_CURSOR_DEFAULT );
+#if defined(PLX_LINUX)
+
+    WINDOW *pActiveWin;
+
+
+    // Initialize console
+    pActiveWin = initscr();
+
+    // Allow insert/delete of lines (for scrolling)
+    idlok(
+        pActiveWin,
+        TRUE
+        );
+
+    // Allow console to scroll
+    scrollok(
+        pActiveWin,
+        TRUE
+        );
+
+    // Disable buffering to provide input immediately to app
+    cbreak();
+
+    // getch will echo characters
+    echo();
+
+    // Enable blocking mode (for getch & scanw)
+    nodelay(
+        stdscr,
+        FALSE
+        );
+
+    // Set the max line count based on current screen size
+    _Gbl_LineCountMax = getmaxy(stdscr) - SCREEN_THROTTLE_OFFSET;
+
+#elif defined(_WIN32) || defined(_WIN64)
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+
+    // Get the current console information
+    GetConsoleScreenBufferInfo(
+        GetStdHandle(STD_OUTPUT_HANDLE),
+        &csbi
+        );
+
+    // Set the max line count based on current window size
+    _Gbl_LineCountMax = ((csbi.srWindow.Bottom - csbi.srWindow.Top) + 1) - SCREEN_THROTTLE_OFFSET;
+
+#elif defined(PLX_DOS)
+
+    struct text_info screen_info;
+
+
+    // Get the current console information
+    gettextinfo(
+        &screen_info
+        );
+
+    // Set the max line count based on current screen size
+    _Gbl_LineCountMax = screen_info.screenheight - SCREEN_THROTTLE_OFFSET;
+
+#endif
 }
 
 
@@ -67,60 +124,12 @@ ConsoleEnd(
     void
     )
 {
-}
-
-
-
-
-/******************************************************************
- *
- * Function   :  ConsoleScreenHeightSet
- *
- * Description:  Returns the current size of the console in number of lines
- *
- *****************************************************************/
-unsigned short ConsoleScreenHeightGet()
-{
-    unsigned short ConsoleSize;
-
 #if defined(PLX_LINUX)
 
-    int            ret;
-    struct winsize ConsoleWindow;
-
-
-    ret = ioctl( STDIN_FILENO, TIOCGWINSZ, &ConsoleWindow );
-    if (ret == 0)
-        ConsoleSize = (unsigned short)ConsoleWindow.ws_row;
-    else
-        ConsoleSize = DEFAULT_SCREEN_SIZE;
-
-#elif defined(PLX_MSWINDOWS)
-
-    CONSOLE_CURSOR_INFO        cci;
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-    GetConsoleScreenBufferInfo( GetStdHandle(STD_OUTPUT_HANDLE), &csbi );
-    ConsoleSize = (unsigned short)((csbi.srWindow.Bottom - csbi.srWindow.Top) + 1);
-
-    cci.dwSize   = 15;
-    cci.bVisible = TRUE;
-    SetConsoleCursorInfo( GetStdHandle(STD_OUTPUT_HANDLE), &cci );
-
-#elif defined(PLX_DOS)
-
-    struct text_info screen_info;
-
-
-    gettextinfo( &screen_info );
-    ConsoleSize = (unsigned short)screen_info.screenheight;
-    _setcursortype( _NORMALCURSOR );
+    // Restore console
+    endwin();
 
 #endif
-
-    // Set the max line count based on current screen size
-    _Gbl_LineCountMax = ConsoleSize - SCREEN_THROTTLE_OFFSET;
-    return ConsoleSize;
 }
 
 
@@ -140,42 +149,9 @@ ConsoleScreenHeightSet(
 {
 #if defined(PLX_LINUX)
 
-    // Not fully supported yet in Linux
     return -1;
 
-    /*************************************************
-     * The following code is capable of adjusting the
-     * console height, but it does not re-size the
-     * terminal window.  It is left here for future
-     * reference, but is disabled at this time.
-     ************************************************/
-  #if 0
-    int            ret;
-    struct winsize ConsoleWindow;
-
-
-    // Get current console size
-    ret = ioctl( STDIN_FILENO, TIOCGWINSZ, &ConsoleWindow );
-
-    if (ret != 0)
-        return -1;
-
-    // Set new window height
-    ConsoleWindow.ws_row = NumLines;
-
-    // Adjust window to new height
-    ret = ioctl( STDIN_FILENO, TIOCSWINSZ, &ConsoleWindow );
-
-    if (ret != 0)
-        return -1;
-
-    // Update internal limit
-    _Gbl_LineCountMax = NumLines - SCREEN_THROTTLE_OFFSET;
-
-    return ret;
-  #endif
-
-#elif defined(PLX_MSWINDOWS)
+#elif defined(_WIN32) || defined(_WIN64)
 
     SMALL_RECT WindowSize;
 
@@ -229,6 +205,24 @@ ConsoleScreenHeightSet(
 
 /******************************************************************
  *
+ * Function   :  ConsoleScreenHeightGet
+ *
+ * Description:  Returns the height of the current screen size
+ *
+ *****************************************************************/
+unsigned short
+ConsoleScreenHeightGet(
+    void
+    )
+{
+    return _Gbl_LineCountMax + SCREEN_THROTTLE_OFFSET;
+}
+
+
+
+
+/******************************************************************
+ *
  * Function   :  ConsoleIoThrottle
  *
  * Description:  Toggle throttling of the console output
@@ -245,49 +239,8 @@ ConsoleIoThrottle(
     if (!bEnable)
     {
         _Gbl_LineCount      = 0;
-        _Gbl_bPausePending  = FALSE;
         _Gbl_bOutputDisable = FALSE;
     }
-}
-
-
-
-
-/******************************************************************
- *
- * Function   :  ConsoleCursorPropertiesSet
- *
- * Description:  Sets cursor properties
- *
- *****************************************************************/
-void ConsoleCursorPropertiesSet( int size )
-{
-#if defined(PLX_LINUX)
-
-    // Not currently implemented for Linux
-
-#elif defined(PLX_MSWINDOWS)
-
-    CONSOLE_CURSOR_INFO cci;
-
-    cci.dwSize = size;
-    if (size == 0)
-        cci.bVisible = FALSE;
-    else
-        cci.bVisible = TRUE;
-    SetConsoleCursorInfo( GetStdHandle(STD_OUTPUT_HANDLE), &cci );
-
-#elif defined(PLX_DOS)
-
-    // Only 3 options available for DOS cursor
-    if (size == 0)
-        _setcursortype( _NOCURSOR );
-    else if (size > 50)
-        _setcursortype( _SOLIDCURSOR );
-    else
-        _setcursortype( _NORMALCURSOR );
-
-#endif
 }
 
 
@@ -313,35 +266,6 @@ ConsoleIoThrottleReset(
 
 /******************************************************************
  *
- * Function   :  ConsoleIoIncrementLine
- *
- * Description:  Increments the console output line count if enabled
- *
- *****************************************************************/
-void
-ConsoleIoIncrementLine(
-    void
-    )
-{
-    // Do nothing if throttling is disabled
-    if (_Gbl_bThrottleOutput == FALSE)
-        return;
-
-    // Increment line count
-    _Gbl_LineCount++;
-
-    if (_Gbl_LineCount >= _Gbl_LineCountMax)
-    {
-        // Flag that next incoming line needs pause
-        _Gbl_bPausePending = TRUE;
-    }
-}
-
-
-
-
-/******************************************************************
- *
  * Function   :  ConsoleIoOutputDisable
  *
  * Description:  Toggle console output
@@ -360,160 +284,360 @@ ConsoleIoOutputDisable(
 
 /*********************************************************************
  *
- * Function   :  Plx_fputs
- *
- * Description:  Emulates fputs() with support for throttling
- *
- ********************************************************************/
-int
-Plx_fputs(
-    const char *string,
-    FILE       *stream
-    )
-{
-    char toggle;
-
-
-    // Display pause if pending
-    if (_Gbl_bPausePending)
-    {
-        _Gbl_bPausePending = FALSE;
-
-        fputs(
-            "-- More (Press any to continue, 'C' for continuous, or 'Q' to quit) --",
-            stdout
-            );
-
-        // Get user input
-        toggle = Cons_getch();
-
-        // Clear 'More' message
-        fputs(
-            "\r                                                                      \r",
-            stdout
-            );
-
-        // Switch to lowercase
-        toggle = tolower( toggle );
-
-        if (toggle == 'c')
-            ConsoleIoThrottle( FALSE );         // Disable throttle output
-        else if (toggle == 'q')
-        {
-            ConsoleIoOutputDisable( TRUE );     // Disable any further output
-            return 0;
-        }
-        else
-            ConsoleIoThrottleReset();           // Reset the line count
-    }
-
-    return fputs( string, stream );
-}
-
-
-
-
-/*********************************************************************
- *
- * Function   :  Plx_printf
+ * Function   :  PlxPrintf
  *
  * Description:  Outputs a formatted string
  *
  ********************************************************************/
-int
-Plx_printf(
+void
+PlxPrintf(
     const char *format,
     ...
     )
 {
-    int      i;
-    int      NumChars;
-    char    *pNextLine;
-    char     pOut[4000];
-    char    *pChar;
-    BOOLEAN  bNewLine;
-    va_list  pArgs;
+    int          i;
+    int          Width;
+    int          Precision;
+    char         toggle;
+    char         pFormatSpec[16];
+    char         pOutput[MAX_DECIMAL_BUFFER_SIZE];
+    va_list      pArgs;
+    const char  *pFormat;
+    signed char  Size;
+    signed char  Flag_Directive;
+    signed char  Flag_LeadingZero;
 
 
     // Exit if console output disabled
     if (_Gbl_bOutputDisable)
-        return 0;
-
-    // Do nothing for empty string
-    if (*format == '\0')
-        return 0;
+        return;
 
     // Initialize the optional arguments pointer
-    va_start(pArgs, format);
+    va_start(
+        pArgs,
+        format
+        );
 
-    // Build string to write
-    NumChars = vsprintf(pOut, format, pArgs);
+    pFormat = format;
 
-    // Terminate arguments pointer
-    va_end(pArgs);
-
-    // Start at beginning of string
-    pChar     = pOut;
-    pNextLine = pOut;
-    bNewLine  = FALSE;
-
-    // Set number of characters
-    i = NumChars + 1;
-
-    while (i)
+    while (*pFormat != '\0')
     {
-        // Check for new line
-        if (*pChar == '\n')
+        if (*pFormat != '%')
         {
-            bNewLine = TRUE;
+            // Non-field, just print it
+            Cons_putchar(
+                *pFormat
+                );
 
-            // Mark end of line
-            *pChar = '\0';
+            // Wrap to next line on return
+            if (*pFormat == '\n')
+            {
+                // Check if need to pause output
+                if (_Gbl_bThrottleOutput)
+                {
+                    // Increment line count
+                    _Gbl_LineCount++;
+
+                    if (_Gbl_LineCount >= _Gbl_LineCountMax)
+                    {
+                        Cons_printf(
+                            "-- More (Press any to continue, 'C' for continuous, or 'Q' to quit) --"
+                            );
+
+                        // Get user input
+                        toggle = Cons_getch();
+
+                        // Clear 'More' message
+                        Cons_printf(
+                            "\r                                                                      \r"
+                            );
+
+                        if ((toggle == 'C') || (toggle == 'c'))
+                        {
+                            // Disable throttle output
+                            ConsoleIoThrottle(
+                                FALSE
+                                );
+                        }
+                        else if ((toggle == 'Q') || (toggle == 'q'))
+                        {
+                            // Disable any further output
+                            ConsoleIoOutputDisable(
+                                TRUE
+                                );
+
+                            goto _Exit_PlxPrintf;
+                        }
+                        else
+                        {
+                            // Reset the line count
+                            ConsoleIoThrottleReset();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Reached '%' character
+            Size             = -1;
+            Width            = -1;
+            Precision        = -1;
+            Flag_Directive   = -1;
+            Flag_LeadingZero = -1;
+
+            pFormat++;
+
+            // Check for any flag directives
+            if ( (*pFormat == '-') || (*pFormat == '+') ||
+                 (*pFormat == '#') || (*pFormat == ' ') )
+            {
+                Flag_Directive = *pFormat;
+
+                pFormat++;
+            }
+
+            // Check for a width specification
+            while ((*pFormat >= '0') && (*pFormat <= '9'))
+            {
+                // Check for leading 0
+                if (Flag_LeadingZero == -1)
+                {
+                    if (*pFormat == '0')
+                        Flag_LeadingZero = 1;
+                    else
+                        Flag_LeadingZero = 0;
+                }
+
+                if (Width == -1)
+                    Width = 0;
+
+                // Build the width
+                Width = (Width * 10) + (*pFormat - '0');
+
+                pFormat++;
+            }
+
+            // Check for a precision specification
+            if (*pFormat == '.')
+            {
+                pFormat++;
+
+                Precision = 0;
+
+                // Get precision
+                while ((*pFormat >= '0') && (*pFormat <= '9'))
+                {
+                    // Build the Precision
+                    Precision = (signed char)(Precision * 10) + (*pFormat - '0');
+
+                    pFormat++;
+                }
+            }
+
+            // Check for size specification
+            if ( (*pFormat == 'l') || (*pFormat == 'L') ||
+                 (*pFormat == 'h') || (*pFormat == 'H') )
+            {
+                Size = *pFormat;
+
+                pFormat++;
+            }
+
+            if (*pFormat == '\0')
+                break;
+
+
+            // Build the format specification
+            i = 1;
+            pFormatSpec[0] = '%';
+
+            if (Flag_Directive != -1)
+            {
+                pFormatSpec[i] = Flag_Directive;
+                i++;
+            }
+
+            if (Flag_LeadingZero == 1)
+            {
+                pFormatSpec[i] = '0';
+                i++;
+            }
+
+            if ((Width != -1) && (Width != 0))
+            {
+                sprintf(
+                    &(pFormatSpec[i]),
+                    "%d",
+                    Width
+                    );
+
+                if (Width < 10)
+                    i += 1;
+                else if (Width < 100)
+                    i += 2;
+            }
+
+            if ((Precision != -1) && (Precision != 0))
+            {
+                pFormatSpec[i] = '.';
+                i++;
+
+                sprintf(
+                    &(pFormatSpec[i]),
+                    "%d",
+                    Precision
+                    );
+
+                if (Precision < 10)
+                    i += 1;
+                else if (Precision < 100)
+                    i += 2;
+            }
+
+            if (Size != -1)
+            {
+                pFormatSpec[i] = Size;
+                i++;
+            }
+
+            // Check type
+            switch (*pFormat)
+            {
+                case 'd':
+                case 'i':
+                    pFormatSpec[i] = *pFormat;
+                    i++;
+                    pFormatSpec[i] = '\0';
+
+                    // Convert value to string
+                    sprintf(
+                        pOutput,
+                        pFormatSpec,
+                        va_arg(pArgs, int)
+                        );
+
+                    // Display output
+                    Cons_printf(
+                        pOutput
+                        );
+                    break;
+
+                case 'x':
+                case 'X':
+                    pFormatSpec[i] = *pFormat;
+                    i++;
+
+                    pFormatSpec[i] = '\0';
+
+                    // Prepare output string
+                    if (Size == -1)
+                    {
+                        sprintf(
+                            pOutput,
+                            pFormatSpec,
+                            va_arg(pArgs, unsigned int)
+                            );
+                    }
+                    else
+                    {
+                        sprintf(
+                            pOutput,
+                            pFormatSpec,
+                            va_arg(pArgs, long int)
+                            );
+                    }
+
+                    // Display value
+                    Cons_printf(
+                        pOutput
+                        );
+                    break;
+
+                case 'p':
+                    pFormatSpec[i] = 'p';
+                    i++;
+
+                    pFormatSpec[i] = '\0';
+
+                    sprintf(
+                        pOutput,
+                        pFormatSpec,
+                        va_arg(pArgs, VOID*)
+                        );
+
+                    // Display pointer
+                    Cons_printf(
+                        pOutput
+                        );
+                    break;
+
+                case 'f':
+                    pFormatSpec[i] = 'f';
+                    i++;
+
+                    pFormatSpec[i] = '\0';
+
+                    sprintf(
+                        pOutput,
+                        pFormatSpec,
+                        va_arg(pArgs, double)
+                        );
+
+                    // Display pointer
+                    Cons_printf(
+                        pOutput
+                        );
+                    break;
+
+                case 'c':
+                    // Display the character
+                    Cons_putchar(
+                        (char) va_arg(pArgs, int)
+                        );
+                    break;
+
+                case 'o':
+                case 'u':
+                    pFormatSpec[i] = *pFormat;
+                    i++;
+                    pFormatSpec[i] = '\0';
+
+                    // Convert value to string
+                    sprintf(
+                        pOutput,
+                        pFormatSpec,
+                        va_arg(pArgs, unsigned int)
+                        );
+
+                    // Display output
+                    Cons_printf(
+                        pOutput
+                        );
+                    break;
+
+                case 's':
+                    Cons_printf(
+                        va_arg(pArgs, char *)
+                        );
+                    break;
+
+                default:
+                    // Display the character
+                    Cons_putchar(
+                        *pFormat
+                        );
+                    break;
+            }
         }
 
-        // Display current line
-        if (*pChar == '\0')
-        {
-            // Display current line
-            Cons_fputs( pNextLine, stdout );
-
-            // Halt if console output disabled
-            if (_Gbl_bOutputDisable)
-                goto _Exit_Plx_printf;
-
-            if (bNewLine)
-            {
-                // Display newline character
-                bNewLine = FALSE;
-                Cons_putchar( '\n' );
-
-                // Inform console of new line in case of pause
-                ConsoleIoIncrementLine();
-
-                // Increment to next line
-                pNextLine = pChar + 1;
-
-                // Check for end of string
-                if (*pNextLine == '\0')
-                    goto _Exit_Plx_printf;
-            }
-            else
-            {
-                // Reached end of string
-                goto _Exit_Plx_printf;
-            }
-        }
-
-        // Go to next character
-        pChar++;
-
-        // Decrement count
-        i--;
+        pFormat++;
     }
 
-_Exit_Plx_printf:
-    // Return number of characters printed
-    return NumChars;
+_Exit_PlxPrintf:
+    va_end(
+        pArgs
+        );
 }
 
 
@@ -525,7 +649,7 @@ _Exit_Plx_printf:
  *
  ************************************************/
 
-#if defined(PLX_MSWINDOWS)
+#if defined(_WIN32) || defined(_WIN64)
 
 /******************************************************************
  *
@@ -580,7 +704,7 @@ Plx_clrscr(
         );
 }
 
-#endif // PLX_MSWINDOWS
+#endif // _WIN32 || _WIN64
 
 
 
@@ -605,48 +729,39 @@ Plx_kbhit(
     void
     )
 {
-    int            count;
-    struct timeval tv;
-    struct termios Tty_Save;
-    struct termios Tty_New;
+    char ch;
 
 
-    // Get current terminal attributes
-    tcgetattr( STDIN_FILENO, &Tty_Save );
+    // Put getch into non-blocking mode
+    nodelay(
+        stdscr,
+        TRUE
+        );
 
-    // Copy attributes
-    Tty_New = Tty_Save;
+    // getch will not echo characters
+    noecho();
 
-    // Disable canonical mode (handles special characters)
-    Tty_New.c_lflag &= ~ICANON;
+    // Get character
+    ch = getch();
 
-    // Disable character echo
-    Tty_New.c_lflag &= ~ECHO;
+    // Restore getch into blocking mode
+    nodelay(
+        stdscr,
+        FALSE
+        );
 
-    // Set timeouts
-    Tty_New.c_cc[VMIN]  = 1;   // Minimum chars to wait for
-    Tty_New.c_cc[VTIME] = 1;   // Minimum wait time
+    // Restore getch echo of characters
+    echo();
 
-    // Set new terminal attributes
-    if (tcsetattr( STDIN_FILENO, TCSANOW, &Tty_New ) != 0)
+    if (ch == ERR)
         return 0;
 
-    // Set to no characters pending
-    count = 0;
+    // Put character back into input queue
+    ungetch(
+        ch
+        );
 
-    // Check stdin for pending characters
-    if (ioctl( STDIN_FILENO, FIONREAD, &count ) != 0)
-        return 0;
-
-    // Restore old settings
-    tcsetattr( STDIN_FILENO, TCSANOW, &Tty_Save );
-
-    // Small delay needed to give up CPU slice & allow use in a tight loop
-    tv.tv_sec  = 0;
-    tv.tv_usec = 1;
-    select(1, NULL, NULL, NULL, &tv);
-
-    return count;
+    return 1;
 }
 
 
@@ -659,50 +774,24 @@ Plx_kbhit(
  * Description:  Gets a character from the keyboard (with blocking)
  *
  *****************************************************************/
-int
+char
 Plx_getch(
     void
     )
 {
-    int            retval;
-    char           ch;
-    struct termios Tty_Save;
-    struct termios Tty_New;
+    char ch;
 
 
-    // Make sure all output data is flushed
-    fflush( stdout );
+    // getch will not echo characters
+    noecho();
 
-    // Get current terminal attributes
-    tcgetattr( STDIN_FILENO, &Tty_Save );
+    // Get character
+    ch = getch();
 
-    // Copy attributes
-    Tty_New = Tty_Save;
+    // Restore getch echo of characters
+    echo();
 
-    // Disable canonical mode (handles special characters)
-    Tty_New.c_lflag &= ~ICANON;
-
-    // Disable character echo
-    Tty_New.c_lflag &= ~ECHO;
-
-    // Set timeouts
-    Tty_New.c_cc[VMIN]  = 1;   // Minimum chars to wait for
-    Tty_New.c_cc[VTIME] = 1;   // Minimum wait time
-
-    // Set new terminal attributes
-    if (tcsetattr( STDIN_FILENO, TCSANOW, &Tty_New ) != 0)
-        return 0;
-
-    // Get a single character from stdin
-    retval = read( STDIN_FILENO, &ch, 1 ); 
-
-    // Restore old settings
-    tcsetattr( STDIN_FILENO, TCSANOW, &Tty_Save );
-
-    if (retval > 0)
-        return (int)ch;
-
-    return 0;
+    return ch;
 }
 
 #endif // PLX_LINUX

@@ -7,6 +7,7 @@
       <itemPath>control.h</itemPath>
       <itemPath>controlFuncs.h</itemPath>
       <itemPath>defs.h</itemPath>
+      <itemPath>gpio.h</itemPath>
       <itemPath>hashTable.h</itemPath>
       <itemPath>hlp.h</itemPath>
       <itemPath>lockingQueue.h</itemPath>
@@ -34,6 +35,7 @@
                    projectFiles="true">
       <itemPath>control.c</itemPath>
       <itemPath>controlFuncs.c</itemPath>
+      <itemPath>gpio.c</itemPath>
       <itemPath>hashTable.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>logger.c</itemPath>
@@ -90,6 +92,7 @@
     <itemPath>plx/PlxIoctl.h</itemPath>
     <itemPath>plx/PlxStat.h</itemPath>
     <itemPath>plx/PlxTypes.h</itemPath>
+    <itemPath>plx/Reg9056.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
@@ -127,6 +130,10 @@
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gpio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -201,6 +208,8 @@
       </item>
       <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
@@ -262,6 +271,10 @@
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gpio.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hashTable.h" ex="false" tool="3" flavor2="0">
@@ -331,6 +344,8 @@
       <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -390,6 +405,10 @@
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gpio.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="hashTable.h" ex="false" tool="3" flavor2="0">
@@ -459,6 +478,8 @@
       <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -522,6 +543,10 @@
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gpio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="9">
         <cTool>
@@ -603,6 +628,8 @@
       <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="9">
         <cTool>

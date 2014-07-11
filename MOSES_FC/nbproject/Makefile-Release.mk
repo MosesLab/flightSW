@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/controlFuncs.o \
+	${OBJECTDIR}/gpio.o \
 	${OBJECTDIR}/hashTable.o \
 	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/logger.o \
@@ -89,6 +90,11 @@ ${OBJECTDIR}/controlFuncs.o: controlFuncs.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
+
+${OBJECTDIR}/gpio.o: gpio.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/gpio.o gpio.c
 
 ${OBJECTDIR}/hashTable.o: hashTable.c 
 	${MKDIR} -p ${OBJECTDIR}

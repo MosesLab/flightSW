@@ -13,24 +13,19 @@
  *
  * Revision History:
  *
- *      05-01-13 : PLX SDK v7.10
+ *      02-01-07 : PLX SDK v5.00
  *
  ******************************************************************************/
-#define PLX_LINUX 1
+
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <stdio.h>
     #include <conio.h>
     #include <Windows.h>
-    #define PLX_MSWINDOWS
 #elif defined(PLX_LINUX)
-    #include <stdio.h>
     #include <stdlib.h>
+    #include <curses.h>
     #include <unistd.h>
-    #include <termios.h> 
-    #include <sys/ioctl.h> 
-    #include <sys/time.h> 
-    #include <sys/types.h>
 #elif defined(PLX_DOS)
     #include <stdio.h>
     #include <conio.h>
@@ -45,56 +40,60 @@
 /*************************************
  *          Definitions
  ************************************/
-#if defined(PLX_MSWINDOWS)
+
+
+
+// redefines
+#if defined(_WIN32) || defined(_WIN64)
+    #define xscanf						_scanf
+	//#define xsprintf					sprintf_s
+	#define xgetch						_getch
+#else
+    #define xscanf						scanf
+	//#define xsprintf					sprintf
+	#define xgetch						getch
+#endif
+
+FILE* xfopen(char* Filename, char* Mode);
+
+#if defined(_WIN32) || defined(_WIN64)
 
     #define Plx_sleep                   Sleep
-    #define Plx_strcmp                  strcmp
     #define Plx_strcasecmp              stricmp
     #define Plx_strncasecmp             strnicmp
     #define Cons_clear                  Plx_clrscr
-    #define Cons_fflush                 fflush
-    #define Cons_flushinp()             FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE))
-    #define Cons_fputs                  Plx_fputs
+    #define Cons_FlushInputBuffer()     FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE))
     #define Cons_kbhit                  _kbhit
     #define Cons_getch                  _getch
-    #define Cons_puts                   puts
     #define Cons_putchar                putchar
     #define Cons_scanf                  scanf
-    #define Cons_printf                 Plx_printf
+    #define Cons_printf                 PlxPrintf
 
 #elif defined(PLX_LINUX)
 
     #define Plx_sleep(arg)              usleep((arg) * 1000)
-    #define Plx_strcmp                  strcmp
     #define Plx_strcasecmp              strcasecmp
     #define Plx_strncasecmp             strncasecmp
-    #define Cons_clear()                system("clear")
-    #define Cons_fflush                 fflush
-    #define Cons_flushinp               do {while (Plx_kbhit()) Plx_getch();} while (0)
-    #define Cons_fputs                  Plx_fputs
+    #define Cons_clear                  clear
+    #define Cons_FlushInputBuffer       flushinp
     #define Cons_kbhit                  Plx_kbhit
     #define Cons_getch                  Plx_getch
-    #define Cons_puts                   puts
-    #define Cons_putchar                putchar
-    #define Cons_scanf                  scanf
-    #define Cons_printf                 Plx_printf
+    #define Cons_putchar                echochar
+    #define Cons_scanf                  scanw
+    #define Cons_printf                 PlxPrintf
 
 #elif defined(PLX_DOS)
 
     #define Plx_sleep(arg)              usleep((arg) * 1000)
-    #define Plx_strcmp                  strcmp
-    #define Plx_strcasecmp              strcasecmp
+    #define Plxstrcasecmp               strcasecmp
     #define Plx_strncasecmp             strncasecmp
     #define Cons_clear                  clrscr
-    #define Cons_fflush                 fflush
-    #define Cons_flushinp()             do {while (kbhit()) getch();} while (0)
-    #define Cons_fputs                  Plx_fputs
+    #define Cons_FlushInputBuffer       (do {while (kbhit()) getch();} while (0))
     #define Cons_kbhit                  kbhit
     #define Cons_getch                  getch
-    #define Cons_puts                   puts
     #define Cons_putchar                putchar
     #define Cons_scanf                  scanf
-    #define Cons_printf                 Plx_printf
+    #define Cons_printf                 PlxPrintf
 
 #endif
 
@@ -139,62 +138,6 @@
     }                                                                            \
     while(0)
 
-// Standard key codes
-#define CONS_KEY_NULL                       '\0'
-#define CONS_KEY_ESCAPE                     27
-#define CONS_KEY_NEWLINE                    '\n'
-#define CONS_KEY_CARRIAGE_RET               '\r'
-#define CONS_KEY_TAB                        '\t'
-
-// 1st extended key code
-#if defined(PLX_LINUX)
-    #define CONS_KEY_EXT_CODE               91
-    #define CONS_KEY_KEYPAD_CODE            79
-#elif defined(PLX_MSWINDOWS)
-    #define CONS_KEY_EXT_CODE               224
-    #define CONS_KEY_KEYPAD_CODE            1      // For code compatability, not actually used
-#elif defined(PLX_DOS)
-    #define CONS_KEY_EXT_CODE               0
-    #define CONS_KEY_KEYPAD_CODE            1      // For code compatability, not actually used
-#endif
-
-// Extended key codes
-#if defined(PLX_LINUX)
-    #define CONS_KEY_BACKSPACE              127
-    #define CONS_KEY_ARROW_UP               65
-    #define CONS_KEY_ARROW_DOWN             66
-    #define CONS_KEY_ARROW_LEFT             68
-    #define CONS_KEY_ARROW_RIGHT            67
-    #define CONS_KEY_HOME                   49
-    #define CONS_KEY_HOME_XTERM             72     // Code different in GUI terminal
-    #define CONS_KEY_END                    70
-    #define CONS_KEY_END_XTERM              52     // Code different in GUI terminal
-    #define CONS_KEY_INSERT                 50
-    #define CONS_KEY_DELETE                 51
-    #define CONS_KEY_PAGE_UP                53
-    #define CONS_KEY_PAGE_DOWN              54
-#else
-    #define CONS_KEY_BACKSPACE              '\b'
-    #define CONS_KEY_ARROW_UP               72
-    #define CONS_KEY_ARROW_DOWN             80
-    #define CONS_KEY_ARROW_LEFT             75
-    #define CONS_KEY_ARROW_RIGHT            77
-    #define CONS_KEY_HOME                   71
-    #define CONS_KEY_HOME_XTERM             254    // Added for code compatability
-    #define CONS_KEY_END                    79
-    #define CONS_KEY_END_XTERM              253    // Added for code compatability
-    #define CONS_KEY_INSERT                 82
-    #define CONS_KEY_DELETE                 83
-    #define CONS_KEY_PAGE_UP                73
-    #define CONS_KEY_PAGE_DOWN              81
-#endif
-
-// Preset cursor sizes/types
-#define CONS_CURSOR_DISABLED                0
-#define CONS_CURSOR_UNDERLINE               20
-#define CONS_CURSOR_INSERT                  70
-#define CONS_CURSOR_DEFAULT                 CONS_CURSOR_UNDERLINE
-
 
 
 
@@ -222,11 +165,6 @@ ConsoleScreenHeightGet(
     );
 
 void
-ConsoleCursorPropertiesSet(
-    int size
-    );
-
-void
 ConsoleIoThrottle(
     unsigned char bEnable
     );
@@ -237,30 +175,19 @@ ConsoleIoThrottleReset(
     );
 
 void
-ConsoleIoIncrementLine(
-    void
-    );
-
-void
 ConsoleIoOutputDisable(
     unsigned char bEnable
     );
 
-int
-Plx_fputs(
-    const char *string,
-    FILE       *stream
-    );
-
-int
-Plx_printf(
+void
+PlxPrintf(
     const char *format,
     ...
     );
 
 
 // Windows-specific functions
-#if defined(PLX_MSWINDOWS)
+#if defined(_WIN32) || defined(_WIN64)
 
 void
 Plx_clrscr(
@@ -278,7 +205,7 @@ Plx_kbhit(
     void
     );
 
-int
+char
 Plx_getch(
     void
     );
