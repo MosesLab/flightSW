@@ -31,10 +31,7 @@ extern volatile sig_atomic_t ts_alive;
 /*struct to control state of experiment*/
 moses_ops_t ops;
 
-int shell_in_pipe[2];
-int shell_out_pipe[2];
-
-
+/*Locking queues to safely pass data between threads*/
 LockingQueue hkdownQueue;
 LockingQueue roeQueue;
 

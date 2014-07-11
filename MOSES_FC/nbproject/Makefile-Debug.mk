@@ -42,6 +42,12 @@ OBJECTFILES= \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/packet.o \
+	${OBJECTDIR}/plx/Aardvark.o \
+	${OBJECTDIR}/plx/ConsFunc.o \
+	${OBJECTDIR}/plx/Eep_8000.o \
+	${OBJECTDIR}/plx/PlxApi.o \
+	${OBJECTDIR}/plx/PlxApiI2cAa.o \
+	${OBJECTDIR}/plx/PlxInit.o \
 	${OBJECTDIR}/roe_image.o \
 	${OBJECTDIR}/sci_timeline_funcs.o \
 	${OBJECTDIR}/science_timeline.o \
@@ -64,7 +70,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lm -lpthread
+LDLIBSOPTIONS=-lm -lpthread -ldl
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -108,6 +114,36 @@ ${OBJECTDIR}/packet.o: packet.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/packet.o packet.c
+
+${OBJECTDIR}/plx/Aardvark.o: plx/Aardvark.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/Aardvark.o plx/Aardvark.c
+
+${OBJECTDIR}/plx/ConsFunc.o: plx/ConsFunc.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/ConsFunc.o plx/ConsFunc.c
+
+${OBJECTDIR}/plx/Eep_8000.o: plx/Eep_8000.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/Eep_8000.o plx/Eep_8000.c
+
+${OBJECTDIR}/plx/PlxApi.o: plx/PlxApi.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/PlxApi.o plx/PlxApi.c
+
+${OBJECTDIR}/plx/PlxApiI2cAa.o: plx/PlxApiI2cAa.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/PlxApiI2cAa.o plx/PlxApiI2cAa.c
+
+${OBJECTDIR}/plx/PlxInit.o: plx/PlxInit.c 
+	${MKDIR} -p ${OBJECTDIR}/plx
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/plx/PlxInit.o plx/PlxInit.c
 
 ${OBJECTDIR}/roe_image.o: roe_image.c 
 	${MKDIR} -p ${OBJECTDIR}

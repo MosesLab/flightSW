@@ -12,7 +12,7 @@ void * hlp_control(void * arg) {
     int stdin_des;
 
     /*initialize virtual shell*/
-    vshell_init(shell_in_pipe, shell_out_pipe);
+    vshell_init();
 
 /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
@@ -186,7 +186,7 @@ void * hlp_shell_out(void * arg) {
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
         }
-                        //free(buf);
+                        //free(buf);    //not sure why this doesnt work.
     }
 
     return NULL;

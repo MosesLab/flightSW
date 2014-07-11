@@ -68,7 +68,28 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>plx/Aardvark.c</itemPath>
+    <itemPath>plx/Aardvark.h</itemPath>
+    <itemPath>plx/ConsFunc.c</itemPath>
+    <itemPath>plx/ConsFunc.h</itemPath>
+    <itemPath>plx/Eep_8000.c</itemPath>
+    <itemPath>plx/Eep_8000.h</itemPath>
     <itemPath>nbproject/Makefile-Debug.mk</itemPath>
+    <itemPath>plx/PciRegs.h</itemPath>
+    <itemPath>plx/PciTypes.h</itemPath>
+    <itemPath>plx/PexApi.h</itemPath>
+    <itemPath>plx/Plx.h</itemPath>
+    <itemPath>plx/PlxApi.c</itemPath>
+    <itemPath>plx/PlxApi.h</itemPath>
+    <itemPath>plx/PlxApiDebug.h</itemPath>
+    <itemPath>plx/PlxApiI2cAa.c</itemPath>
+    <itemPath>plx/PlxApiI2cAa.h</itemPath>
+    <itemPath>plx/PlxDefCk.h</itemPath>
+    <itemPath>plx/PlxInit.c</itemPath>
+    <itemPath>plx/PlxInit.h</itemPath>
+    <itemPath>plx/PlxIoctl.h</itemPath>
+    <itemPath>plx/PlxStat.h</itemPath>
+    <itemPath>plx/PlxTypes.h</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../Documents/moses/oldcode/build_0.1</Elem>
@@ -91,6 +112,7 @@
           <linkerLibItems>
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerLibLibItem>dl</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -136,6 +158,48 @@
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciRegs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PexApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Plx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiDebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxDefCk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxIoctl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -226,6 +290,48 @@
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="plx/Aardvark.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciRegs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PexApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Plx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiDebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxDefCk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxIoctl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
@@ -311,6 +417,48 @@
       <item path="packet.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciRegs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PexApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Plx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiDebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxDefCk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxIoctl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -412,6 +560,48 @@
         </cTool>
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciRegs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PexApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Plx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiDebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxDefCk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxIoctl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="9">
         <cTool>
