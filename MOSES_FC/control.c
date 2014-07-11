@@ -186,7 +186,7 @@ void * hlp_shell_out(void * arg) {
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
         }
-                        free(buf);
+                        //free(buf);
     }
 
     return NULL;
