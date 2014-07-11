@@ -8,7 +8,6 @@ void * hlp_control(void * arg) {
     prctl(PR_SET_NAME, "hlp_control", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
 
-
     int f_up = 0;
     int stdin_des;
 
@@ -124,10 +123,9 @@ void * hlp_control(void * arg) {
  */
 void * hlp_down(void * arg) {
     prctl(PR_SET_NAME, "hlp_down", 0, 0, 0);
+    
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
-
-
 
     /*Open housekeeping downlink using configuartion file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
