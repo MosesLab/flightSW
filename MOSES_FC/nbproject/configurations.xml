@@ -503,6 +503,7 @@
           <linkerLibItems>
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerLibLibItem>dl</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
