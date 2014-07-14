@@ -37,8 +37,9 @@
  *      07-01-13 : PLX SDK v7.00
  *
  ******************************************************************************/
-
-#define PLX_LINUX 1
+#ifndef PLX_LINUX
+#define PLX_LINUX
+#endif
 
 #include "Plx.h"
 #include "PlxDefCk.h"

@@ -41,7 +41,7 @@ Date		Author	Modifications
 //#define _CRT_SECURE_NO_DEPRECATE
 
 #ifndef __PLX_ERROR_H
-#pragma message("Creating definition for RETURN_CODE")
+//#pragma message("Creating definition for RETURN_CODE")
 typedef PLX_STATUS        RETURN_CODE;  // to support use with older api
 #endif
 

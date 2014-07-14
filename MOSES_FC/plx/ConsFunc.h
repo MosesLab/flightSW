@@ -16,7 +16,9 @@
  *      02-01-07 : PLX SDK v5.00
  *
  ******************************************************************************/
-
+#ifndef PLX_LINUX
+#define PLX_LINUX
+#endif
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <stdio.h>

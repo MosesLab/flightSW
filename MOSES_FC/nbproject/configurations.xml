@@ -116,6 +116,7 @@
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
             <linkerLibLibItem>dl</linkerLibLibItem>
+            <linkerLibStdlibItem>Curses</linkerLibStdlibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -525,6 +526,7 @@
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
             <linkerLibLibItem>dl</linkerLibLibItem>
+            <linkerLibStdlibItem>Curses</linkerLibStdlibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

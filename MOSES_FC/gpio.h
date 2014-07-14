@@ -14,9 +14,9 @@
 
 #define GPIO_BAR_INDEX 2
 #define SHUTTER_OFFSET 0x2C
-#define SHUTTER_OPEN 0xF
-#define SHUTTER_CLOSE 0x1
-
+#define SHUTTER_OPEN_SIM 0xF
+#define SHUTTER_CLOSE_SIM 0x1
+#define PLX_BUFFER_WIDTH 4
 /*GPIO write variables*/
 
 PLX_DEVICE_OBJECT device;
@@ -24,12 +24,14 @@ PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 
 
+
+
 /*poke gpio pins*/
-int write_gpio(U32, U32);
+int poke_gpio(U32, U32);
 
-/*use write gpio to open shutter*/
+/*use write gpio to open/close shutter*/
 int open_shutter();
-
+int close_shutter();
 
 #endif	/* GPIO_H */
 
