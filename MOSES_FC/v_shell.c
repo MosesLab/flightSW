@@ -26,8 +26,8 @@ int vshell_init() {
         fopen(STDIN_PIPE, "r");
         fopen(STDOUT_PIPE, "w");
     
-        //        fclose(stdout);
-        //        fclose(stdin);
+                fclose(stdout);
+                fclose(stdin);
         freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
         freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
         freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process

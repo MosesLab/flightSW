@@ -14,7 +14,7 @@ void * hlp_control(void * arg) {
     /*initialize virtual shell*/
     vshell_init();
 
-/*initialize virtual shell input*/
+    /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
 
     /*initialize locking queue for hk down packets*/
@@ -26,7 +26,7 @@ void * hlp_control(void * arg) {
     } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_SIM);
     } else {
-        record("HK down serial connection not configured");
+        record("HK up serial connection not configured");
     }
 
     /*build lookup table for encoding and decoding packets*/
@@ -61,33 +61,33 @@ void * hlp_control(void * arg) {
              */
             switch (p->type[0]) {
                 case SHELL:
-//                    printf("Shell packet\n");
+                    //                    printf("Shell packet\n");
                     /*write to input of virtual shell*/
                     hlp_shell(stdin_des, p);
 
                     break;
                 case MDAQ_RQS:
-//                    printf("DAQ packet\n");
+                    //                    printf("DAQ packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case UPLINK:
-//                    printf("HLP Uplink packet\n");
+                    //                    printf("HLP Uplink packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case PWR:
-//                    printf("Power packet\n");
+                    //                    printf("Power packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
                 case HK_RQS:
-//                    printf("HK Request Packet\n");
+                    //                    printf("HK Request Packet\n");
                     p->control = concat(3, p->type, p->subtype, p->data);
                     p->status = execPacket(p);
                     break;
                 default:
-//                    printf("Bad Packet type\n");
+                    //                    printf("Bad Packet type\n");
                     p->status = BAD_PACKET;
                     break;
             }
@@ -122,7 +122,7 @@ void * hlp_control(void * arg) {
  */
 void * hlp_down(void * arg) {
     prctl(PR_SET_NAME, "hlp_down", 0, 0, 0);
-    
+
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
@@ -157,7 +157,7 @@ void * hlp_down(void * arg) {
  */
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
-    
+
     int data = FALSE;
     char * buf;
 
@@ -169,15 +169,15 @@ void * hlp_shell_out(void * arg) {
     int stdout_des = open(STDOUT_PIPE, O_RDONLY);
 
     while (ts_alive) {
-        
+
         /*initialize buffer*/
-         buf = calloc(sizeof (char),256);
-         
+        buf = calloc(sizeof (char), 256);
+
         /*use select() to monitor output pipe*/
         data = input_timeout(stdout_des, 2);
 
         if (data) {
-         
+
             /*read from stdout pipe*/
             read(stdout_des, buf, 255);
 
@@ -185,7 +185,7 @@ void * hlp_shell_out(void * arg) {
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
         }
-                        //free(buf);    //not sure why this doesnt work.
+        //free(buf);    //not sure why this doesnt work.
     }
 
     return NULL;

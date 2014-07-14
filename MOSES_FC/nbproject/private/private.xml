@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <code-assistance-data xmlns="http://www.netbeans.org/ns/make-project-private/1">
-        <code-model-enabled>true</code-model-enabled>
-    </code-assistance-data>
     <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
         <activeConfTypeElem>1</activeConfTypeElem>
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxInit.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/ConsFunc.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/moses.conf</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/gpio.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/moses.conf</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/main.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/gpio.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/Reg9056.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/ConsFunc.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/Reg9056.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxInit.c</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/nbproject/Makefile-Debug.mk</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.h</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
-            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/gpio.c</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxApiI2cAa.c</file>
             <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.h</file>
+            <file>file:/home/birdie/NetBeansProjects/flightSW/MOSES_FC/gpio.c</file>
         </group>
     </open-files>
 </project-private>

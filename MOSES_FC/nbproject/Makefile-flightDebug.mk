@@ -83,13 +83,13 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moses_fc: ${OBJECTFILES}
 
 ${OBJECTDIR}/control.o: control.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/control.o control.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/control.o control.c
 
 ${OBJECTDIR}/controlFuncs.o: controlFuncs.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
 
 ${OBJECTDIR}/gpio.o: gpio.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -98,28 +98,28 @@ ${OBJECTDIR}/gpio.o: gpio.c
 
 ${OBJECTDIR}/hashTable.o: hashTable.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hashTable.o hashTable.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/hashTable.o hashTable.c
 
 ${OBJECTDIR}/lockingQueue.o: lockingQueue.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lockingQueue.o lockingQueue.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lockingQueue.o lockingQueue.c
 
 ${OBJECTDIR}/logger.o: logger.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/logger.o logger.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/logger.o logger.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/packet.o: packet.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/packet.o packet.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/packet.o packet.c
 
 ${OBJECTDIR}/plx/Aardvark.o: plx/Aardvark.c 
 	${MKDIR} -p ${OBJECTDIR}/plx
@@ -153,33 +153,33 @@ ${OBJECTDIR}/plx/PlxInit.o: plx/PlxInit.c
 
 ${OBJECTDIR}/roe_image.o: roe_image.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/roe_image.o roe_image.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/roe_image.o roe_image.c
 
 ${OBJECTDIR}/sci_timeline_funcs.o: sci_timeline_funcs.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/sci_timeline_funcs.o sci_timeline_funcs.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sci_timeline_funcs.o sci_timeline_funcs.c
 
 ${OBJECTDIR}/science_timeline.o: science_timeline.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/science_timeline.o science_timeline.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/science_timeline.o science_timeline.c
 
 ${OBJECTDIR}/send_TM.o: send_TM.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/send_TM.o send_TM.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/send_TM.o send_TM.c
 
 ${OBJECTDIR}/sequence.o: sequence.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/sequence.o sequence.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sequence.o sequence.c
 
 ${OBJECTDIR}/v_shell.o: v_shell.c 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/v_shell.o v_shell.c
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/v_shell.o v_shell.c
 
 # Subprojects
 .build-subprojects:
