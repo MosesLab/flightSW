@@ -27,6 +27,8 @@ int takeExposure(double duration, int sig)
     if(sig == 1) // use the shutter for Data sequence 
     {
         //send open shutter signal to DIO
+        open_shutter();
+        
         gettimeofday(&expstart, NULL);
         
         //wait for interval to open shutter
@@ -35,7 +37,9 @@ int takeExposure(double duration, int sig)
         
         //wait for exposure duration, calculate with the pulse
         actual = wait_exposure(dur) + PULSE;
+        
         // send close shutter signal to DIO
+        close_shutter();
         
         // wait for interval to close shutter
         

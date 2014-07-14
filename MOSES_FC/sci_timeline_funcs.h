@@ -11,6 +11,7 @@
 #include "science_timeline.h"
 #include "roe_image.h"
 #include "control.h"
+#include "gpio.h"
 
 int wait_exposure(int);
 int takeExposure(double duration,int sig);
