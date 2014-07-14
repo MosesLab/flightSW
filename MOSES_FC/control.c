@@ -193,10 +193,10 @@ void * hlp_shell_out(void * arg) {
 //            free(buf2);
 
             /*push onto hk down queue*/
-//            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
-//            enqueue(&hkdownQueue, sr);
+            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
+            enqueue(&hkdownQueue, sr);
         }
-        free(buf);    //not sure why this doesnt work.
+//        free(buf);    //not sure why this doesnt work.
     }
 
     return NULL;
