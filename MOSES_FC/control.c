@@ -108,7 +108,7 @@ void * hlp_control(void * arg) {
             enqueue(&hkdownQueue, nextp);
 
         }
-        //        free(p);    //Why doesn't this work????
+                free(p);    //Why doesn't this work????
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -179,13 +179,15 @@ void * hlp_shell_out(void * arg) {
         if (data) {
 
             /*read from stdout pipe*/
-            read(stdout_des, buf, 255);
+            if((read(stdout_des, buf, 255)) == -1){
+                record("read failed in HLP shell out");
+            }
 
             /*push onto hk down queue*/
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
         }
-        //free(buf);    //not sure why this doesnt work.
+        free(buf);    //not sure why this doesnt work.
     }
 
     return NULL;

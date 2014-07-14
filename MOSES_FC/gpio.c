@@ -38,7 +38,7 @@ int poke_gpio(U32 offset, U32 data){
         }
         else{
             
-            /*write to device*/
+            /*write data to device*/
             rc = PlxPci_PciBarSpaceWrite(&fpga_dev, bar_index, offset, &data, sz_buffer, type_bit, FALSE);
             
             /*Check if write was successful*/
