@@ -18,6 +18,9 @@
 #include "packet.h"
 #include "hashTable.h"
 #include "v_shell.h"
+#include "sequence.h"
+#include "defs.h"
+#include "control.h"
 
 extern LockingQueue hkdownQueue;
 

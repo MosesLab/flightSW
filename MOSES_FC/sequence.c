@@ -44,8 +44,9 @@ sequence_t constructSequence(char *filepath) {
 void loadSequences() {
     char filepath[] = "sequence"; //default folder path
     int numfiles = 0;
-    char strdir[50];
+    char strdir[100];
 
+    /*Open up all files that */
     DIR *d;
     struct dirent *dir;
     d = opendir("sequence");
@@ -55,7 +56,7 @@ void loadSequences() {
                 numfiles++;
             }
 
-            printf("%s\n", dir->d_name);
+            //printf("%s\n", dir->d_name);
         }
 
         closedir(d);
@@ -71,7 +72,7 @@ void loadSequences() {
                 sprintf(strdir, "%s/%s", filepath, dir->d_name);\
                 sequenceMap[i] = constructSequence(strdir);\
                 i++;
-                
+                //seq_map_size = i;  //Need to send this variable to science_timeline
             }
         }
 

@@ -63,8 +63,8 @@ void start_threads() {
         pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
     if (config_values[telem_thread] == 1)
         pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
-    if (config_values[hlp_shell_thread] == 1)
-        pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
+    //if (config_values[hlp_shell_thread] == 1)
+    //    pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
 
 
 }

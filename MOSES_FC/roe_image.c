@@ -62,8 +62,19 @@ void setData(short **pdata, int *psize, char pchannels) {
     }
 }
 
-void writeToFile(char* file, char* catalog) {
-    printf("inside writetofile\n");
+void createXML()
+{
+    /*Append will create a new file if one does not exist*/
+    /*If a file does exist, this function will open it and */
+    /*then close it immediately*/
+    FILE *checkxml;
+    printf(CATALOG);
+    checkxml = fopen(CATALOG, "a");
+    fclose(checkxml);
+}
+
+
+void writeToFile(char* file) {
     int i;
     int linecount = 0;
 //    char* msg;
@@ -72,10 +83,10 @@ void writeToFile(char* file, char* catalog) {
     char* line;
     size_t len = 0;
     ssize_t read;
-
-    /*Check to see if file exists or not*/
+    createXML();
+    /*Check to see if file had data in it*/
     FILE *checkxml;
-    checkxml = fopen(catalog, "r");
+    checkxml = fopen(CATALOG, "r");
     fseek(checkxml, 0, SEEK_END);
     if (ftell(checkxml) == 0) {
         newfile = 1;
@@ -84,19 +95,17 @@ void writeToFile(char* file, char* catalog) {
         newfile = 0;
     }
     fclose(checkxml);
-
     FILE *readxml;
-    readxml = fopen(catalog, "r");
+    readxml = fopen(CATALOG, "r");
 
     while ((read = getline(&line, &len, readxml)) != -1) {
         strncpy(xmlarr[linecount], line, 200);
         linecount++;
     }
     fclose(readxml);
-
     /*Write to XML File*/
     FILE * outxml;
-    outxml = fopen(catalog, "r+");
+    outxml = fopen(CATALOG, "r+");
 
     /*write data from previous xml file*/
     for (i = 0; i < linecount; i++) {
@@ -157,13 +166,3 @@ void writeToFile(char* file, char* catalog) {
     fclose(dataOut);
 
 }
-
-/*void pointToEnd(FILE* a)
-{
-    char line[100];
-        
-
-    }
-    printf("string not found!\n");
-    return;
-}*/

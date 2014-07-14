@@ -36,7 +36,6 @@ void * hlp_control(void * arg) {
     hlpHashInit();
 
     /*all below should be changed to make it more organized*/
-    ops.seq_pause = TRUE;
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;

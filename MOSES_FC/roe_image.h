@@ -8,7 +8,7 @@
 #ifndef ROE_IMAGE_H
 #define	ROE_IMAGE_H
 
-//#include <sys/stat.h>
+
 #include "system.h"
 #include <stdio.h>
 #include <string.h>
@@ -21,6 +21,9 @@
 
 #define IMAGE_HEIGHT 1024
 #define IMAGE_WIDTH 2048
+
+#define CATALOG "/mdata/imageindex.xml"
+#define DATADIR "/mdata"
 
 //typedef struct {
 //	char *name;
@@ -46,8 +49,7 @@ void constructEmpty();
 void constructImage(short** pdata,int* psize,char channels,int pbitpix);
 void init(short** data, int *size,char, int);
 void setData(short **data, int *size, char channels);
-void writeToFile(char* file, char* catalog);
-void pointToEnd(FILE* a);
+void writeToFile(char* file);
 
 
 #endif	/* ROEIMAGE_H */
