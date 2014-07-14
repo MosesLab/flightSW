@@ -183,7 +183,7 @@ void * hlp_shell_out(void * arg) {
                 record("read failed in HLP shell out");
             }
             
-            char * buf2 = calloc(sizeof (char), 256);
+//            char * buf2 = calloc(sizeof (char), 256);
             
 //            int i;
 //            for(i = 0; i < 256; i++){
