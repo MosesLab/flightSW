@@ -19,7 +19,7 @@
 #define PLX_BUFFER_WIDTH 4
 /*GPIO write variables*/
 
-PLX_DEVICE_OBJECT device;
+PLX_DEVICE_OBJECT fpga_dev;
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 
