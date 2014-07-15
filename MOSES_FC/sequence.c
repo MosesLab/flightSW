@@ -15,7 +15,7 @@
 
 sequence_t constructSequence(char *filepath) {
     int i;
-    char stuff[50];
+    char input_data[50];
 
     FILE* file;
     tempSequence.sequenceName = (char *) malloc(30);
@@ -26,17 +26,28 @@ sequence_t constructSequence(char *filepath) {
     file = fopen(filepath, "r");
 
     //printf("filepath: %s\n", filepath);
-
-    fscanf(file, "%s\n", stuff); //scan "SEQUENCE"
-    fscanf(file, "%s %s\n", stuff, stuff); //scan "NAME" and filepath
-    fscanf(file, "%s %d\n", stuff, &tempSequence.numFrames); //scan "COUNT" and number of exposures 
-    fscanf(file, "%s ", stuff); //scan "BEGIN"   
+    
+    int rc;
+    
+    rc += fscanf(file, "%s\n", input_data); //scan "SEQUENCE"
+    if(rc < 0) record("Error reading sequence\n");
+    
+    rc += fscanf(file, "%s %s\n", input_data, input_data); //scan "NAME" and filepath
+    if(rc < 0) record("Error reading sequence\n");
+    
+    rc += fscanf(file, "%s %d\n", input_data, &tempSequence.numFrames); //scan "COUNT" and number of exposures 
+    if(rc < 0) record("Error reading sequence\n");
+    
+    rc += fscanf(file, "%s ", input_data); //scan "BEGIN"
+    if(rc < 0) record("Error reading sequence\n");
 
     //scan the exposures
     for (i = 0; i < (tempSequence.numFrames - 1); i++) {
-        fscanf(file, "%lf ", &tempSequence.exposureTimes[i]);
+        rc += fscanf(file, "%lf ", &tempSequence.exposureTimes[i]);
+        if(rc < 0) record("Error reading sequence\n");
     }
-    fscanf(file, "%lf\n", &tempSequence.exposureTimes[tempSequence.numFrames - 1]);
+    rc += fscanf(file, "%lf\n", &tempSequence.exposureTimes[tempSequence.numFrames - 1]);
+    if(rc < 0) record("Error reading sequence\n");
 
     return tempSequence;
 }

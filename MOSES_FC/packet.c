@@ -169,37 +169,6 @@ int init_serial_connection(int hkup, char * serial_path) {
     return fd;
 }
 
-/*Initiate HLP down for writing*/
-//int init_hkdown_serial_connection() {
-//    /*Open serial device for reading*/
-//    int fd = open(HKDOWN, O_WRONLY | O_NOCTTY);
-//    if (fd < 0) {
-//        perror(HKDOWN);
-//        exit(-1);
-//    }
-//    /*save current serial port settings*/
-//    tcgetattr(fd, &oldtio_up);
-//
-//    /*clear struct for new port settings*/
-//    bzero(&newtio_up, sizeof (newtio_up));
-//
-//    /*set flags for non-canonical serial connection*/
-//    newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
-//    newtio_up.c_cflag &= ~(PARENB | PARODD);
-//    newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-//    //newtio_up.c_iflag |= ISTRIP;
-//    newtio_up.c_oflag &= ~OPOST;
-//    newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
-//
-//    /*set non-canonical attributes*/
-//    newtio_up.c_cc[VTIME] = 1;
-//    newtio_up.c_cc[VMIN] = 255;
-//
-//    tcflush(fd, TCIFLUSH);
-//    tcsetattr(fd, TCSANOW, &newtio_up);
-//
-//    return fd;
-//}
 
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
