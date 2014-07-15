@@ -28,7 +28,7 @@ sequence_t constructSequence(char *filepath) {
 
     //printf("filepath: %s\n", filepath);
     
-    int rc;
+    int rc = 0;
     
     rc += fscanf(file, "%s\n", input_data); //scan "SEQUENCE"
     if(rc < 0) record("Error reading sequence\n");
