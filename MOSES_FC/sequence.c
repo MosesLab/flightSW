@@ -8,9 +8,10 @@
  **************************************************/
 
 #include "sequence.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "system.h"
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
 #include <dirent.h>
 
 sequence_t constructSequence(char *filepath) {
