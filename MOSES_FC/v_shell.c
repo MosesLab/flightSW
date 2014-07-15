@@ -11,9 +11,11 @@
 
 /*executes bash and attaches stdin and stdout to pipes*/
 int vshell_init() {
+    int rc;
+    
     /*initialize pipes*/
-//    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
-//    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
+    //    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
+    //    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
     mkfifo(STDIN_PIPE, 0666);
     mkfifo(STDOUT_PIPE, 0666);
 
@@ -23,19 +25,31 @@ int vshell_init() {
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
-        fopen(STDIN_PIPE, "r");
+        
+        rc = fopen(STDIN_PIPE, "r");
+        if(rc < 0) record("Error opening named pipe");
         fopen(STDOUT_PIPE, "w");
-    
-                fclose(stdout);
-                fclose(stdin);
-        freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
-        freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
-        freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
+        if(rc < 0) record("Error opening named pipe");
+
+        /*Close stdin and stdout to make sure*/
+        rc = fclose(stdout);
+        if(rc == EOF) record("Failed to close stdout");
+        fclose(stdin);
+        if(rc == EOF) record("Failed to close stdin");
+        
+        /*Copy stdin and stdout to named pipes*/
+        FILE * rf;
+        rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
+        if(rf == NULL) record("Failed to redirect stdin");
+        rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
+        if(rf == NULL) record("Failed to redirect stdout");
+        rf = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
+         if(rf == NULL) record("Failed to redirect stderr");
 
         record("Starting shell...\n");
         //Start shelld --  this one uses bash. the ./bashrc file should be used
         //        if (execlp("bash", "bash", "--noprofile", "--rcfile", "bashrc", "-i", (char *) 0) == -1) {
-        if (execlp("bash", "bash", "--rcfile", "bashrc", "-i", "-s",  (char *) 0) == -1) {
+        if (execlp("bash", "bash", "--rcfile", "bashrc", "-i", "-s", (char *) 0) == -1) {
             record("ERROR in starting virtual shell!\n");
         }
         return -1; //shouldn't return if it worked correctly
