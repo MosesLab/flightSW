@@ -14,36 +14,35 @@
  * function by looking up the control string in the hash table
  */
 int execPacket(packet_t* p) {
-    node_t* np =lookup(hlpHashTable, p->control, hlp_hash_size); //Lookup corresponding function in table
+    node_t* np = lookup(hlpHashTable, p->control, hlp_hash_size); //Lookup corresponding function in table
     if (np == NULL) {
         return BAD_PACKET; //bad acknowlege if unsuccessful in finding control string in hash table
     }
-    int status = (*((hlpControl)np->def))(p); //Call control function, cast from void pointer
+    int status = (*((hlpControl) np->def))(p); //Call control function, cast from void pointer
     return status;
 
 }
 
-int hlp_shell(int pipe_fd, packet_t * p){
-    if(strcmp(p->subtype, INPUT) == 0){
+int hlp_shell(int pipe_fd, packet_t * p) {
+    if (strcmp(p->subtype, INPUT) == 0) {
         char msg[255];
-        
-       
-        
-        /*write to stdin of virtual shell*/
-//        write(in_stream, p->data, p->dataSize + 1);
-//        fwrite(p->data, sizeof(char), p->dataSize + 1, pipe_fd);
-        write(pipe_fd, p->data, p->dataSize + 1);
-        
-        sprintf(msg, "Executed command: %s\n", p->data);
-        record(msg);
-        
-         /*send shell acknowledge*/
-        packet_t * r = constructPacket(SHELL_S, ACK, p->data);
-        enqueue(&hkdownQueue, r);
-        
-        return GOOD_PACKET;
-    }
-    else{
+
+        int rc = write(pipe_fd, p->data, p->dataSize + 1);
+
+        if (rc < 0) {
+            record("Shell failed to write to stdin");
+            return BAD_PACKET;
+        } else {
+            sprintf(msg, "Executed command: %s\n", p->data);
+            record(msg);
+
+            /*send shell acknowledge*/
+            packet_t * r = constructPacket(SHELL_S, ACK, p->data);
+            enqueue(&hkdownQueue, r);
+
+            return GOOD_PACKET;
+        }
+    } else {
         return BAD_PACKET;
     }
 }
@@ -51,20 +50,20 @@ int hlp_shell(int pipe_fd, packet_t * p){
 /*Uplink control functions*/
 int uDataStart(packet_t* p) {
     record("Received data start Uplink\n");
-    
+
     int i;
-    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
-            }
+        }
     }
-    
+
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-    
 
-    
+
+
     packet_t* r = constructPacket(UPLINK_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -73,9 +72,9 @@ int uDataStart(packet_t* p) {
 int uDataStop(packet_t* p) {
     record("Received data stop Uplink\n");
     //Insert uplink handling code here
-    
+
     ops.seq_run = FALSE;
-    
+
     packet_t* r = constructPacket(UPLINK_S, DATASTOP, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -84,22 +83,22 @@ int uDataStop(packet_t* p) {
 int uDark1() {
     record("Received Dark1 Uplink\n");
     //Insert uplink handling code here
-    
-    
+
+
     int i;
-    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
-            }
+        }
     }
-    
+
     sleep(1);
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-    
 
-    
+
+
     packet_t* r = constructPacket(UPLINK_S, DARK1, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -108,18 +107,18 @@ int uDark1() {
 int uDark2(packet_t* p) {
     record("Received Dark2 Uplink\n");
     //Insert uplink handling code here
-    
+
     int i;
-    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
-            }
+        }
     }
-    
+
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-    
+
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -128,18 +127,18 @@ int uDark2(packet_t* p) {
 int uDark3(packet_t* p) {
     record("Received Dark3 Uplink\n");
     //Insert uplink handling code here
-    
+
     int i;
-    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
-            }
+        }
     }
-    
+
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-    
+
     packet_t* r = constructPacket(UPLINK_S, DARK3, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -148,18 +147,18 @@ int uDark3(packet_t* p) {
 int uDark4(packet_t* p) {
     record("Received Dark4 Uplink\n");
     //Insert uplink handling code here
-    
+
     int i;
-    for(i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
-            }
+        }
     }
-    
+
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-    
+
     packet_t* r = constructPacket(UPLINK_S, DARK4, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1089,7 +1088,7 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = calloc(sizeof(node_t) * hlp_hash_size, 1)) == NULL) {
+    if ((hlpHashTable = calloc(sizeof (node_t) * hlp_hash_size, 1)) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
