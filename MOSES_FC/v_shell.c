@@ -12,6 +12,7 @@
 /*executes bash and attaches stdin and stdout to pipes*/
 int vshell_init() {
     int rc;
+    FILE * rf;
     
     /*initialize pipes*/
     //    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
@@ -26,10 +27,10 @@ int vshell_init() {
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
         
-        rc = fopen(STDIN_PIPE, "r");
-        if(rc < 0) record("Error opening named pipe");
-        fopen(STDOUT_PIPE, "w");
-        if(rc < 0) record("Error opening named pipe");
+        rf = fopen(STDIN_PIPE, "r");
+        if(rf == NULL) record("Error opening named pipe");
+        rf = fopen(STDOUT_PIPE, "w");
+        if(rf == NULL) record("Error opening named pipe");
 
         /*Close stdin and stdout to make sure*/
         rc = fclose(stdout);
@@ -38,7 +39,7 @@ int vshell_init() {
         if(rc == EOF) record("Failed to close stdin");
         
         /*Copy stdin and stdout to named pipes*/
-        FILE * rf;
+        
         rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
         if(rf == NULL) record("Failed to redirect stdin");
         rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
