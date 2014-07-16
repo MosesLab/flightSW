@@ -8,8 +8,9 @@
 #ifndef ROE_IMAGE_H
 #define	ROE_IMAGE_H
 
-
+#include <pthread.h>
 #include "system.h"
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -18,12 +19,15 @@
 #include <stddef.h>
 #include "system.h"
 #include "hlp.h"
+#include "control.h"
 
 #define IMAGE_HEIGHT 1024
 #define IMAGE_WIDTH 2048
 
 #define CATALOG "/mdata/imageindex.xml"
 #define DATADIR "/mdata"
+
+
 
 //typedef struct {
 //	char *name;
@@ -44,12 +48,16 @@
 
 
 roeimage_t image;        //should be declared using malloc --RTS
+roeimage_t tempimage;
+
+
 
 void constructEmpty();
 void constructImage(short** pdata,int* psize,char channels,int pbitpix);
 void init(short** data, int *size,char, int);
 void setData(short **data, int *size, char channels);
-void writeToFile(char* file);
+void writeToFile();
+
 
 
 #endif	/* ROEIMAGE_H */

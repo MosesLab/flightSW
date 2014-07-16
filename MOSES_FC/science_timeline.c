@@ -14,22 +14,8 @@ void * science_timeline(void * arg) {
     //sleep(1);
     prctl(PR_SET_NAME,"SCI_TIMELINE",0,0,0);
     record("-->Science Timeline thread started....\n\n");
-
     init_signal_handler_stl();
-
     char* msg = (char *) malloc(200 * sizeof (char));
-    int i;
-    short *BUFFER[4]; 
-
-
-
-    //sigsuspend(&oldmaskstl); 
-
-    //ops.sequence = 1; // start off with the first sequence TESTING;
-    /*create pixel buffers */
-    for (i = 0; i < 4; i++) {
-        BUFFER[i] = (short *) calloc(2200000, sizeof(short));
-    }
 
     /* wait for ROE to become active */
     //Add code here
@@ -38,7 +24,6 @@ void * science_timeline(void * arg) {
     //Add code here
 
     while (ts_alive) {
-
         if (ops.seq_run == FALSE) {
             record("Sequence stopped, wait for signal to start\n");
 
@@ -66,7 +51,8 @@ void * science_timeline(void * arg) {
         enqueue(&hkdownQueue, r);
 
         /* for each exposure in the sequence */
-        printf("Number of Frames:%d\n", currentSequence.numFrames);
+        //printf("Number of Frames:%d\n", currentSequence.numFrames);
+        int i;
         for (i = 0; i < currentSequence.numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence.exposureTimes[i], i + 1, currentSequence.numFrames);
             record(msg);
@@ -83,7 +69,7 @@ void * science_timeline(void * arg) {
             sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence.exposureTimes[i]);
             record(msg);
             int duration = takeExposure(currentSequence.exposureTimes[i], currentSequence.seq_type);
-            
+            image.duration = duration;
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
@@ -94,22 +80,23 @@ void * science_timeline(void * arg) {
             enqueue(&hkdownQueue, b);
 
             /*initialize index( these will start at -1 and be incremented by DMA*/
-            int index[4] = {2200000, 2200000, 2200000, 2200000};
+            //int index[4] = {2200000, 2200000, 2200000, 2200000};
 
-            int num = currentSequence.currentFrame;
+            //int num = currentSequence.currentFrame;
             record("Done with exposure, perform data collection.\n");
 
-            /* initialize the DMA */
-
-            /* command FPGA to start reading  and send packet*/
-
-            /* command ROE to readout, then dmaWait, and finish and sort? */
-
             /* push packet w/info about end read out */
+            
             /* write buffer data to disk  and telemetry*/
             record("Writing data to disk.\n");
+
+            //wait 4 seconds
+            sleep(4);
+            //poll for response?
             if (ops.dma_write == 1)
-                write_data(duration, num, BUFFER, index);
+            { 
+                pthread_kill(threads[image_writer_thread], SIGUSR2);
+            }
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence.exposureTimes[i]);
             record(msg);
@@ -127,20 +114,17 @@ void * science_timeline(void * arg) {
 
     }//end while ts_alive
     /* delete pixel buffers */
-    free(BUFFER[0]);
-    free(BUFFER[1]);
-    free(BUFFER[2]);
-    free(BUFFER[3]);
+
 
     record("Done with scienceTimeline\n");
     return NULL;
 }
 
 void runsig() {
-    char msg[100]; // for writing strings
-    printf(msg, "seq_run: %d\n", ops.seq_run);
+ //   char msg[100]; // for writing strings
+    //printf(msg, "seq_run: %d\n", ops.seq_run);
     ops.seq_run = TRUE;
-    printf(msg, "seq_run: %d\n", ops.seq_run);
+    //printf(msg, "seq_run: %d\n", ops.seq_run);
 }
 
 /*this function sets up the signal handler to run
@@ -152,11 +136,10 @@ void init_signal_handler_stl() {
     sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
 
     /*no signal dispositions for signals between threads*/
-        run_action.sa_handler = runsig;
-        run_action.sa_mask = oldmaskstl;
-        run_action.sa_flags = 0;
+    run_action.sa_handler = runsig;
+    run_action.sa_mask = oldmaskstl;
+    run_action.sa_flags = 0;
     
-        sigaction(SIGUSR1, &run_action, NULL);
+    sigaction(SIGUSR1, &run_action, NULL);
     record("Signal handler initiated.\n");
-
 }

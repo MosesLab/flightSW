@@ -10,7 +10,7 @@
 
 #include <pthread.h>
 
-#define NUM_THREADS 6
+#define NUM_THREADS 7
 
 pthread_attr_t attrs; //attributes of executed threads
 pthread_t threads[NUM_THREADS]; //array of running threads

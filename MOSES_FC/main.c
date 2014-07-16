@@ -11,7 +11,6 @@
  * 
  */
 int main(void) {
-
     /*init configuration stings*/
     config_strings_init();
 
@@ -71,6 +70,8 @@ void start_threads() {
         pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
     if (config_values[hlp_shell_thread] == 1)
         pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
+    if (config_values[image_writer_thread] == 1)
+        pthread_create(&threads[image_writer_thread], &attrs,  (void * (*)(void*))write_data, NULL);
 
 
 }
@@ -114,6 +115,7 @@ void config_strings_init() {
     config_strings[hlp_shell_thread] = SHELL_CONF;
     config_strings[sci_timeline_thread] = SCIENCE_CONF;
     config_strings[telem_thread] = TELEM_CONF;
+    config_strings[image_writer_thread] = IMAGE_WRITER_CONF;
 
     /*must offset by NUM_THREADS to be enumerated correctly*/
     //    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;

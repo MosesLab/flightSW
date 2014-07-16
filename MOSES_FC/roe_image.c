@@ -68,16 +68,19 @@ void createXML()
     /*If a file does exist, this function will open it and */
     /*then close it immediately*/
     FILE *checkxml;
-    printf(CATALOG);
+   // printf(CATALOG);
     checkxml = fopen(CATALOG, "a");
     fclose(checkxml);
 }
 
 
-void writeToFile(char* file) {
+void writeToFile() {
+    
+    
+
+    
     int i;
     int linecount = 0;
-//    char* msg;
     int newfile = 0;
     char xmlarr[10000][200];
     char* line;
@@ -106,8 +109,7 @@ void writeToFile(char* file) {
     /*Write to XML File*/
     FILE * outxml;
     outxml = fopen(CATALOG, "r+");
-
-    /*write data from previous xml file*/
+    /*Write data from previous xml file*/
     for (i = 0; i < linecount; i++) {
         fwrite(xmlarr[i], sizeof (xmlarr[i][0]), strlen(xmlarr[i]), outxml);
     }
@@ -119,50 +121,53 @@ void writeToFile(char* file) {
 
     /*construct the channels string*/
     char schannels[5] = "";
-    if ((int) image.channels & CH0)
+    if ((int) tempimage.channels & CH0)
         strncat(schannels, "0", 1);
-    if ((int) image.channels & CH1)
+    if ((int) tempimage.channels & CH1)
         strncat(schannels, "1", 1);
-    if ((int) image.channels & CH2)
+    if ((int) tempimage.channels & CH2)
         strncat(schannels, "2", 1);
-    if ((int) image.channels & CH3)
+    if ((int) tempimage.channels & CH3)
         strncat(schannels, "3", 1);
-    
     if (newfile) {
         /*Write XML delcaration if new file*/
         fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
         fprintf(outxml, "<CATALOG>\n");
     }
     fprintf(outxml, "<ROEIMAGE>\n");
-    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image.filename);
-    fprintf(outxml, "\t<NAME>%s</NAME>\n", image.name);
-    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image.bitpix);
-    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image.width);
-    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image.height);
-    fprintf(outxml, "\t<DATE>%s</DATE>\n", image.date);
-    fprintf(outxml, "\t<TIME>%s</TIME>\n", image.time);
-    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image.origin);
-    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image.instrument);
-    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image.observer);
-    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image.object);
-    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image.duration);
+    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", tempimage.filename);
+    fprintf(outxml, "\t<NAME>%s</NAME>\n", tempimage.name);
+    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", tempimage.bitpix);
+    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", tempimage.width);
+    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", tempimage.height);
+    fprintf(outxml, "\t<DATE>%s</DATE>\n", tempimage.date);
+    fprintf(outxml, "\t<TIME>%s</TIME>\n", tempimage.time);
+    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", tempimage.origin);
+    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", tempimage.instrument);
+    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", tempimage.observer);
+    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", tempimage.object);
+    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", tempimage.duration);
     fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image.size[i]);
+        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, tempimage.size[i]);
     }
     fprintf(outxml, "</ROEIMAGE>\n");
     fprintf(outxml, "</CATALOG>\n");
     
     fclose(outxml);
 
-
+   
     /*Write Image Data*/
     FILE *dataOut;
-    dataOut = fopen(file, "w");
+    dataOut = fopen(tempimage.filename, "w"); //change this file(path) to a variable of image struct
+    
     for (i = 0; i < 4; i++) {
-        if (image.channels & (char) (1 << i))
-            fwrite(image.data[i], sizeof (short), image.size[i], dataOut);
+        if (tempimage.channels & (char) (1 << i))
+            fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
     }
     fclose(dataOut);
+    
+   
 
 }
+
