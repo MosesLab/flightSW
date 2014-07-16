@@ -436,7 +436,7 @@ int exitSW(packet_t* p) {
 //    } else {
 //        kill(getppid(), SIGINT);
 //    }
-    kill(main_pid, SIGINT);
+    pthread_kill(main_pid, SIGINT);
     return GOOD_PACKET;
 }
 

@@ -63,6 +63,8 @@ int takeExposure(double duration, int sig) {
    data to memory and will initialize the writing to disk*/
 int write_data() {
 
+    prctl(PR_SET_NAME,"IMAGE_WRITER",0,0,0);
+    
     while (ts_alive) {
 
         short *BUFFER[4];
