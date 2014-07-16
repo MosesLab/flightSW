@@ -24,17 +24,21 @@ int main(void) {
 
     /*record this thread's PID*/
     main_pid = getpid();
-    
+
     /*start threads indicated by configuration file*/
     start_threads();
 
     /*Upon program termiation (^c) attempt to join the threads*/
     init_quit_signal_handler();
-    sigprocmask(SIG_BLOCK, &mask, &oldmask);
-    while (ts_alive) {
-        sigsuspend(&oldmask); // wait here until the program is killed
-    }
-    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
+//    sigprocmask(SIG_BLOCK, &mask, &oldmask);
+//    while (ts_alive) {
+//        sigsuspend(&oldmask); // wait here until the program is killed
+//    }
+//    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
+
+    pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+    sigwait(&mask, &quit_sig);
+    pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
 
     /*SIGINT caught, ending program*/
     join_threads();
@@ -73,16 +77,16 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-//    void * returns;
+    //    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
-    sleep(1);
-    
+//    sleep(1);
+
     int i;
     for (i = 0; i < NUM_THREADS; i++) {
-        if (threads[i] != 0){
-//            pthread_join(threads[i], &returns);
-        pthread_cancel(threads[i]);
+        if (threads[i] != 0) {
+            //            pthread_join(threads[i], &returns);
+            pthread_cancel(threads[i]);
         }
     }
 }
@@ -112,10 +116,10 @@ void config_strings_init() {
     config_strings[telem_thread] = TELEM_CONF;
 
     /*must offset by NUM_THREADS to be enumerated correctly*/
-//    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;
-//    config_strings[NUM_THREADS + hlp_down_interface] = HKDOWN_CONF;
-//    config_strings[NUM_THREADS + roe_interface] = ROE_CONF;
-//    config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
+    //    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;
+    //    config_strings[NUM_THREADS + hlp_down_interface] = HKDOWN_CONF;
+    //    config_strings[NUM_THREADS + roe_interface] = ROE_CONF;
+    //    config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
