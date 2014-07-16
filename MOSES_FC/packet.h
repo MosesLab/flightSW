@@ -25,8 +25,8 @@
 #define HKDOWN_REAL "/dev/ttyS3"
 //#define HKUP "/dev/ttyUSB0"
 //#define HKDOWN "/dev/ttyUSB1"
-#define HKUP_SIM "/dev/pts/1"
-#define HKDOWN_SIM "/dev/pts/24"
+#define HKUP_SIM "/dev/pts/26"
+#define HKDOWN_SIM "/dev/pts/29"
 
 #define HKUP 1
 #define HKDOWN 0

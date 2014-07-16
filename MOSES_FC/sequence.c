@@ -24,14 +24,11 @@ sequence_t constructSequence(char *filepath) {
         tempSequence.seq_type = 1; // type is data
     }
     file = fopen(filepath, "r");
-
-    //printf("filepath: %s\n", filepath);
-
+    
     fscanf(file, "%s\n", stuff); //scan "SEQUENCE"
     fscanf(file, "%s %s\n", stuff, stuff); //scan "NAME" and filepath
-    fscanf(file, "%s %d\n", stuff, &tempSequence.numFrames); //scan "COUNT" and number of exposures 
+    fscanf(file, "%s %d\n", stuff, &tempSequence.numFrames); //scan "COUNT" and number of exposures
     fscanf(file, "%s ", stuff); //scan "BEGIN"   
-
     //scan the exposures
     for (i = 0; i < (tempSequence.numFrames - 1); i++) {
         fscanf(file, "%lf ", &tempSequence.exposureTimes[i]);

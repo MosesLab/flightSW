@@ -22,7 +22,7 @@
 
 sigset_t maskstl, oldmaskstl;
 int caught_signal;
-struct sigaction run_action;   //action to be taken when ^C is entered
+struct sigaction run_action;   
 char sindex[2];
 char sframe[10];
 

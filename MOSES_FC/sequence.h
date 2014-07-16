@@ -11,10 +11,10 @@
 //#include "system.h"
 
 int seq_map_size;
-
 sequence_t *sequenceMap;
+sequence_t tempSequence;
+sequence_t currentSequence;
 
 sequence_t constructSequence(char *filepath);
 void loadSequences();
-sequence_t tempSequence;
-sequence_t currentSequence;
+

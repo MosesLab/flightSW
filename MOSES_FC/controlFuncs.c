@@ -50,11 +50,13 @@ int hlp_shell(int pipe_fd, packet_t * p){
 int uDataStart(packet_t* p) {
     record("Received data start Uplink\n");
     
+    
     int i;
     for(i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
+            
             }
     }
     
@@ -81,32 +83,31 @@ int uDataStop(packet_t* p) {
 
 int uDark1() {
     record("Received Dark1 Uplink\n");
-    //Insert uplink handling code here
-    
     
     int i;
+    for(i = 0; i < 5;i++)
+    {
+        printf("%s\n", sequenceMap[i].sequenceName);
+    }
     for(i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
             }
     }
-    
-    sleep(1);
+    printf("ops.sequence %d\n", ops.sequence);
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
     
-
-    
     packet_t* r = constructPacket(UPLINK_S, DARK1, NULL);
     enqueue(&hkdownQueue, r);
+    
+    
     return GOOD_PACKET;
 }
 
 int uDark2(packet_t* p) {
     record("Received Dark2 Uplink\n");
-    //Insert uplink handling code here
-    
     int i;
     for(i = 0; i < 5; i++)//replace 5 with sequence map size
     {
@@ -125,12 +126,10 @@ int uDark2(packet_t* p) {
 
 int uDark3(packet_t* p) {
     record("Received Dark3 Uplink\n");
-    //Insert uplink handling code here
-    
     int i;
     for(i = 0; i < 5; i++)//replace 5 with sequence map size
     {
-        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+        if (strstr(sequenceMap[i].sequenceName, "dark3") != NULL) {
             ops.sequence = i;
             }
     }
@@ -145,12 +144,10 @@ int uDark3(packet_t* p) {
 
 int uDark4(packet_t* p) {
     record("Received Dark4 Uplink\n");
-    //Insert uplink handling code here
-    
     int i;
     for(i = 0; i < 5; i++)//replace 5 with sequence map size
     {
-        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+        if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
             }
     }
