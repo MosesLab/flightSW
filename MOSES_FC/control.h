@@ -20,6 +20,7 @@
 #include "controlFuncs.h"
 #include "send_TM.h"
 #include "v_shell.h"
+#include "gpio.h"
 
 
 

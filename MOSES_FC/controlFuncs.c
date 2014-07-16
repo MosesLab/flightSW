@@ -429,12 +429,11 @@ int endSequence(packet_t* p) {
 /*Commands the flight software to terminate*/
 int exitSW(packet_t* p) {
     record("Command to terminate received\n");
-    
+
     /*necessary for platform dependencies*/
-    if(config_values[hlp_up_interface] == 1){
+    if (config_values[hlp_up_interface] == 1) {
         kill(getpid(), SIGINT);
-    }
-    else{
+    } else {
         kill(getppid(), SIGINT);
     }
     return GOOD_PACKET;
@@ -519,10 +518,19 @@ int resetSW(packet_t* p) {
 /*Command the payload subsystem to power on*/
 int enablePower(packet_t* p) {
     record("Command to enable subsystem power received\n");
+
     //Insert control code here  
-    packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-    enqueue(&hkdownQueue, r);
-    return GOOD_PACKET;
+    int subsystem = ahtoi(p->data, p->dataSize);
+    int rc = set_power(subsystem, ON);
+
+    /*check that API returned correctly*/
+    if (rc != TRUE) {
+        return BAD_PACKET;
+    } else {
+        packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
+        enqueue(&hkdownQueue, r);
+        return GOOD_PACKET;
+    }
 }
 
 /*Command the payload subsystem to power off*/

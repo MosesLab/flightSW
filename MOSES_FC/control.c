@@ -20,6 +20,15 @@ void * hlp_control(void * arg) {
     /*initialize locking queue for hk down packets*/
     lockingQueue_init(&hkdownQueue);
 
+    /*build lookup table for encoding and decoding packets*/
+    buildLookupTable();
+
+    /*initialize hash table to match packet strings to control functions*/
+    hlpHashInit();
+    
+    /*initialize arrays of power subsystem GPIO pins*/
+    init_power();
+    
     /*Open housekeeping downlink using configuartion file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_REAL);
@@ -29,11 +38,7 @@ void * hlp_control(void * arg) {
         record("HK up serial connection not configured");
     }
 
-    /*build lookup table for encoding and decoding packets*/
-    buildLookupTable();
-
-    /*initialize hash table to match packet strings to control functions*/
-    hlpHashInit();
+    
 
     /*all below should be changed to make it more organized*/
     ops.seq_run = FALSE;

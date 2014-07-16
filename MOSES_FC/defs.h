@@ -14,8 +14,14 @@
 
 #define FALSE 0
 #define TRUE 1
+
+#define ON 1
+#define OFF 0
+
 #define STARTBYTE '%'
 #define ENDBYTE '^'
+
+
 
 #define CH0		0x1	//0x8
 #define CH1		0x2	//0x4

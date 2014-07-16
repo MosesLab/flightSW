@@ -130,7 +130,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 
     /*Open serial device for reading*/
     int fd;
-    if (hkup) {
+    if (hkup == TRUE) {
         fd = open(serial_path, O_RDONLY | O_NOCTTY);
     }
     else{
