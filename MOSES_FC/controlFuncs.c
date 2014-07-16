@@ -431,7 +431,7 @@ int exitSW(packet_t* p) {
     record("Command to terminate received\n");
     
     /*necessary for platform dependencies*/
-    if(config_values[NUM_THREADS + hlp_up_interface] == 1){
+    if(config_values[hlp_up_interface] == 1){
         kill(getpid(), SIGINT);
     }
     else{
