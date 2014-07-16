@@ -22,6 +22,7 @@ enum thread_config {
     hlp_shell_thread,
     sci_timeline_thread,
     telem_thread,
+    image_writer_thread,
     hlp_up_interface,
     hlp_down_interface,
     roe_interface,
