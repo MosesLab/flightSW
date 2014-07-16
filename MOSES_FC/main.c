@@ -22,7 +22,9 @@ int main(void) {
     /*read in configuration values*/
     read_moses_config();
 
-
+    /*record this thread's PID*/
+    main_pid = getpid();
+    
     /*start threads indicated by configuration file*/
     start_threads();
 
@@ -73,6 +75,9 @@ void start_threads() {
 void join_threads() {
 //    void * returns;
 
+    /*sleep to give threads a chance to clean up a little*/
+    sleep(1);
+    
     int i;
     for (i = 0; i < NUM_THREADS; i++) {
         if (threads[i] != 0){

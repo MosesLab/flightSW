@@ -12,7 +12,7 @@
 
 void * science_timeline(void * arg) {
     //sleep(1);
-    prctl(PR_SET_NAME,"science_timeline",0,0,0);
+    prctl(PR_SET_NAME,"SCI_TIMELINE",0,0,0);
     record("-->Science Timeline thread started....\n\n");
 
     init_signal_handler_stl();

@@ -31,7 +31,7 @@
 
 volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
 
-
+pid_t main_pid;
 
 struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask;         //masks for SIGINT signal

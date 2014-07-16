@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 void record(const char* message);
+void srecord(int, ...);
 
 #endif	/* LOGGER_H */
 

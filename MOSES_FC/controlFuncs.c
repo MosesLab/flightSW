@@ -431,11 +431,12 @@ int exitSW(packet_t* p) {
     record("Command to terminate received\n");
 
     /*necessary for platform dependencies*/
-    if (config_values[hlp_up_interface] == 1) {
-        kill(getpid(), SIGINT);
-    } else {
-        kill(getppid(), SIGINT);
-    }
+//    if (config_values[hlp_up_interface] == 1) {
+//        kill(getpid(), SIGINT);
+//    } else {
+//        kill(getppid(), SIGINT);
+//    }
+    kill(main_pid, SIGINT);
     return GOOD_PACKET;
 }
 
@@ -525,12 +526,12 @@ int enablePower(packet_t* p) {
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
-        return BAD_PACKET;
+        record("Failed to enable power\n");
     } else {
         packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-        enqueue(&hkdownQueue, r);
-        return GOOD_PACKET;
+        enqueue(&hkdownQueue, r);        
     }
+    return GOOD_PACKET;
 }
 
 /*Command the payload subsystem to power off*/

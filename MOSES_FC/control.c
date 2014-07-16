@@ -5,7 +5,7 @@
  * executes the commands contained within the packets 
  */
 void * hlp_control(void * arg) {
-    prctl(PR_SET_NAME, "hlp_control", 0, 0, 0);
+    prctl(PR_SET_NAME, "HLP_CONTROL", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
 
     int f_up = 0;
@@ -126,7 +126,7 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
-    prctl(PR_SET_NAME, "hlp_down", 0, 0, 0);
+    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
 
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
@@ -161,7 +161,7 @@ void * hlp_down(void * arg) {
  * reads data from stdout into hlp packets pushed ont hkdown queue
  */
 void * hlp_shell_out(void * arg) {
-    prctl(PR_SET_NAME, "hlp_shell_output", 0, 0, 0);
+    prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
 
     int data = FALSE;
     char * buf;
@@ -203,7 +203,7 @@ void * hlp_shell_out(void * arg) {
  * experiment
  */
 void * hlp_housekeeping(void * arg) {
-    prctl(PR_SET_NAME, "hlp_housekeeping", 0, 0, 0);
+    prctl(PR_SET_NAME, "HLP_HK", 0, 0, 0);
     record("-->HLP Housekeeping thread started....\n\n");
     while (ts_alive) {
         packet_t * p = constructPacket(GDPKT, ACK, NULL);
@@ -215,7 +215,7 @@ void * hlp_housekeeping(void * arg) {
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
-    prctl(PR_SET_NAME, "telemetry", 0, 0, 0);
+    prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
     record("-->High-speed Telemetry thread started....\n\n");
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);

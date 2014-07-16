@@ -134,6 +134,7 @@ int set_power(U32 sys, U32 state){
     
     /*check that the previous pins read correctly*/
     if(rc != TRUE){
+        record("Failed to read previous state of GPIO pins\n");
         return FALSE;
     }
     else{
