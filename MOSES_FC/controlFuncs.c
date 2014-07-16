@@ -429,7 +429,14 @@ int endSequence(packet_t* p) {
 /*Commands the flight software to terminate*/
 int exitSW(packet_t* p) {
     record("Command to terminate received\n");
-    kill(getpid(), SIGINT);
+    
+    /*necessary for platform dependencies*/
+    if(config_values[NUM_THREADS + hlp_up_interface] == 1){
+        kill(getpid(), SIGINT);
+    }
+    else{
+        kill(getppid(), SIGINT);
+    }
     return GOOD_PACKET;
 }
 

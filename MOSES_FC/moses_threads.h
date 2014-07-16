@@ -12,16 +12,20 @@
 
 #define NUM_THREADS 6
 
-pthread_attr_t attrs;           //attributes of executed threads
-pthread_t threads[NUM_THREADS];         //array of running threads
+pthread_attr_t attrs; //attributes of executed threads
+pthread_t threads[NUM_THREADS]; //array of running threads
 
-enum thread{
+enum thread_config {
     hlp_down_thread,
     hlp_control_thread,
     hlp_hk_thread,
     hlp_shell_thread,
     sci_timeline_thread,
     telem_thread,
+    hlp_up_interface,
+    hlp_down_interface,
+    roe_interface,
+    synclink_interface,
 };
 
 #endif	/* MOSES_THREADS_H */

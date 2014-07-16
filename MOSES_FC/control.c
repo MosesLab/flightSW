@@ -108,7 +108,7 @@ void * hlp_control(void * arg) {
             enqueue(&hkdownQueue, nextp);
 
         }
-//                free(p);    //Why doesn't this work????
+                free(p);    //Why doesn't this work????
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  

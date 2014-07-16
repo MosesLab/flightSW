@@ -54,9 +54,9 @@ void start_threads() {
     pthread_attr_init(&attrs);
     pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
     if (config_values[hlp_down_thread] == 1)
-        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[NUM_THREADS + hlp_down_interface]);
+        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[hlp_down_interface]);
     if (config_values[hlp_control_thread] == 1)
-        pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void *))hlp_control, &config_values[NUM_THREADS + hlp_up_interface]);
+        pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void *))hlp_control, &config_values[hlp_up_interface]);
     if (config_values[hlp_hk_thread] == 1)
         pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
     if (config_values[sci_timeline_thread] == 1)
@@ -107,10 +107,14 @@ void config_strings_init() {
     config_strings[telem_thread] = TELEM_CONF;
 
     /*must offset by NUM_THREADS to be enumerated correctly*/
-    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;
-    config_strings[NUM_THREADS + hlp_down_interface] = HKDOWN_CONF;
-    config_strings[NUM_THREADS + roe_interface] = ROE_CONF;
-    config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
+//    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;
+//    config_strings[NUM_THREADS + hlp_down_interface] = HKDOWN_CONF;
+//    config_strings[NUM_THREADS + roe_interface] = ROE_CONF;
+//    config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
+    config_strings[hlp_up_interface] = HKUP_CONF;
+    config_strings[hlp_down_interface] = HKDOWN_CONF;
+    config_strings[roe_interface] = ROE_CONF;
+    config_strings[synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/
     if ((config_hash_table = calloc(sizeof (node_t) * config_size, 1)) == NULL) {

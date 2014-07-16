@@ -23,6 +23,7 @@
 #include "control.h"
 
 extern LockingQueue hkdownQueue;
+extern int config_values[];
 
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 

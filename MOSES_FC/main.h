@@ -48,12 +48,12 @@ node_t** config_hash_table;
 void config_strings_init();
 void read_moses_config();
 
-enum moses_io{
-  hlp_up_interface,
-  hlp_down_interface,
-  roe_interface,
-  synclink_interface,
-};
+//enum moses_io{
+//  hlp_up_interface,
+//  hlp_down_interface,
+//  roe_interface,
+//  synclink_interface,
+//};
 
 void quit_signal(int);  //signal handler
 void start_threads();
