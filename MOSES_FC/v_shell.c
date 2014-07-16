@@ -38,8 +38,7 @@ int vshell_init() {
         fclose(stdin);
         if(rc == EOF) record("Failed to close stdin");
         
-        /*Copy stdin and stdout to named pipes*/
-        
+        /*Copy stdin and stdout to named pipes*/        
         rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
         if(rf == NULL) record("Failed to redirect stdin");
         rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
