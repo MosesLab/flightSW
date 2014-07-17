@@ -147,7 +147,18 @@ int set_power(U32 sys, U32 state){
 }
 
 /*gets the current state of the provided subsystem*/
-
+int get_power(U32 sys, U32 * state_buf){
+    
+    /*get power state from fpga*/
+    if(peek_gpio(POWER_OFFSET, state_buf) != TRUE){
+        return FALSE;
+    }
+    else{
+        /*apply mask so we only get one pin*/
+        *state_buf = *state_buf & power_subsystem_arr[sys-1];
+        return TRUE;
+    }
+}
 
 /*sets up the memory used in powering the instrument*/
 void init_power(){

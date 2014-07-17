@@ -521,6 +521,8 @@ int resetSW(packet_t* p) {
 
 /*Command the payload subsystem to power on*/
 int enablePower(packet_t* p) {
+    char msg[256];
+    
     record("Command to enable subsystem power received\n");
 
     //Insert control code here  
@@ -531,6 +533,7 @@ int enablePower(packet_t* p) {
     if (rc != TRUE) {
         record("Failed to enable power\n");
     } else {
+        sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
         packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
         enqueue(&hkdownQueue, r);
     }
@@ -539,6 +542,8 @@ int enablePower(packet_t* p) {
 
 /*Command the payload subsystem to power off*/
 int disablePower(packet_t* p) {
+    char msg[256];
+    
     record("Command to disable subsystem power received\n");
     //Insert control code here
     int subsystem = ahtoi(p->data, p->dataSize);
@@ -546,8 +551,10 @@ int disablePower(packet_t* p) {
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
-        record("Failed to enable power\n");
+        record("Failed to disable power\n");
     } else {
+        sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
+        record(msg);
         packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
         enqueue(&hkdownQueue, r);
     }

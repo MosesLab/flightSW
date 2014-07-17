@@ -93,7 +93,7 @@ void * science_timeline(void * arg) {
             //wait 4 seconds
             sleep(4);
             //poll for response?
-            if (ops.dma_write == 1)
+            if (ops.dma_write == 1 && threads[image_writer_thread])
             { 
                 pthread_kill(threads[image_writer_thread], SIGUSR2);
             }

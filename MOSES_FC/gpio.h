@@ -60,6 +60,7 @@ int close_shutter();
 
 /*power control functions*/
 int set_power(U32, U32);
+int get_power(U32, U32*);
 void init_power();
 
 /*this enumeration should be changed when we decide on power formats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
