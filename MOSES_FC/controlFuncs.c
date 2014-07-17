@@ -30,7 +30,7 @@ int hlp_shell(int pipe_fd, packet_t * p) {
         int rc = write(pipe_fd, p->data, p->dataSize + 1);
 
         if (rc < 0) {
-            record("Shell failed to write to stdin");
+            record("Shell failed to write to stdin\n");
             return BAD_PACKET;
         } else {
             sprintf(msg, "Executed command: %s\n", p->data);
@@ -576,7 +576,13 @@ int queryPower(packet_t* p) {
     } else {
         sprintf(msg, "Querying subsystem %d\n", subsystem);
         record(msg);
-        packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        packet_t* r;
+        if(power_state){
+            r = constructPacket(PWR_S, STATUS_ON, p->data);
+        }
+        else{
+            r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        }
         enqueue(&hkdownQueue, r);
     }
 
