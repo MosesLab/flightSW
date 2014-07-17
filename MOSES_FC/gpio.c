@@ -118,7 +118,7 @@ int close_shutter(){
 int set_power(U32 sys, U32 state){
     int rc;
     
-    /*bitwise OR state with respective system*/
+    /*bitwise AND state with respective system*/
     U32 shift_state =  state & power_subsystem_arr[sys];
     
     /*read current contents of PCI BAR memory space*/
@@ -126,7 +126,7 @@ int set_power(U32 sys, U32 state){
     rc = peek_gpio(POWER_OFFSET, &current_state);
     
     /*set up new block with updated state information*/
-    U32 new_state = current_state | shift_state;
+    U32 new_state = current_state & shift_state;
     
     /*check that the previous pins read correctly*/
     if(rc != TRUE){
