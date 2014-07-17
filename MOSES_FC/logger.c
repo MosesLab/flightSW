@@ -28,12 +28,14 @@ void record(const char* message) {
     /*write the date and the message to the file*/
     fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
     
+    fwrite("]", 1, 2, outfile);
+    
     /*write the name of the thread to a file*/
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
     fwrite(&thread_name, sizeof(thread_name[0]), strlen(thread_name), outfile);
     
-    fwrite("]", 1, 2, outfile);
+    
     
     char * delim = " : ";
     fwrite(delim, sizeof(char), strlen(delim), outfile);
