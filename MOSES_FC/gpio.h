@@ -40,6 +40,9 @@ PLX_DEVICE_OBJECT fpga_dev;
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 
+
+U32 current_power_state;
+
 /*array to hold power pin macros*/
 int power_subsystem_arr[NUM_SUBSYSTEMS];
 

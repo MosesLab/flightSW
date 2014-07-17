@@ -95,10 +95,8 @@ int peek_gpio(U32 offset, U32 * data_buf){
             
             /*Check if write was successful*/
             if(rc != ApiSuccess){
-                record("*ERROR* - API failed to write to device \n");
+                record("*ERROR* - API failed to read from device \n");
                 PlxSdkErrorDisplay(rc);
-            }
-            else{
                 return_val = FALSE;
             }
         }
