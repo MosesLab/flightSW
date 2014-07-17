@@ -8,6 +8,32 @@
 
 #include "gpio.h"
 
+/*write gpio uses peek() and poke() to read from register and assign new bit*/
+int write_gpio(U32 offset, U32 mask, U32 state){
+    int rc; //return code for API calls
+    
+    /*bitwise AND state with pin mask*/
+    U32 masked_state = mask & state;
+    
+    /*read current contents of PCI BAR memory space*/
+    U32 current_state;
+    rc = peek_gpio(offset, &current_state);
+    
+    /*apply new value*/
+    U32 new_state = (current_state & ~mask) | masked_state; 
+    
+    /*check that the previous pins read correctly*/
+    if(rc != TRUE){
+        record("Failed to read previous state of GPIO pins\n");
+        return FALSE;
+    }
+    else{
+        /*Assert output*/
+        return poke_gpio(POWER_OFFSET, new_state);
+    }       
+}
+
+
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data){
     
@@ -116,27 +142,30 @@ int close_shutter(){
 
 /*sets the provided subsystem to a new state*/
 int set_power(U32 sys, U32 state){
-    int rc;
     
-    /*bitwise AND state with respective system*/
-    U32 shift_state =  state & power_subsystem_arr[sys];
+    return write_gpio(POWER_OFFSET, power_subsystem_arr[sys], state);
     
-    /*read current contents of PCI BAR memory space*/
-    U32 current_state;
-    rc = peek_gpio(POWER_OFFSET, &current_state);
-    
-    /*set up new block with updated state information*/
-    U32 new_state = current_state & shift_state;
-    
-    /*check that the previous pins read correctly*/
-    if(rc != TRUE){
-        record("Failed to read previous state of GPIO pins\n");
-        return FALSE;
-    }
-    else{
-        /*Assert output*/
-        return poke_gpio(POWER_OFFSET, new_state);
-    }    
+//    int rc;
+//    
+//    /*bitwise AND state with respective system*/
+//    U32 shift_state =  state & power_subsystem_arr[sys];
+//    
+//    /*read current contents of PCI BAR memory space*/
+//    U32 current_state;
+//    rc = peek_gpio(POWER_OFFSET, &current_state);
+//    
+//    /*set up new block with updated state information*/
+//    U32 new_state = current_state & shift_state;
+//    
+//    /*check that the previous pins read correctly*/
+//    if(rc != TRUE){
+//        record("Failed to read previous state of GPIO pins\n");
+//        return FALSE;
+//    }
+//    else{
+//        /*Assert output*/
+//        return poke_gpio(POWER_OFFSET, new_state);
+//    }    
 }
 
 /*gets the current state of the provided subsystem*/
