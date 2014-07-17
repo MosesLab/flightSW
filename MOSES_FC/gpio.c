@@ -119,7 +119,7 @@ int set_power(U32 sys, U32 state){
     int rc;
     
     /*bitwise OR state with respective system*/
-    U32 shift_state =  state | power_subsystem_arr[sys];
+    U32 shift_state =  state ^ power_subsystem_arr[sys];
     
     /*read current contents of PCI BAR memory space*/
     U32 current_state;
