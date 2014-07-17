@@ -141,8 +141,9 @@ int close_shutter(){
 }
 
 /*sets the provided subsystem to a new state*/
-int set_power(U32 sys, U32 state){    
-    return write_gpio(POWER_OFFSET, power_subsystem_arr[sys], state);
+int set_power(U32 sys, U32 state){
+        /*off by one since sys starts at 1*/
+    return write_gpio(POWER_OFFSET, power_subsystem_arr[sys-1], state);
 }
 
 /*gets the current state of the provided subsystem*/
