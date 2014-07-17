@@ -23,6 +23,7 @@ int vshell_init() {
     pid_t result = fork();
 
     if (result == 0) { //this is the child
+        prctl(PR_SET_NAME, "SHELL_INPUT", 0, 0, 0);     //set name of the child process
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
