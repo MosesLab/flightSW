@@ -74,8 +74,8 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
 
-            packet_t* a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
-            packet_t* b = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRML", sframe);
+            packet_t* a = (packet_t*)constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
+            packet_t* b = (packet_t*)constructPacket(MDAQ_RSP, GT_CUR_FRML, sframe);
             enqueue(&hkdownQueue, a);
             enqueue(&hkdownQueue, b);
 
@@ -106,7 +106,7 @@ void * science_timeline(void * arg) {
         sprintf(msg, "Done with sequence %s\n\n\n", currentSequence.sequenceName);
         record(msg);
 
-        a = (packet_t*)constructPacket("MDAQ_RSP","END_SEQ",(char *)NULL);
+        a = (packet_t*)constructPacket(MDAQ_RSP,END_SEQ,(char *)NULL);
         enqueue(&hkdownQueue, a);    
 
         record("Done witps.seq_run = FAh sequences\n");

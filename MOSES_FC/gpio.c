@@ -47,8 +47,6 @@ int poke_gpio(U32 offset, U32 data){
             if(rc != ApiSuccess){
                 record("*ERROR* - API failed to write to device \n");
                 PlxSdkErrorDisplay(rc);
-            }
-            else{
                 return_val = FALSE;
             }
         }
