@@ -22,6 +22,8 @@ void record(const char* message) {
 
     theTime = ctime(&now);
     theTime[ strlen(theTime) - 1 ] = ' '; //Replace the '\n' with a space
+    
+    fwrite("[", 1, 2, outfile);
 
     /*write the date and the message to the file*/
     fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
@@ -30,6 +32,8 @@ void record(const char* message) {
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
     fwrite(&thread_name, sizeof(thread_name[0]), strlen(thread_name), outfile);
+    
+    fwrite("]", 1, 2, outfile);
     
     char * delim = " : ";
     fwrite(delim, sizeof(char), strlen(delim), outfile);
