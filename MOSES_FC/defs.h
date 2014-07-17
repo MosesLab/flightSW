@@ -15,8 +15,6 @@
 #define FALSE 0
 #define TRUE 1
 
-#define ON 0xFFFFFFFF
-#define OFF 0x0
 
 #define STARTBYTE '%'
 #define ENDBYTE '^'

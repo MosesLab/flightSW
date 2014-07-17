@@ -12,13 +12,17 @@
 #include "plx/PlxApi.h"
 #include "plx/PlxInit.h"
 
+
+#define ON 0xFFFFFFFF
+#define OFF 0x0
+
 #define GPIO_BAR_INDEX 2
 #define PLX_BUFFER_WIDTH 4
 
 /*Shutter macros*/
 #define SHUTTER_OFFSET 0x2C
 #define SHUTTER_OPEN_SIM 0x1
-#define SHUTTER_CLOSE_SIM 0x0
+#define SHUTTER_CLOSE_SIM 0x1
 
 
 /*Power macros*/

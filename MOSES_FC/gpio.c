@@ -132,40 +132,17 @@ int peek_gpio(U32 offset, U32 * data_buf){
 
 /*uses gpio_write to open the shutter*/
 int open_shutter(){
-    return poke_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM);
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM, ON);
 }
 
 /*Uses gpio_write to close shutter*/
 int close_shutter(){
-    return poke_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM);
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
 }
 
 /*sets the provided subsystem to a new state*/
-int set_power(U32 sys, U32 state){
-    
+int set_power(U32 sys, U32 state){    
     return write_gpio(POWER_OFFSET, power_subsystem_arr[sys], state);
-    
-//    int rc;
-//    
-//    /*bitwise AND state with respective system*/
-//    U32 shift_state =  state & power_subsystem_arr[sys];
-//    
-//    /*read current contents of PCI BAR memory space*/
-//    U32 current_state;
-//    rc = peek_gpio(POWER_OFFSET, &current_state);
-//    
-//    /*set up new block with updated state information*/
-//    U32 new_state = current_state & shift_state;
-//    
-//    /*check that the previous pins read correctly*/
-//    if(rc != TRUE){
-//        record("Failed to read previous state of GPIO pins\n");
-//        return FALSE;
-//    }
-//    else{
-//        /*Assert output*/
-//        return poke_gpio(POWER_OFFSET, new_state);
-//    }    
 }
 
 /*gets the current state of the provided subsystem*/
