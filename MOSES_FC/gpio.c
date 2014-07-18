@@ -44,7 +44,7 @@ int poke_gpio(U32 offset, U32 data){
     U32 return_val = TRUE;
     
     
-    /*Get and open PLX FPGA device*/
+    /*Get and open PLX PCI bridge device*/
     rc = GetAndOpenDevice(&fpga_dev, 0x9056);
     
     /*check if device opened successfully*/

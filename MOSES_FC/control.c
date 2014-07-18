@@ -29,7 +29,7 @@ void * hlp_control(void * arg) {
     /*initialize arrays of power subsystem GPIO pins*/
     init_power();
     
-    /*Open housekeeping downlink using configuartion file*/
+    /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_REAL);
     } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
@@ -48,7 +48,7 @@ void * hlp_control(void * arg) {
     /*Load the Sequence Map*/
     loadSequences();
 
-    seq_map_size = 1; //only for testing, this needs to better integrated into data structure
+    //    seq_map_size = 1; //only for testing, this needs to better integrated into data structure
 
     while (ts_alive) {
         /*allocate space for packet*/
@@ -57,6 +57,7 @@ void * hlp_control(void * arg) {
             record("malloc failed to allocate packet\n");
         }
 
+        /*read next packet from HKUP*/
         readPacket(f_up, p);
         recordPacket(p);
 
@@ -66,23 +67,11 @@ void * hlp_control(void * arg) {
              */
             switch (p->type[0]) {
                 case SHELL:
-                    //                    printf("Shell packet\n");
-                    /*write to input of virtual shell*/
                     hlp_shell(stdin_des, p);
-
                     break;
                 case MDAQ_RQS:
-                    //                    printf("DAQ packet\n");
-                    p->control = concat(2, p->type, p->subtype);
-                    p->status = execPacket(p);
-                    break;
                 case UPLINK:
-                    //                    printf("HLP Uplink packet\n");
-                    p->control = concat(2, p->type, p->subtype);
-                    p->status = execPacket(p);
-                    break;
                 case PWR:
-                    //                    printf("Power packet\n");
                     p->control = concat(2, p->type, p->subtype);
                     p->status = execPacket(p);
                     break;
@@ -131,7 +120,7 @@ void * hlp_down(void * arg) {
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
-    /*Open housekeeping downlink using configuartion file*/
+    /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
         fdown = init_serial_connection(HKDOWN, HKDOWN_REAL);
     } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
@@ -158,7 +147,7 @@ void * hlp_down(void * arg) {
 }
 
 /*
- * reads data from stdout into hlp packets pushed ont hkdown queue
+ * reads data from stdout into hlp packets pushed onto hkdown queue
  */
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
@@ -171,6 +160,7 @@ void * hlp_shell_out(void * arg) {
 
     record("-->HLP shell output listener thread started...\n\n");
 
+    /*open pipe to virtual shell stdout*/
     int stdout_des = open(STDOUT_PIPE, O_RDONLY);
 
     while (ts_alive) {
