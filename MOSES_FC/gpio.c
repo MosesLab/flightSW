@@ -176,8 +176,8 @@ void init_power(){
     power_subsystem_arr[h_alpha] = H_ALPHA_SIM;
     
     /*Initialize all power GPIO into write mode*/
-    int i;
-    for(i = 0; i < NUM_SUBSYSTEM; i++){
-        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
-    }
+//    int i;
+//    for(i = 0; i < NUM_SUBSYSTEM; i++){
+//        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
+//    }
 }
