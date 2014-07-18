@@ -29,7 +29,7 @@ int write_gpio(U32 offset, U32 mask, U32 state){
     }
     else{
         /*Assert output*/
-        return poke_gpio(POWER_OFFSET, new_state);
+        return poke_gpio(offset, new_state);
     }       
 }
 
@@ -133,15 +133,15 @@ int peek_gpio(U32 offset, U32 * data_buf){
 /*uses gpio_write to open the shutter*/
 int open_shutter(){
     record("Opening shutter\n");
-//    return write_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM, ON);
-    return poke_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM);
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM, ON);
+//    return poke_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM);
 }
 
 /*Uses gpio_write to close shutter*/
 int close_shutter(){
     record("Closing Shutter\n");
-//    return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
-    return poke_gpio(SHUTTER_OFFSET, 0);
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
+//    return poke_gpio(SHUTTER_OFFSET, 0);
 }
 
 /*sets the provided subsystem to a new state*/
