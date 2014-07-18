@@ -176,6 +176,6 @@ void init_power(){
     /*Initialize all power GPIO into read mode*/
     int i;
     for(i = 0; i < NUM_SUBSYSTEM; i++){
-        write_gpio(POWER_OFFSET, power_subsystem_arr[i], ON);
+        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
     }
 }
