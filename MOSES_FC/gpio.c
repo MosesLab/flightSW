@@ -132,11 +132,13 @@ int peek_gpio(U32 offset, U32 * data_buf){
 
 /*uses gpio_write to open the shutter*/
 int open_shutter(){
+    record("Opening shutter\n");
     return write_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM, ON);
 }
 
 /*Uses gpio_write to close shutter*/
 int close_shutter(){
+    record("Closing Shutter\n");
     return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
 }
 
