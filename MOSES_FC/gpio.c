@@ -172,4 +172,10 @@ void init_power(){
     power_subsystem_arr[reg_5V] = REG_5V_SIM;
     power_subsystem_arr[reg_12V] = REG_12V_SIM;
     power_subsystem_arr[h_alpha] = H_ALPHA_SIM;
+    
+    /*Initialize all power GPIO into read mode*/
+    int i;
+    for(i = 0; i < NUM_SUBSYSTEM; i++){
+        write_gpio(POWER_OFFSET, power_subsystem_arr[i], ON);
+    }
 }

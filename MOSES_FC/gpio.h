@@ -26,7 +26,7 @@
 
 
 /*Power macros*/
-#define NUM_SUBSYSTEMS 10
+#define NUM_SUBSYSTEM 10
 //#define POWER_OFFSET 0x2C
 #define POWER_OFFSET 0x10
 #define SHUTTER_SIM 0x40000
@@ -49,7 +49,7 @@ PLX_ACCESS_TYPE type_bit;
 U32 current_power_state;
 
 /*array to hold power pin macros*/
-int power_subsystem_arr[NUM_SUBSYSTEMS];
+int power_subsystem_arr[NUM_SUBSYSTEM];
 
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
