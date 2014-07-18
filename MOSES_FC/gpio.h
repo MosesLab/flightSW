@@ -51,7 +51,7 @@ PLX_ACCESS_TYPE type_bit;
 U32 current_power_state;
 
 /*array to hold power pin macros*/
-int power_subsystem_arr[NUM_SUBSYSTEM];
+U32 power_subsystem_arr[NUM_SUBSYSTEM];
 
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
