@@ -32,8 +32,9 @@
 #define POWER_DIRECTION_OFFSET 0x14
 
 //#define SHUTTER_SIM 0x40000
-#define SHUTTER_SIM 0x2
-#define ROE_SIM 0x80000
+#define LATCH 0x4
+#define SHUTTER_SIM 0x8
+#define ROE_SIM 0x800000
 #define PREMOD_SIM 0x1000000
 #define TCS_1_SIM 0x2000000
 #define TCS_3_SIM 0x4000000
