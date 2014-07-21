@@ -3018,7 +3018,7 @@ PlxPci_PhysicalMemoryUnmap(
 
 /******************************************************************************
  *
- * Function   :  PlxPci_CommonBufferProperties
+ * Function   :  PlxPci_onBufferProperties
  *
  * Description:  Retrieves the common buffer properties for a given device
  *

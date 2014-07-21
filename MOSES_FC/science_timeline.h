@@ -13,7 +13,6 @@
 #include "system.h"
 #include "lockingQueue.h"
 #include "sci_timeline_funcs.h"
-//#include "roeImage.h"
 #include "defs.h"
 #include "hlp.h"
 #include "packet.h"

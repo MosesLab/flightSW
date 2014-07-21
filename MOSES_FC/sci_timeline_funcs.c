@@ -11,13 +11,10 @@
 
 int takeExposure(double duration, int sig) {
     char msg[100];
-    //    char dtime[32];
     struct timeval expstop, expstart;
-    //duration is the exposure length in microseconds'
-    int dur = (int) (duration * 1000000); // - PULSE;
-    /*actual is the physical amount of time the shutter is open*/
-    int actual;
-
+    int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
+    int actual; // computer recorded time interval between opening and closing the shutter
+    
     //int i;
     //for(i = 0; i < 5; i++)
     //roe->flush(); //Flush ROE 5 times
@@ -83,19 +80,25 @@ int write_data() {
         char ddate[100];
 
         char channels = ops.channels;
+        
+        /*Set up FPGA interrupt and DMA*/
 
         init_signal_handler_image();
-        /* Wait for SIGUSR2 (When DMA is ready)*/
+        /* Wait for SIGUSR2 (When received response from ROE readout)*/
         pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
         record("Waiting for signal...\n");
         sigwait(&maskimage, &caught_image_signal);
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
         record("SIGUSR2 Received, reading DMA and writing to disk now\n");
 
-        /*Wait for FPGA Interrupt*/
+        
+        
+        /*Wait for FPGA interrupt*/
 
-        /*Interrupt received, Read DMA block*/
-
+        /*Interrupt received, read DMA block*/
+        /*Buffer updated here*/
+        dmaRead();
+        
         /*Clear DMA block*/
 
 
@@ -174,8 +177,7 @@ int write_data() {
         free(BUFFER[2]);
         free(BUFFER[3]);
     }
-
-
+    
     return 0;
 }
 
@@ -210,16 +212,11 @@ void init_signal_handler_image() {
     sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
 
     /*no signal dispositions for signals between threads*/
-    run_action_image.sa_handler = runsig2;
     run_action_image.sa_mask = oldmaskimage;
     run_action_image.sa_flags = 0;
 
     sigaction(SIGUSR2, &run_action_image, NULL);
     record("Signal handler initiated.\n");
-}
-
-void runsig2() {
-    printf("runsig2\n");
 }
 
 

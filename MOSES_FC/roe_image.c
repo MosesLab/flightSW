@@ -68,17 +68,13 @@ void createXML()
     /*If a file does exist, this function will open it and */
     /*then close it immediately*/
     FILE *checkxml;
-   // printf(CATALOG);
     checkxml = fopen(CATALOG, "a");
     fclose(checkxml);
 }
 
 
 void writeToFile() {
-    
-    
-
-    
+ 
     int i;
     int linecount = 0;
     int newfile = 0;
@@ -129,6 +125,7 @@ void writeToFile() {
         strncat(schannels, "2", 1);
     if ((int) tempimage.channels & CH3)
         strncat(schannels, "3", 1);
+    
     if (newfile) {
         /*Write XML delcaration if new file*/
         fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
@@ -159,7 +156,7 @@ void writeToFile() {
    
     /*Write Image Data*/
     FILE *dataOut;
-    dataOut = fopen(tempimage.filename, "w"); //change this file(path) to a variable of image struct
+    dataOut = fopen(tempimage.filename, "w"); 
     
     for (i = 0; i < 4; i++) {
         if (tempimage.channels & (char) (1 << i))
