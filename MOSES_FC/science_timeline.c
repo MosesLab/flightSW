@@ -38,6 +38,10 @@ void * science_timeline(void * arg) {
                 
         /* if ROE active, set to known state (exit default, reset, exit default) */
         //Add code here
+        //exitDefault();
+        //reset();
+        //exitDefault();
+        
 
         /*establish current sequence */
         currentSequence = sequenceMap[ops.sequence];
@@ -46,9 +50,9 @@ void * science_timeline(void * arg) {
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
-        packet_t* r = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
+        packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
         enqueue(&hkdownQueue, a);
-        enqueue(&hkdownQueue, r);
+        enqueue(&hkdownQueue, b);
 
         /* for each exposure in the sequence */
         int i;
@@ -73,8 +77,8 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
 
-            packet_t* a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
-            packet_t* b = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRML", sframe);
+            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
+            b = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRML", sframe);
             enqueue(&hkdownQueue, a);
             enqueue(&hkdownQueue, b);
 
@@ -83,8 +87,11 @@ void * science_timeline(void * arg) {
             record("Done with exposure, perform data collection.\n");
 
             /* Command ROE to Readout*/
+            //readOut(...);
             
             /* push packet w/info about end read out */
+            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
+            enqueue(&hkdownQueue, a);
             
             /* write buffer data to disk  and telemetry*/
             record("Writing data to disk.\n");

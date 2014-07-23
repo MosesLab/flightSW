@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="94">
+<configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -16,7 +16,9 @@
       <itemPath>main.h</itemPath>
       <itemPath>moses_threads.h</itemPath>
       <itemPath>packet.h</itemPath>
+      <itemPath>roe.h</itemPath>
       <itemPath>roe_image.h</itemPath>
+      <itemPath>roehk.h</itemPath>
       <itemPath>sci_timeline_funcs.h</itemPath>
       <itemPath>science_timeline.h</itemPath>
       <itemPath>send_TM.h</itemPath>
@@ -43,6 +45,7 @@
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
+      <itemPath>roe.c</itemPath>
       <itemPath>roe_image.c</itemPath>
       <itemPath>sci_timeline_funcs.c</itemPath>
       <itemPath>science_timeline.c</itemPath>
@@ -217,9 +220,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -358,9 +367,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -496,9 +511,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -547,10 +568,14 @@
       <item path="bashrc" ex="false" tool="3" flavor2="0">
       </item>
       <item path="control.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="control.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="controlFuncs.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -565,16 +590,22 @@
       <item path="gpio.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hashTable.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="hashTable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="hlp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="lockingQueue.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="logger.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="logger.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -592,6 +623,8 @@
       <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
       </item>
       <item path="packet.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="packet.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -639,23 +672,39 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="sci_timeline_funcs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="science_timeline.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="science_timeline.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="send_TM.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="send_TM.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sequence.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
       </item>
       <item path="sequence.h" ex="false" tool="3" flavor2="0">
       </item>

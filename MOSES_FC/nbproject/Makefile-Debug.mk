@@ -50,6 +50,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/plx/PlxApi.o \
 	${OBJECTDIR}/plx/PlxApiI2cAa.o \
 	${OBJECTDIR}/plx/PlxInit.o \
+	${OBJECTDIR}/roe.o \
 	${OBJECTDIR}/roe_image.o \
 	${OBJECTDIR}/sci_timeline_funcs.o \
 	${OBJECTDIR}/science_timeline.o \
@@ -156,6 +157,11 @@ ${OBJECTDIR}/plx/PlxInit.o: plx/PlxInit.c
 	${MKDIR} -p ${OBJECTDIR}/plx
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/plx/PlxInit.o plx/PlxInit.c
+
+${OBJECTDIR}/roe.o: roe.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/roe.o roe.c
 
 ${OBJECTDIR}/roe_image.o: roe_image.c 
 	${MKDIR} -p ${OBJECTDIR}
