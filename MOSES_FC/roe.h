@@ -70,7 +70,7 @@ struct ReadOutElectronics
     pthread_mutex_t mx;
 };
 
-struct ReadOutElectronics roe;
+struct ReadOutElectronics roe_struct;
 
 int activate();
 int deactivate();

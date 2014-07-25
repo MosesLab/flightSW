@@ -18,10 +18,15 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
 
     /* wait for ROE to become active */
-    //Add code here
+    //record("Waiting for ROE to become active...\n");
+    //while(!roe_struct.active)
+    //    usleep(20000);
+    //record("ROE Active\n");
 
-    /* ROE initialization: ROE exitdefault, reset, exitdefault */
-    //Add code here
+    /* if ROE active, set to known state (exit default, reset, exit default) */
+        //exitDefault();
+        //reset();
+        //exitDefault();
 
     while (ts_alive) {
         if (ops.seq_run == FALSE) {
