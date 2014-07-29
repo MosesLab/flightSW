@@ -16,20 +16,24 @@
 #define FPGA_MEMORY_LOC_0		0x100
 
 PLX_DEVICE_OBJECT fpga_dev;
+PLX_DMA_PROP      DmaProp;
+PLX_INTERRUPT     DmaIntr;
+PLX_NOTIFY_OBJECT DmaEvent;
 U8                dmaChannel;
 PLX_DMA_PARAMS    DmaParams;
- PLX_PHYSICAL_MEM PciBuffer; 
+PLX_PHYSICAL_MEM  PciBuffer; 
 int               rc;
 U32*		  pBufferMem;
-void**		pVa;
+void**		  pVa;
+struct timeval expstop, expstart;
 
 
 
 
 
-void initializeDMA();
-void dmaRead();
-void dmaClearBlock();
+int initializeDMA();
+int dmaRead();
+int dmaClearBlock();
 void dmaClose();
 #endif	/* DMA_H */
 

@@ -61,6 +61,7 @@ int takeExposure(double duration, int sig) {
 int write_data() {
 
     prctl(PR_SET_NAME,"IMAGE_WRITER",0,0,0);
+    struct timeval expstop, expstart;
     
     while (ts_alive) {
 
@@ -80,8 +81,6 @@ int write_data() {
         char ddate[100];
 
         char channels = ops.channels;
-        
-        /*Set up FPGA interrupt and DMA*/
 
         init_signal_handler_image();
         /* Wait for SIGUSR2 (When received response from ROE readout)*/
@@ -91,17 +90,20 @@ int write_data() {
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
         record("SIGUSR2 Received, reading DMA and writing to disk now\n");
 
+        gettimeofday(&expstart, NULL);
+        //initializeDMA();
         
-        
-        /*Wait for FPGA interrupt*/
-
-        /*Interrupt received, read DMA block*/
+        /*DMA Channel is open, now send GPIO*/
+        poke_gpio(POWER_OFFSET, 0x0F);
+        sleep(1);
+        poke_gpio(POWER_OFFSET, 0x00);
         /*Buffer updated here*/
-        dmaRead();
+        //dmaRead();
+        gettimeofday(&expstop, NULL);
+        
+        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
         
         /*Clear DMA block*/
-
-
 
         /*Initialize the image*/
         constructImage(BUFFER, index, channels, 16);
@@ -176,7 +178,7 @@ int write_data() {
         free(BUFFER[1]);
         free(BUFFER[2]);
         free(BUFFER[3]);
-    }
+    }//end while ts_alive
     
     return 0;
 }
