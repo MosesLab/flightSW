@@ -32,7 +32,7 @@ int hlp_shell(int pipe_fd, packet_t * p) {
         int rc = write(pipe_fd, p->data, p->dataSize + 1);
 
         if (rc < 0) {
-            record("Shell failed to write to stdin");
+            record("Shell failed to write to stdin\n");
             return BAD_PACKET;
         } else {
             sprintf(msg, "Executed command: %s\n", p->data);
@@ -433,12 +433,15 @@ int exitSW(packet_t* p) {
     record("Command to terminate received\n");
 
     /*necessary for platform dependencies*/
-//    if (config_values[hlp_up_interface] == 1) {
-//        kill(getpid(), SIGINT);
-//    } else {
-//        kill(getppid(), SIGINT);
-//    }
-    pthread_kill(main_pid, SIGINT);
+    //    if (config_values[hlp_up_interface] == 1) {
+    //        kill(getpid(), SIGINT);
+    //    } else {
+    //        kill(getppid(), SIGINT);
+    //    }
+
+    kill(main_pid, SIGINT);
+
+    //    pthread_kill(main_pid, SIGINT);
     return GOOD_PACKET;
 }
 
@@ -551,37 +554,72 @@ int resetSW(packet_t* p) {
 
 /*Command the payload subsystem to power on*/
 int enablePower(packet_t* p) {
+    char msg[256];
+
     record("Command to enable subsystem power received\n");
 
     //Insert control code here  
-    int subsystem = ahtoi(p->data, p->dataSize);
+    int subsystem = strtol(p->data, NULL, 16);
     int rc = set_power(subsystem, ON);
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
         record("Failed to enable power\n");
     } else {
+        sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
         packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-        enqueue(&hkdownQueue, r);        
+        enqueue(&hkdownQueue, r);
     }
     return GOOD_PACKET;
 }
 
 /*Command the payload subsystem to power off*/
 int disablePower(packet_t* p) {
+    char msg[256];
+
     record("Command to disable subsystem power received\n");
-    //Insert control code here  
-    packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
-    enqueue(&hkdownQueue, r);
+    //Insert control code here
+    int subsystem = strtol(p->data, NULL, 16);
+    int rc = set_power(subsystem, OFF);
+
+    /*check that API returned correctly*/
+    if (rc != TRUE) {
+        record("Failed to disable power\n");
+    } else {
+        sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
+        record(msg);
+        packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        enqueue(&hkdownQueue, r);
+    }
     return GOOD_PACKET;
 }
 
 /*Query the power status of the payload subsystem*/
 int queryPower(packet_t* p) {
+    char msg[256];
+
     record("Command to query subsystem power received\n");
+
     //Insert control code here  
-    packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
-    enqueue(&hkdownQueue, r);
+    int subsystem = strtol(p->data, NULL, 16);
+    U32 power_state;
+    if (get_power(subsystem, &power_state) != TRUE) {
+        sprintf(msg, "Failed to query subsystem %d\n", subsystem);
+        record(msg);
+    } else {
+        sprintf(msg, "Querying subsystem %d\n", subsystem);
+        record(msg);
+        packet_t* r;
+        if(power_state){
+            r = constructPacket(PWR_S, STATUS_ON, p->data);
+        }
+        else{
+            r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        }
+        enqueue(&hkdownQueue, r);
+    }
+
+
     return GOOD_PACKET;
 }
 

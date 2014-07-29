@@ -103,10 +103,8 @@ void * science_timeline(void * arg) {
 
             //wait 4 seconds for response from ROE
             sleep(4);
-            //poll for response
-            
-          
-            if (ops.dma_write == 1)
+            //poll for response?
+            if (ops.dma_write == 1 && threads[image_writer_thread])
             { 
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
             }
@@ -118,7 +116,8 @@ void * science_timeline(void * arg) {
         /* done with sequence, push packet with info */
         sprintf(msg, "Done with sequence %s\n\n\n", currentSequence.sequenceName);
         record(msg);
-        a = (packet_t*)constructPacket("MDAQ_RSP","END_SEQ",(char *)NULL);
+
+        a = (packet_t*)constructPacket(MDAQ_RSP,END_SEQ,(char *)NULL);
         enqueue(&hkdownQueue, a);    
         record("Done witps.seq_run = FAh sequences\n");
         ops.seq_run = FALSE;

@@ -8,6 +8,32 @@
 
 #include "gpio.h"
 
+/*write gpio uses peek() and poke() to read from register and assign new bit*/
+int write_gpio(U32 offset, U32 mask, U32 state){
+    int rc; //return code for API calls
+    
+    /*bitwise AND state with pin mask*/
+    U32 masked_state = mask & state;
+    
+    /*read current contents of PCI BAR memory space*/
+    U32 current_state;
+    rc = peek_gpio(offset, &current_state);
+    
+    /*apply new value*/
+    U32 new_state = (current_state & ~mask) | masked_state; 
+    
+    /*check that the previous pins read correctly*/
+    if(rc != TRUE){
+        record("Failed to read previous state of GPIO pins\n");
+        return FALSE;
+    }
+    else{
+        /*Assert output*/
+        return poke_gpio(offset, new_state);
+    }       
+}
+
+
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data){
     
@@ -18,7 +44,7 @@ int poke_gpio(U32 offset, U32 data){
     U32 return_val = TRUE;
     
     
-    /*Get and open PLX FPGA device*/
+    /*Get and open PLX PCI bridge device*/
     rc = GetAndOpenDevice(&fpga_dev, 0x9056);
     
     /*check if device opened successfully*/
@@ -47,8 +73,6 @@ int poke_gpio(U32 offset, U32 data){
             if(rc != ApiSuccess){
                 record("*ERROR* - API failed to write to device \n");
                 PlxSdkErrorDisplay(rc);
-            }
-            else{
                 return_val = FALSE;
             }
         }
@@ -95,10 +119,8 @@ int peek_gpio(U32 offset, U32 * data_buf){
             
             /*Check if write was successful*/
             if(rc != ApiSuccess){
-                record("*ERROR* - API failed to write to device \n");
+                record("*ERROR* - API failed to read from device \n");
                 PlxSdkErrorDisplay(rc);
-            }
-            else{
                 return_val = FALSE;
             }
         }
@@ -110,41 +132,37 @@ int peek_gpio(U32 offset, U32 * data_buf){
 
 /*uses gpio_write to open the shutter*/
 int open_shutter(){
-    return poke_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM);
+    record("Opening shutter\n");
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM, ON);
+//    return poke_gpio(SHUTTER_OFFSET, SHUTTER_OPEN_SIM);
 }
 
 /*Uses gpio_write to close shutter*/
 int close_shutter(){
-    return poke_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM);
+    record("Closing Shutter\n");
+    return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
+//    return poke_gpio(SHUTTER_OFFSET, 0);
 }
 
 /*sets the provided subsystem to a new state*/
 int set_power(U32 sys, U32 state){
-    int rc;
-    
-    /*bitwise OR state with respective system*/
-    U32 shift_state =  state | power_subsystem_arr[sys];
-    
-    /*read current contents of PCI BAR memory space*/
-    U32 current_state;
-    rc = peek_gpio(POWER_OFFSET, &current_state);
-    
-    /*set up new block with updated state information*/
-    U32 new_state = current_state | shift_state;
-    
-    /*check that the previous pins read correctly*/
-    if(rc != TRUE){
-        record("Failed to read previous state of GPIO pins\n");
-        return FALSE;
-    }
-    else{
-        /*Assert output*/
-        return poke_gpio(POWER_OFFSET, new_state);
-    }    
+        /*off by one since sys starts at 1*/
+    return write_gpio(POWER_OFFSET, power_subsystem_arr[sys-1], state);
 }
 
 /*gets the current state of the provided subsystem*/
-
+int get_power(U32 sys, U32 * state_buf){
+    
+    /*get power state from fpga*/
+    if(peek_gpio(POWER_OFFSET, state_buf) != TRUE){
+        return FALSE;
+    }
+    else{
+        /*apply mask so we only get one pin*/
+        *state_buf = *state_buf & power_subsystem_arr[sys-1];
+        return TRUE;
+    }
+}
 
 /*sets up the memory used in powering the instrument*/
 void init_power(){
@@ -158,4 +176,10 @@ void init_power(){
     power_subsystem_arr[reg_5V] = REG_5V_SIM;
     power_subsystem_arr[reg_12V] = REG_12V_SIM;
     power_subsystem_arr[h_alpha] = H_ALPHA_SIM;
+    
+    /*Initialize all power GPIO into write mode*/
+    int i;
+    for(i = 0; i < NUM_SUBSYSTEM; i++){
+        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
+    }
 }
