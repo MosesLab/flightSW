@@ -25,8 +25,8 @@
 #define HKDOWN_REAL "/dev/ttyS3"
 //#define HKUP "/dev/ttyUSB0"
 //#define HKDOWN "/dev/ttyUSB1"
-#define HKUP_SIM "/dev/pts/7"
-#define HKDOWN_SIM "/dev/pts/9 "
+#define HKUP_SIM "/dev/pts/4"
+#define HKDOWN_SIM "/dev/pts/8"
 
 #define HKUP 1
 #define HKDOWN 0
@@ -57,6 +57,6 @@ void readPacket(int, packet_t *);
 int readData(int, char *, int);
 void sendPacket(packet_t *, int);
 void sendData(char *, int, int);
-int input_timeout(int, unsigned int);
+int input_timeout(int, unsigned int, unsigned int);
 
 #endif /*PACKET_H*/

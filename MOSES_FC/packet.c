@@ -24,10 +24,9 @@ packet_t* constructPacket(char* type, char* subtype, char* data) {
     memcpy(p->subtype, subtype, 4);
     memcpy(p->dataLength, dataLength, 3);
     p->dataSize = dataSize;
-    if (data != NULL){
+    if (data != NULL) {
         memcpy(p->data, data, dataSize + 1);
-    }
-    else{
+    } else {
         p->data[0] = '\0';
     }
     p->checksum[0] = calcCheckSum(p);
@@ -63,14 +62,15 @@ void recordPacket(packet_t* p) {
     free(pString); //clean up string after recording
 }
 
+/*BROKEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DON'T USE, use strtol(3) instead*/
 /*converts ascii hex to integer value*/
-inline int ahtoi(char * aHex, int len) {
-    int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
-    int i;
-    for (i = len - 1; i >= 0; i--)
-        sum += (int) (((aHex[i] - 48 > 16) ? aHex[i] - 55 : aHex[i] - 48) * pow(16.0, len - (i + 1)));
-    return sum;
-}
+//inline int ahtoi(char * aHex, int len) {
+//    int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
+//    int i;
+//    for (i = len - 1; i >= 0; i--)
+//        sum += (int) (((aHex[i] - 48 > 16) ? aHex[i] - 55 : aHex[i] - 48) * pow(16.0, len - (i + 1)));
+//    return sum;
+//}
 
 /*converts integers to ascii hex value*/
 inline void itoah(int dec, char * aHex, int len) {
@@ -132,8 +132,7 @@ int init_serial_connection(int hkup, char * serial_path) {
     int fd;
     if (hkup == TRUE) {
         fd = open(serial_path, O_RDONLY | O_NOCTTY);
-    }
-    else{
+    } else {
         fd = open(serial_path, O_WRONLY | O_NOCTTY);
     }
     if (fd < 0) {
@@ -147,10 +146,9 @@ int init_serial_connection(int hkup, char * serial_path) {
     bzero(&newtio, sizeof (newtio));
 
     /*set flags for non-canonical serial connection*/
-    if(hkup){
-    newtio.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
-    }
-    else{
+    if (hkup) {
+        newtio.c_cflag |= UPBAUD | CS8 | CSTOPB | HUPCL | CREAD | CLOCAL;
+    } else {
         newtio.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
     }
     newtio.c_cflag &= ~(PARENB | PARODD);
@@ -169,7 +167,6 @@ int init_serial_connection(int hkup, char * serial_path) {
     return fd;
 }
 
-
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
@@ -180,7 +177,7 @@ void readPacket(int fd, packet_t * p) {
     int input;
 
     while (continue_read == FALSE && ts_alive == TRUE) {
-        input = input_timeout(fd, 1); //Wait until interrupt or timeout 
+        input = input_timeout(fd, 1, 0); //Wait until interrupt or timeout 
         //if(input==0) puts("select returned");
         volatile int clearBuffer = FALSE;
         if (input > 0) {
@@ -188,40 +185,56 @@ void readPacket(int fd, packet_t * p) {
             if (temp == STARTBYTE) clearBuffer = TRUE;
         }
         if (clearBuffer) {
-//            ioctl(fd, FIONREAD);
+            //            ioctl(fd, FIONREAD);
             continue_read = TRUE;
             record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
+//            record("Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad type\n");
+//            record("type\n");
 
             tempValid = readData(fd, p->subtype, 3);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad subtype\n");
+//            record("subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data length\n");
-            p->dataSize = ahtoi(p->dataLength, 2); //calculate data size to find how many bytes to read
+            p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
+//            char msg[255];
+//            sprintf(msg, "data length %d\n", p->dataSize);
+//            record(msg);
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
+//            record("data\n");
 
             readData(fd, p->checksum, 1);
+//            record("checksum\n");
             readData(fd, &temp, 1);
+//            record("endbyte\n");
+
 
             while (temp != ENDBYTE) {
                 readData(fd, &temp, 1);
             }
-            tempValid = (p->checksum[0] == calcCheckSum(p));
+
+            char rx_checksum = calcCheckSum(p);
+            tempValid = (p->checksum[0] == rx_checksum);
             p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad checksum\n");
-//            ioctl(fd, FIONREAD);
+            if (tempValid != TRUE) {
+                char msg[255];
+                sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
+                record(msg);
+            }
+            //            ioctl(fd, FIONREAD);
         }
     }
 }
@@ -230,10 +243,11 @@ void readPacket(int fd, packet_t * p) {
 int readData(int fd, char * data, int len) {
     char temp;
     int result = TRUE;
+    int select_rc = 1;
 
     int rsz = read(fd, data, len);
-    while (rsz < len) {
-        rsz += read(fd, data + rsz, len - rsz);
+    while (rsz < len && select_rc == 1) {
+            rsz += read(fd, data + rsz, len - rsz);
     }
 
     int i;
@@ -279,7 +293,7 @@ void sendData(char * data, int size, int fd) {
     }
 }
 
-int input_timeout(int filedes, unsigned int seconds) {
+int input_timeout(int filedes, unsigned int seconds, unsigned int micros) {
     fd_set set;
     struct timeval timeout;
 
@@ -289,7 +303,7 @@ int input_timeout(int filedes, unsigned int seconds) {
 
     /*initialize timout data structure for select function*/
     timeout.tv_sec = seconds;
-    timeout.tv_usec = 0;
+    timeout.tv_usec = micros;
 
     /*select returns 0 if timeout, 1 if input data is available, -1 if error*/
     return TEMP_FAILURE_RETRY(select(FD_SETSIZE, &set, NULL, NULL, &timeout));

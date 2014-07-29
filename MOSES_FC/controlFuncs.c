@@ -526,7 +526,7 @@ int enablePower(packet_t* p) {
     record("Command to enable subsystem power received\n");
 
     //Insert control code here  
-    int subsystem = ahtoi(p->data, p->dataSize);
+    int subsystem = strtol(p->data, NULL, 16);
     int rc = set_power(subsystem, ON);
 
     /*check that API returned correctly*/
@@ -546,7 +546,7 @@ int disablePower(packet_t* p) {
 
     record("Command to disable subsystem power received\n");
     //Insert control code here
-    int subsystem = ahtoi(p->data, p->dataSize);
+    int subsystem = strtol(p->data, NULL, 16);
     int rc = set_power(subsystem, OFF);
 
     /*check that API returned correctly*/
@@ -568,7 +568,7 @@ int queryPower(packet_t* p) {
     record("Command to query subsystem power received\n");
 
     //Insert control code here  
-    int subsystem = ahtoi(p->data, p->dataSize);
+    int subsystem = strtol(p->data, NULL, 16);
     U32 power_state;
     if (get_power(subsystem, &power_state) != TRUE) {
         sprintf(msg, "Failed to query subsystem %d\n", subsystem);

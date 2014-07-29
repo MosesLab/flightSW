@@ -25,10 +25,10 @@ void * hlp_control(void * arg) {
 
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
-    
+
     /*initialize arrays of power subsystem GPIO pins*/
     init_power();
-    
+
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_REAL);
@@ -38,7 +38,7 @@ void * hlp_control(void * arg) {
         record("HK up serial connection not configured");
     }
 
-    
+
 
     /*all below should be changed to make it more organized*/
     ops.seq_run = FALSE;
@@ -48,7 +48,7 @@ void * hlp_control(void * arg) {
     /*Load the Sequence Map*/
     loadSequences();
 
-        seq_map_size = 1; //only for testing, this needs to better integrated into data structure
+    seq_map_size = 1; //only for testing, this needs to better integrated into data structure
 
     while (ts_alive) {
         /*allocate space for packet*/
@@ -62,29 +62,32 @@ void * hlp_control(void * arg) {
         recordPacket(p);
 
         if (ts_alive) {
-            /*case statement not necessary here, can get away with just one call
-             * to execpacket
-             */
-            switch (p->type[0]) {
-                case SHELL:
-                    hlp_shell(stdin_des, p);
-                    break;
-                case MDAQ_RQS:
-                case UPLINK:
-                case PWR:
-                    p->control = concat(2, p->type, p->subtype);
-                    p->status = execPacket(p);
-                    break;
-                case HK_RQS:
-                    //                    printf("HK Request Packet\n");
-                    p->control = concat(3, p->type, p->subtype, p->data);
-                    p->status = execPacket(p);
-                    break;
-                default:
-                    //                    printf("Bad Packet type\n");
-                    p->status = BAD_PACKET;
-                    break;
+            if (p->status == GOOD_PACKET) { //check checksum
+                /*case statement not necessary here, can get away with just one call
+                 * to execpacket
+                 */
+                switch (p->type[0]) {
+                    case SHELL:
+                        hlp_shell(stdin_des, p);
+                        break;
+                    case MDAQ_RQS:
+                    case UPLINK:
+                    case PWR:
+                        p->control = concat(2, p->type, p->subtype);
+                        p->status = execPacket(p);
+                        break;
+                    case HK_RQS:
+                        //                    printf("HK Request Packet\n");
+                        p->control = concat(3, p->type, p->subtype, p->data);
+                        p->status = execPacket(p);
+                        break;
+                    default:
+                        //                    printf("Bad Packet type\n");
+                        p->status = BAD_PACKET;
+                        break;
+                }
             }
+
 
 
 
@@ -93,7 +96,8 @@ void * hlp_control(void * arg) {
 
             char* ackType;
             if (p->status == GOOD_PACKET) {
-                ackType = GDPKT;
+                
+                    ackType = GDPKT;
             } else {
                 ackType = BDPKT;
                 record("BAD PACKET EXECUTION\n");
@@ -101,8 +105,9 @@ void * hlp_control(void * arg) {
             packet_t* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
             enqueue(&hkdownQueue, nextp);
 
+
         }
-                free(p);    //Why doesn't this work????
+        free(p); //Why doesn't this work????
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -152,7 +157,7 @@ void * hlp_down(void * arg) {
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
 
-    int data = FALSE;
+    //    int data = FALSE;
     char * buf;
 
     /*sleep to allow time for pipe to be initialized */
@@ -169,20 +174,20 @@ void * hlp_shell_out(void * arg) {
         buf = calloc(sizeof (char), 256);
 
         /*use select() to monitor output pipe*/
-        data = input_timeout(stdout_des, 2);
+        //        data = input_timeout(stdout_des, 2);
+        //
+        //        if (data) {
 
-        if (data) {
-
-            /*read from stdout pipe*/
-            if((read(stdout_des, buf, 255)) == -1){
-                record("read failed in HLP shell out");
-            }
-
-            /*push onto hk down queue*/
-            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
-            enqueue(&hkdownQueue, sr);
+        /*read from stdout pipe*/
+        if ((read(stdout_des, buf, 255)) == -1) {
+            record("read failed in HLP shell out");
         }
-        free(buf);    //not sure why this doesnt work.
+
+        /*push onto hk down queue*/
+        packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
+        enqueue(&hkdownQueue, sr);
+        //        }
+        free(buf); //not sure why this doesnt work.
     }
 
     return NULL;
