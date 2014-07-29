@@ -94,9 +94,9 @@ int write_data() {
         //initializeDMA();
         
         /*DMA Channel is open, now send GPIO*/
-        poke_gpio(POWER_OFFSET, 0x0F);
+        write_gpio(POWER_OFFSET, 0x0F);
         sleep(1);
-        poke_gpio(POWER_OFFSET, 0x00);
+        write_gpio(POWER_OFFSET, 0x00);
         /*Buffer updated here*/
         //dmaRead();
         gettimeofday(&expstop, NULL);
