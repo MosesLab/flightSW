@@ -80,6 +80,7 @@ int deactivate() {
 
 int exitDefault() {
     //char msg[100];
+    int var;
     record("Attempting to exit default mode.\n");
     //record(msg);
 
@@ -157,13 +158,13 @@ int exitDefault() {
         if (status != -1) {
             int i;
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+               var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+                var =write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
+                var = write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
+                var = write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
 
             record("Exiting Default Mode\n");
         } else {
@@ -177,6 +178,7 @@ int exitDefault() {
 
 /*For testing serial connection only*/
 int sendDummyData() {
+    int var;
     int blockSize = 67;
     int block1[] = {0x46, 0x08, 0x00, 0x09, 0x12, 0x18, 0x25, 0x28,
         0x30, 0xF8, 0x34, 0xF8, 0x34, 0xF8, 0xF8, 0x80,
@@ -190,7 +192,7 @@ int sendDummyData() {
 
     int i;
     for (i = 0; i < blockSize; i++)
-        write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+        var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
     
     return 0;
 }
