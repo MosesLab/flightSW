@@ -17,7 +17,7 @@ int main(void) {
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
-
+    
     /*read in configuration values*/
     read_moses_config();
 

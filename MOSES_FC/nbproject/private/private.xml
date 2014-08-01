@@ -14,6 +14,7 @@
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/logger.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/gpio.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/gpio.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/moses_threads.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
@@ -22,6 +23,7 @@
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxApi.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxApiI2cAa.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/nbproject/Makefile-Debug.mk</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxTypes.h</file>
         </group>
     </open-files>
