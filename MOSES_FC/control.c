@@ -96,8 +96,8 @@ void * hlp_control(void * arg) {
 
             char* ackType;
             if (p->status == GOOD_PACKET) {
-                
-                    ackType = GDPKT;
+
+                ackType = GDPKT;
             } else {
                 ackType = BDPKT;
                 record("BAD PACKET EXECUTION\n");
@@ -157,7 +157,7 @@ void * hlp_down(void * arg) {
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
 
-    //    int data = FALSE;
+    int data = FALSE;
     char * buf;
 
     /*sleep to allow time for pipe to be initialized */
@@ -174,19 +174,19 @@ void * hlp_shell_out(void * arg) {
         buf = calloc(sizeof (char), 256);
 
         /*use select() to monitor output pipe*/
-        //        data = input_timeout(stdout_des, 2);
-        //
-        //        if (data) {
+        data = input_timeout(stdout_des, 2, 0);
 
-        /*read from stdout pipe*/
-        if ((read(stdout_des, buf, 255)) == -1) {
-            record("read failed in HLP shell out");
+        if (data) {
+
+            /*read from stdout pipe*/
+            if ((read(stdout_des, buf, 255)) == -1) {
+                record("read failed in HLP shell out");
+            }
+
+            /*push onto hk down queue*/
+            packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
+            enqueue(&hkdownQueue, sr);
         }
-
-        /*push onto hk down queue*/
-        packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
-        enqueue(&hkdownQueue, sr);
-        //        }
         free(buf); //not sure why this doesnt work.
     }
 
@@ -205,6 +205,22 @@ void * hlp_housekeeping(void * arg) {
         enqueue(&hkdownQueue, p);
         sleep(1);
     }
+    return NULL;
+}
+
+/**
+ * FPGA server thread facilitates communications between the flight software 
+ * and the FPGA. The thread waits on a interrupt for DMA or GPIO input. The wait
+ * times out periodically to check if there is any GPIO output to poke the 
+ * FPGA
+ * 
+ * @param arg (not used)
+ * @return  (not used)
+ */
+void * fpga_server(void * arg) {
+
+    
+    
     return NULL;
 }
 

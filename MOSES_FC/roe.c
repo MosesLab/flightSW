@@ -27,39 +27,37 @@ int activate() {
             printf("%s\n", strerror(errno));
             record("Couldnt connect\n");
             exit(-1);
-        }
-        else
-        {
-        /*save current serial port settings*/
-        tcgetattr(fd, &oldtio_up);
+        } else {
+            /*save current serial port settings*/
+            tcgetattr(fd, &oldtio_up);
 
-        /*clear struct for new port settings*/
-        bzero(&newtio_up, sizeof (newtio_up));
+            /*clear struct for new port settings*/
+            bzero(&newtio_up, sizeof (newtio_up));
 
-        /*set flags for non-canonical serial connection*/
-        newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
-        newtio_up.c_cflag &= ~(PARENB | PARODD);
-        newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-        //newtio_up.c_iflag |= ISTRIP;
-        newtio_up.c_oflag &= ~OPOST;
-        newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
+            /*set flags for non-canonical serial connection*/
+            newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
+            newtio_up.c_cflag &= ~(PARENB | PARODD);
+            newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
+            //newtio_up.c_iflag |= ISTRIP;
+            newtio_up.c_oflag &= ~OPOST;
+            newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
 
-        /*set non-canonical attributes*/
-        newtio_up.c_cc[VTIME] = 1;
-        newtio_up.c_cc[VMIN] = 255;
+            /*set non-canonical attributes*/
+            newtio_up.c_cc[VTIME] = 1;
+            newtio_up.c_cc[VMIN] = 255;
 
-        tcflush(fd, TCIFLUSH);
-        tcsetattr(fd, TCSANOW, &newtio_up);
-        roe_struct.roeLink = fd;
-        record("Connection established. DEFAULT MODE\n");
+            tcflush(fd, TCIFLUSH);
+            tcsetattr(fd, TCSANOW, &newtio_up);
+            roe_struct.roeLink = fd;
+            record("Connection established. DEFAULT MODE\n");
         }
     }
-        //roe.roeLink = fd;
-        roe_struct.active = TRUE;
-        pthread_mutex_unlock(&roe_struct.mx);
-        record("ROE Active\n");
-        return 0;
-    
+    //roe.roeLink = fd;
+    roe_struct.active = TRUE;
+    pthread_mutex_unlock(&roe_struct.mx);
+    record("ROE Active\n");
+    return 0;
+
 }
 
 int deactivate() {
@@ -157,23 +155,31 @@ int exitDefault() {
     if (roeCustomRead) {
         if (status != -1) {
             int i;
-            for (i = 0; i < blockSize; i++)
-               var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
-            for (i = 0; i < blockSize; i++)
-                var =write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
-            for (i = 0; i < blockSize; i++)
+            for (i = 0; i < blockSize; i++) {
+                var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+                if (var == -1) record("Custom read write failed Block 1");
+            }
+            for (i = 0; i < blockSize; i++) {
+                var = write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+                if (var == -1) record("Custom read write failed Block 1");
+            }
+            for (i = 0; i < blockSize; i++) {
                 var = write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
-            for (i = 0; i < blockSize; i++)
+                if (var == -1) record("Custom read write failed Block 1");
+            }
+            for (i = 0; i < blockSize; i++) {
                 var = write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
+                if (var == -1) record("Custom read write failed Block 1");
+            }
 
             record("Exiting Default Mode\n");
         } else {
             record("Status = -1, not entering default mode\n");
         }
     }
-        pthread_mutex_unlock(&roe_struct.mx);
-        return 0;
-    
+    pthread_mutex_unlock(&roe_struct.mx);
+    return 0;
+
 }
 
 /*For testing serial connection only*/
@@ -191,9 +197,11 @@ int sendDummyData() {
         0xFC, 0xFC, 0xFC};
 
     int i;
-    for (i = 0; i < blockSize; i++)
+    for (i = 0; i < blockSize; i++) {
         var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
-    
+        if (var == -1) record("Custom read write failed Block 1");
+    }
+
     return 0;
 }
 
@@ -254,8 +262,7 @@ int selftestMode() {
     char selftst[9] = {0x45, 0x99, 0x99, 0x77, 0x4F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1) {
             record("selfTest error, write\n");
             return -1;
         }
@@ -273,7 +280,7 @@ int selftestMode() {
         record("selfTest error, read\n");
         return -1; //Get Status of Command Execution
     }
-    
+
 
     pthread_mutex_unlock(&roe_struct.mx);
     record("Entering Self Test Mode\n");
@@ -289,8 +296,7 @@ int stimOn() {
     char stimon[9] = {0x45, 0x99, 0x99, 0x77, 0x3F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1) {
             record("stimOn error, write\n");
             return -1;
         }
@@ -323,8 +329,7 @@ int stimOff() {
     char stimoff[9] = {0x45, 0x99, 0x99, 0x77, 0x2F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1) {
             record("stimOff error, write\n");
             return -1;
         }

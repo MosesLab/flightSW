@@ -90,16 +90,16 @@ int write_data() {
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
         record("SIGUSR2 Received, reading DMA and writing to disk now\n");
 
-        gettimeofday(&expstart, NULL);
-        //initializeDMA();
-        
-        /*DMA Channel is open, now send GPIO*/
-        write_gpio(POWER_OFFSET, 0x0F);
-        sleep(1);
-        write_gpio(POWER_OFFSET, 0x00);
-        /*Buffer updated here*/
-        //dmaRead();
-        gettimeofday(&expstop, NULL);
+//        gettimeofday(&expstart, NULL);
+//        //initializeDMA();
+//        
+//        /*DMA Channel is open, now send GPIO*/
+//        write_gpio(POWER_OFFSET, 0x0F);
+//        sleep(1);
+//        write_gpio(POWER_OFFSET, 0x00);
+//        /*Buffer updated here*/
+//        //dmaRead();
+//        gettimeofday(&expstop, NULL);
         
         sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
         
