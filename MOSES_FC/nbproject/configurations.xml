@@ -7,6 +7,7 @@
       <itemPath>control.h</itemPath>
       <itemPath>controlFuncs.h</itemPath>
       <itemPath>defs.h</itemPath>
+      <itemPath>dma.h</itemPath>
       <itemPath>gpio.h</itemPath>
       <itemPath>hashTable.h</itemPath>
       <itemPath>hlp.h</itemPath>
@@ -15,7 +16,9 @@
       <itemPath>main.h</itemPath>
       <itemPath>moses_threads.h</itemPath>
       <itemPath>packet.h</itemPath>
+      <itemPath>roe.h</itemPath>
       <itemPath>roe_image.h</itemPath>
+      <itemPath>roehk.h</itemPath>
       <itemPath>sci_timeline_funcs.h</itemPath>
       <itemPath>science_timeline.h</itemPath>
       <itemPath>send_TM.h</itemPath>
@@ -35,12 +38,14 @@
                    projectFiles="true">
       <itemPath>control.c</itemPath>
       <itemPath>controlFuncs.c</itemPath>
+      <itemPath>dma.c</itemPath>
       <itemPath>gpio.c</itemPath>
       <itemPath>hashTable.c</itemPath>
       <itemPath>lockingQueue.c</itemPath>
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>packet.c</itemPath>
+      <itemPath>roe.c</itemPath>
       <itemPath>roe_image.c</itemPath>
       <itemPath>sci_timeline_funcs.c</itemPath>
       <itemPath>science_timeline.c</itemPath>
@@ -132,6 +137,10 @@
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="dma.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="dma.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="gpio.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="gpio.h" ex="false" tool="3" flavor2="0">
@@ -211,9 +220,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -272,6 +287,10 @@
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="dma.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="dma.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="gpio.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="gpio.h" ex="false" tool="3" flavor2="0">
@@ -348,9 +367,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -406,6 +431,10 @@
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="dma.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="dma.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="gpio.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="gpio.h" ex="false" tool="3" flavor2="0">
@@ -482,9 +511,15 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -545,6 +580,10 @@
       <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="defs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dma.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="dma.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="gpio.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -633,11 +672,17 @@
       </item>
       <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="roe_image.c" ex="false" tool="0" flavor2="9">
         <cTool>
         </cTool>
       </item>
       <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="9">
         <cTool>

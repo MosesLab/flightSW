@@ -11,16 +11,13 @@
 
 int takeExposure(double duration, int sig) {
     char msg[100];
-    //    char dtime[32];
     struct timeval expstop, expstart;
-    //duration is the exposure length in microseconds'
-    int dur = (int) (duration * 1000000); // - PULSE;
-    /*actual is the physical amount of time the shutter is open*/
-    int actual;
-
+    int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
+    int actual; // computer recorded time interval between opening and closing the shutter
+    
     //int i;
     //for(i = 0; i < 5; i++)
-    //roe->flush(); //Flush ROE 5 times
+    //flush(); //Flush ROE 5 times
 
     if (sig == 1) // use the shutter for Data sequence 
     {
@@ -64,6 +61,7 @@ int takeExposure(double duration, int sig) {
 int write_data() {
 
     prctl(PR_SET_NAME,"IMAGE_WRITER",0,0,0);
+    struct timeval expstop, expstart;
     
     while (ts_alive) {
 
@@ -85,20 +83,27 @@ int write_data() {
         char channels = ops.channels;
 
         init_signal_handler_image();
-        /* Wait for SIGUSR2 (When DMA is ready)*/
+        /* Wait for SIGUSR2 (When received response from ROE readout)*/
         pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
         record("Waiting for signal...\n");
         sigwait(&maskimage, &caught_image_signal);
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
         record("SIGUSR2 Received, reading DMA and writing to disk now\n");
 
-        /*Wait for FPGA Interrupt*/
-
-        /*Interrupt received, Read DMA block*/
-
+        gettimeofday(&expstart, NULL);
+        //initializeDMA();
+        
+        /*DMA Channel is open, now send GPIO*/
+        write_gpio(POWER_OFFSET, 0x0F);
+        sleep(1);
+        write_gpio(POWER_OFFSET, 0x00);
+        /*Buffer updated here*/
+        //dmaRead();
+        gettimeofday(&expstop, NULL);
+        
+        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
+        
         /*Clear DMA block*/
-
-
 
         /*Initialize the image*/
         constructImage(BUFFER, index, channels, 16);
@@ -173,9 +178,8 @@ int write_data() {
         free(BUFFER[1]);
         free(BUFFER[2]);
         free(BUFFER[3]);
-    }
-
-
+    }//end while ts_alive
+    
     return 0;
 }
 
@@ -210,16 +214,11 @@ void init_signal_handler_image() {
     sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
 
     /*no signal dispositions for signals between threads*/
-    run_action_image.sa_handler = runsig2;
     run_action_image.sa_mask = oldmaskimage;
     run_action_image.sa_flags = 0;
 
     sigaction(SIGUSR2, &run_action_image, NULL);
     record("Signal handler initiated.\n");
-}
-
-void runsig2() {
-    printf("runsig2\n");
 }
 
 

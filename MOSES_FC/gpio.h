@@ -56,6 +56,7 @@ U32 current_power_state;
 U32 power_subsystem_arr[NUM_SUBSYSTEM];
 
 /*poke gpio pins*/
+int write_gpio(U32,U32,U32);
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
 

@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/controlFuncs.o \
+	${OBJECTDIR}/dma.o \
 	${OBJECTDIR}/gpio.o \
 	${OBJECTDIR}/hashTable.o \
 	${OBJECTDIR}/lockingQueue.o \
@@ -49,6 +50,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/plx/PlxApi.o \
 	${OBJECTDIR}/plx/PlxApiI2cAa.o \
 	${OBJECTDIR}/plx/PlxInit.o \
+	${OBJECTDIR}/roe.o \
 	${OBJECTDIR}/roe_image.o \
 	${OBJECTDIR}/sci_timeline_funcs.o \
 	${OBJECTDIR}/science_timeline.o \
@@ -90,6 +92,11 @@ ${OBJECTDIR}/controlFuncs.o: controlFuncs.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/controlFuncs.o controlFuncs.c
+
+${OBJECTDIR}/dma.o: dma.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/dma.o dma.c
 
 ${OBJECTDIR}/gpio.o: gpio.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -150,6 +157,11 @@ ${OBJECTDIR}/plx/PlxInit.o: plx/PlxInit.c
 	${MKDIR} -p ${OBJECTDIR}/plx
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/plx/PlxInit.o plx/PlxInit.c
+
+${OBJECTDIR}/roe.o: roe.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/roe.o roe.c
 
 ${OBJECTDIR}/roe_image.o: roe_image.c 
 	${MKDIR} -p ${OBJECTDIR}

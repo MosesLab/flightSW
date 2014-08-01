@@ -12,6 +12,8 @@
 #include "roe_image.h"
 #include "control.h"
 #include "gpio.h"
+#include "dma.h"
+
 
 sigset_t maskimage, oldmaskimage;
 int caught_image_signal;

@@ -18,10 +18,15 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
 
     /* wait for ROE to become active */
-    //Add code here
+    //record("Waiting for ROE to become active...\n");
+    //while(!roe_struct.active)
+    //    usleep(20000);
+    //record("ROE Active\n");
 
-    /* ROE initialization: ROE exitdefault, reset, exitdefault */
-    //Add code here
+    /* if ROE active, set to known state (exit default, reset, exit default) */
+        //exitDefault();
+        //reset();
+        //exitDefault();
 
     while (ts_alive) {
         if (ops.seq_run == FALSE) {
@@ -38,6 +43,10 @@ void * science_timeline(void * arg) {
                 
         /* if ROE active, set to known state (exit default, reset, exit default) */
         //Add code here
+        //exitDefault();
+        //reset();
+        //exitDefault();
+        
 
         /*establish current sequence */
         currentSequence = sequenceMap[ops.sequence];
@@ -46,12 +55,11 @@ void * science_timeline(void * arg) {
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
-        packet_t* r = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
+        packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
         enqueue(&hkdownQueue, a);
-        enqueue(&hkdownQueue, r);
+        enqueue(&hkdownQueue, b);
 
         /* for each exposure in the sequence */
-        //printf("Number of Frames:%d\n", currentSequence.numFrames);
         int i;
         for (i = 0; i < currentSequence.numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence.exposureTimes[i], i + 1, currentSequence.numFrames);
@@ -74,28 +82,31 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
 
-            packet_t* a = (packet_t*)constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
-            packet_t* b = (packet_t*)constructPacket(MDAQ_RSP, GT_CUR_FRML, sframe);
+            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
+            b = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRML", sframe);
             enqueue(&hkdownQueue, a);
             enqueue(&hkdownQueue, b);
 
             /*initialize index( these will start at -1 and be incremented by DMA*/
-            //int index[4] = {2200000, 2200000, 2200000, 2200000};
 
-            //int num = currentSequence.currentFrame;
             record("Done with exposure, perform data collection.\n");
 
+            /* Command ROE to Readout*/
+            //readOut(...);
+            
             /* push packet w/info about end read out */
+            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
+            enqueue(&hkdownQueue, a);
             
             /* write buffer data to disk  and telemetry*/
             record("Writing data to disk.\n");
 
-            //wait 4 seconds
+            //wait 4 seconds for response from ROE
             sleep(4);
             //poll for response?
             if (ops.dma_write == 1 && threads[image_writer_thread])
             { 
-                pthread_kill(threads[image_writer_thread], SIGUSR2);
+                pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
             }
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence.exposureTimes[i]);
@@ -108,23 +119,13 @@ void * science_timeline(void * arg) {
 
         a = (packet_t*)constructPacket(MDAQ_RSP,END_SEQ,(char *)NULL);
         enqueue(&hkdownQueue, a);    
-
         record("Done witps.seq_run = FAh sequences\n");
         ops.seq_run = FALSE;
 
     }//end while ts_alive
-    /* delete pixel buffers */
-
 
     record("Done with scienceTimeline\n");
     return NULL;
-}
-
-void runsig() {
- //   char msg[100]; // for writing strings
-    //printf(msg, "seq_run: %d\n", ops.seq_run);
-    ops.seq_run = TRUE;
-    //printf(msg, "seq_run: %d\n", ops.seq_run);
 }
 
 /*this function sets up the signal handler to run
@@ -136,7 +137,6 @@ void init_signal_handler_stl() {
     sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
 
     /*no signal dispositions for signals between threads*/
-    run_action.sa_handler = runsig;
     run_action.sa_mask = oldmaskstl;
     run_action.sa_flags = 0;
     
