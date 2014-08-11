@@ -1,6 +1,6 @@
 /* 
  * File:   hlp.h
- * Author: byrdie
+ * Author: Roy Smart
  *
  * Created on February 15, 2014, 2:15 PM
  */
@@ -136,20 +136,20 @@
 //HK Arguments
 #define FC_P2_5V_V   "VC"
 #define ROE_P2_5VD_V "VD"
-#define ROE_P2_5VD_C "ID"
+#define ROE_P2_5VD_I "ID"
 
 #define ROE_P5VAA_V  "VA"
 #define ROE_P5VAB_V  "VB"
 #define FC_P5V_V     "VC"
 #define ROE_P5VD_V   "VD"
-#define ROE_P5VAA_C  "IA"
-#define ROE_P5VAB_C  "IB"
-#define ROE_P5VD_C   "IC"       //wrong according to hlp document, should be "ID" EGSE software is incorrect
+#define ROE_P5VAA_I  "IA"
+#define ROE_P5VAB_I  "IB"
+#define ROE_P5VD_I   "IC"       //wrong according to hlp document, should be "ID" EGSE software is incorrect
 
 #define ROE_N5VAA_V  "VA"
 #define ROE_N5VAB_V  "VB"
-#define ROE_N5VAA_C  "IA"
-#define ROE_N5VAB_C  "IB"
+#define ROE_N5VAA_I  "IA"
+#define ROE_N5VAB_I  "IB"
 
 #define ROE_N10VA_V  "VA"
 #define ROE_N10VB_V  "VB"
@@ -157,13 +157,13 @@
 #define ROE_P12VA_V  "VA"
 #define ROE_P12VB_V  "VB"
 #define FC_P12V_V    "VC"
-#define ROE_P12VA_C  "IA"
-#define ROE_P12VB_C  "IB"
+#define ROE_P12VA_I  "IA"
+#define ROE_P12VB_I  "IB"
 
 #define ROE_P36VA_V  "VA"
 #define ROE_P36VB_V  "VB"
-#define ROE_P36VA_C  "IA"
-#define ROE_P36VB_C  "IB"
+#define ROE_P36VA_I  "IA"
+#define ROE_P36VB_I  "IB"
 
 #define TEMP1 "1"
 #define TEMP2 "2"

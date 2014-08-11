@@ -61,6 +61,8 @@ int uDataStart(packet_t* p) {
         }
     }
 
+    ops.seq_run = TRUE;
+    
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
@@ -95,7 +97,8 @@ int uDark1() {
         }
     }
 
-    sleep(1);
+    ops.seq_run = TRUE;
+    
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
@@ -117,6 +120,8 @@ int uDark2(packet_t* p) {
             ops.sequence = i;
         }
     }
+    
+    ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
@@ -137,6 +142,8 @@ int uDark3(packet_t* p) {
             ops.sequence = i;
         }
     }
+    
+    ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
@@ -157,6 +164,8 @@ int uDark4(packet_t* p) {
             ops.sequence = i;
         }
     }
+    
+    ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
@@ -662,7 +671,7 @@ int ROE_2_5V_V(packet_t* p) {
 int ROE_2_5V_I(packet_t* p) {
     record("Request for ROE +2.5V current received\n");
     //Insert control code here  
-    char* response = ROE_P2_5VD_C "0.0"; //test EGSE
+    char* response = ROE_P2_5VD_I "0.0"; //test EGSE
     //char* response = getHK(CPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&hkdownQueue, r);
@@ -726,7 +735,7 @@ int ROE_POS_5V_VD(packet_t* p) {
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P5VAA_C "0.0"; //test EGSE
+    char* response = ROE_P5VAA_I "0.0"; //test EGSE
     //char* response = getHK(CPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
@@ -737,7 +746,7 @@ int ROE_POS_5V_IA(packet_t* p) {
 int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P5VAB_C "0.0"; //test EGSE
+    char* response = ROE_P5VAB_I "0.0"; //test EGSE
     //char* response = getHK(CPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
@@ -748,7 +757,7 @@ int ROE_POS_5V_IB(packet_t* p) {
 int ROE_POS_5V_ID(packet_t* p) {
     record("Request for ROE +5.0V D Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P5VD_C "0.0"; //test EGSE
+    char* response = ROE_P5VD_I "0.0"; //test EGSE
     //char* response = getHK(CPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
@@ -803,7 +812,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
 int ROE_NEG_5V_IA(packet_t* p) {
     record("Request for ROE -5.0V A Channel current received\n");
     //Insert control code here  
-    char* response = ROE_N5VAA_C "0.0"; //test EGSE
+    char* response = ROE_N5VAA_I "0.0"; //test EGSE
     //char* response = getHK(CNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
@@ -814,7 +823,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
 int ROE_NEG_5V_IB(packet_t* p) {
     record("Request for ROE -5.0V B Channel current received\n");
     //Insert control code here  
-    char* response = ROE_N5VAB_C "0.0"; //test EGSE
+    char* response = ROE_N5VAB_I "0.0"; //test EGSE
     //char* response = getHK(CNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
@@ -857,7 +866,7 @@ int ROE_12V_VB(packet_t* p) {
 int ROE_12V_IA(packet_t* p) {
     record("Request for ROE +12V A Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P12VA_C "0.0"; //test EGSE
+    char* response = ROE_P12VA_I "0.0"; //test EGSE
     //char* response = getHK(CPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
@@ -868,7 +877,7 @@ int ROE_12V_IA(packet_t* p) {
 int ROE_12V_IB(packet_t* p) {
     record("Request for ROE +12V B Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P12VB_C "0.0"; //test EGSE
+    char* response = ROE_P12VB_I "0.0"; //test EGSE
     //char* response = getHK(CPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
@@ -901,7 +910,7 @@ int ROE_36V_VB(packet_t* p) {
 int ROE_36V_IA(packet_t* p) {
     record("Request for ROE +36V A Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P36VA_C "0.0"; //test EGSE
+    char* response = ROE_P36VA_I "0.0"; //test EGSE
     //char* response = getHK(CPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
@@ -912,7 +921,7 @@ int ROE_36V_IA(packet_t* p) {
 int ROE_36V_IB(packet_t* p) {
     record("Request for ROE +36V B Channel current received\n");
     //Insert control code here  
-    char* response = ROE_P36VB_C "0.0"; //test EGSE
+    char* response = ROE_P36VB_I "0.0"; //test EGSE
     //char* response = getHK(CPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
@@ -1099,28 +1108,28 @@ void hlpHashInit() {
     stringTable[FC_2V] = HK_RQS_S POS2_0V;
     stringTable[FC_2_5V] = HK_RQS_S POS2_5V FC_P2_5V_V;
     stringTable[ROE_2_5V] = HK_RQS_S POS2_5V ROE_P2_5VD_V;
-    stringTable[ROE_2_5I] = HK_RQS_S POS2_5V ROE_P2_5VD_C;
+    stringTable[ROE_2_5I] = HK_RQS_S POS2_5V ROE_P2_5VD_I;
     stringTable[FC_3_3V] = HK_RQS_S POS3_3V;
     stringTable[FC_P5_5V] = HK_RQS_S POS5V FC_P5V_V;
     stringTable[ROE_P5_5VA] = HK_RQS_S POS5V ROE_P5VAA_V;
     stringTable[ROE_P5_5VB] = HK_RQS_S POS5V ROE_P5VAB_V;
     stringTable[ROE_P5_5VD] = HK_RQS_S POS5V ROE_P5VD_V;
-    stringTable[ROE_P5_5IA] = HK_RQS_S POS5V ROE_P5VAA_C;
-    stringTable[ROE_P5_5IB] = HK_RQS_S POS5V ROE_P5VAB_C;
-    stringTable[ROE_P5_5ID] = HK_RQS_S POS5V ROE_P5VD_C;
+    stringTable[ROE_P5_5IA] = HK_RQS_S POS5V ROE_P5VAA_I;
+    stringTable[ROE_P5_5IB] = HK_RQS_S POS5V ROE_P5VAB_I;
+    stringTable[ROE_P5_5ID] = HK_RQS_S POS5V ROE_P5VD_I;
     stringTable[ROE_N5_5VA] = HK_RQS_S NEG5V ROE_N5VAA_V;
     stringTable[ROE_N5_5VB] = HK_RQS_S NEG5V ROE_N5VAB_V;
-    stringTable[ROE_N5_5IA] = HK_RQS_S NEG5V ROE_N5VAA_C;
-    stringTable[ROE_N5_5IB] = HK_RQS_S NEG5V ROE_N5VAB_C;
+    stringTable[ROE_N5_5IA] = HK_RQS_S NEG5V ROE_N5VAA_I;
+    stringTable[ROE_N5_5IB] = HK_RQS_S NEG5V ROE_N5VAB_I;
     stringTable[FC_12V] = HK_RQS_S POS12V FC_P12V_V;
     stringTable[ROE_12VA] = HK_RQS_S POS12V ROE_P12VA_V;
     stringTable[ROE_12VB] = HK_RQS_S POS12V ROE_P12VB_V;
-    stringTable[ROE_12IA] = HK_RQS_S POS12V ROE_P12VA_C;
-    stringTable[ROE_12IB] = HK_RQS_S POS12V ROE_P12VB_C;
+    stringTable[ROE_12IA] = HK_RQS_S POS12V ROE_P12VA_I;
+    stringTable[ROE_12IB] = HK_RQS_S POS12V ROE_P12VB_I;
     stringTable[ROE_36VA] = HK_RQS_S POS36V ROE_P36VA_V;
     stringTable[ROE_36VB] = HK_RQS_S POS36V ROE_P36VB_V;
-    stringTable[ROE_36IA] = HK_RQS_S POS36V ROE_P36VA_C;
-    stringTable[ROE_36IB] = HK_RQS_S POS36V ROE_P36VB_C;
+    stringTable[ROE_36IA] = HK_RQS_S POS36V ROE_P36VA_I;
+    stringTable[ROE_36IB] = HK_RQS_S POS36V ROE_P36VB_I;
     stringTable[FC_T1] = HK_RQS_S TEMP TEMP1;
     stringTable[FC_T2] = HK_RQS_S TEMP TEMP2;
     stringTable[FC_T3] = HK_RQS_S TEMP TEMP3;
