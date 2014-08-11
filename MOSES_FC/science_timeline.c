@@ -82,8 +82,8 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
 
-            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
-            b = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRML", sframe);
+            a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
+            b = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
             enqueue(&hkdownQueue, a);
             enqueue(&hkdownQueue, b);
 
@@ -99,7 +99,7 @@ void * science_timeline(void * arg) {
             enqueue(&hkdownQueue, a);
             
             /* write buffer data to disk  and telemetry*/
-            record("Writing data to disk.\n");
+            record("Signal disk write.\n");
 
             //wait 4 seconds for response from ROE
             sleep(4);
