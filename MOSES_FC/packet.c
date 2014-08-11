@@ -55,7 +55,8 @@ void getCurrentTime(char* result) {
 /*records a packet to a log file*/
 void recordPacket(packet_t* p) {
     char* pString = (char *) malloc(300 * sizeof (char));
-    if (sprintf(pString, "%c%s%s%s%s%s%s%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
+    /*decode checksum so it doesn't print gibberish*/
+    if (sprintf(pString, "%c%s%s%s%s%s%c%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, decode(p->checksum[0]), ENDBYTE) == 0) {
         record("failed to record packet");
     }
     record(pString);

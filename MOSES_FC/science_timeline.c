@@ -98,7 +98,7 @@ void * science_timeline(void * arg) {
             a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&hkdownQueue, a);
 
-            //wait 4 seconds for response from ROE
+            //wait 4 seconds for response from ROE that readout is complete
             sleep(4);
                        
             /* write buffer data to disk  and telemetry*/

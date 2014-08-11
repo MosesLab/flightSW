@@ -11,7 +11,7 @@
 
 int takeExposure(double duration, int sig) {
     char msg[100];
-    struct timeval expstop, expstart;
+    struct timeval expstop, expstart, expdiff;
     int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
     int actual; // computer recorded time interval between opening and closing the shutter
     
@@ -41,7 +41,8 @@ int takeExposure(double duration, int sig) {
 
         //clear the pin
         gettimeofday(&expstop, NULL);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
+        timeval_subtract(&expdiff, &expstart, &expstop);
+        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
     } else // performing dark exposure, just wait
     {
@@ -222,3 +223,25 @@ void init_signal_handler_image() {
 }
 
 
+int timeval_subtract (struct timeval * result, struct timeval * x, struct timeval * y)
+{
+  /* Perform the carry for the later subtraction by updating y. */
+  if (x->tv_usec < y->tv_usec) {
+    int nsec = (y->tv_usec - x->tv_usec) / 1000000 + 1;
+    y->tv_usec -= 1000000 * nsec;
+    y->tv_sec += nsec;
+  }
+  if (x->tv_usec - y->tv_usec > 1000000) {
+    int nsec = (y->tv_usec - x->tv_usec) / 1000000;
+    y->tv_usec += 1000000 * nsec;
+    y->tv_sec -= nsec;
+  }
+
+  /* Compute the time remaining to wait.
+     tv_usec is certainly positive. */
+  result->tv_sec = x->tv_sec - y->tv_sec;
+  result->tv_usec = x->tv_usec - y->tv_usec;
+
+  /* Return 1 if result is negative. */
+  return x->tv_sec < y->tv_sec;
+}
