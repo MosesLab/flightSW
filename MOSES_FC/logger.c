@@ -29,7 +29,7 @@ void record(const char* message) {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(theTime, " %d:%02d:%02d:03%d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000));
+    sprintf(theTime, " %d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000));
 
 
     fwrite("[", 1, 2, outfile);
