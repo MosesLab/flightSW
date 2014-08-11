@@ -18,28 +18,37 @@ void record(const char* message) {
     outfile = fopen("/etc/moses_log.txt", "a"); // write to this file
     time_t now;
     time(&now);
-    char* theTime;
+    char theTime[255];
 
-    theTime = ctime(&now);
-    theTime[ strlen(theTime) - 1 ] = '\0'; //Replace the '\n' with null char
-    
+//    theTime = ctime(&now);
+//    theTime[ strlen(theTime) - 1 ] = '\0'; //Replace the '\n' with null char
+
+    /*micro time*/
+    struct timeval tv;
+    struct timezone tz;
+    struct tm *tm;
+    gettimeofday(&tv, &tz);
+    tm = localtime(&tv.tv_sec);
+    sprintf(theTime, " %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, (int)tv.tv_usec);
+
+
     fwrite("[", 1, 2, outfile);
 
     /*write the date and the message to the file*/
     fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
-    
+
     fwrite("] ", 1, 2, outfile);
-    
+
     /*write the name of the thread to a file*/
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
-    fwrite(&thread_name, sizeof(thread_name[0]), strlen(thread_name), outfile);
-    
-    
-    
+    fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
+
+
+
     char * delim = " : ";
-    fwrite(delim, sizeof(char), strlen(delim), outfile);
-    
+    fwrite(delim, sizeof (char), strlen(delim), outfile);
+
     //fwrite(' ', 1, 1, outfile);
     fwrite(message, sizeof (message[0]), strlen(message), outfile);
 
