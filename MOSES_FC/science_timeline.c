@@ -97,12 +97,12 @@ void * science_timeline(void * arg) {
             /* push packet w/info about end read out */
             a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&hkdownQueue, a);
-            
-            /* write buffer data to disk  and telemetry*/
-            record("Signal disk write.\n");
 
             //wait 4 seconds for response from ROE
             sleep(4);
+                       
+            /* write buffer data to disk  and telemetry*/
+            record("Signal disk write.\n");
             //poll for response?
             if (ops.dma_write == 1 && threads[image_writer_thread])
             { 
