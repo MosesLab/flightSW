@@ -14,7 +14,7 @@ int takeExposure(double duration, int sig) {
     struct timeval expstop, expstart, expdiff;
     int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
     int actual; // computer recorded time interval between opening and closing the shutter
-    
+
     //int i;
     //for(i = 0; i < 5; i++)
     //flush(); //Flush ROE 5 times
@@ -23,7 +23,7 @@ int takeExposure(double duration, int sig) {
     {
         //send open shutter signal to DIO
         open_shutter();
-        
+
         gettimeofday(&expstart, NULL);
 
         //wait for interval to open shutter
@@ -32,16 +32,16 @@ int takeExposure(double duration, int sig) {
 
         //wait for exposure duration, calculate with the pulse
         actual = wait_exposure(dur) + PULSE;
-        
+
         // send close shutter signal to DIO
         close_shutter();
-        
+
 
         // wait for interval to close shutter
 
         //clear the pin
         gettimeofday(&expstop, NULL);
-        timeval_subtract(&expdiff, &expstart, &expstop);
+        timeval_subtract(&expdiff, expstart, expstop);
         sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
     } else // performing dark exposure, just wait
@@ -61,9 +61,9 @@ int takeExposure(double duration, int sig) {
    data to memory and will initialize the writing to disk*/
 int write_data() {
 
-    prctl(PR_SET_NAME,"IMAGE_WRITER",0,0,0);
-//    struct timeval expstop, expstart;
-    
+    prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
+    //    struct timeval expstop, expstart;
+
     while (ts_alive) {
 
         short *BUFFER[4];
@@ -73,7 +73,7 @@ int write_data() {
             BUFFER[i] = (short *) calloc(2200000, sizeof (short));
         }
         /*initialize index( these will start at -1 and be incremented by DMA*/
-        int index[4] = {2200000,2200000,2200000,2200000};
+        int index[4] = {2200000, 2200000, 2200000, 2200000};
 
         char msg[100];
         char filename[80];
@@ -91,19 +91,19 @@ int write_data() {
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
         record("SIGUSR2 Received, reading DMA and writing to disk now\n");
 
-//        gettimeofday(&expstart, NULL);
-//        //initializeDMA();
-//        
-//        /*DMA Channel is open, now send GPIO*/
-//        write_gpio(POWER_OFFSET, 0x0F);
-//        sleep(1);
-//        write_gpio(POWER_OFFSET, 0x00);
-//        /*Buffer updated here*/
-//        //dmaRead();
-//        gettimeofday(&expstop, NULL);
-        
-//        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
-        
+        //        gettimeofday(&expstart, NULL);
+        //        //initializeDMA();
+        //        
+        //        /*DMA Channel is open, now send GPIO*/
+        //        write_gpio(POWER_OFFSET, 0x0F);
+        //        sleep(1);
+        //        write_gpio(POWER_OFFSET, 0x00);
+        //        /*Buffer updated here*/
+        //        //dmaRead();
+        //        gettimeofday(&expstop, NULL);
+
+        //        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
+
         /*Clear DMA block*/
 
         /*Initialize the image*/
@@ -156,7 +156,7 @@ int write_data() {
             memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
 
         /*write the image and metadata to disk*/
-        writeToFile(); 
+        writeToFile();
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
@@ -180,7 +180,7 @@ int write_data() {
         free(BUFFER[2]);
         free(BUFFER[3]);
     }//end while ts_alive
-    
+
     return 0;
 }
 
@@ -222,26 +222,11 @@ void init_signal_handler_image() {
     record("Signal handler initiated.\n");
 }
 
+void timeval_subtract(struct timeval * result, struct timeval start, struct timeval end) {
 
-int timeval_subtract (struct timeval * result, struct timeval * x, struct timeval * y)
-{
-       /* Perform the carry for the later subtraction by updating y. */
-       if (x->tv_usec < y->tv_usec) {
-         int nsec = (y->tv_usec - x->tv_usec) / 1000000 + 1;
-         y->tv_usec -= 1000000 * nsec;
-         y->tv_sec += nsec;
-       }
-       if (x->tv_usec - y->tv_usec > 1000000) {
-         int nsec = (x->tv_usec - y->tv_usec) / 1000000;
-         y->tv_usec += 1000000 * nsec;
-         y->tv_sec -= nsec;
-       }
-     
-       /* Compute the time remaining to wait.
-          tv_usec is certainly positive. */
-       result->tv_sec = x->tv_sec - y->tv_sec;
-       result->tv_usec = x->tv_usec - y->tv_usec;
-     
-       /* Return 1 if result is negative. */
-       return x->tv_sec < y->tv_sec;
-     }
+    long t = (end.tv_sec*1e6 + end.tv_usec) - (start.tv_sec*1e6 + start.tv_usec);
+    
+    result->tv_sec = t / 1e6;
+    result->tv_usec = t - result->tv_sec * 1e6;
+    
+}

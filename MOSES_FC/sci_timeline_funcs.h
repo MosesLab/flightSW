@@ -26,7 +26,7 @@ int takeExposure(double duration,int sig);
 int write_data();
 void init_signal_handler_image();
 void runsig2();
-int timeval_subtract(struct timeval*, struct timeval*, struct timeval*);
+void timeval_subtract(struct timeval*, struct timeval, struct timeval);
 
 #endif	/* SCI_TIMELINE_FUNCS_H */
 
