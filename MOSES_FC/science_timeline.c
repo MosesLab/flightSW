@@ -107,6 +107,7 @@ void * science_timeline(void * arg) {
             if (ops.dma_write == 1 && threads[image_writer_thread])
             { 
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
+                record("SIGUSR2 Sent\n");
             }
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence.exposureTimes[i]);
