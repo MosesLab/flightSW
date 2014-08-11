@@ -61,7 +61,7 @@ int takeExposure(double duration, int sig) {
 int write_data() {
 
     prctl(PR_SET_NAME,"IMAGE_WRITER",0,0,0);
-    struct timeval expstop, expstart;
+//    struct timeval expstop, expstart;
     
     while (ts_alive) {
 
@@ -101,7 +101,7 @@ int write_data() {
 //        //dmaRead();
 //        gettimeofday(&expstop, NULL);
         
-        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
+//        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
         
         /*Clear DMA block*/
 
