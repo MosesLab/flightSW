@@ -95,7 +95,7 @@ void * science_timeline(void * arg) {
             //readOut(...);
             
             /* push packet w/info about end read out */
-            a = (packet_t*)constructPacket("MDAQ_RSP", "GT_CUR_FRMI", sindex);
+            a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&hkdownQueue, a);
             
             /* write buffer data to disk  and telemetry*/
