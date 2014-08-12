@@ -16,6 +16,7 @@
 #include <time.h>
 #include <errno.h>
 #include <string.h>
+#include <sched.h>
 #include "defs.h"
 #include "logger.h"
 

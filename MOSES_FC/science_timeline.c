@@ -17,17 +17,17 @@ void * science_timeline(void * arg) {
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
 
     /*set thread priority*/
-    int ret;
-    struct sched_param params;
-    params.sched_priority = sched_get_priority_max(SCHED_RR);
-    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
-    if (ret != 0) {
-        // Print the error
-        record("Unsuccessful in setting thread realtime prio\n");
-        return NULL;
-    }
-    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
-    record(msg);
+//    int ret;
+//    struct sched_param params;
+//    params.sched_priority = sched_get_priority_max(SCHED_RR);
+//    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
+//    if (ret != 0) {
+//        // Print the error
+//        record("Unsuccessful in setting thread realtime prio\n");
+//        return NULL;
+//    }
+//    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+//    record(msg);
 
 
     char sindex[2];
@@ -101,7 +101,6 @@ void * science_timeline(void * arg) {
             int duration = takeExposure(currentSequence.exposureTimes[i], currentSequence.seq_type);
 
             image.duration = duration;
-            record("Triple check\n"); //Check to see if global variable access is making everything slow
 
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
@@ -127,13 +126,11 @@ void * science_timeline(void * arg) {
             sleep(4);
 
             /* write buffer data to disk  and telemetry*/
-            record("Signal disk write.\n");
-            //poll for response?
+            record("Signal disk write SIGUSR2 .\n");
+            //poll for response? 
             if (ops.dma_write == 1 && threads[image_writer_thread])
             {
-                record("check\n");
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
-                record("SIGUSR2 Sent\n");
             }
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence.exposureTimes[i]);

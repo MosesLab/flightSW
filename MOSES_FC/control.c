@@ -38,8 +38,6 @@ void * hlp_control(void * arg) {
         record("HK up serial connection not configured");
     }
 
-
-
     /*all below should be changed to make it more organized*/
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
@@ -87,9 +85,6 @@ void * hlp_control(void * arg) {
                         break;
                 }
             }
-
-
-
 
             char* data;
             data = concat(2, p->type, p->subtype);

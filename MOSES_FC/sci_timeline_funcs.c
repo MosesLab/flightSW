@@ -66,18 +66,18 @@ void * write_data(void * arg) {
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
     
-    /*set thread priority*/
-    int ret;
-    struct sched_param params;
-    params.sched_priority = sched_get_priority_max(SCHED_RR);
-    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
-    if (ret != 0) {
-        // Print the error
-        record( "Unsuccessful in setting thread realtime prio\n" );
-        return FALSE;
-    }
-    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
-    record(msg);
+//    /*set thread priority*/
+//    int ret;
+//    struct sched_param params;
+//    params.sched_priority = sched_get_priority_max(SCHED_RR);
+//    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
+//    if (ret != 0) {
+//        // Print the error
+//        record( "Unsuccessful in setting thread realtime prio\n" );
+//        return FALSE;
+//    }
+//    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+//    record(msg);
 
     while (ts_alive) {
 
@@ -184,8 +184,6 @@ void * write_data(void * arg) {
             record("Filename pushed to telemetry queue\n");
         }
 
-        sprintf(msg, "double check\n");
-        record(msg);
 
         /*need to free allocated image to prevent memory leak --RTS*/
         free(image.data[0]);

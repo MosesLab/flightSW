@@ -11,12 +11,14 @@
  * 
  */
 int main(void) {
-    /*init configuration stings*/
-    config_strings_init();
+
 
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
+
+    /*init configuration stings*/
+    config_strings_init();
 
     /*read in configuration values*/
     read_moses_config();
@@ -54,25 +56,49 @@ void quit_signal(int sig) {
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads() {
+    pthread_attr_t fifo_attr, rr_attr, other_attr; //FIFO and round robin scheduling attributes
+    struct sched_param fifo_param, rr_param, other_param;
+    fifo_param.__sched_priority = sched_get_priority_max(SCHED_FIFO);
+    rr_param.__sched_priority = (sched_get_priority_max(SCHED_RR) + sched_get_priority_min(SCHED_RR)) / 2;
+    other_param.__sched_priority = (sched_get_priority_max(SCHED_OTHER) - 1);
+
+    pthread_attr_init(&fifo_attr);
+    pthread_attr_init(&rr_attr);
+    pthread_attr_init(&other_attr);
+
+    pthread_attr_setdetachstate(&fifo_attr, PTHREAD_CREATE_JOINABLE);
+    pthread_attr_setdetachstate(&rr_attr, PTHREAD_CREATE_JOINABLE);
+    pthread_attr_setdetachstate(&other_attr, PTHREAD_CREATE_JOINABLE);
+
+    pthread_attr_setschedpolicy(&fifo_attr, SCHED_FIFO);
+    pthread_attr_setschedpolicy(&rr_attr, SCHED_RR);
+    pthread_attr_setschedpolicy(&other_attr, SCHED_OTHER);
+
+    pthread_attr_setschedparam(&fifo_attr, &fifo_param);
+    pthread_attr_setschedparam(&rr_attr, &rr_param);
+    pthread_attr_setschedparam(&other_attr, &other_param);
 
 
-    pthread_attr_init(&attrs);
-    pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_JOINABLE);
-    if (config_values[hlp_down_thread] == 1)
-        pthread_create(&threads[hlp_down_thread], &attrs, (void * (*)(void *))hlp_down, &config_values[hlp_down_interface]);
     if (config_values[hlp_control_thread] == 1)
-        pthread_create(&threads[hlp_control_thread], &attrs, (void * (*)(void *))hlp_control, &config_values[hlp_up_interface]);
-    if (config_values[hlp_hk_thread] == 1)
-        pthread_create(&threads[hlp_hk_thread], &attrs, (void * (*)(void*))hlp_housekeeping, NULL);
-    if (config_values[sci_timeline_thread] == 1)
-        pthread_create(&threads[sci_timeline_thread], &attrs, (void * (*)(void*))science_timeline, NULL);
-    if (config_values[telem_thread] == 1)
-        pthread_create(&threads[telem_thread], &attrs, (void * (*)(void*))telem, NULL);
-    if (config_values[hlp_shell_thread] == 1)
-        pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
-    if (config_values[image_writer_thread] == 1)
-        pthread_create(&threads[image_writer_thread], &attrs, (void * (*)(void*))write_data, NULL);
+        pthread_create(&threads[hlp_control_thread], &fifo_attr, (void * (*)(void *))hlp_control, &config_values[hlp_up_interface]);
 
+    if (config_values[sci_timeline_thread] == 1)
+        pthread_create(&threads[sci_timeline_thread], &fifo_attr, (void * (*)(void*))science_timeline, NULL);
+
+    if (config_values[image_writer_thread] == 1)
+        pthread_create(&threads[image_writer_thread], &other_attr, (void * (*)(void*))write_data, NULL);
+
+    if (config_values[hlp_down_thread] == 1)
+        pthread_create(&threads[hlp_down_thread], &rr_attr, (void * (*)(void *))hlp_down, &config_values[hlp_down_interface]);
+
+    if (config_values[hlp_shell_thread] == 1)
+        pthread_create(&threads[hlp_shell_thread], &rr_attr, (void * (*)(void*))hlp_shell_out, NULL);
+    
+    if (config_values[hlp_hk_thread] == 1)
+        pthread_create(&threads[hlp_hk_thread], &rr_attr, (void * (*)(void*))hlp_housekeeping, NULL);
+
+    if (config_values[telem_thread] == 1)
+        pthread_create(&threads[telem_thread], &rr_attr, (void * (*)(void*))telem, NULL);
 
 }
 
