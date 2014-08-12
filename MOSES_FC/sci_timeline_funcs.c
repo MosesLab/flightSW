@@ -22,7 +22,7 @@ int takeExposure(double duration, int sig) {
     if (sig == 1) // use the shutter for Data sequence 
     {
         //send open shutter signal to DIO
-        //open_shutter();
+        open_shutter();
 
         gettimeofday(&expstart, NULL);
 
@@ -34,7 +34,7 @@ int takeExposure(double duration, int sig) {
         actual = wait_exposure(dur) + PULSE;
 
         // send close shutter signal to DIO
-        //close_shutter();
+        close_shutter();
 
 
         // wait for interval to close shutter
@@ -49,7 +49,8 @@ int takeExposure(double duration, int sig) {
         gettimeofday(&expstart, NULL);
         actual = wait_exposure(dur); //+PULSE);
         gettimeofday(&expstop, NULL);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
+        timeval_subtract(&expdiff, expstart, expstop);
+        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
     }
     return actual;
@@ -176,13 +177,13 @@ void * write_data(void * arg) {
         record(msg);
 
         /*push the filename onto the telemetry queue*/
-//        if (ops.tm_write == 1) {
-//            imgPtr_t newPtr;
-//            newPtr.filePath = filename;
-//            newPtr.next = NULL;
-//            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
-//            record("Filename pushed to telemetry queue\n");
-//        }
+        if (ops.tm_write == 1) {
+            imgPtr_t newPtr;
+            newPtr.filePath = filename;
+            newPtr.next = NULL;
+            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
+            record("Filename pushed to telemetry queue\n");
+        }
 
         sprintf(msg, "double check\n");
         record(msg);

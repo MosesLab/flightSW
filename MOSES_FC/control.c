@@ -176,7 +176,7 @@ void * hlp_shell_out(void * arg) {
         buf = calloc(sizeof (char), 256);
 
         /*use select() to monitor output pipe*/
-        data = input_timeout(stdout_des, 0, 10);
+        data = input_timeout(stdout_des, 10000, 0);
 
         if (data) {
 
