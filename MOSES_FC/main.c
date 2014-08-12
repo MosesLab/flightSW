@@ -58,9 +58,9 @@ void quit_signal(int sig) {
 void start_threads() {
     pthread_attr_t fifo_attr, rr_attr, other_attr; //FIFO and round robin scheduling attributes
     struct sched_param fifo_param, rr_param, other_param;
-    fifo_param.__sched_priority = sched_get_priority_max(SCHED_FIFO);
-    rr_param.__sched_priority = (sched_get_priority_max(SCHED_RR) + sched_get_priority_min(SCHED_RR)) / 2;
-    other_param.__sched_priority = (sched_get_priority_max(SCHED_OTHER) - 1);
+    fifo_param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    rr_param.sched_priority = (sched_get_priority_max(SCHED_RR) + sched_get_priority_min(SCHED_RR)) / 2;
+    other_param.sched_priority = (sched_get_priority_max(SCHED_OTHER) - 1);
 
     pthread_attr_init(&fifo_attr);
     pthread_attr_init(&rr_attr);
