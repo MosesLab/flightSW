@@ -27,6 +27,7 @@ void * science_timeline(void * arg) {
         return NULL;
     }
     sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+    record(msg);
 
 
     char sindex[2];

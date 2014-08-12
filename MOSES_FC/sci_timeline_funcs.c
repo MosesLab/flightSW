@@ -76,6 +76,7 @@ void * write_data(void * arg) {
         return FALSE;
     }
     sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+    record(msg);
 
     while (ts_alive) {
 
