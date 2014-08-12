@@ -17,7 +17,7 @@ void * science_timeline(void * arg) {
     /*set thread priority*/
     int ret;
     struct sched_param params;
-    params.sched_priority = sched_get_priority_max(SCHED_RR) - 1;
+    params.sched_priority = sched_get_priority_max(SCHED_RR);
     ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
     if (ret != 0) {
         // Print the error
