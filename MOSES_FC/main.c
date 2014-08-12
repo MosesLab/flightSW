@@ -60,7 +60,7 @@ void start_threads() {
     struct sched_param fifo_param, rr_param, other_param;
     fifo_param.sched_priority = sched_get_priority_max(SCHED_FIFO);
     rr_param.sched_priority = sched_get_priority_max(SCHED_RR); //+ sched_get_priority_min(SCHED_RR)) / 2;
-    other_param.sched_priority = (sched_get_priority_max(SCHED_OTHER) - 1);
+    other_param.sched_priority = (sched_get_priority_max(SCHED_FIFO) - 1);
 
     pthread_attr_init(&fifo_attr);
     pthread_attr_init(&rr_attr);
@@ -77,7 +77,7 @@ void start_threads() {
 
     pthread_attr_setschedpolicy(&fifo_attr, SCHED_FIFO);
     pthread_attr_setschedpolicy(&rr_attr, SCHED_RR);
-    pthread_attr_setschedpolicy(&other_attr, SCHED_OTHER);
+    pthread_attr_setschedpolicy(&other_attr, SCHED_FIFO);
 
     pthread_attr_setschedparam(&fifo_attr, &fifo_param);
     pthread_attr_setschedparam(&rr_attr, &rr_param);
