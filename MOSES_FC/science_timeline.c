@@ -80,7 +80,10 @@ void * science_timeline(void * arg) {
             sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence.exposureTimes[i]);
             record(msg);
             int duration = takeExposure(currentSequence.exposureTimes[i], currentSequence.seq_type);
+            
             image.duration = duration;
+            record("Triple check\n");   //Check to see if global variable access is making everything slow
+            
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);

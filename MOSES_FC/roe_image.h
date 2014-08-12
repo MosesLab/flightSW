@@ -46,7 +46,7 @@
 //void recordImage(roeImage_t*);
 //void sendImage(roeImage_t *, int);
 
-
+/*Yeah cause f*** these global variables*/
 roeimage_t image;        //should be declared using malloc --RTS
 //roeimage_t tempimage;         //this is unecessary I think. Since we still have
                                 //to finish and sort, I don't think we need to 
