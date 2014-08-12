@@ -66,6 +66,11 @@ void start_threads() {
     pthread_attr_init(&rr_attr);
     pthread_attr_init(&other_attr);
 
+    pthread_attr_setinheritsched(&fifo_attr, PTHREAD_EXPLICIT_SCHED);
+    pthread_attr_setinheritsched(&rr_attr, PTHREAD_EXPLICIT_SCHED);
+    pthread_attr_setinheritsched(&other_attr, PTHREAD_EXPLICIT_SCHED);
+
+
     pthread_attr_setdetachstate(&fifo_attr, PTHREAD_CREATE_JOINABLE);
     pthread_attr_setdetachstate(&rr_attr, PTHREAD_CREATE_JOINABLE);
     pthread_attr_setdetachstate(&other_attr, PTHREAD_CREATE_JOINABLE);
@@ -93,7 +98,7 @@ void start_threads() {
 
     if (config_values[hlp_shell_thread] == 1)
         pthread_create(&threads[hlp_shell_thread], &rr_attr, (void * (*)(void*))hlp_shell_out, NULL);
-    
+
     if (config_values[hlp_hk_thread] == 1)
         pthread_create(&threads[hlp_hk_thread], &rr_attr, (void * (*)(void*))hlp_housekeeping, NULL);
 
