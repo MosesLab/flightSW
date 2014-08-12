@@ -11,6 +11,9 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    char sindex[2];
+    char sframe[10];
+    
     //sleep(1);
     prctl(PR_SET_NAME,"SCI_TIMELINE",0,0,0);
     record("-->Science Timeline thread started....\n\n");

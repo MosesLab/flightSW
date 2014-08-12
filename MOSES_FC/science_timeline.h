@@ -22,11 +22,8 @@
 sigset_t maskstl, oldmaskstl;
 int caught_signal;
 struct sigaction run_action;   
-char sindex[2];
-char sframe[10];
 
 extern volatile sig_atomic_t ts_alive;
-//extern struct ops ops;
 extern LockingQueue hkdownQueue;
 
 extern moses_ops_t ops; //struct storing operational state

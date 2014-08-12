@@ -133,27 +133,28 @@ int write_data() {
          * This is to ensure that the image can be written to disk without being overwritten
          * by the next exposure */
 
-        memcpy(&tempimage, &image, sizeof (tempimage));
-
-        tempimage.filename = strdup(image.filename);
-        tempimage.name = strdup(image.name); //string
-        tempimage.bitpix = image.bitpix;
-        tempimage.width = image.width;
-        tempimage.height = image.height;
-        tempimage.date = strdup(image.date); //string
-        tempimage.time = strdup(image.time); //string
-        tempimage.origin = strdup(image.origin); //string
-        tempimage.instrument = strdup(image.instrument); //string
-        tempimage.observer = strdup(image.observer); //string
-        tempimage.object = strdup(image.object); //string 
-        tempimage.duration = image.duration;
-        tempimage.channels = image.channels;
-        tempimage.size[0] = image.size[0];
-        tempimage.size[1] = image.size[1];
-        tempimage.size[2] = image.size[2];
-        tempimage.size[3] = image.size[3];
-        for (i = 0; i < 4; i++)
-            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
+        /*Commented this out to test timing --RTS*/
+//        memcpy(&tempimage, &image, sizeof (tempimage));
+//
+//        tempimage.filename = strdup(image.filename);
+//        tempimage.name = strdup(image.name); //string
+//        tempimage.bitpix = image.bitpix;
+//        tempimage.width = image.width;
+//        tempimage.height = image.height;
+//        tempimage.date = strdup(image.date); //string
+//        tempimage.time = strdup(image.time); //string
+//        tempimage.origin = strdup(image.origin); //string
+//        tempimage.instrument = strdup(image.instrument); //string
+//        tempimage.observer = strdup(image.observer); //string
+//        tempimage.object = strdup(image.object); //string 
+//        tempimage.duration = image.duration;
+//        tempimage.channels = image.channels;
+//        tempimage.size[0] = image.size[0];
+//        tempimage.size[1] = image.size[1];
+//        tempimage.size[2] = image.size[2];
+//        tempimage.size[3] = image.size[3];
+//        for (i = 0; i < 4; i++)
+//            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
 
         /*write the image and metadata to disk*/
         writeToFile();

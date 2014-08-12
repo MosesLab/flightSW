@@ -107,7 +107,7 @@ void * hlp_control(void * arg) {
 
 
         }
-        free(p); //Why doesn't this work????
+        free(p); 
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -122,6 +122,8 @@ void * hlp_control(void * arg) {
 void * hlp_down(void * arg) {
     prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
 
+    unsigned int fdown;
+    
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
@@ -157,7 +159,7 @@ void * hlp_down(void * arg) {
 void * hlp_shell_out(void * arg) {
     prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
 
-    int data = FALSE;
+    unsigned int data = FALSE;
     char * buf;
 
     /*sleep to allow time for pipe to be initialized */
@@ -166,7 +168,7 @@ void * hlp_shell_out(void * arg) {
     record("-->HLP shell output listener thread started...\n\n");
 
     /*open pipe to virtual shell stdout*/
-    int stdout_des = open(STDOUT_PIPE, O_RDONLY);
+    unsigned int stdout_des = open(STDOUT_PIPE, O_RDONLY);
 
     while (ts_alive) {
 

@@ -48,7 +48,9 @@
 
 
 roeimage_t image;        //should be declared using malloc --RTS
-roeimage_t tempimage;
+//roeimage_t tempimage;         //this is unecessary I think. Since we still have
+                                //to finish and sort, I don't think we need to 
+                                //copy it again -- RTS
 
 
 

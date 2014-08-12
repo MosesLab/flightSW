@@ -33,7 +33,7 @@
 typedef struct {
     /*Packet attributes*/
 //        void * next;    //next item in the locking queue    
-	int dataSize;
+	unsigned int dataSize;
         int status;  
         char* control;
     
@@ -61,8 +61,7 @@ typedef struct {
     int count;  //current number of items
    node_t * first;
    node_t * last;
-    
-    
+       
     pthread_condattr_t cattr;
     pthread_mutex_t lock;
     pthread_cond_t cond;
@@ -77,41 +76,41 @@ typedef int(*hlpControl)(packet_t*);
 /* This struct will contain the variables that represent the status of the system*/
 typedef struct 
 {
-    int sequence;
+    unsigned int sequence;
     char channels;
-    sig_atomic_t seq_run;
-    sig_atomic_t roe_power;
-    sig_atomic_t roe_custom_read;
-    sig_atomic_t dma_write;
-    sig_atomic_t tm_write;
+    unsigned int seq_run;
+    unsigned int roe_power;
+    unsigned int roe_custom_read;
+    unsigned int dma_write;
+    unsigned int tm_write;
     
 }moses_ops_t;
 
 /*structure to store attributes of system*/
 typedef struct  
 {
-	int numFrames;
+	unsigned int numFrames;
 	double exposureTimes[10]; //need to figure out how to assign size based on sequnce file
-	int currentFrame;
+	unsigned int currentFrame;
 	char* sequenceName;
-        int seq_type; //1 will be data
+        unsigned int seq_type; //1 will be data
 }sequence_t;
 
 typedef struct 
 {
     char* filename;             //filename associated with image
     char* name;                 //image name
-    int   bitpix;              //set the number of bits per pixel
-    int   width;                // the width of each channel
-    int   height;               // the height of each channel
+    unsigned int   bitpix;              //set the number of bits per pixel
+    unsigned int   width;                // the width of each channel
+    unsigned int   height;               // the height of each channel
     char* date;                 // the date the image was taken
     char* time;                 // the time the image was taken
     char* origin;               // the images origin
     char* instrument;           // the instrument used to obtain the image
     char* observer;             // observer of the image
     char* object;                  // the object in the image
-    int   duration;             // the duration of the image exposure
-    int   size[4];
+    unsigned int   duration;             // the duration of the image exposure
+    unsigned int   size[4];
     short* data[4];             // the image data
     char  channels;             //channels included in the image;
 }roeimage_t;

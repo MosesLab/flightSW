@@ -12,17 +12,17 @@
 #include "plx/PlxInit.h"
 #include "system.h"
 
-#define SIZE_DS_BUFFER         256           // Number of bytes to transfer
-#define FPGA_MEMORY_LOC_0		0x100
+#define SIZE_DS_BUFFER          256           // Number of bytes to transfer
+#define FPGA_MEMORY_LOC_0	0x100
+#define DMA_CHAN                0x0
 
 PLX_DEVICE_OBJECT fpga_dev;
 PLX_DMA_PROP      DmaProp;
 PLX_INTERRUPT     DmaIntr;
 PLX_NOTIFY_OBJECT DmaEvent;
-U8                dmaChannel;
+
 PLX_DMA_PARAMS    DmaParams;
 PLX_PHYSICAL_MEM  PciBuffer; 
-int               rc;
 U32*		  pBufferMem;
 void**		  pVa;
 struct timeval expstop, expstart;

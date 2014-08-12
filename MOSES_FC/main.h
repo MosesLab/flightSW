@@ -39,11 +39,8 @@ sigset_t mask, oldmask;         //masks for SIGINT signal
 
 
 /*configuration variables*/
-char * config_path = "moses.conf";
-int config_size;
 int config_values[NUM_THREADS + NUM_IO];        //array of values holding moses program configurations
-char * config_strings[NUM_THREADS + NUM_IO];
-    
+   
 node_t** config_hash_table;
 
 void config_strings_init();

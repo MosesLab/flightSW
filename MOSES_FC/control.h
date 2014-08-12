@@ -40,7 +40,7 @@ LockingQueue roeQueue;
 void* hlp_control(void *);
 
 /*hlp_down thread initializations*/
-int fdown;
+
 void* hlp_down(void*);
 
 /*housekeeping initializations*/ 

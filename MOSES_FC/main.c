@@ -17,7 +17,7 @@ int main(void) {
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
-    
+
     /*read in configuration values*/
     read_moses_config();
 
@@ -29,11 +29,11 @@ int main(void) {
 
     /*Upon program termiation (^c) attempt to join the threads*/
     init_quit_signal_handler();
-//    sigprocmask(SIG_BLOCK, &mask, &oldmask);
-//    while (ts_alive) {
-//        sigsuspend(&oldmask); // wait here until the program is killed
-//    }
-//    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
+    //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
+    //    while (ts_alive) {
+    //        sigsuspend(&oldmask); // wait here until the program is killed
+    //    }
+    //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
 
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
     sigwait(&mask, &quit_sig);
@@ -71,7 +71,7 @@ void start_threads() {
     if (config_values[hlp_shell_thread] == 1)
         pthread_create(&threads[hlp_shell_thread], &attrs, (void * (*)(void*))hlp_shell_out, NULL);
     if (config_values[image_writer_thread] == 1)
-        pthread_create(&threads[image_writer_thread], &attrs,  (void * (*)(void*))write_data, NULL);
+        pthread_create(&threads[image_writer_thread], &attrs, (void * (*)(void*))write_data, NULL);
 
 
 }
@@ -81,7 +81,7 @@ void join_threads() {
     //    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
-//    sleep(1);
+    //    sleep(1);
 
     int i;
     for (i = 0; i < NUM_THREADS; i++) {
@@ -106,7 +106,8 @@ void init_quit_signal_handler() {
 
 /*set up hash table with configuration strings to match values in moses.conf*/
 void config_strings_init() {
-    config_size = NUM_THREADS + NUM_IO;
+    unsigned int config_size = NUM_THREADS + NUM_IO;
+    char * config_strings[NUM_THREADS + NUM_IO];
 
     /*allocate strings to match with configuration file*/
     config_strings[hlp_control_thread] = CONTROL_CONF;
@@ -138,19 +139,23 @@ void config_strings_init() {
         int * int_def = malloc(sizeof (int));
         *int_def = i;
 
-        /*insert nod into hash table*/
+        /*insert node into hash table*/
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
 }
 
 /*read in configuration file for thread and I/O attributes*/
 void read_moses_config() {
+    int rc = 0;
+    unsigned int config_size = NUM_THREADS + NUM_IO;
+    char * config_path = "moses.conf";
+
+
     record("Reading in configuration file.....\n");
 
     /*read configuration file*/
     FILE * config_fp = fopen(config_path, "r");
 
-    int rc = 0;
     while (rc != EOF) {
         char new_char; //first char of each line
         int next_value, string_len = 0;
