@@ -60,6 +60,8 @@ int takeExposure(double duration, int sig) {
    A signal, SIGUSR2, will be sent when DMA is ready to transfer
    data to memory and will initialize the writing to disk*/
 void * write_data(void * arg) {
+    char msg[100];
+    
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
     
@@ -73,6 +75,7 @@ void * write_data(void * arg) {
         record( "Unsuccessful in setting thread realtime prio\n" );
         return FALSE;
     }
+    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
 
     while (ts_alive) {
 
@@ -84,8 +87,7 @@ void * write_data(void * arg) {
         }
         /*initialize index( these will start at -1 and be incremented by DMA*/
         int index[4] = {2200000, 2200000, 2200000, 2200000};
-
-        char msg[100];
+        
         char filename[80];
         char ftimedate[80];
         char dtime[100];

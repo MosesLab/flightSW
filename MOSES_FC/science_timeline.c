@@ -11,9 +11,11 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    char* msg = (char *) malloc(200 * sizeof (char));
+    
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
-    
+
     /*set thread priority*/
     int ret;
     struct sched_param params;
@@ -21,18 +23,20 @@ void * science_timeline(void * arg) {
     ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
     if (ret != 0) {
         // Print the error
-        record( "Unsuccessful in setting thread realtime prio\n" );
+        record("Unsuccessful in setting thread realtime prio\n");
         return NULL;
     }
-    
+    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+
+
     char sindex[2];
     char sframe[10];
 
     //sleep(1);
-    
+
     record("-->Science Timeline thread started....\n\n");
     init_signal_handler_stl();
-    char* msg = (char *) malloc(200 * sizeof (char));
+    
 
     /* wait for ROE to become active */
     //record("Waiting for ROE to become active...\n");
