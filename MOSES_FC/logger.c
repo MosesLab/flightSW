@@ -15,7 +15,7 @@
 void record(const char* message) {
 
     FILE *outfile; // for writing
-    outfile = fopen("/etc/moses_log.txt", "a"); // write to this file
+    outfile = fopen("/tmp/ramdisk/moses_log.txt", "a"); // write to this file
     time_t now;
     time(&now);
     char theTime[255];
