@@ -122,7 +122,7 @@ void * hlp_control(void * arg) {
 void * hlp_down(void * arg) {
     prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
 
-    unsigned int fdown;
+    unsigned int fdown = 0;
     
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
