@@ -11,11 +11,23 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    int ret;
+    // struct sched_param is used to store the scheduling priority
+    struct sched_param params;
+    // We'll set the priority to the maximum.
+    params.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    // Attempt to set thread real-time priority to the SCHED_FIFO policy
+    ret = pthread_setschedparam(pthread_self(), SCHED_FIFO, &params);
+    if (ret != 0) {
+        // Print the error
+        record( "Unsuccessful in setting thread realtime prio" );
+        return NULL;
+    }
     char sindex[2];
     char sframe[10];
-    
+
     //sleep(1);
-    prctl(PR_SET_NAME,"SCI_TIMELINE",0,0,0);
+    prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
     record("-->Science Timeline thread started....\n\n");
     init_signal_handler_stl();
     char* msg = (char *) malloc(200 * sizeof (char));
@@ -27,9 +39,9 @@ void * science_timeline(void * arg) {
     //record("ROE Active\n");
 
     /* if ROE active, set to known state (exit default, reset, exit default) */
-        //exitDefault();
-        //reset();
-        //exitDefault();
+    //exitDefault();
+    //reset();
+    //exitDefault();
 
     while (ts_alive) {
         if (ops.seq_run == FALSE) {
@@ -43,13 +55,13 @@ void * science_timeline(void * arg) {
 
             record("SIGUSR1 received, starting sequence\n");
         }
-                
+
         /* if ROE active, set to known state (exit default, reset, exit default) */
         //Add code here
         //exitDefault();
         //reset();
         //exitDefault();
-        
+
 
         /*establish current sequence */
         currentSequence = sequenceMap[ops.sequence];
@@ -68,9 +80,9 @@ void * science_timeline(void * arg) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence.exposureTimes[i], i + 1, currentSequence.numFrames);
             record(msg);
             /* check for running, roe active.... */
-             
+
             //If ROE not active?
-            
+
             if (ops.seq_run == FALSE) {
                 sprintf(msg, "Sequence not running, breaking out of sequence.\n");
                 record(msg);
@@ -80,16 +92,16 @@ void * science_timeline(void * arg) {
             sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence.exposureTimes[i]);
             record(msg);
             int duration = takeExposure(currentSequence.exposureTimes[i], currentSequence.seq_type);
-            
+
             image.duration = duration;
-            record("Triple check\n");   //Check to see if global variable access is making everything slow
-            
+            record("Triple check\n"); //Check to see if global variable access is making everything slow
+
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
 
-            a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
-            b = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
+            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
+            b = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
             enqueue(&hkdownQueue, a);
             enqueue(&hkdownQueue, b);
 
@@ -99,23 +111,23 @@ void * science_timeline(void * arg) {
 
             /* Command ROE to Readout*/
             //readOut(...);
-            
+
             /* push packet w/info about end read out */
-            a = (packet_t*)constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
+            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&hkdownQueue, a);
 
             //wait 4 seconds for response from ROE that readout is complete
             sleep(4);
-                       
+
             /* write buffer data to disk  and telemetry*/
             record("Signal disk write.\n");
             //poll for response?
-//            if (ops.dma_write == 1 && threads[image_writer_thread])
-//                        if (ops.dma_write == 1)
-//            if (threads[image_writer_thread])
+            //            if (ops.dma_write == 1 && threads[image_writer_thread])
+            //                        if (ops.dma_write == 1)
+            //            if (threads[image_writer_thread])
 
 
-            { 
+            {
                 record("check\n");
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
                 record("SIGUSR2 Sent\n");
@@ -129,8 +141,8 @@ void * science_timeline(void * arg) {
         sprintf(msg, "Done with sequence %s\n\n\n", currentSequence.sequenceName);
         record(msg);
 
-        a = (packet_t*)constructPacket(MDAQ_RSP,END_SEQ,(char *)NULL);
-        enqueue(&hkdownQueue, a);    
+        a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);
+        enqueue(&hkdownQueue, a);
         record("Done witps.seq_run = FAh sequences\n");
         ops.seq_run = FALSE;
 
@@ -151,7 +163,7 @@ void init_signal_handler_stl() {
     /*no signal dispositions for signals between threads*/
     run_action.sa_mask = oldmaskstl;
     run_action.sa_flags = 0;
-    
+
     sigaction(SIGUSR1, &run_action, NULL);
     record("Signal handler initiated.\n");
 }
