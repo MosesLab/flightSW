@@ -157,6 +157,9 @@ int write_data() {
 
         /*write the image and metadata to disk*/
         writeToFile();
+        
+        sprintf(msg, "File %s successfully written to disk.\n", filename);
+        record(msg);
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
@@ -167,7 +170,7 @@ int write_data() {
             record("Filename pushed to telemetry queue\n");
         }
 
-        sprintf(msg, "File %s successfully written to disk.\n", filename);
+        sprintf(msg, "File %s enqueued to telemetry.\n", filename);
         record(msg);
 
         /*need to free allocated image to prevent memory leak --RTS*/
