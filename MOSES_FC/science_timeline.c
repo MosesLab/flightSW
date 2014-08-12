@@ -104,7 +104,9 @@ void * science_timeline(void * arg) {
             /* write buffer data to disk  and telemetry*/
             record("Signal disk write.\n");
             //poll for response?
-            if (ops.dma_write == 1 && threads[image_writer_thread])
+//            if (ops.dma_write == 1 && threads[image_writer_thread])
+                        if (ops.dma_write == 1)
+
             { 
                 record("check\n");
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
