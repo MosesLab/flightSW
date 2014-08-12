@@ -106,7 +106,7 @@ void * science_timeline(void * arg) {
             //poll for response?
 //            if (ops.dma_write == 1 && threads[image_writer_thread])
 //                        if (ops.dma_write == 1)
-            if (threads[image_writer_thread])
+//            if (threads[image_writer_thread])
 
 
             { 

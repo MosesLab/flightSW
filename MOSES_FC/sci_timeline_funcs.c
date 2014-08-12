@@ -162,15 +162,15 @@ int write_data() {
         record(msg);
 
         /*push the filename onto the telemetry queue*/
-        if (ops.tm_write == 1) {
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
-            record("Filename pushed to telemetry queue\n");
-        }
+//        if (ops.tm_write == 1) {
+//            imgPtr_t newPtr;
+//            newPtr.filePath = filename;
+//            newPtr.next = NULL;
+//            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
+//            record("Filename pushed to telemetry queue\n");
+//        }
 
-        sprintf(msg, "File %s enqueued to telemetry.\n", filename);
+        sprintf(msg, "double check.\n", filename);
         record(msg);
 
         /*need to free allocated image to prevent memory leak --RTS*/
