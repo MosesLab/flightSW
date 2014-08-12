@@ -170,7 +170,7 @@ int write_data() {
 //            record("Filename pushed to telemetry queue\n");
 //        }
 
-        sprintf(msg, "double check.\n", filename);
+        sprintf(msg, "double check\n");
         record(msg);
 
         /*need to free allocated image to prevent memory leak --RTS*/
