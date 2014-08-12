@@ -59,10 +59,20 @@ int takeExposure(double duration, int sig) {
  * waiting mode until it is called to write an image to a file. 
    A signal, SIGUSR2, will be sent when DMA is ready to transfer
    data to memory and will initialize the writing to disk*/
-int write_data() {
-
+void * write_data(void * arg) {
+    /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
-    //    struct timeval expstop, expstart;
+    
+    /*set thread priority*/
+    int ret;
+    struct sched_param params;
+    params.sched_priority = sched_get_priority_max(SCHED_RR);
+    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
+    if (ret != 0) {
+        // Print the error
+        record( "Unsuccessful in setting thread realtime prio\n" );
+        return FALSE;
+    }
 
     while (ts_alive) {
 

@@ -23,7 +23,7 @@ struct sigaction run_action_image;
 
 int wait_exposure(int);
 int takeExposure(double duration,int sig);
-int write_data();
+void * write_data(void *);
 void init_signal_handler_image();
 void runsig2();
 void timeval_subtract(struct timeval*, struct timeval, struct timeval);

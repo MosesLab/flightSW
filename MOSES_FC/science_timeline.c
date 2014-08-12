@@ -11,23 +11,25 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    /*Set thread name*/
+    prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
+    
+    /*set thread priority*/
     int ret;
-    // struct sched_param is used to store the scheduling priority
     struct sched_param params;
-    // We'll set the priority to the maximum.
-    params.sched_priority = sched_get_priority_max(SCHED_FIFO);
-    // Attempt to set thread real-time priority to the SCHED_FIFO policy
-    ret = pthread_setschedparam(pthread_self(), SCHED_FIFO, &params);
+    params.sched_priority = sched_get_priority_max(SCHED_RR) - 1;
+    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
     if (ret != 0) {
         // Print the error
-        record( "Unsuccessful in setting thread realtime prio" );
+        record( "Unsuccessful in setting thread realtime prio\n" );
         return NULL;
     }
+    
     char sindex[2];
     char sframe[10];
 
     //sleep(1);
-    prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
+    
     record("-->Science Timeline thread started....\n\n");
     init_signal_handler_stl();
     char* msg = (char *) malloc(200 * sizeof (char));
