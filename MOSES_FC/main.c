@@ -62,6 +62,10 @@ void start_threads() {
     rr_param.sched_priority = sched_get_priority_max(SCHED_RR); //+ sched_get_priority_min(SCHED_RR)) / 2;
     other_param.sched_priority = (sched_get_priority_max(SCHED_FIFO) - 1);
 
+    char msg[255];
+    sprintf(msg,"fifo priority: %d\n rr priority: %d\n other priority: %d\n, ", fifo_param.sched_priority, rr_param.sched_priority, other_param.sched_priority);
+    record(msg);
+    
     pthread_attr_init(&fifo_attr);
     pthread_attr_init(&rr_attr);
     pthread_attr_init(&other_attr);
