@@ -94,22 +94,22 @@ void start_threads() {
             pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
         }
     }
-    /**
-     * Round Robin thread attribute loop
-     * Threads get lower priority as the loop progresses
-     */
-    for (i = NUM_FIFO; i < NUM_RROBIN + NUM_FIFO; i++) {
-        rr_param.sched_priority = -i;
-        pthread_attr_init(&attrs[i]);
-        pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
-        pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
-
-        pthread_attr_setschedparam(&attrs[i], &rr_param);
-
-        if (config_values[i] == 1) {
-            pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
-        }
-    }
+//    /**
+//     * Round Robin thread attribute loop
+//     * Threads get lower priority as the loop progresses
+//     */
+//    for (i = NUM_FIFO; i < NUM_RROBIN + NUM_FIFO; i++) {
+//        rr_param.sched_priority = -i;
+//        pthread_attr_init(&attrs[i]);
+//        pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
+//        pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
+//
+//        pthread_attr_setschedparam(&attrs[i], &rr_param);
+//
+//        if (config_values[i] == 1) {
+//            pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
+//        }
+//    }
 }
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
