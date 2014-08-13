@@ -155,7 +155,7 @@ void writeToFile() {
     fprintf(outxml, "</CATALOG>\n");
     
     fclose(outxml);
-    record("Closed XMl file");
+    record("Closed XMl file\n");
    
     /*Write Image Data*/
     FILE *dataOut;
