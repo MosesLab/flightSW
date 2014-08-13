@@ -88,9 +88,9 @@ void * write_data(void * arg) {
         char channels = ops.channels;
 
         /*Wait for image to be enqueued*/
-        record("Waiting for new image...");
+        record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&fpga_image_queue);
-        record("Dequeued new image");
+//        record("Dequeued new image\n");
         
 //        /* Wait for SIGUSR2 (When received response from ROE readout)*/
 //        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
