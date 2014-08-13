@@ -90,7 +90,7 @@ void * write_data(void * arg) {
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&fpga_image_queue);
-//        record("Dequeued new image\n");
+        record("Dequeued new image\n");
         
 //        /* Wait for SIGUSR2 (When received response from ROE readout)*/
 //        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
@@ -190,6 +190,7 @@ void * write_data(void * arg) {
         free(BUFFER[1]);
         free(BUFFER[2]);
         free(BUFFER[3]);
+        free(image);
     }//end while ts_alive
 
     return 0;
