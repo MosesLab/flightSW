@@ -16,46 +16,47 @@ void constructEmpty() {
 
 }
 
-void constructImage(short** pdata, int* psize, char channels, int pbitpix) {
+void constructImage(roeimage_t * image, short** pdata, int* psize, char channels, int pbitpix) {
     int i;
-    for (i = 0; i < 4; i++)
-        image.size[i] = 0;
-    init(pdata, psize, channels, pbitpix);
+    for (i = 0; i < 4; i++){
+        image->size[i] = 0;
+    }
+    init(image, pdata, psize, channels, pbitpix);
 }
 
-void init(short** pdata, int *psize, char channels, int pbitpix) {
+void init(roeimage_t * image, short** pdata, int *psize, char channels, int pbitpix) {
     /* Set image values*/
-    image.bitpix = pbitpix;
-    setData(pdata, psize, channels);
+    image->bitpix = pbitpix;
+    setData(image, pdata, psize, channels);
 
-    image.width = 0;
-    image.height = 0;
+    image->width = 0;
+    image->height = 0;
 
-    image.filename = "ddmmyyhhmmss.roe";
-    image.name = "default";
-    image.date = "2014-06-13";
-    image.time = "00:00:00";
-    image.origin = "Montana State University";
-    image.instrument = "MOSES";
-    image.observer = "MOSES lab";
-    image.object = "Sun";
-    image.duration = 0;
+    image->filename = "ddmmyyhhmmss.roe";
+    image->name = "default";
+    image->date = "2014-06-13";
+    image->time = "00:00:00";
+    image->origin = "Montana State University";
+    image->instrument = "MOSES";
+    image->observer = "MOSES lab";
+    image->object = "Sun";
+    image->duration = 0;
 }
 
 /* Set the data for this image*/
-void setData(short **pdata, int *psize, char pchannels) {
+void setData(roeimage_t * image, short **pdata, int *psize, char pchannels) {
     int i;
 
-    image.channels = pchannels; // set the channel information
+    image->channels = pchannels; // set the channel information
 
     for (i = 0; i < 4; i++) {
         /*Delete preexisting data*/
 
-        image.size[i] = psize[i]; //set the correct size
+        image->size[i] = psize[i]; //set the correct size
         if (psize[i] != 0) {
-            image.data[i] = (short *) malloc(2200000 * sizeof (short));
+            image->data[i] = (short *) malloc(2200000 * sizeof (short));
             /*Copy the data*/
-            memcpy((char *) image.data[i], (char *) pdata[i], image.size[i]); //copy data
+            memcpy((char *) image->data[i], (char *) pdata[i], image->size[i]); //copy data
         }
 
 
@@ -73,7 +74,7 @@ void createXML()
 }
 
 
-void writeToFile() {
+void writeToFile(roeimage_t * image) {
  
     int i;
     int linecount = 0;
@@ -117,13 +118,13 @@ void writeToFile() {
 
     /*construct the channels string*/
     char schannels[5] = "";
-    if ((int) tempimage.channels & CH0)
+    if ((int) image->channels & CH0)
         strncat(schannels, "0", 1);
-    if ((int) tempimage.channels & CH1)
+    if ((int) image->channels & CH1)
         strncat(schannels, "1", 1);
-    if ((int) tempimage.channels & CH2)
+    if ((int) image->channels & CH2)
         strncat(schannels, "2", 1);
-    if ((int) tempimage.channels & CH3)
+    if ((int) image->channels & CH3)
         strncat(schannels, "3", 1);
     
     if (newfile) {
@@ -133,21 +134,21 @@ void writeToFile() {
     }
     
     fprintf(outxml, "<ROEIMAGE>\n");
-    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", tempimage.filename);
-    fprintf(outxml, "\t<NAME>%s</NAME>\n", tempimage.name);
-    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", tempimage.bitpix);
-    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", tempimage.width);
-    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", tempimage.height);
-    fprintf(outxml, "\t<DATE>%s</DATE>\n", tempimage.date);
-    fprintf(outxml, "\t<TIME>%s</TIME>\n", tempimage.time);
-    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", tempimage.origin);
-    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", tempimage.instrument);
-    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", tempimage.observer);
-    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", tempimage.object);
-    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", tempimage.duration);
+    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image->filename);
+    fprintf(outxml, "\t<NAME>%s</NAME>\n", image->name);
+    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
+    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image->width);
+    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
+    fprintf(outxml, "\t<DATE>%s</DATE>\n", image->date);
+    fprintf(outxml, "\t<TIME>%s</TIME>\n", image->time);
+    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
+    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
+    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
+    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image->object);
+    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image->duration);
     fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, tempimage.size[i]);
+        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
     fprintf(outxml, "</ROEIMAGE>\n");
     fprintf(outxml, "</CATALOG>\n");
@@ -156,11 +157,11 @@ void writeToFile() {
    
     /*Write Image Data*/
     FILE *dataOut;
-    dataOut = fopen(tempimage.filename, "w"); 
+    dataOut = fopen(image->filename, "w"); 
     
     for (i = 0; i < 4; i++) {
-        if (tempimage.channels & (char) (1 << i))
-            fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
+        if (image->channels & (char) (1 << i))
+            fwrite(image->data[i], sizeof (short), image->size[i], dataOut);
     }
     fclose(dataOut);
     

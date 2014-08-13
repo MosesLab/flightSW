@@ -70,7 +70,7 @@ void * science_timeline(void * arg) {
 //        currentSequence = sequenceMap[ops.sequence];
         
         /*wait until sequence is enqueued*/
-        currentSequence = (sequence_t *) dequeue(&sequence_queue); 
+        sequence_t * currentSequence = (sequence_t *) dequeue(&sequence_queue); 
         
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
@@ -96,11 +96,13 @@ void * science_timeline(void * arg) {
                 break;
             }
 
+            roeimage_t * image = malloc(sizeof(roeimage_t));
+            
             sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
             record(msg);
             int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
 
-            image.duration = duration;
+            image->duration = duration;
 
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
@@ -113,24 +115,29 @@ void * science_timeline(void * arg) {
 
             /*initialize index( these will start at -1 and be incremented by DMA*/
 
-            record("Done with exposure, perform data collection.\n");
+            record("Done with exposure. Wait for readout...\n");
 
             /* Command ROE to Readout*/
             //readOut(...);
+            
+            //wait 4 seconds for response from ROE that readout is complete
+            sleep(4);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&hkdownQueue, a);
-
-            //wait 4 seconds for response from ROE that readout is complete
-            sleep(4);
-
-            /* write buffer data to disk  and telemetry*/
-            record("Signal disk write SIGUSR2 .\n");
-            //poll for response? 
-            if (ops.dma_write == 1 && threads[image_writer_thread]) {
-                pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
-            }
+           
+            /*Enqueue image to image writer thread*/
+            record("Queue image for writing.\n");
+            enqueue(&fpga_image_queue, image);
+                    
+            
+//            /* write buffer data to disk  and telemetry*/
+//            record("Signal disk write SIGUSR2 .\n");
+//            //poll for response? 
+//            if (ops.dma_write == 1 && threads[image_writer_thread]) {
+//                pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
+//            }
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);

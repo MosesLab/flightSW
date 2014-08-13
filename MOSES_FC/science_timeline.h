@@ -27,6 +27,8 @@ extern volatile sig_atomic_t ts_alive;
 
 extern LockingQueue hkdownQueue;
 LockingQueue sequence_queue;
+extern LockingQueue fpga_image_queue;
+
 
 extern moses_ops_t ops; //struct storing operational state
 

@@ -113,6 +113,7 @@ typedef struct
     unsigned int   size[4];
     short* data[4];             // the image data
     char  channels;             //channels included in the image;
+    sequence_t * seq;      //sequence that initiated the image
 }roeimage_t;
 
 typedef struct imgPtr {                         //Create image path node

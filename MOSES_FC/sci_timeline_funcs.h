@@ -15,10 +15,10 @@
 #include "gpio.h"
 #include "dma.h"
 
+LockingQueue fpga_image_queue;
 
 sigset_t maskimage, oldmaskimage;
 int caught_image_signal;
-
 struct sigaction run_action_image;  
 
 int wait_exposure(int);

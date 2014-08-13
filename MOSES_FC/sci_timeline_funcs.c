@@ -66,7 +66,8 @@ void * write_data(void * arg) {
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
     
-    init_signal_handler_image();
+    lockingQueue_init(&fpga_image_queue);
+//    init_signal_handler_image();
 
     while (ts_alive) {
 
@@ -86,13 +87,17 @@ void * write_data(void * arg) {
 
         char channels = ops.channels;
 
+        /*Wait for image to be enqueued*/
+        record("Waiting for new image...");
+        roeimage_t * image = dequeue(&fpga_image_queue);
+        record("Dequeued new image");
         
-        /* Wait for SIGUSR2 (When received response from ROE readout)*/
-        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
-        record("Waiting for signal...\n");
-        sigwait(&maskimage, &caught_image_signal);
-        pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
-        record("SIGUSR2 Received\n");
+//        /* Wait for SIGUSR2 (When received response from ROE readout)*/
+//        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
+//        record("Waiting for signal...\n");
+//        sigwait(&maskimage, &caught_image_signal);
+//        pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
+//        record("SIGUSR2 Received\n");
 
         //        gettimeofday(&expstart, NULL);
         //        //initializeDMA();
@@ -110,7 +115,7 @@ void * write_data(void * arg) {
         /*Clear DMA block*/
 
         /*Initialize the image*/
-        constructImage(BUFFER, index, channels, 16);
+        constructImage(image, BUFFER, index, channels, 16);
         /* Get data for image details*/
         time_t curTime = time(NULL);
         struct tm *broken = localtime(&curTime);
@@ -121,47 +126,47 @@ void * write_data(void * arg) {
         sprintf(filename, "%s.roe", ftimedate);
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-        record("Copy image...\n");
-        image.filename = filename;
-        image.name = currentSequence->sequenceName; //Add the information to the image
-        image.date = ddate;
-        image.time = dtime;
-        //image.duration = duration;
-        image.width = 2048;
-        image.height = 1024;
-
-        /* Copy original image to temporary struct for image_writer_thread access.
-         * This is to ensure that the image can be written to disk without being overwritten
-         * by the next exposure */
-
-        memcpy(&tempimage, &image, sizeof (tempimage));
-
-        tempimage.filename = strdup(image.filename);
-        tempimage.name = strdup(image.name); //string
-        tempimage.bitpix = image.bitpix;
-        tempimage.width = image.width;
-        tempimage.height = image.height;
-        tempimage.date = strdup(image.date); //string
-        tempimage.time = strdup(image.time); //string
-        tempimage.origin = strdup(image.origin); //string
-        tempimage.instrument = strdup(image.instrument); //string
-        tempimage.observer = strdup(image.observer); //string
-        tempimage.object = strdup(image.object); //string 
-        tempimage.duration = image.duration;
-        tempimage.channels = image.channels;
-        tempimage.size[0] = image.size[0];
-        tempimage.size[1] = image.size[1];
-        tempimage.size[2] = image.size[2];
-        tempimage.size[3] = image.size[3];
-        
-        for (i = 0; i < 4; i++){
-            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
-        }
-        
+//        record("Copy image...\n");
+//        image.filename = filename;
+//        image.name = image->seq->sequenceName; //Add the information to the image
+//        image.date = ddate;
+//        image.time = dtime;
+//        //image.duration = duration;
+//        image.width = 2048;
+//        image.height = 1024;
+//
+//        /* Copy original image to temporary struct for image_writer_thread access.
+//         * This is to ensure that the image can be written to disk without being overwritten
+//         * by the next exposure */
+//
+//        memcpy(&tempimage, &image, sizeof (tempimage));
+//
+//        tempimage.filename = strdup(image.filename);
+//        tempimage.name = strdup(image.name); //string
+//        tempimage.bitpix = image.bitpix;
+//        tempimage.width = image.width;
+//        tempimage.height = image.height;
+//        tempimage.date = strdup(image.date); //string
+//        tempimage.time = strdup(image.time); //string
+//        tempimage.origin = strdup(image.origin); //string
+//        tempimage.instrument = strdup(image.instrument); //string
+//        tempimage.observer = strdup(image.observer); //string
+//        tempimage.object = strdup(image.object); //string 
+//        tempimage.duration = image.duration;
+//        tempimage.channels = image.channels;
+//        tempimage.size[0] = image.size[0];
+//        tempimage.size[1] = image.size[1];
+//        tempimage.size[2] = image.size[2];
+//        tempimage.size[3] = image.size[3];
+//        
+//        for (i = 0; i < 4; i++){
+//            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
+//        }
+//        
         record("Image Opened\n");
 
         /*write the image and metadata to disk*/
-        writeToFile();
+        writeToFile(image);
         
         sprintf(msg, "File %s successfully written to disk.\n", filename);
         record(msg);
@@ -177,10 +182,10 @@ void * write_data(void * arg) {
 
 
         /*need to free allocated image to prevent memory leak --RTS*/
-        free(image.data[0]);
-        free(image.data[1]);
-        free(image.data[2]);
-        free(image.data[3]);
+        free(image->data[0]);
+        free(image->data[1]);
+        free(image->data[2]);
+        free(image->data[3]);
         free(BUFFER[0]);
         free(BUFFER[1]);
         free(BUFFER[2]);
