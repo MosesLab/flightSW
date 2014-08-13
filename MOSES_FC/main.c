@@ -57,7 +57,7 @@ void quit_signal(int sig) {
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads() {
     pthread_attr_t attrs[num_threads]; //FIFO and round robin scheduling attributes
-    struct sched_param fifo_param, rr_param;
+    struct sched_param param;
 
     /*fill array of arguments for pthread call*/
     targs[hlp_control_thread] = &config_values[hlp_up_interface];
@@ -69,59 +69,28 @@ void start_threads() {
     targs[image_writer_thread] = NULL;
 
     /**
-     * FIFO thread attribute loop
+     * thread attribute  and start loop
      * Threads get lower priority as the loop progresses
      */
     unsigned int i;
     for (i = 0; i < NUM_FIFO; i++) {
-        fifo_param.sched_priority = sched_get_priority_max(SCHED_FIFO) - i;
+        param.sched_priority = sched_get_priority_max(SCHED_FIFO) - i;
         pthread_attr_init(&attrs[i]);
         pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
         pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
-        pthread_attr_setschedpolicy(&attrs[i], SCHED_FIFO);
-        pthread_attr_setschedparam(&attrs[i], &fifo_param);
 
-    }
-    /**
-     * Round Robin thread attribute loop
-     * Threads get lower priority as the loop progresses
-     */
-    for (i = NUM_FIFO; i < NUM_RROBIN + NUM_FIFO; i++) {
-        rr_param.sched_priority = sched_get_priority_max(SCHED_RR) - i;
-        pthread_attr_init(&attrs[i]);
-        pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
-        pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
-        pthread_attr_setschedpolicy(&attrs[i], SCHED_RR);
-        pthread_attr_setschedparam(&attrs[i], &rr_param);
-    }
+        if (i < NUM_FIFO) { // Set thread policy as FIFO for the first threads
+            pthread_attr_setschedpolicy(&attrs[i], SCHED_FIFO);
+        } else { //Set scheduling policy as round-robin
+            pthread_attr_setschedpolicy(&attrs[i], SCHED_RR);
+        }
+        pthread_attr_setschedparam(&attrs[i], &param);
 
-    for(i = 0; i < num_threads; i++){
-        if(config_values[i] == 1){
+        /*if configured, start thread*/
+        if (config_values[i] == 1) {
             pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
         }
     }
-    
-//    if (config_values[hlp_control_thread] == 1)
-//        pthread_create(&threads[hlp_control_thread], &attrs[hlp_control_thread], (void * (*)(void *))hlp_control, );
-//
-//    if (config_values[sci_timeline_thread] == 1)
-//        pthread_create(&threads[sci_timeline_thread], &attrs[sci_timeline_thread], (void * (*)(void*))science_timeline, NULL);
-//
-//    if (config_values[image_writer_thread] == 1)
-//        pthread_create(&threads[image_writer_thread], &attrs[image_writer_thread], (void * (*)(void*))write_data, NULL);
-//
-//    if (config_values[hlp_down_thread] == 1)
-//        pthread_create(&threads[hlp_down_thread], &attrs[hlp_down_thread], (void * (*)(void *))hlp_down, );
-//
-//    if (config_values[hlp_shell_thread] == 1)
-//        pthread_create(&threads[hlp_shell_thread], &attrs[hlp_shell_thread], (void * (*)(void*))hlp_shell_out, NULL);
-//
-//    if (config_values[hlp_hk_thread] == 1)
-//        pthread_create(&threads[hlp_hk_thread], &attrs[hlp_hk_thread], (void * (*)(void*))hlp_housekeeping, NULL);
-//
-//    if (config_values[telem_thread] == 1)
-//        pthread_create(&threads[telem_thread], &attrs[telem_thread], (void * (*)(void*))telem, NULL);
-
 }
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/

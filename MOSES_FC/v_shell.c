@@ -13,7 +13,7 @@
 int vshell_init() {
     int rc;
     FILE * rf;
-    
+
     /*initialize pipes*/
     //    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
     //    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
@@ -23,29 +23,40 @@ int vshell_init() {
     pid_t result = fork();
 
     if (result == 0) { //this is the child
-        prctl(PR_SET_NAME, "SHELL_INPUT", 0, 0, 0);     //set name of the child process
+        prctl(PR_SET_NAME, "SHELL_INPUT", 0, 0, 0); //set name of the child process
+
+        /*set thread priority*/
+        int ret;
+        struct sched_param params;
+        params.sched_priority = sched_get_priority_max(SCHED_RR) - 10;
+        ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
+        if (ret != 0) {
+            // Print the error
+            record("Unsuccessful in setting thread realtime prio\n");
+            return 0;
+        }
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
-        
+
         rf = fopen(STDIN_PIPE, "r");
-        if(rf == NULL) record("Error opening named pipe\n");
+        if (rf == NULL) record("Error opening named pipe\n");
         rf = fopen(STDOUT_PIPE, "w");
-        if(rf == NULL) record("Error opening named pipe\n");
+        if (rf == NULL) record("Error opening named pipe\n");
 
         /*Close stdin and stdout to make sure*/
         rc = fclose(stdout);
-        if(rc == EOF) record("Failed to close stdout\n");
+        if (rc == EOF) record("Failed to close stdout\n");
         fclose(stdin);
-        if(rc == EOF) record("Failed to close stdin\n");
-        
-        /*Copy stdin and stdout to named pipes*/        
+        if (rc == EOF) record("Failed to close stdin\n");
+
+        /*Copy stdin and stdout to named pipes*/
         rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
-        if(rf == NULL) record("Failed to redirect stdin\n");
+        if (rf == NULL) record("Failed to redirect stdin\n");
         rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
-        if(rf == NULL) record("Failed to redirect stdout\n");
+        if (rf == NULL) record("Failed to redirect stdout\n");
         rf = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
-         if(rf == NULL) record("Failed to redirect stderr\n");
+        if (rf == NULL) record("Failed to redirect stderr\n");
 
         record("Starting shell...\n");
         //Start shelld --  this one uses bash. the ./bashrc file should be used
