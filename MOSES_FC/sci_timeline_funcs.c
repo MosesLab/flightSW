@@ -121,7 +121,7 @@ void * write_data(void * arg) {
         sprintf(filename, "%s.roe", ftimedate);
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-        record("Image Opened\n");
+        record("Copy image...\n");
         image.filename = filename;
         image.name = currentSequence.sequenceName; //Add the information to the image
         image.date = ddate;
@@ -129,7 +129,6 @@ void * write_data(void * arg) {
         //image.duration = duration;
         image.width = 2048;
         image.height = 1024;
-        sprintf(msg, "Copying image... %s\n", filename);
         record(msg);
 
         /* Copy original image to temporary struct for image_writer_thread access.
@@ -156,12 +155,11 @@ void * write_data(void * arg) {
         tempimage.size[2] = image.size[2];
         tempimage.size[3] = image.size[3];
         
-        record("Copied image metadata\n");
-        
         for (i = 0; i < 4; i++){
-            sprintf(msg, "Copying chan %d\n", i+1);
             memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
         }
+        
+        record("Image Opened\n");
 
         /*write the image and metadata to disk*/
         writeToFile();

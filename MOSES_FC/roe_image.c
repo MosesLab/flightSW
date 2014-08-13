@@ -106,7 +106,6 @@ void writeToFile() {
     /*Write to XML File*/
     FILE * outxml;
     outxml = fopen(CATALOG, "r+");
-    record("Opened XML File\n");
     /*Write data from previous xml file*/
     for (i = 0; i < linecount; i++) {
         fwrite(xmlarr[i], sizeof (xmlarr[i][0]), strlen(xmlarr[i]), outxml);
@@ -155,15 +154,12 @@ void writeToFile() {
     fprintf(outxml, "</CATALOG>\n");
     
     fclose(outxml);
-    record("Closed XMl file\n");
    
     /*Write Image Data*/
     FILE *dataOut;
     dataOut = fopen(tempimage.filename, "w"); 
-    record("Opened ROE File\n");
     
     for (i = 0; i < 4; i++) {
-        sprintf(msg, "Writing chan %d\n", i+1);
         record(msg);
         if (tempimage.channels & (char) (1 << i))
             fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
