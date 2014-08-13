@@ -66,18 +66,7 @@ void * write_data(void * arg) {
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
     
-//    /*set thread priority*/
-//    int ret;
-//    struct sched_param params;
-//    params.sched_priority = sched_get_priority_max(SCHED_RR);
-//    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
-//    if (ret != 0) {
-//        // Print the error
-//        record( "Unsuccessful in setting thread realtime prio\n" );
-//        return FALSE;
-//    }
-//    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
-//    record(msg);
+    init_signal_handler_image();
 
     while (ts_alive) {
 
@@ -97,13 +86,13 @@ void * write_data(void * arg) {
 
         char channels = ops.channels;
 
-        init_signal_handler_image();
+        
         /* Wait for SIGUSR2 (When received response from ROE readout)*/
         pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
         record("Waiting for signal...\n");
         sigwait(&maskimage, &caught_image_signal);
         pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
-        record("SIGUSR2 Received, reading DMA and writing to disk now\n");
+        record("SIGUSR2 Received\n");
 
         //        gettimeofday(&expstart, NULL);
         //        //initializeDMA();
@@ -202,19 +191,11 @@ void * write_data(void * arg) {
 int wait_exposure(int microsec) {
     /*This function doesnt work*/
     struct timeval start, end;
-    //int sec, usec;
-    //sec = microsec/1000000;
-    //usec = microsec%1000000;
+
     gettimeofday(&start, NULL);
 
-    /*this is incorrect, using busy wait*/
-    //    while((end.tv_sec*1000000+end.tv_usec) < 
-    //	      (start.tv_sec*1000000+start.tv_usec+microsec))
-    //    {
-    //            gettimeofday(&end, NULL);
-    //    }
-
     usleep(microsec);
+    
     gettimeofday(&end, NULL);
 
     return ((end.tv_sec - start.tv_sec)*1000000 +

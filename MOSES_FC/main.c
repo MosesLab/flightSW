@@ -74,7 +74,6 @@ void start_threads() {
     pthread_attr_setinheritsched(&rr_attr, PTHREAD_EXPLICIT_SCHED);
     pthread_attr_setinheritsched(&other_attr, PTHREAD_EXPLICIT_SCHED);
 
-
     pthread_attr_setdetachstate(&fifo_attr, PTHREAD_CREATE_JOINABLE);
     pthread_attr_setdetachstate(&rr_attr, PTHREAD_CREATE_JOINABLE);
     pthread_attr_setdetachstate(&other_attr, PTHREAD_CREATE_JOINABLE);

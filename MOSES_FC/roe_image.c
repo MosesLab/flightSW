@@ -79,6 +79,7 @@ void writeToFile() {
     int linecount = 0;
     int newfile = 0;
     char xmlarr[10000][200];
+    char msg[255];
     char* line;
     size_t len = 0;
     ssize_t read;
@@ -105,6 +106,7 @@ void writeToFile() {
     /*Write to XML File*/
     FILE * outxml;
     outxml = fopen(CATALOG, "r+");
+    record("Opened XML File\n");
     /*Write data from previous xml file*/
     for (i = 0; i < linecount; i++) {
         fwrite(xmlarr[i], sizeof (xmlarr[i][0]), strlen(xmlarr[i]), outxml);
@@ -127,10 +129,11 @@ void writeToFile() {
         strncat(schannels, "3", 1);
     
     if (newfile) {
-        /*Write XML delcaration if new file*/
+        /*Write XML declaration if new file*/
         fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
         fprintf(outxml, "<CATALOG>\n");
     }
+    record("Writing XML file\n");
     fprintf(outxml, "<ROEIMAGE>\n");
     fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", tempimage.filename);
     fprintf(outxml, "\t<NAME>%s</NAME>\n", tempimage.name);
@@ -152,13 +155,15 @@ void writeToFile() {
     fprintf(outxml, "</CATALOG>\n");
     
     fclose(outxml);
-
+    record("Closed XMl file");
    
     /*Write Image Data*/
     FILE *dataOut;
     dataOut = fopen(tempimage.filename, "w"); 
+    record("Opened ROE File\n");
     
     for (i = 0; i < 4; i++) {
+        sprintf(msg, "Writing chan %d\n", i+1);
         if (tempimage.channels & (char) (1 << i))
             fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
     }
