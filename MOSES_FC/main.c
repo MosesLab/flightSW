@@ -58,6 +58,8 @@ void quit_signal(int sig) {
 void start_threads() {
     pthread_attr_t attrs[num_threads]; //FIFO and round robin scheduling attributes
     struct sched_param param;
+    int max_fifo = sched_get_priority_max(SCHED_FIFO);
+    int max_rr = sched_get_priority_max(SCHED_RR);
 
     /*fill array of arguments for pthread call*/
     targs[hlp_control_thread] = &config_values[hlp_up_interface];
@@ -69,24 +71,41 @@ void start_threads() {
     targs[image_writer_thread] = NULL;
 
     /**
-     * thread attribute  and start loop
+     * FIFO thread attribute loop
      * Threads get lower priority as the loop progresses
      */
     unsigned int i;
     for (i = 0; i < NUM_FIFO; i++) {
-        param.sched_priority = sched_get_priority_max(SCHED_FIFO) - i;
         pthread_attr_init(&attrs[i]);
         pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
         pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
 
         if (i < NUM_FIFO) { // Set thread policy as FIFO for the first threads
+            param.sched_priority = max_fifo - i;
             pthread_attr_setschedpolicy(&attrs[i], SCHED_FIFO);
         } else { //Set scheduling policy as round-robin
+            param.sched_priority = max_rr - i;
             pthread_attr_setschedpolicy(&attrs[i], SCHED_RR);
         }
         pthread_attr_setschedparam(&attrs[i], &param);
 
         /*if configured, start thread*/
+        if (config_values[i] == 1) {
+            pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
+        }
+    }
+    /**
+     * Round Robin thread attribute loop
+     * Threads get lower priority as the loop progresses
+     */
+    for (i = NUM_FIFO; i < NUM_RROBIN + NUM_FIFO; i++) {
+        rr_param.sched_priority = -i;
+        pthread_attr_init(&attrs[i]);
+        pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
+        pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
+
+        pthread_attr_setschedparam(&attrs[i], &rr_param);
+
         if (config_values[i] == 1) {
             pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
         }
