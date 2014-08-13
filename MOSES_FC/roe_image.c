@@ -164,6 +164,7 @@ void writeToFile() {
     
     for (i = 0; i < 4; i++) {
         sprintf(msg, "Writing chan %d\n", i+1);
+        record(msg);
         if (tempimage.channels & (char) (1 << i))
             fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
     }
