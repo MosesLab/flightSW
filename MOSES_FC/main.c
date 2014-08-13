@@ -79,7 +79,7 @@ void start_threads() {
      * Round Robin thread attribute loop
      * Threads get lower priority as the loop progresses
      */
-    for (i = NUM_FIFO; i < NUM_RROBIN; i++) {
+    for (i = NUM_FIFO; i < NUM_RROBIN + NUM_FIFO; i++) {
         rr_param.sched_priority = sched_get_priority_max(SCHED_RR) - i;
         pthread_attr_init(&attrs[i]);
         pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
