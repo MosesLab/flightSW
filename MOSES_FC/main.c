@@ -55,8 +55,7 @@ void quit_signal(int sig) {
 }
 
 /*this method takes a function pointer and starts it as a new thread*/
-void start_threads() {
-    num_threads = NUM_RROBIN + NUM_FIFO;
+void start_threads() {    
     pthread_attr_t attrs[num_threads]; //FIFO and round robin scheduling attributes
     struct sched_param fifo_param, rr_param;
     
@@ -142,6 +141,7 @@ void init_quit_signal_handler() {
 
 /*set up hash table with configuration strings to match values in moses.conf*/
 void config_strings_init() {
+    num_threads = NUM_RROBIN + NUM_FIFO;
     unsigned int config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
 
