@@ -72,6 +72,8 @@ void * science_timeline(void * arg) {
         /*wait until sequence is enqueued*/
         sequence_t * currentSequence = (sequence_t *) dequeue(&sequence_queue); 
         
+        ops.seq_run = TRUE;
+        
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
 

@@ -62,7 +62,7 @@ int uDataStart(packet_t* p) {
         }
     }
 
-    ops.seq_run = TRUE;
+    
     
     /*enqueue sequence to science timeline*/
     enqueue(&sequence_queue, &sequenceMap[i]);
