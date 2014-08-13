@@ -17,9 +17,6 @@ void * hlp_control(void * arg) {
     /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
 
-    /*initialize locking queue for hk down packets*/
-    lockingQueue_init(&hkdownQueue);
-
     /*build lookup table for encoding and decoding packets*/
     buildLookupTable();
 
@@ -103,7 +100,7 @@ void * hlp_control(void * arg) {
 
 
         }
-        free(p); 
+        free(p);
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -119,7 +116,7 @@ void * hlp_down(void * arg) {
     prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
 
     unsigned int fdown = 0;
-    
+
     sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
@@ -131,6 +128,9 @@ void * hlp_down(void * arg) {
     } else {
         record("HK down serial connection not configured\n");
     }
+
+    /*initialize locking queue for hk down packets*/
+    lockingQueue_init(&hkdownQueue);
 
     while (ts_alive) {
 
@@ -217,8 +217,8 @@ void * hlp_housekeeping(void * arg) {
  */
 void * fpga_server(void * arg) {
 
-    
-    
+
+
     return NULL;
 }
 

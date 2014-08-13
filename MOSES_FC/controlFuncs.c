@@ -53,18 +53,22 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 int uDataStart(packet_t* p) {
     record("Received data start Uplink\n");
 
-    int i;
+    unsigned int i;
     for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
     ops.seq_run = TRUE;
     
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&sequence_queue, &sequenceMap[i]);
+    
+//    /*send signal to science timeline to start data*/
+//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
 
 

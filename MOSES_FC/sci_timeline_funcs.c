@@ -123,7 +123,7 @@ void * write_data(void * arg) {
 
         record("Copy image...\n");
         image.filename = filename;
-        image.name = currentSequence.sequenceName; //Add the information to the image
+        image.name = currentSequence->sequenceName; //Add the information to the image
         image.date = ddate;
         image.time = dtime;
         //image.duration = duration;

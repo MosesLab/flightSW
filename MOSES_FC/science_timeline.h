@@ -24,7 +24,9 @@ int caught_signal;
 struct sigaction run_action;   
 
 extern volatile sig_atomic_t ts_alive;
+
 extern LockingQueue hkdownQueue;
+LockingQueue sequence_queue;
 
 extern moses_ops_t ops; //struct storing operational state
 

@@ -12,22 +12,22 @@
 
 void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
-    
+
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
 
     /*set thread priority*/
-//    int ret;
-//    struct sched_param params;
-//    params.sched_priority = sched_get_priority_max(SCHED_RR);
-//    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
-//    if (ret != 0) {
-//        // Print the error
-//        record("Unsuccessful in setting thread realtime prio\n");
-//        return NULL;
-//    }
-//    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
-//    record(msg);
+    //    int ret;
+    //    struct sched_param params;
+    //    params.sched_priority = sched_get_priority_max(SCHED_RR);
+    //    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
+    //    if (ret != 0) {
+    //        // Print the error
+    //        record("Unsuccessful in setting thread realtime prio\n");
+    //        return NULL;
+    //    }
+    //    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
+    //    record(msg);
 
 
     char sindex[2];
@@ -37,7 +37,10 @@ void * science_timeline(void * arg) {
 
     record("-->Science Timeline thread started....\n\n");
     init_signal_handler_stl();
-    
+
+    /*initialize locking queue for exposure sequences packets*/
+    lockingQueue_init(&sequence_queue);
+
 
     /* wait for ROE to become active */
     //record("Waiting for ROE to become active...\n");
@@ -51,40 +54,37 @@ void * science_timeline(void * arg) {
     //exitDefault();
 
     while (ts_alive) {
-        if (ops.seq_run == FALSE) {
-            record("Sequence stopped, wait for signal to start\n");
-
-            pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
-            sigwait(&maskstl, &caught_signal);
-            pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
-
-            ops.seq_run = TRUE;
-
-            record("SIGUSR1 received, starting sequence\n");
-        }
-
-        /* if ROE active, set to known state (exit default, reset, exit default) */
-        //Add code here
-        //exitDefault();
-        //reset();
-        //exitDefault();
-
+//        if (ops.seq_run == FALSE) {
+//            record("Sequence stopped, wait for signal to start\n");
+//
+//            pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
+//            sigwait(&maskstl, &caught_signal);
+//            pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
+//
+//            ops.seq_run = TRUE;
+//
+//            record("SIGUSR1 received, starting sequence\n");
+//        }
 
         /*establish current sequence */
-        currentSequence = sequenceMap[ops.sequence];
-        sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence.sequenceName, ops.sequence);
+//        currentSequence = sequenceMap[ops.sequence];
+        
+        /*wait until sequence is enqueued*/
+        currentSequence = (sequence_t *) dequeue(&sequence_queue); 
+        
+        sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
-        packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence.sequenceName);
+        packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence->sequenceName);
         enqueue(&hkdownQueue, a);
         enqueue(&hkdownQueue, b);
 
         /* for each exposure in the sequence */
         int i;
-        for (i = 0; i < currentSequence.numFrames; i++) {
-            sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence.exposureTimes[i], i + 1, currentSequence.numFrames);
+        for (i = 0; i < currentSequence->numFrames; i++) {
+            sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
             /* check for running, roe active.... */
 
@@ -96,15 +96,15 @@ void * science_timeline(void * arg) {
                 break;
             }
 
-            sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence.exposureTimes[i]);
+            sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
             record(msg);
-            int duration = takeExposure(currentSequence.exposureTimes[i], currentSequence.seq_type);
+            int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
 
             image.duration = duration;
 
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
-            sprintf(sframe, "%6.3f", currentSequence.exposureTimes[i]);
+            sprintf(sframe, "%6.3f", currentSequence->exposureTimes[i]);
 
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             b = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
@@ -128,17 +128,16 @@ void * science_timeline(void * arg) {
             /* write buffer data to disk  and telemetry*/
             record("Signal disk write SIGUSR2 .\n");
             //poll for response? 
-            if (ops.dma_write == 1 && threads[image_writer_thread])
-            {
+            if (ops.dma_write == 1 && threads[image_writer_thread]) {
                 pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
             }
 
-            sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence.exposureTimes[i]);
+            sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */
 
         /* done with sequence, push packet with info */
-        sprintf(msg, "Done with sequence %s\n\n\n", currentSequence.sequenceName);
+        sprintf(msg, "Done with sequence %s\n\n\n", currentSequence->sequenceName);
         record(msg);
 
         a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);

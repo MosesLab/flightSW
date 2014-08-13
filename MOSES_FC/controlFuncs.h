@@ -23,6 +23,7 @@
 #include "control.h"
 
 extern LockingQueue hkdownQueue;
+extern LockingQueue sequence_queue;
 extern pid_t main_pid;
 
 /*
