@@ -75,7 +75,7 @@ void start_threads() {
      * Threads get lower priority as the loop progresses
      */
     unsigned int i;
-    for (i = 0; i < NUM_FIFO; i++) {
+    for (i = 0; i < NUM_RROBIN; i++) {
         pthread_attr_init(&attrs[i]);
         pthread_attr_setinheritsched(&attrs[i], PTHREAD_EXPLICIT_SCHED);
         pthread_attr_setdetachstate(&attrs[i], PTHREAD_CREATE_JOINABLE);
