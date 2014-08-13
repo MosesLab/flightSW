@@ -18,7 +18,7 @@ int main(void) {
     record("*****************************************************\n");
 
     /*init configuration stings*/
-    config_strings_init();
+    main_init();
 
     /*read in configuration values*/
     read_moses_config();
@@ -55,11 +55,18 @@ void quit_signal(int sig) {
 }
 
 /*this method takes a function pointer and starts it as a new thread*/
-void start_threads() {    
+void start_threads() {
     pthread_attr_t attrs[num_threads]; //FIFO and round robin scheduling attributes
     struct sched_param fifo_param, rr_param;
-    
-    
+
+    /*fill array of arguments for pthread call*/
+    targs[hlp_control_thread] = &config_values[hlp_up_interface];
+    targs[hlp_down_thread] = &config_values[hlp_down_interface];
+    targs[hlp_hk_thread] = NULL;
+    targs[hlp_shell_thread] = NULL;
+    targs[sci_timeline_thread] = NULL;
+    targs[telem_thread] = NULL;
+    targs[image_writer_thread] = NULL;
 
     /**
      * FIFO thread attribute loop
@@ -88,26 +95,32 @@ void start_threads() {
         pthread_attr_setschedparam(&attrs[i], &rr_param);
     }
 
-    if (config_values[hlp_control_thread] == 1)
-        pthread_create(&threads[hlp_control_thread], &attrs[hlp_control_thread], (void * (*)(void *))hlp_control, &config_values[hlp_up_interface]);
-
-    if (config_values[sci_timeline_thread] == 1)
-        pthread_create(&threads[sci_timeline_thread], &attrs[sci_timeline_thread], (void * (*)(void*))science_timeline, NULL);
-
-    if (config_values[image_writer_thread] == 1)
-        pthread_create(&threads[image_writer_thread], &attrs[image_writer_thread], (void * (*)(void*))write_data, NULL);
-
-    if (config_values[hlp_down_thread] == 1)
-        pthread_create(&threads[hlp_down_thread], &attrs[hlp_down_thread], (void * (*)(void *))hlp_down, &config_values[hlp_down_interface]);
-
-    if (config_values[hlp_shell_thread] == 1)
-        pthread_create(&threads[hlp_shell_thread], &attrs[hlp_shell_thread], (void * (*)(void*))hlp_shell_out, NULL);
-
-    if (config_values[hlp_hk_thread] == 1)
-        pthread_create(&threads[hlp_hk_thread], &attrs[hlp_hk_thread], (void * (*)(void*))hlp_housekeeping, NULL);
-
-    if (config_values[telem_thread] == 1)
-        pthread_create(&threads[telem_thread], &attrs[telem_thread], (void * (*)(void*))telem, NULL);
+    for(i = 0; i < num_threads; i++){
+        if(config_values[i] == 1){
+            pthread_create(&threads[i], &attrs[i], tfuncs[i], targs[i]);
+        }
+    }
+    
+//    if (config_values[hlp_control_thread] == 1)
+//        pthread_create(&threads[hlp_control_thread], &attrs[hlp_control_thread], (void * (*)(void *))hlp_control, );
+//
+//    if (config_values[sci_timeline_thread] == 1)
+//        pthread_create(&threads[sci_timeline_thread], &attrs[sci_timeline_thread], (void * (*)(void*))science_timeline, NULL);
+//
+//    if (config_values[image_writer_thread] == 1)
+//        pthread_create(&threads[image_writer_thread], &attrs[image_writer_thread], (void * (*)(void*))write_data, NULL);
+//
+//    if (config_values[hlp_down_thread] == 1)
+//        pthread_create(&threads[hlp_down_thread], &attrs[hlp_down_thread], (void * (*)(void *))hlp_down, );
+//
+//    if (config_values[hlp_shell_thread] == 1)
+//        pthread_create(&threads[hlp_shell_thread], &attrs[hlp_shell_thread], (void * (*)(void*))hlp_shell_out, NULL);
+//
+//    if (config_values[hlp_hk_thread] == 1)
+//        pthread_create(&threads[hlp_hk_thread], &attrs[hlp_hk_thread], (void * (*)(void*))hlp_housekeeping, NULL);
+//
+//    if (config_values[telem_thread] == 1)
+//        pthread_create(&threads[telem_thread], &attrs[telem_thread], (void * (*)(void*))telem, NULL);
 
 }
 
@@ -140,7 +153,7 @@ void init_quit_signal_handler() {
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
-void config_strings_init() {
+void main_init() {
     num_threads = NUM_RROBIN + NUM_FIFO;
     unsigned int config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
@@ -155,10 +168,6 @@ void config_strings_init() {
     config_strings[image_writer_thread] = IMAGE_WRITER_CONF;
 
     /*must offset by NUM_THREADS to be enumerated correctly*/
-    //    config_strings[NUM_THREADS + hlp_up_interface] = HKUP_CONF;
-    //    config_strings[NUM_THREADS + hlp_down_interface] = HKDOWN_CONF;
-    //    config_strings[NUM_THREADS + roe_interface] = ROE_CONF;
-    //    config_strings[NUM_THREADS + synclink_interface] = SYNCLINK_CONF;
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
@@ -178,6 +187,17 @@ void config_strings_init() {
         /*insert node into hash table*/
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
+
+    /*fill array of function pointer for pthread call*/
+    tfuncs[hlp_control_thread] = hlp_control;
+    tfuncs[hlp_down_thread] = hlp_down;
+    tfuncs[hlp_hk_thread] = hlp_housekeeping;
+    tfuncs[hlp_shell_thread] = hlp_shell_out;
+    tfuncs[sci_timeline_thread] = science_timeline;
+    tfuncs[telem_thread] = telem;
+    tfuncs[image_writer_thread] = write_data;
+
+
 }
 
 /*read in configuration file for thread and I/O attributes*/

@@ -44,7 +44,7 @@ int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values hold
    
 node_t** config_hash_table;
 
-void config_strings_init();
+void main_init();
 void read_moses_config();
 
 //enum moses_io{

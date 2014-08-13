@@ -16,6 +16,11 @@
 
 unsigned int num_threads;
 
+typedef void*(*thread_func)(void*);
+
+thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
+void * targs[NUM_RROBIN + NUM_FIFO];
+
 pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 /*enum must match define RROBIN and FIFO above*/
