@@ -79,7 +79,6 @@ void writeToFile() {
     int linecount = 0;
     int newfile = 0;
     char xmlarr[10000][200];
-    char msg[255];
     char* line;
     size_t len = 0;
     ssize_t read;
@@ -160,7 +159,6 @@ void writeToFile() {
     dataOut = fopen(tempimage.filename, "w"); 
     
     for (i = 0; i < 4; i++) {
-        record(msg);
         if (tempimage.channels & (char) (1 << i))
             fwrite(tempimage.data[i], sizeof (short), tempimage.size[i], dataOut);
     }
