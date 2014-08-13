@@ -48,6 +48,7 @@ void * hlp_control(void * arg) {
 
     seq_map_size = 1; //only for testing, this needs to better integrated into data structure
 
+    /*main control loop*/
     while (ts_alive) {
         /*allocate space for packet*/
         packet_t* p;

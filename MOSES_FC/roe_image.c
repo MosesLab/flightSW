@@ -131,7 +131,7 @@ void writeToFile() {
         fprintf(outxml, "<?xml version=\"1.0\" encoding=\"ASCII\" standalone=\"yes\"?>\n");
         fprintf(outxml, "<CATALOG>\n");
     }
-    record("Writing XML file\n");
+    
     fprintf(outxml, "<ROEIMAGE>\n");
     fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", tempimage.filename);
     fprintf(outxml, "\t<NAME>%s</NAME>\n", tempimage.name);

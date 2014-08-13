@@ -129,7 +129,6 @@ void * write_data(void * arg) {
         //image.duration = duration;
         image.width = 2048;
         image.height = 1024;
-        record(msg);
 
         /* Copy original image to temporary struct for image_writer_thread access.
          * This is to ensure that the image can be written to disk without being overwritten
