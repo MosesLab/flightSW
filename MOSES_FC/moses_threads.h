@@ -1,6 +1,6 @@
 /* 
  * File:   moses_threads.h
- * Author: birdie
+ * Author: Roy Smart
  *
  * Created on June 19, 2014, 12:35 PM
  */
@@ -10,19 +10,28 @@
 
 #include <pthread.h>
 
-#define NUM_THREADS 7
+/*Threads are either round-robin or fifo schedule policy*/
+#define NUM_RROBIN      3
+#define NUM_FIFO        4
 
-pthread_attr_t attrs; //attributes of executed threads
-pthread_t threads[NUM_THREADS]; //array of running threads
+unsigned int num_threads;
 
+pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
+
+/*enum must match define RROBIN and FIFO above*/
 enum thread_config {
-    hlp_down_thread,
+    /*FIFO threads*/
     hlp_control_thread,
-    hlp_hk_thread,
-    hlp_shell_thread,
     sci_timeline_thread,
-    telem_thread,
     image_writer_thread,
+    
+    /*Round-Robin threads*/
+    telem_thread,
+    hlp_down_thread,
+    hlp_shell_thread,
+    hlp_hk_thread,
+    
+    /*IO configs*/
     hlp_up_interface,
     hlp_down_interface,
     roe_interface,

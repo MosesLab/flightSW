@@ -16,6 +16,7 @@
 #include "science_timeline.h"
 #include "sequence.h"
 
+/*IO constants*/
 #define NUM_IO 4
 #define CONTROL_CONF "HLP_CONTROL_THREAD"
 #define DOWN_CONF "HLP_DOWN_THREAD"
@@ -39,7 +40,7 @@ sigset_t mask, oldmask;         //masks for SIGINT signal
 
 
 /*configuration variables*/
-int config_values[NUM_THREADS + NUM_IO];        //array of values holding moses program configurations
+int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations
    
 node_t** config_hash_table;
 
