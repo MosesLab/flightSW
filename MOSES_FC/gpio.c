@@ -9,28 +9,28 @@
 #include "gpio.h"
 
 /*write gpio uses peek() and poke() to read from register and assign new bit*/
-int write_gpio(U32 offset, U32 mask, U32 state) {
-    int rc; //return code for API calls
-
-    /*bitwise AND state with pin mask*/
-    U32 masked_state = mask & state;
-
-    /*read current contents of PCI BAR memory space*/
-    U32 current_state;
-    rc = peek_gpio(offset, &current_state);
-
-    /*apply new value*/
-    U32 new_state = (current_state & ~mask) | masked_state;
-
-    /*check that the previous pins read correctly*/
-    if (rc != TRUE) {
-        record("Failed to read previous state of GPIO pins\n");
-        return FALSE;
-    } else {
-        /*Assert output*/
-        return poke_gpio(offset, new_state);
-    }
-}
+//int write_gpio(U32 offset, U32 mask, U32 state) {
+//    int rc; //return code for API calls
+//
+//    /*bitwise AND state with pin mask*/
+//    U32 masked_state = mask & state;
+//
+//    /*read current contents of PCI BAR memory space*/
+//    U32 current_state;
+//    rc = peek_gpio(offset, &current_state);
+//
+//    /*apply new value*/
+//    U32 new_state = (current_state & ~mask) | masked_state;
+//
+//    //    /*check that the previous pins read correctly*/
+//    //    if (rc != TRUE) {
+//    //        record("Failed to read previous state of GPIO pins\n");
+//    //        return FALSE;
+//    //    } else {
+//    //        /*Assert output*/
+//    //        return poke_gpio(offset, new_state);
+//    //    }
+//}
 
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data) {
@@ -118,14 +118,14 @@ int handle_gpio_in() {
         record("Error acknowledging GPIO input interrupt\n");
         return FALSE;
     }
-    
+
     sprintf(msg, "GPIO value: %d\n", gpio_state);
     record(msg);
-    
+
     /*enqueue value to send to gpio control*/
     gpio_in->in_val = gpio_state;
     enqueue(&gpio_in_queue, &gpio_in);
-    
+
     return TRUE;
 }
 
@@ -142,28 +142,13 @@ int handle_gpio_in() {
 //    return write_gpio(SHUTTER_OFFSET, SHUTTER_CLOSE_SIM, OFF);
 //    //    return poke_gpio(SHUTTER_OFFSET, 0);
 //}
-//
-///*sets the provided subsystem to a new state*/
-//int set_power(U32 sys, U32 state) {
-//    /*off by one since sys starts at 1*/
-//    return write_gpio(POWER_OFFSET, power_subsystem_arr[sys - 1], state);
-//}
-//
-///*gets the current state of the provided subsystem*/
-//int get_power(U32 sys, U32 * state_buf) {
-//
-//    /*get power state from fpga*/
-//    if (peek_gpio(POWER_OFFSET, state_buf) != TRUE) {
-//        return FALSE;
-//    } else {
-//        /*apply mask so we only get one pin*/
-//        *state_buf = *state_buf & power_subsystem_arr[sys - 1];
-//        return TRUE;
-//    }
-//}
-//
+
+
+
+
+
 /*sets up the memory used in powering the instrument*/
-void init_power() {
+void init_gpio() {
     power_subsystem_arr[shutter_driver] = SHUTTER_SIM;
     power_subsystem_arr[roe] = ROE_SIM;
     power_subsystem_arr[pre_mod] = PREMOD_SIM;
@@ -175,9 +160,18 @@ void init_power() {
     power_subsystem_arr[reg_12V] = REG_12V_SIM;
     power_subsystem_arr[h_alpha] = H_ALPHA_SIM;
 
+    /*initialize acknowledge register*/
+    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
+
+    /*enable GPIO pins on the FPGA*/
+    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+    
+
+
+
     /*Initialize all power GPIO into write mode*/
-//    int i;
-//    for (i = 0; i < NUM_SUBSYSTEM; i++) {
-//        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
-//    }
+    //    int i;
+    //    for (i = 0; i < NUM_SUBSYSTEM; i++) {
+    //        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
+    //    }
 }

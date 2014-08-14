@@ -23,8 +23,8 @@ void * hlp_control(void * arg) {
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
 
-    /*initialize arrays of power subsystem GPIO pins*/
-    init_power();
+    /*set up global GPIO output state*/
+    gpio_power_state.out_val = 0x0;
 
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
@@ -221,6 +221,9 @@ void * fpga_server(void * arg) {
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
     record("-->FPGA Serer thread started\n");
+    
+    /*initialize GPIO pins*/
+    init_gpio();
 
     /*initialize DMA pipeline*/
     initializeDMA();
@@ -254,14 +257,10 @@ void * fpga_server(void * arg) {
             if (occupied(&gpio_out_queue)) {
                 gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
 
-                /*extract state and mask from structure*/
-                U32 gpio_out_state = gpio_out->in_val & V_MASK;
-                U32 gpio_out_mask = gpio_out->in_val & M_MASK;
-                gpio_out_mask = (gpio_out_mask >> 16); //Bitshift mask into correct position
-
-                rc = write_gpio(GPIO_OUT_REG, gpio_out_mask, gpio_out_state);
+                /*apply output if necessary*/
+                rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
                 if (rc == FALSE) {
-                    record("Error writing GPIO\n");
+                    record("Error writing GPIO output\n");
                 }
             }
             

@@ -42,7 +42,8 @@ LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio cont
 
 LockingQueue telem_image_queue; //Pass image filepaths to telemetry
 
-
+/*Current state of powered subsystems*/
+gpio_out_uni gpio_power_state;
 
 /*hlp_control initializations*/
 void* hlp_control(void *);
@@ -53,7 +54,6 @@ void* hlp_down(void*);
 
 /*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
-
 void * telem(void *);
 
 void * hlp_shell_out(void *);

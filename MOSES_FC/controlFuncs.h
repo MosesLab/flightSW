@@ -24,7 +24,12 @@
 
 extern LockingQueue hkdownQueue;
 extern LockingQueue sequence_queue;
+extern LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+//extern LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 extern pid_t main_pid;
+
+/*Power GPIO output state*/
+extern gpio_out_uni gpio_power_state;
 
 /*
  * Array containing uplink subtypes. Used in a map from uplink functions to 
@@ -40,6 +45,10 @@ node_t** hlpHashTable;
 
 void hlpHashInit();
 int execPacket(packet_t*);
+
+/*power control functions*/
+int set_power(U32, U32);
+int get_power(U32, U32*);
 
 /*HLP uplink control functions*/
 int uDataStart();

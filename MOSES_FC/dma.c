@@ -77,11 +77,7 @@ int initializeDMA() {
 
     DmaParams.Direction = PLX_DMA_LOC_TO_PCI;
 
-    /*initialize acknowledge register*/
-    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
-    /*enable GPIO pins on the FPGA*/
-    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
 
     return TRUE;
 }

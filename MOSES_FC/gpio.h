@@ -60,9 +60,7 @@ PLX_DEVICE_OBJECT fpga_dev;
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 
-gpio_out_uni global_gpio_out_state;
 
-U32 current_power_state;
 
 /*array to hold power pin macros*/
 U32 power_subsystem_arr[NUM_SUBSYSTEM];
@@ -71,7 +69,7 @@ LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga serve
 LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 
 /*poke gpio pins*/
-int write_gpio(U32,U32,U32);
+//int write_gpio(U32,U32,U32);
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
 
@@ -81,10 +79,8 @@ int handle_gpio_in();
 int open_shutter();
 int close_shutter();
 
-/*power control functions*/
-int set_power(U32, U32);
-int get_power(U32, U32*);
-void init_power();
+
+void init_gpio();
 
 /*this enumeration should be changed when we decide on power formats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 enum power_subsystem_pins{

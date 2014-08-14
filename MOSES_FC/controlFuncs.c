@@ -25,6 +25,37 @@ int execPacket(packet_t* p) {
 
 }
 
+/*sets the provided subsystem to a new state*/
+int set_power(U32 sys, U32 state) {
+    /*off by one since sys starts at 1*/
+        U32 mask = power_subsystem_arr[sys - 1];
+    
+    /*bitwise AND state with pin mask*/
+    U32 masked_state = mask & state;
+    
+    /*dynamically allocate and apply new value*/
+    gpio_out_uni * new_state = malloc(sizeof(U32));
+    new_state->out_val = (gpio_power_state.out_val& ~mask) | masked_state;
+    
+    /*enqueue new state to fpga server for assertion*/
+    enqueue(&gpio_out_queue, new_state);
+    
+    return TRUE;
+}
+
+/*gets the current state of the provided subsystem*/
+int get_power(U32 sys, U32 * state_buf) {
+
+//    /*get power state from fpga*/
+//    if (peek_gpio(POWER_OFFSET, state_buf) != TRUE) {
+//        return FALSE;
+//    } else {
+//        /*apply mask so we only get one pin*/
+//        *state_buf = *state_buf & power_subsystem_arr[sys - 1];
+        return TRUE;
+//    }
+}
+
 int hlp_shell(int pipe_fd, packet_t * p) {
     if (strcmp(p->subtype, INPUT) == 0) {
         char msg[255];
@@ -574,7 +605,7 @@ int enablePower(packet_t* p) {
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
-//    rc = set_power(subsystem, ON);
+    rc = set_power(subsystem, ON);
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
@@ -595,7 +626,7 @@ int disablePower(packet_t* p) {
     record("Command to disable subsystem power received\n");
     //Insert control code here
     int subsystem = strtol(p->data, NULL, 16);
-//    rc = set_power(subsystem, OFF);
+    rc = set_power(subsystem, OFF);
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
@@ -1056,6 +1087,8 @@ int ROE_CCDS_VSS(packet_t* p) {
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
+
+    
     funcNumber = 82;
     hlp_hash_size = funcNumber * 2;
 

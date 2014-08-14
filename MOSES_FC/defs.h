@@ -146,8 +146,6 @@ typedef union gpio_in_uni {
 
 /*bit field for passing gpio outputs*/
 typedef struct {
-    unsigned int shutter_open : 1;
-    unsigned int shutter_close : 1;
     unsigned int h_alpha : 1;
     unsigned int shutter : 1;
     unsigned int roe : 1;
@@ -160,15 +158,13 @@ typedef struct {
     unsigned int reg_12V : 1;
     unsigned int latch : 1;
     
-    unsigned int unused_out : 3;
-    
-    unsigned int mask : 16;
+    unsigned int unused_out : 19;
 
 }gpio_out_bf;
 
 /*union to allow gpio out bit fields to be taken as ints*/
 typedef union gpio_out_uni {
-    U32 in_val;
+    U32 out_val;
     gpio_in_bf out_bf;
 } gpio_out_uni;
 
