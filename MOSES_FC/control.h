@@ -58,4 +58,6 @@ void * telem(void *);
 
 void * hlp_shell_out(void *);
 
+void * fpga_server(void *);
+
 #endif /*CONTROL_H*/

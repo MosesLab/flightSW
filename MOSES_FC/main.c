@@ -69,6 +69,7 @@ void start_threads() {
     targs[sci_timeline_thread] = NULL;
     targs[telem_thread] = NULL;
     targs[image_writer_thread] = NULL;
+    targs[fpga_server_thread] = NULL;
 
     /**
      * FIFO thread attribute loop
@@ -138,6 +139,8 @@ void main_init() {
     config_strings[sci_timeline_thread] = SCIENCE_CONF;
     config_strings[telem_thread] = TELEM_CONF;
     config_strings[image_writer_thread] = IMAGE_WRITER_CONF;
+    config_strings[fpga_server_thread] = FPGA_SERVER_CONF;
+
 
     /*must offset by NUM_THREADS to be enumerated correctly*/
     config_strings[hlp_up_interface] = HKUP_CONF;
@@ -153,7 +156,7 @@ void main_init() {
     /*fill hash table with array of strings matching indices for configuration values*/
     int i;
     for (i = 0; i < config_size; i++) {
-        int * int_def = malloc(sizeof(int));
+        int * int_def = malloc(sizeof (int));
         *int_def = i;
 
         /*insert node into hash table*/
@@ -168,6 +171,7 @@ void main_init() {
     tfuncs[sci_timeline_thread] = science_timeline;
     tfuncs[telem_thread] = telem;
     tfuncs[image_writer_thread] = write_data;
+    tfuncs[fpga_server_thread] = fpga_server;
 
 
 }

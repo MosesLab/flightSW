@@ -29,6 +29,7 @@
 #define ROE_CONF "ROE"
 #define SYNCLINK_CONF "SYNCLINK_TM"
 #define IMAGE_WRITER_CONF "IMAGE_THREAD"
+#define FPGA_SERVER_CONF "FPGA_SERVER_THREAD"
 
 
 volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads

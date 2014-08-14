@@ -11,7 +11,7 @@
 #include <pthread.h>
 
 /*Threads are either round-robin or fifo schedule policy*/
-#define NUM_RROBIN      3
+#define NUM_RROBIN      4
 #define NUM_FIFO        4
 
 unsigned int num_threads;
@@ -29,6 +29,7 @@ enum thread_config {
     hlp_control_thread,
     sci_timeline_thread,
     image_writer_thread,
+    fpga_server_thread,
     
     /*Round-Robin threads*/
     telem_thread,
