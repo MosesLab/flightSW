@@ -79,6 +79,13 @@ void * dequeue(LockingQueue * queue) {
     return ptr;
 }
 
+int occupied(LockingQueue * queue){
+    pthread_mutex_lock(&queue->lock);
+    int count = queue->count;
+    pthread_mutex_unlock(&queue->lock);
+    return count;
+}
+
 void lockingQueue_destroy(LockingQueue * queue) {
     pthread_mutex_lock(&queue->lock);
     pthread_cond_destroy(&queue->cond);

@@ -21,7 +21,7 @@
 #include "send_TM.h"
 #include "v_shell.h"
 #include "gpio.h"
-
+#include "dma.h"
 
 
 #define SYNCLINK_START 0
@@ -32,9 +32,17 @@ extern volatile sig_atomic_t ts_alive;
 /*struct to control state of experiment*/
 moses_ops_t ops;
 
-/*Locking queues to safely pass data between threads*/
-LockingQueue hkdownQueue;
-LockingQueue roeQueue;
+LockingQueue hkdownQueue; //Pass packets from flight SW to hkdown thread
+
+/*FPGA server queues*/
+LockingQueue scit_image_queue; //Pass images from science timeline to fpga server
+LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+
+LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
+
+LockingQueue telem_image_queue; //Pass image filepaths to telemetry
+
+
 
 /*hlp_control initializations*/
 void* hlp_control(void *);

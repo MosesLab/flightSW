@@ -1,5 +1,5 @@
 /**************************************************
- * Author: David Keltgen                            *
+ * Author: David Keltgen, Roy Smart                 *
  * Company: Montana State University: MOSES LAB     *
  * File Name: dma.c                                 *
  * Date:  July 17 2014                              *
@@ -13,9 +13,8 @@
 
 int initializeDMA() {
     int rc;
-    U8 dmaChannel = DMA_CHAN;
-    /*Lock PLX mutex*/
 
+    /*Lock PLX mutex*/
     rc = GetAndOpenDevice(&fpga_dev, 0x9056);
 
     if (rc != ApiSuccess) {
@@ -23,9 +22,6 @@ int initializeDMA() {
         PlxSdkErrorDisplay(rc);
         exit(-1);
     }
-
-    /*Set up interrupt from FPGA*/
-    PlxPci_InterruptEnable(&fpga_dev, &DmaIntr);
 
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
@@ -75,28 +71,27 @@ int initializeDMA() {
     }
 
     // Fill in DMA transfer parameters 
-#if PLX_SDK_VERSION_MAJOR==5 && PLX_SDK_VERSION_MINOR==1
-    DmaParams.u.PciAddrLow = (U32) PciBuffer.PhysicalAddr;
-    DmaParams.PciAddrHigh = 0x0;
-    DmaParams.LocalAddr = FPGA_MEMORY_LOC_0;
-    DmaParams.ByteCount = SIZE_DS_BUFFER;
-    DmaParams.LocalToPciDma = 1; // FPGA to physical mem
-#else
     DmaParams.PciAddr = PciBuffer.PhysicalAddr;
     DmaParams.LocalAddr = FPGA_MEMORY_LOC_0;
     DmaParams.ByteCount = SIZE_DS_BUFFER;
+
     DmaParams.Direction = PLX_DMA_LOC_TO_PCI;
-#endif   
+
+    /*initialize acknowledge register*/
+    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
+
+    /*enable GPIO pins on the FPGA*/
+    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
 
     return TRUE;
 }
 
-/*dmaRead will wait for the FPGA Interrupt*/
-/*Once the interrupt is received, it will */
-/*update BUFFER with the data that DMA */
-/*stored on the VDX as pBufferMem, */
-
-/*  then disable the interrupt*/
+/**
+ * dmaRead() will initiate a slave DMA transfer with the PLX 9056 and then 
+ * wait until the transfer has completed.
+ * 
+ * @return 
+ */
 int dmaRead() {
     int rc;
 
@@ -104,56 +99,27 @@ int dmaRead() {
     pBufferMem = malloc(SIZE_DS_BUFFER);
     if (pBufferMem == NULL) {
         printf("*ERROR* - Source buffer allocation failed");
-        /*Unlock Mutex*/
         return (FALSE);
     }
     memset(pBufferMem, 0, SIZE_DS_BUFFER);
 
-    record("Waiting on DMA Transfer finish interrupt\n");
 
-    PlxPci_NotificationRegisterFor(&fpga_dev, &DmaIntr, &DmaEvent);
-    rc = PlxPci_NotificationWait(&fpga_dev, &DmaEvent, (U64) 5000);
-
-    switch (rc) {
-        case ApiSuccess:
-            printf("Success\n");
-            break;
-
-        case ApiWaitTimeout:
-            rc = ApiWaitTimeout;
-            printf("Timeout\n");
-            break;
-
-        case ApiWaitCanceled:
-            printf("Failed\n");
-            rc = ApiFailed;
-            break;
-
-        default:
-            printf("Default\n");
-            // Added to avoid compiler warning
-            break;
-    }
-
-    /*Tell FPGA to send interrupt???*/
-
-    //rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &DmaParams, (3 * 1000)); //last parameter is timeout in ms
-
-    /*if (rc != ApiSuccess) {
-        if (rc == ApiWaitTimeout) {
-            // Timed out waiting for DMA completion 
-            printf("Timeout");  return(FALSE);
-        } else {
-            printf("*ERROR* - API failed\n");
-            PlxSdkErrorDisplay(rc); return(FALSE);
-        }
-    }*/
 
     printf("DMA Read\n");
 
-    PlxPci_InterruptDisable(&fpga_dev, &DmaIntr);
+    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &DmaParams, (3 * 1000)); //last parameter is timeout in ms
 
-
+    if (rc != ApiSuccess) {
+        if (rc == ApiWaitTimeout) {
+            // Timed out waiting for DMA completion 
+            printf("Timeout");
+            return (FALSE);
+        } else {
+            printf("*ERROR* - API failed\n");
+            PlxSdkErrorDisplay(rc);
+            return (FALSE);
+        }
+    }
 
     return TRUE;
 }
@@ -162,6 +128,59 @@ void finish() {
 
 }
 
+/**
+ * interrupt_wait() will wait on the PCI interrupt line and determine if GPIO 
+ * input or DMA requested the interrupt
+ * 
+ * @return 1 if success 0 if failure
+ */
+int interrupt_wait(U32 * interrupt) {
+    int rc;
+
+    /*clear and reset interrupt structure*/
+    memset(&plx_intr, 0, sizeof (PLX_INTERRUPT));
+    
+    /*set interrupt structure*/
+    plx_intr.LocalToPci = 1; //set bit 11
+    //    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
+
+    /*enable interrupt on PLX bridge*/
+    rc = PlxPci_InterruptEnable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
+    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
+
+    /*register for interrupt with kernel*/
+    rc = PlxPci_NotificationRegisterFor(&fpga_dev, &plx_intr, &plx_event);
+    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
+
+    /*wait for interrupt*/
+    int waitrc = PlxPci_NotificationWait(&fpga_dev, &plx_event, (U32) 100);
+
+    /*disable interrupt*/
+    rc = PlxPci_InterruptDisable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
+    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
+
+    /*handle return code of wait function*/
+    if (waitrc == ApiWaitTimeout) {
+        *interrupt = TIMEOUT_INT;
+        return TRUE;
+    } else if (waitrc == ApiSuccess) {
+        *interrupt = INP_INT;
+        return TRUE;
+    } else if (waitrc == ApiWaitCanceled) {
+        record("Wait canceled\n");
+        return FALSE;
+    } else {
+        record("Wait returned an unknown value\n");
+        return FALSE;
+    }
+
+}
+
+/**
+ * Clear page-locked DMA buffer out of memory
+ * 
+ * @return 1 if success, 0 if failure
+ */
 int dmaClearBlock() {
     int rc;
 
@@ -174,19 +193,21 @@ int dmaClearBlock() {
         return (FALSE);
     }
 
-    printf("DMA Block Cleared");
+    printf("DMA Block Cleared\n");
     return (TRUE);
 }
 
+/**
+ * Close DMA pipe after program close
+ */
 void dmaClose() {
     int rc;
-    U8 dmaChannel = DMA_CHAN;
 
     printf("Closing DMA Channel: \n");
     rc = PlxPci_DmaChannelClose(&fpga_dev, dmaChannel);
 
     if (rc != ApiSuccess) {
-        printf("API Failed, attempting to reset PLX device");
+        printf("API Failed, attempting to reset PLX device\n");
 
         // Reset the device if a DMA is in-progress 
         if (rc == ApiDmaInProgress) {

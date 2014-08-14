@@ -49,7 +49,7 @@ void * hlp_control(void * arg) {
     while (ts_alive) {
         /*allocate space for packet*/
         packet_t* p;
-        if ((p = (packet_t*) calloc(sizeof (packet_t), 1)) == NULL) {
+        if ((p = (packet_t*) calloc(1, sizeof (packet_t))) == NULL) {
             record("malloc failed to allocate packet\n");
         }
 
@@ -185,7 +185,7 @@ void * hlp_shell_out(void * arg) {
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
             enqueue(&hkdownQueue, sr);
         }
-        free(buf); //not sure why this doesnt work.
+        free(buf);
     }
 
     return NULL;
@@ -216,8 +216,66 @@ void * hlp_housekeeping(void * arg) {
  * @return  (not used)
  */
 void * fpga_server(void * arg) {
+    int rc;
 
+    prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
+    record("-->FPGA Serer thread started\n");
+
+    /*initialize DMA pipeline*/
+    initializeDMA();
+
+    /*Initialize locking queues for thread sync*/
+    lockingQueue_init(&scit_image_queue);
+    lockingQueue_init(&gpio_out_queue);
+
+    /*main server control loop*/
+    while (ts_alive) {
+        U32 interrupt = 0;
+
+        /*wait on interrupt for DMA and GPIO input*/
+        rc = interrupt_wait(&interrupt);
+        if (rc == FALSE) {
+            record("Error during wait\n");
+        }
+
+        /*take action based off what type of interrupt*/
+        if (interrupt == INP_INT) {
+            
+            // need to check if DMA or GPIO input here by peeking at fpga register
+            
+            rc = handle_gpio_in();
+            if (rc == FALSE) {
+                record("Error handling GPIO\n");
+            }
+        } else if (interrupt == TIMEOUT_INT) {
+
+            /*check if new GPIO output is available*/
+            if (occupied(&gpio_out_queue)) {
+                gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
+
+                /*extract state and mask from structure*/
+                U32 gpio_out_state = gpio_out->in_val & V_MASK;
+                U32 gpio_out_mask = gpio_out->in_val & M_MASK;
+                gpio_out_mask = (gpio_out_mask >> 16); //Bitshift mask into correct position
+
+                rc = write_gpio(GPIO_OUT_REG, gpio_out_mask, gpio_out_state);
+                if (rc == FALSE) {
+                    record("Error writing GPIO\n");
+                }
+            }
+            
+            /*check if image input is available*/
+            /*TESTING!!!!!!! Do not use in real life*/
+//            if(occupied(&scit_image_queue)){             
+//                roeimage_t * dma_image = dequeue(&scit_image_queue);
+//                
+//                
+//            }
+
+        }
+
+    }
 
     return NULL;
 }
@@ -230,13 +288,13 @@ void * telem(void * arg) {
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
 
-    lockingQueue_init(&roeQueue);
+    lockingQueue_init(&telem_image_queue);
 
     while (ts_alive) {
         //        if (roeQueue.count != 0) {
         //dequeue imgPtr_t here
 
-        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&roeQueue); //RTS
+        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&telem_image_queue); //RTS
         char * curr_path = curr_image->filePath;
 
         //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
@@ -246,7 +304,7 @@ void * telem(void * arg) {
             //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
         } else fclose(fp);
-        if ((&roeQueue)->first != NULL) {
+        if ((&telem_image_queue)->first != NULL) {
 
             fseek(fp, 0, SEEK_END); // seek to end of file
             fseek(fp, 0, SEEK_SET);

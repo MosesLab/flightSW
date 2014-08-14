@@ -9,8 +9,7 @@
 #define	GPIO_H
 
 #include "system.h"
-#include "plx/PlxApi.h"
-#include "plx/PlxInit.h"
+#include "lockingQueue.h"
 
 
 #define ON 0xFFFFFFFF
@@ -19,19 +18,27 @@
 #define GPIO_BAR_INDEX 2
 #define PLX_BUFFER_WIDTH 4
 
+/*registers for interrupt-driven gpio*/
+#define GPIO_I_STATE_REG 0x00000000
+#define GPIO_I_INT_ENABLE 0x00000004
+#define GPIO_I_INT_REG 0x0000000C
+#define GPIO_I_INT_ACK 0x00000008
+
+/*register for output gpio*/
+#define GPIO_OUT_REG 0x14
 /*Shutter macros*/
-#define SHUTTER_OFFSET 0x2C
-#define SHUTTER_OPEN_SIM 0x1
-#define SHUTTER_CLOSE_SIM 0x1
+//#define SHUTTER_OFFSET 0x14
 
 
 /*Power macros*/
 #define NUM_SUBSYSTEM 10
 //#define POWER_OFFSET 0x2C
-#define POWER_OFFSET 0x10
-#define POWER_DIRECTION_OFFSET 0x14
+//#define POWER_OFFSET 0x10
+//#define POWER_DIRECTION_OFFSET 0x14
 
-//#define SHUTTER_SIM 0x40000
+
+#define SHUTTER_OPEN_SIM 0x1
+#define SHUTTER_CLOSE_SIM 0x2
 #define LATCH 0x4
 #define SHUTTER_SIM 0x8
 #define ROE_SIM 0x800000
@@ -44,21 +51,31 @@
 #define REG_12V_SIM 0x40000000
 #define H_ALPHA_SIM 0x80000000
 
+/*GPIO write masks*/
+#define V_MASK 0x0000FFFF
+#define M_MASK 0xFFFF0000
+
 /*GPIO write variables*/
 PLX_DEVICE_OBJECT fpga_dev;
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 
+gpio_out_uni global_gpio_out_state;
 
 U32 current_power_state;
 
 /*array to hold power pin macros*/
 U32 power_subsystem_arr[NUM_SUBSYSTEM];
 
+LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
+
 /*poke gpio pins*/
 int write_gpio(U32,U32,U32);
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
+
+int handle_gpio_in();
 
 /*use write gpio to open/close shutter*/
 int open_shutter();

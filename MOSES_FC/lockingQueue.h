@@ -19,6 +19,7 @@ void lockingQueue_init(LockingQueue *);
 node_t * construct_queue_node(void *);
 void enqueue(LockingQueue *, void *);
 void * dequeue(LockingQueue *);
+int occupied(LockingQueue *);
 void destroy(LockingQueue *);
 
 #endif /*LOCKINGQUEUE_H*/

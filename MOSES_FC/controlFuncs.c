@@ -567,13 +567,14 @@ int resetSW(packet_t* p) {
 
 /*Command the payload subsystem to power on*/
 int enablePower(packet_t* p) {
+    int rc = FALSE;
     char msg[256];
 
     record("Command to enable subsystem power received\n");
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
-    int rc = set_power(subsystem, ON);
+//    rc = set_power(subsystem, ON);
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
@@ -588,12 +589,13 @@ int enablePower(packet_t* p) {
 
 /*Command the payload subsystem to power off*/
 int disablePower(packet_t* p) {
+    int rc = FALSE;
     char msg[256];
 
     record("Command to disable subsystem power received\n");
     //Insert control code here
     int subsystem = strtol(p->data, NULL, 16);
-    int rc = set_power(subsystem, OFF);
+//    rc = set_power(subsystem, OFF);
 
     /*check that API returned correctly*/
     if (rc != TRUE) {
@@ -609,14 +611,16 @@ int disablePower(packet_t* p) {
 
 /*Query the power status of the payload subsystem*/
 int queryPower(packet_t* p) {
+    int rc = FALSE;
     char msg[256];
 
     record("Command to query subsystem power received\n");
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
-    U32 power_state;
-    if (get_power(subsystem, &power_state) != TRUE) {
+    U32 power_state = OFF;
+//    rc = get_power(subsystem, &power_state);
+    if (rc != TRUE) {
         sprintf(msg, "Failed to query subsystem %d\n", subsystem);
         record(msg);
     } else {
@@ -1238,7 +1242,7 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = calloc(sizeof (node_t) * hlp_hash_size, 1)) == NULL) {
+    if ((hlpHashTable = calloc(hlp_hash_size, sizeof(node_t))) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 

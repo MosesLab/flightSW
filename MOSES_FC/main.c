@@ -146,14 +146,14 @@ void main_init() {
     config_strings[synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/
-    if ((config_hash_table = calloc(sizeof (node_t) * config_size, 1)) == NULL) {
+    if ((config_hash_table = calloc(config_size, sizeof (node_t))) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
     /*fill hash table with array of strings matching indices for configuration values*/
     int i;
     for (i = 0; i < config_size; i++) {
-        int * int_def = malloc(sizeof (int));
+        int * int_def = malloc(sizeof(int));
         *int_def = i;
 
         /*insert node into hash table*/

@@ -22,7 +22,7 @@ int takeExposure(double duration, int sig) {
     if (sig == 1) // use the shutter for Data sequence 
     {
         //send open shutter signal to DIO
-        open_shutter();
+//        open_shutter();
 
         gettimeofday(&expstart, NULL);
 
@@ -34,7 +34,7 @@ int takeExposure(double duration, int sig) {
         actual = wait_exposure(dur) + PULSE;
 
         // send close shutter signal to DIO
-        close_shutter();
+//        close_shutter();
 
 
         // wait for interval to close shutter
@@ -176,7 +176,7 @@ void * write_data(void * arg) {
             imgPtr_t newPtr;
             newPtr.filePath = filename;
             newPtr.next = NULL;
-            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
+            enqueue(&telem_image_queue, &newPtr); //enqueues the path for telem
             record("Filename pushed to telemetry queue\n");
         }
 
