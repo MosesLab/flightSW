@@ -77,7 +77,20 @@ int initializeDMA() {
 
     DmaParams.Direction = PLX_DMA_LOC_TO_PCI;
 
+    /*initialize bar properties*/
+    bar_index = (U8) GPIO_BAR_INDEX;
+    sz_buffer = PLX_BUFFER_WIDTH;
+    type_bit = BitSize32;
 
+    /*Read current BAR properties*/
+    rc = PlxPci_PciBarProperties(&fpga_dev, bar_index, &bar_properties);
+
+    /*Check if bar properties were read successfully*/
+    if (rc != ApiSuccess) {
+        record("*ERROR* - API failed, unable to read BAR properties \n");
+        PlxSdkErrorDisplay(rc);
+        return FALSE;
+    }
 
     return TRUE;
 }
@@ -135,7 +148,7 @@ int interrupt_wait(U32 * interrupt) {
 
     /*clear and reset interrupt structure*/
     memset(&plx_intr, 0, sizeof (PLX_INTERRUPT));
-    
+
     /*set interrupt structure*/
     plx_intr.LocalToPci = 1; //set bit 11
     //    plx_intr.PciMain = 1;		// Bit 8 -- should already been on

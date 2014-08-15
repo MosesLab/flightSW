@@ -36,9 +36,11 @@
 //#define POWER_OFFSET 0x10
 //#define POWER_DIRECTION_OFFSET 0x14
 
-
+/*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_OPEN_SIM 0x1
 #define SHUTTER_CLOSE_SIM 0x2
+
+/*Power is controlled by FPGA GPIO pins*/
 #define LATCH 0x4
 #define SHUTTER_SIM 0x8
 #define ROE_SIM 0x800000
@@ -51,14 +53,11 @@
 #define REG_12V_SIM 0x40000000
 #define H_ALPHA_SIM 0x80000000
 
-/*GPIO write masks*/
-#define V_MASK 0x0000FFFF
-#define M_MASK 0xFFFF0000
 
 /*GPIO write variables*/
-PLX_DEVICE_OBJECT fpga_dev;
-PLX_PCI_BAR_PROP bar_properties;
-PLX_ACCESS_TYPE type_bit;
+extern PLX_DEVICE_OBJECT fpga_dev;
+extern PLX_PCI_BAR_PROP bar_properties;
+extern PLX_ACCESS_TYPE type_bit;
 
 
 

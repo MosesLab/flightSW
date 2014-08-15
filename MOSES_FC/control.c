@@ -221,7 +221,7 @@ void * fpga_server(void * arg) {
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
     record("-->FPGA Serer thread started\n");
-    
+
     /*initialize GPIO pins*/
     init_gpio();
 
@@ -244,9 +244,9 @@ void * fpga_server(void * arg) {
 
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
-            
+
             // need to check if DMA or GPIO input here by peeking at fpga register
-            
+
             rc = handle_gpio_in();
             if (rc == FALSE) {
                 record("Error handling GPIO\n");
@@ -257,20 +257,23 @@ void * fpga_server(void * arg) {
             if (occupied(&gpio_out_queue)) {
                 gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
 
-                /*apply output if necessary*/
-                rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
-                if (rc == FALSE) {
-                    record("Error writing GPIO output\n");
+                /*Check if request or assert*/
+                if (gpio_out->out_val != REQ_POWER) {
+                    /*apply output if necessary*/
+                    rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
+                    if (rc == FALSE) {
+                        record("Error writing GPIO output\n");
+                    }
                 }
             }
-            
+
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life*/
-//            if(occupied(&scit_image_queue)){             
-//                roeimage_t * dma_image = dequeue(&scit_image_queue);
-//                
-//                
-//            }
+            //            if(occupied(&scit_image_queue)){             
+            //                roeimage_t * dma_image = dequeue(&scit_image_queue);
+            //                
+            //                
+            //            }
 
         }
 

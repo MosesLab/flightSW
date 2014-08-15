@@ -24,6 +24,8 @@
 #define TIMEOUT_INT         0xFFFFFFFF
 
 PLX_DEVICE_OBJECT fpga_dev;
+
+/*DMA variables*/
 PLX_DMA_PROP      DmaProp;
 PLX_INTERRUPT     plx_intr;
 PLX_NOTIFY_OBJECT plx_event;
@@ -32,6 +34,13 @@ PLX_DMA_PARAMS    DmaParams;
 PLX_PHYSICAL_MEM  PciBuffer; 
 U32*		  pBufferMem;
 void**		  pVa;
+
+/*BAR space read/write variables*/
+PLX_PCI_BAR_PROP bar_properties;
+PLX_ACCESS_TYPE type_bit;
+U8 bar_index;
+U32 sz_buffer;
+
 struct timeval expstop, expstart;
 
 
