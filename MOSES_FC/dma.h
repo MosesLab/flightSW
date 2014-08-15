@@ -23,6 +23,8 @@
 #define GPIO_INP_INT        0x7FFFFFFF
 #define TIMEOUT_INT         0xFFFFFFFF
 
+
+
 PLX_DEVICE_OBJECT fpga_dev;
 
 /*DMA variables*/
@@ -35,6 +37,8 @@ PLX_PHYSICAL_MEM  PciBuffer;
 U32*		  pBufferMem;
 void**		  pVa;
 
+
+
 /*BAR space read/write variables*/
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
@@ -42,10 +46,6 @@ U8 bar_index;
 U32 sz_buffer;
 
 struct timeval expstop, expstart;
-
-
-
-
 
 int initializeDMA();
 int dmaRead();

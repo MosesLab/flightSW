@@ -53,12 +53,15 @@
 #define REG_12V_SIM 0x40000000
 #define H_ALPHA_SIM 0x80000000
 
+/*requests for data are inicated by writina all ones to the gpio out queue*/
+#define REQ_POWER 0xFFFFFFFF
 
 /*GPIO write variables*/
 extern PLX_DEVICE_OBJECT fpga_dev;
 extern PLX_PCI_BAR_PROP bar_properties;
-extern PLX_ACCESS_TYPE type_bit;
-
+extern PLX_ACCESS_TYPE  type_bit;
+extern U8               bar_index;
+extern U32              sz_buffer;
 
 
 /*array to hold power pin macros*/
