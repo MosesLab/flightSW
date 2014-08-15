@@ -171,7 +171,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
-    char temp[2];
+    char temp[] = {'\0','\0'};
     char error[255];
     char msg[255];
 
@@ -196,10 +196,10 @@ void readPacket(int fd, packet_t * p) {
             error[i] = temp[0];
             readData(fd, temp, 1);
             i = (i + 1) % 255;  //circular array so it can't be overrun
-        }        
-        error[i] = '\0';        //Add null char to string
+            error[i] = '\0';        //Add null char to string
+        }                
         
-        if(i != 1){
+        if(i > 0){
             sprintf(msg, "BAD PACKET START : %s\n", error);
             record(msg);
         } 
