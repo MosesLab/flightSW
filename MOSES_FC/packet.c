@@ -186,7 +186,7 @@ void readPacket(int fd, packet_t * p) {
         //            if (temp == STARTBYTE) clearBuffer = TRUE;
         //        }
         //        if (clearBuffer) {
-        //            ioctl(fd, FIONREAD);
+                    ioctl(fd, FIONREAD);
         //            continue_read = TRUE;
         
         /*read data until the start of the packet is read*/
@@ -234,10 +234,8 @@ void readPacket(int fd, packet_t * p) {
 
         readData(fd, p->checksum, 1);
         //            record("checksum\n");
+        
         readData(fd, temp, 1);
-        //            record("endbyte\n");
-
-
         while (temp[0] != ENDBYTE) {
             readData(fd, temp, 1);
         }
@@ -259,10 +257,9 @@ void readPacket(int fd, packet_t * p) {
 int readData(int fd, char * data, int len) {
     char temp;
     int result = TRUE;
-    int select_rc = 1;
 
     int rsz = read(fd, data, len);
-    while (rsz < len && select_rc == 1) {
+    while (rsz < len) {
         rsz += read(fd, data + rsz, len - rsz);
     }
 
