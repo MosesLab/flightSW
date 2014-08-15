@@ -185,7 +185,7 @@ void readPacket(int fd, packet_t * p) {
     //            if (temp == STARTBYTE) clearBuffer = TRUE;
     //        }
     //        if (clearBuffer) {
-    ioctl(fd, FIONREAD);
+//    ioctl(fd, FIONREAD);
     //            continue_read = TRUE;
 
    
