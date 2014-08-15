@@ -25,8 +25,49 @@ int execPacket(packet_t* p) {
 
 }
 
+/*
+ * Power control functions
+ */
+
+/*Command the payload subsystem to power on*/
+int enablePower(packet_t* p) {
+
+    char msg[256];
+
+    record("Command to enable subsystem power received\n");
+
+    //Insert control code here  
+    int subsystem = strtol(p->data, NULL, 16);
+    set_power(subsystem, ON);
+
+
+    sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
+    record(msg);
+    packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
+    enqueue(&hkdownQueue, r);
+
+    return GOOD_PACKET;
+}
+
+/*Command the payload subsystem to power off*/
+int disablePower(packet_t* p) {
+    char msg[256];
+
+    record("Command to disable subsystem power received\n");
+    //Insert control code here
+    int subsystem = strtol(p->data, NULL, 16);
+    set_power(subsystem, OFF);
+
+    sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
+    record(msg);
+    packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
+    enqueue(&hkdownQueue, r);
+
+    return GOOD_PACKET;
+}
+
 /*sets the provided subsystem to a new state*/
-int set_power(U32 sys, U32 state) {
+void set_power(U32 sys, U32 state) {
     /*off by one since sys starts at 1*/
     U32 mask = power_subsystem_arr[sys - 1];
 
@@ -42,29 +83,48 @@ int set_power(U32 sys, U32 state) {
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
-
-    return TRUE;
 }
 
-/*gets the current state of the provided subsystem*/
-int get_power(U32 sys, U32 * state_buf) {
+/*Query the power status of the payload subsystem*/
+int queryPower(packet_t* p) {
+    char msg[256];
 
-    /*dynamically allocate and apply new value*/
+    record("Command to query subsystem power received\n");
+
+    unsigned int subsystem = strtol(p->data, NULL, 16);
+    U32 power_state = OFF;
+
+    /*dynamically allocate request for power state*/
     gpio_out_uni * new_state = malloc(sizeof (U32));
     new_state->out_val = REQ_POWER;
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
 
+    /*wait for reply for request*/
     gpio_out_uni * req_state = dequeue(&gpio_req_queue);
 
     /*off by one since sys starts at 1*/
-    U32 mask = power_subsystem_arr[sys - 1];
+    U32 mask = power_subsystem_arr[subsystem - 1];
 
-    *state_buf = mask & req_state->out_val;
+    /*AND with mask to find state of requested power pin*/
+    power_state = mask & req_state->out_val;
 
-    return TRUE;
+    sprintf(msg, "Querying subsystem %d\n", subsystem);
+    record(msg);
 
+    /*send response packet*/
+    packet_t* r;
+    if (power_state) {
+        r = constructPacket(PWR_S, STATUS_ON, p->data);
+    } else {
+        r = constructPacket(PWR_S, STATUS_OFF, p->data);
+    }
+    enqueue(&hkdownQueue, r);
+
+
+
+    return GOOD_PACKET;
 }
 
 int hlp_shell(int pipe_fd, packet_t * p) {
@@ -596,83 +656,7 @@ int resetSW(packet_t* p) {
     return GOOD_PACKET;
 }
 
-/*
- * Power control functions
- */
 
-/*Command the payload subsystem to power on*/
-int enablePower(packet_t* p) {
-    int rc = FALSE;
-    char msg[256];
-
-    record("Command to enable subsystem power received\n");
-
-    //Insert control code here  
-    int subsystem = strtol(p->data, NULL, 16);
-    rc = set_power(subsystem, ON);
-
-    /*check that API returned correctly*/
-    if (rc != TRUE) {
-        record("Failed to enable power\n");
-    } else {
-        sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
-        packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-        enqueue(&hkdownQueue, r);
-    }
-    return GOOD_PACKET;
-}
-
-/*Command the payload subsystem to power off*/
-int disablePower(packet_t* p) {
-    int rc = FALSE;
-    char msg[256];
-
-    record("Command to disable subsystem power received\n");
-    //Insert control code here
-    int subsystem = strtol(p->data, NULL, 16);
-    rc = set_power(subsystem, OFF);
-
-    /*check that API returned correctly*/
-    if (rc != TRUE) {
-        record("Failed to disable power\n");
-    } else {
-        sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
-        record(msg);
-        packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
-        enqueue(&hkdownQueue, r);
-    }
-    return GOOD_PACKET;
-}
-
-/*Query the power status of the payload subsystem*/
-int queryPower(packet_t* p) {
-    int rc = FALSE;
-    char msg[256];
-
-    record("Command to query subsystem power received\n");
-
-    //Insert control code here  
-    int subsystem = strtol(p->data, NULL, 16);
-    U32 power_state = OFF;
-    rc = get_power(subsystem, &power_state);
-    if (rc != TRUE) {
-        sprintf(msg, "Failed to query subsystem %d\n", subsystem);
-        record(msg);
-    } else {
-        sprintf(msg, "Querying subsystem %d\n", subsystem);
-        record(msg);
-        packet_t* r;
-        if (power_state) {
-            r = constructPacket(PWR_S, STATUS_ON, p->data);
-        } else {
-            r = constructPacket(PWR_S, STATUS_OFF, p->data);
-        }
-        enqueue(&hkdownQueue, r);
-    }
-
-
-    return GOOD_PACKET;
-}
 
 /*
  * Housekeeping control functions

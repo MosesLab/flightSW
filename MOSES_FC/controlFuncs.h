@@ -47,8 +47,7 @@ void hlpHashInit();
 int execPacket(packet_t*);
 
 /*power control functions*/
-int set_power(U32, U32);
-int get_power(U32, U32*);
+void set_power(U32, U32);
 
 /*HLP uplink control functions*/
 int uDataStart();
