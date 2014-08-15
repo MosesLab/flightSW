@@ -177,7 +177,7 @@ void readPacket(int fd, packet_t * p) {
 
 
 
-    while (ts_alive) {
+ 
         //        input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
         //        //if(input==0) puts("select returned");
         //        volatile int clearBuffer = FALSE;
@@ -248,9 +248,7 @@ void readPacket(int fd, packet_t * p) {
             sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
             record(msg);
         }
-        //            ioctl(fd, FIONREAD);
-        //        }
-    }
+
 }
 
 /*readData returns an array if successful or 0 if an error occurred*/
