@@ -171,7 +171,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
-    char temp[] = {'\0','\0'};
+    char temp;
     char error[255];
     char msg[255];
 
@@ -191,10 +191,10 @@ void readPacket(int fd, packet_t * p) {
         
         /*read data until the start of the packet is read*/
         int i = 0;
-        readData(fd, temp, 1);
-        while(temp[0] != STARTBYTE){
-            error[i] = temp[0];
-            readData(fd, temp, 1);
+        readData(fd, &temp, 1);
+        while(temp != STARTBYTE){
+            error[i] = temp;
+            readData(fd, &temp, 1);
             i = (i + 1) % 255;  //circular array so it can't be overrun
             error[i] = '\0';        //Add null char to string
         }                
@@ -235,9 +235,9 @@ void readPacket(int fd, packet_t * p) {
         readData(fd, p->checksum, 1);
         //            record("checksum\n");
         
-        readData(fd, temp, 1);
-        while (temp[0] != ENDBYTE) {
-            readData(fd, temp, 1);
+        readData(fd, &temp, 1);
+        while (temp != ENDBYTE) {
+            readData(fd, &temp, 1);
         }
 
         char rx_checksum = calcCheckSum(p);
