@@ -52,15 +52,15 @@ void * hlp_control(void * arg) {
     /*main control loop*/
     while (ts_alive) {
 
+        /*allocate space for packet*/
+        packet_t* p;
+        if ((p = (packet_t*) calloc(1, sizeof (packet_t))) == NULL) {
+            record("malloc failed to allocate packet\n");
+        }
+
         int control_type = control_wait(f_up, &gpio_in_queue);
 
         if (control_type == HLP_PACKET) {
-
-            /*allocate space for packet*/
-            packet_t* p;
-            if ((p = (packet_t*) calloc(1, sizeof (packet_t))) == NULL) {
-                record("malloc failed to allocate packet\n");
-            }
 
             /*read next packet from HKUP*/
             readPacket(f_up, p);
@@ -104,8 +104,8 @@ void * hlp_control(void * arg) {
 
 
             }
-            free(p);
-            
+
+
         } else if (control_type == GPIO_INP) {
 
             /*dequeue next packet from gpio input queue*/
@@ -113,13 +113,14 @@ void * hlp_control(void * arg) {
 
             sprintf(msg, "GPIO value: %d\n", gpio_control->in_val);
             record(msg);
-            
-//            free(gpio_control);       //double free??????????????????????????????????????????
+
+            //            free(gpio_control);       //double free??????????????????????????????????????????
 
 
         } else {
             record("Waiting for input failed\n");
         }
+        free(p);
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  

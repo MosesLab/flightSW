@@ -39,7 +39,7 @@ int control_wait(int fd, LockingQueue * queue){
     
     while(!ret_val){
         /*wait for input on file desciptor*/
-        rc = input_timeout(fd, 0, 50000);        // wait for 50ms for input  
+        rc = input_timeout(fd, 0, 50000);        // wait for 5ms for input  
         
         if(rc == 0){    //timeout  
             
