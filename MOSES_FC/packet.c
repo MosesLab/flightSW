@@ -174,7 +174,7 @@ void readPacket(int fd, packet_t * p) {
     char temp;
     char error = '\0';
 
-
+    record("Entered read packet\n");
 
 
     //        input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
@@ -200,22 +200,22 @@ void readPacket(int fd, packet_t * p) {
     }
 
     tempValid = readData(fd, p->timeStamp, 6);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) record("Bad Timestamp\n");
     //            record("Timestamp\n");
 
     tempValid = readData(fd, p->type, 1);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) record("Bad type\n");
     //            record("type\n");
 
     tempValid = readData(fd, p->subtype, 3);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) record("Bad subtype\n");
     //            record("subtype\n");
 
     tempValid = readData(fd, p->dataLength, 2);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) record("Bad data length\n");
     p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
     //            char msg[255];
@@ -223,7 +223,7 @@ void readPacket(int fd, packet_t * p) {
     //            record(msg);
 
     tempValid = readData(fd, p->data, p->dataSize);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) record("Bad data\n");
     //            record("data\n");
 
@@ -237,7 +237,7 @@ void readPacket(int fd, packet_t * p) {
 
     char rx_checksum = calcCheckSum(p);
     tempValid = (p->checksum[0] == rx_checksum);
-    p->status = p->status & tempValid;
+    p->status = p->status && tempValid;
     if (tempValid != TRUE) {
         char msg[255];
         sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
