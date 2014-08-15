@@ -34,11 +34,11 @@ int set_power(U32 sys, U32 state) {
     U32 masked_state = mask & state;
 
     /*apply new state to global memory*/
-    gpio_power_state->out_val = (gpio_power_state.out_val & ~mask) | masked_state;
+    gpio_power_state.out_val = (gpio_power_state.out_val & ~mask) | masked_state;
     
     /*dynamically allocate and copy new value*/
     gpio_out_uni * new_state = malloc(sizeof (U32));
-    new_state = gpio_power_state;
+    *new_state = gpio_power_state;
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
@@ -61,14 +61,12 @@ int get_power(U32 sys, U32 * state_buf) {
     /*off by one since sys starts at 1*/
     U32 mask = power_subsystem_arr[sys - 1];
     
-    if(mask & req_state){
+    if(mask & req_state->out_val){
         return TRUE;
     }
     else{
         return FALSE;
-    }
-    
-    
+    }  
 
 }
 
