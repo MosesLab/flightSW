@@ -23,6 +23,8 @@
 #include "gpio.h"
 #include "dma.h"
 
+#define HLP_PACKET      1
+#define GPIO_INP        2
 
 #define SYNCLINK_START 0
 #define SYNCLINK_END 1

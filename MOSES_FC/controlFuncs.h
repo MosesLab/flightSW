@@ -43,11 +43,12 @@ int funcNumber; // number of control functions
 int hlp_hash_size;
 node_t** hlpHashTable;
 
+
+/*helper functions for control*/
 void hlpHashInit();
 int execPacket(packet_t*);
+int control_wait(int, LockingQueue*);
 
-/*power control functions*/
-void set_power(U32, U32);
 
 /*HLP uplink control functions*/
 int uDataStart();
@@ -122,6 +123,7 @@ int resetSW(packet_t*);           //Reset MDAQ and flight software
 /*HLP power control functions*/
 int enablePower(packet_t*);       //Turn power On for specified subsystems
 int disablePower(packet_t*);      //Turn power Off for specified subsystems
+void set_power(U32, U32);
 int queryPower(packet_t*);        //Query power for specified subsystems
 
 /*HLP housekeeping control functions*/

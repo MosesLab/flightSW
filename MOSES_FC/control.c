@@ -23,6 +23,9 @@ void * hlp_control(void * arg) {
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
 
+    /*initialize gpio input control queue*/
+    lockingQueue_init(&gpio_in_queue);
+
     /*set up global GPIO output state*/
     gpio_power_state.out_val = 0x0;
 
@@ -47,60 +50,64 @@ void * hlp_control(void * arg) {
 
     /*main control loop*/
     while (ts_alive) {
-        /*allocate space for packet*/
-        packet_t* p;
-        if ((p = (packet_t*) calloc(1, sizeof (packet_t))) == NULL) {
-            record("malloc failed to allocate packet\n");
-        }
 
-        /*read next packet from HKUP*/
-        readPacket(f_up, p);
-        recordPacket(p);
+        int control_type = control_wait(f_up, &gpio_in_queue);
 
-        if (ts_alive) {
-            if (p->status == GOOD_PACKET) { //check checksum
-                /*case statement not necessary here, can get away with just one call
-                 * to execpacket
-                 */
-                switch (p->type[0]) {
-                    case SHELL:
-                        hlp_shell(stdin_des, p);
-                        break;
-                    case MDAQ_RQS:
-                    case UPLINK:
-                    case PWR:
-                        p->control = concat(2, p->type, p->subtype);
-                        p->status = execPacket(p);
-                        break;
-                    case HK_RQS:
-                        //                    printf("HK Request Packet\n");
-                        p->control = concat(3, p->type, p->subtype, p->data);
-                        p->status = execPacket(p);
-                        break;
-                    default:
-                        //                    printf("Bad Packet type\n");
-                        p->status = BAD_PACKET;
-                        break;
+        if (control_type == HLP_PACKET) {
+
+            /*allocate space for packet*/
+            packet_t* p;
+            if ((p = (packet_t*) calloc(1, sizeof (packet_t))) == NULL) {
+                record("malloc failed to allocate packet\n");
+            }
+
+            /*read next packet from HKUP*/
+            readPacket(f_up, p);
+            recordPacket(p);
+
+            if (ts_alive) {
+                if (p->status == GOOD_PACKET) { //check checksum
+                    switch (p->type[0]) {
+                        case SHELL:
+                            hlp_shell(stdin_des, p);
+                            break;
+                        case MDAQ_RQS:
+                        case UPLINK:
+                        case PWR:
+                            p->control = concat(2, p->type, p->subtype);
+                            p->status = execPacket(p);
+                            break;
+                        case HK_RQS:
+                            p->control = concat(3, p->type, p->subtype, p->data);
+                            p->status = execPacket(p);
+                            break;
+                        default:
+                            p->status = BAD_PACKET;
+                            break;
+                    }
                 }
+
+                char* data;
+                data = concat(2, p->type, p->subtype);
+
+                char* ackType;
+                if (p->status == GOOD_PACKET) {
+
+                    ackType = GDPKT;
+                } else {
+                    ackType = BDPKT;
+                    record("BAD PACKET EXECUTION\n");
+                }
+                packet_t* nextp = constructPacket(ackType, ACK, data); 
+                enqueue(&hkdownQueue, nextp);
+
+
             }
-
-            char* data;
-            data = concat(2, p->type, p->subtype);
-
-            char* ackType;
-            if (p->status == GOOD_PACKET) {
-
-                ackType = GDPKT;
-            } else {
-                ackType = BDPKT;
-                record("BAD PACKET EXECUTION\n");
-            }
-            packet_t* nextp = constructPacket(ackType, ACK, data); //cast gets rid of compiler warning but unclear why the compiler is giving a warning, return type should be Packet*
-            enqueue(&hkdownQueue, nextp);
-
-
+            free(p);
         }
-        free(p);
+        else{
+            record("Waiting for input failed\n");
+        }
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
     //close(fup);  
@@ -261,12 +268,11 @@ void * fpga_server(void * arg) {
                 if (gpio_out->out_val == REQ_POWER) {
                     /*request pin values*/
                     rc = peek_gpio(GPIO_OUT_REG, &(gpio_out->out_val));
-                    if(rc == FALSE){
+                    if (rc == FALSE) {
                         record("Error reading GPIO request\n");
                     }
                     enqueue(&gpio_req_queue, gpio_out);
-                }
-                else {
+                } else {
                     /*apply output if not request*/
                     rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
                     if (rc == FALSE) {

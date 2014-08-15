@@ -25,13 +25,44 @@ int execPacket(packet_t* p) {
 
 }
 
+/**
+ * Control wait blocks until there is input available on either the file
+ * descriptor or the queue
+ * 
+ * @param int, LockingQueue
+ * @return 0 if failure, 1 if input is available on file descriptor,
+ * 2 if input is available on the queue
+ */
+int control_wait(int fd, LockingQueue * queue){
+    int ret_val = FALSE;
+    int rc;
+    
+    while(!ret_val){
+        /*wait for input on file desciptor*/
+        rc = input_timeout(fd, 0, 50000);        // wait for 50ms for input        
+        if(rc == 0){    //timeout     
+            /*check queue for input*/
+            if(occupied(queue)){
+                ret_val = 2;    //queue has input
+            }
+        }
+        else if(rc == 1){       // fd has input
+            ret_val = rc;       
+        } 
+        else{
+            break;
+        }
+    }
+    
+    return ret_val;
+}
+
 /*
  * Power control functions
  */
 
 /*Command the payload subsystem to power on*/
 int enablePower(packet_t* p) {
-
     char msg[256];
 
     record("Command to enable subsystem power received\n");
@@ -40,9 +71,9 @@ int enablePower(packet_t* p) {
     int subsystem = strtol(p->data, NULL, 16);
     set_power(subsystem, ON);
 
-
     sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
     record(msg);
+    
     packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
     enqueue(&hkdownQueue, r);
 
@@ -60,6 +91,7 @@ int disablePower(packet_t* p) {
 
     sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
     record(msg);
+    
     packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
     enqueue(&hkdownQueue, r);
 

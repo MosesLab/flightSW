@@ -188,7 +188,6 @@ void readPacket(int fd, packet_t * p) {
         if (clearBuffer) {
             //            ioctl(fd, FIONREAD);
             continue_read = TRUE;
-            record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
