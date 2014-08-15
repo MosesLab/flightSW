@@ -111,7 +111,7 @@ void * hlp_control(void * arg) {
             /*dequeue next packet from gpio input queue*/
             gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&gpio_in_queue);
 
-            sprintf(msg, "GPIO value: %d\n", gpio_control->in_val);
+            sprintf(msg, "GPIO value: %d\n", (U32)(gpio_control->in_val));
             record(msg);
 
             //            free(gpio_control);       //double free??????????????????????????????????????????
