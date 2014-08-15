@@ -171,7 +171,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
-    char temp;
+    char temp = '\0';
     char error = '\0';
 
     record("Entered read packet\n");
@@ -193,8 +193,10 @@ void readPacket(int fd, packet_t * p) {
     readData(fd, &temp, 1);
     while (temp != STARTBYTE) {
         error += temp;
+        printf("%d ", (int)temp);
         readData(fd, &temp, 1);
     }
+    printf("\n");
     if (error != '\0') {
         record("Bad packet start\n");
     }
@@ -233,10 +235,16 @@ void readPacket(int fd, packet_t * p) {
     readData(fd, &temp, 1);
     while (temp != ENDBYTE) {
         readData(fd, &temp, 1);
+        
+        printf("%d ", (int)temp);
     }
+    printf("\n");
     while (temp != EOF) {
         readData(fd, &temp, 1);
+        
+        printf("%d ", (int)temp);
     }
+    printf("\n");
     
     char rx_checksum = calcCheckSum(p);
     tempValid = (p->checksum[0] == rx_checksum);
