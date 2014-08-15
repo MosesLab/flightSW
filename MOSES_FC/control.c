@@ -109,10 +109,12 @@ void * hlp_control(void * arg) {
         } else if (control_type == GPIO_INP) {
 
             /*dequeue next packet from gpio input queue*/
-            gpio_in_uni * gpio_control = dequeue(&gpio_in_queue);
+            gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&gpio_in_queue);
 
             sprintf(msg, "GPIO value: %d\n", gpio_control->in_val);
             record(msg);
+            
+            free(gpio_control);
 
 
         } else {

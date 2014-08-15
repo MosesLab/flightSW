@@ -172,70 +172,85 @@ void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
     char temp;
-    //    char * error = "";
+    char error[255];
+    char msg[255];
 
-    int continue_read = FALSE;
-    int input;
 
-    while (continue_read == FALSE && ts_alive == TRUE) {
-        input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
-        //if(input==0) puts("select returned");
-        volatile int clearBuffer = FALSE;
-        if (input > 0) {
+
+    while (ts_alive) {
+        //        input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
+        //        //if(input==0) puts("select returned");
+        //        volatile int clearBuffer = FALSE;
+        //        if (input > 0) {
+        //            readData(fd, &temp, 1);
+        //            if (temp == STARTBYTE) clearBuffer = TRUE;
+        //        }
+        //        if (clearBuffer) {
+        //            ioctl(fd, FIONREAD);
+        //            continue_read = TRUE;
+        
+        /*read data until the start of the packet is read*/
+        int i = 0;
+        readData(fd, &temp, 1);
+        while(temp != STARTBYTE){
+            error[i] = temp;
             readData(fd, &temp, 1);
-            if (temp == STARTBYTE) clearBuffer = TRUE;
-        }
-        if (clearBuffer) {
-            //            ioctl(fd, FIONREAD);
-            continue_read = TRUE;
-            tempValid = readData(fd, p->timeStamp, 6);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad Timestamp\n");
-//            record("Timestamp\n");
+            i = (i + 1) % 255;  //circular array so it can't be overrun
+        }        
+        error[i] = '\0';        //Add null char to string
+        
+        if(i != 0){
+            sprintf(msg, "BAD PACKET START : %s\n", error);
+        } 
 
-            tempValid = readData(fd, p->type, 1);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad type\n");
-//            record("type\n");
+        tempValid = readData(fd, p->timeStamp, 6);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) record("Bad Timestamp\n");
+        //            record("Timestamp\n");
 
-            tempValid = readData(fd, p->subtype, 3);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad subtype\n");
-//            record("subtype\n");
+        tempValid = readData(fd, p->type, 1);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) record("Bad type\n");
+        //            record("type\n");
 
-            tempValid = readData(fd, p->dataLength, 2);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad data length\n");
-            p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
-//            char msg[255];
-//            sprintf(msg, "data length %d\n", p->dataSize);
-//            record(msg);
+        tempValid = readData(fd, p->subtype, 3);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) record("Bad subtype\n");
+        //            record("subtype\n");
 
-            tempValid = readData(fd, p->data, p->dataSize);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad data\n");
-//            record("data\n");
+        tempValid = readData(fd, p->dataLength, 2);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) record("Bad data length\n");
+        p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
+        //            char msg[255];
+        //            sprintf(msg, "data length %d\n", p->dataSize);
+        //            record(msg);
 
-            readData(fd, p->checksum, 1);
-//            record("checksum\n");
+        tempValid = readData(fd, p->data, p->dataSize);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) record("Bad data\n");
+        //            record("data\n");
+
+        readData(fd, p->checksum, 1);
+        //            record("checksum\n");
+        readData(fd, &temp, 1);
+        //            record("endbyte\n");
+
+
+        while (temp != ENDBYTE) {
             readData(fd, &temp, 1);
-//            record("endbyte\n");
-
-
-            while (temp != ENDBYTE) {
-                readData(fd, &temp, 1);
-            }
-
-            char rx_checksum = calcCheckSum(p);
-            tempValid = (p->checksum[0] == rx_checksum);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) {
-                char msg[255];
-                sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
-                record(msg);
-            }
-            //            ioctl(fd, FIONREAD);
         }
+
+        char rx_checksum = calcCheckSum(p);
+        tempValid = (p->checksum[0] == rx_checksum);
+        p->status = p->status & tempValid;
+        if (tempValid != TRUE) {
+            char msg[255];
+            sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
+            record(msg);
+        }
+        //            ioctl(fd, FIONREAD);
+        //        }
     }
 }
 
@@ -247,7 +262,7 @@ int readData(int fd, char * data, int len) {
 
     int rsz = read(fd, data, len);
     while (rsz < len && select_rc == 1) {
-            rsz += read(fd, data + rsz, len - rsz);
+        rsz += read(fd, data + rsz, len - rsz);
     }
 
     int i;
