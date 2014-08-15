@@ -97,7 +97,7 @@ int peek_gpio(U32 offset, U32 * data_buf) {
 
 int handle_gpio_in() {
     int rc;
-    char msg[255];
+//    char msg[255];
     U32 gpio_state = 0;
 
     /*allocate dynamic space for gpio value*/
@@ -116,9 +116,6 @@ int handle_gpio_in() {
         record("Error acknowledging GPIO input interrupt\n");
         return FALSE;
     }
-
-    sprintf(msg, "GPIO value: %d\n", gpio_state);
-    record(msg);
 
     /*enqueue value to send to gpio control*/
     gpio_in->in_val = gpio_state;

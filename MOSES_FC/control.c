@@ -10,6 +10,7 @@ void * hlp_control(void * arg) {
 
     int f_up = 0;
     int stdin_des;
+    char msg[255];
 
     /*initialize virtual shell*/
     vshell_init();
@@ -98,14 +99,23 @@ void * hlp_control(void * arg) {
                     ackType = BDPKT;
                     record("BAD PACKET EXECUTION\n");
                 }
-                packet_t* nextp = constructPacket(ackType, ACK, data); 
+                packet_t* nextp = constructPacket(ackType, ACK, data);
                 enqueue(&hkdownQueue, nextp);
 
 
             }
             free(p);
-        }
-        else{
+            
+        } else if (control_type == GPIO_INP) {
+
+            /*dequeue next packet from gpio input queue*/
+            gpio_in_uni * gpio_control = dequeue(&gpio_in_queue);
+
+            sprintf(msg, "GPIO value: %d\n", gpio_control->in_val);
+            record(msg);
+
+
+        } else {
             record("Waiting for input failed\n");
         }
     }
