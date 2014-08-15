@@ -199,8 +199,9 @@ void readPacket(int fd, packet_t * p) {
         }        
         error[i] = '\0';        //Add null char to string
         
-        if(i != 0){
+        if(i != 1){
             sprintf(msg, "BAD PACKET START : %s\n", error);
+            record(msg);
         } 
 
         tempValid = readData(fd, p->timeStamp, 6);
