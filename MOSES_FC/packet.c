@@ -241,12 +241,14 @@ void readPacket(int fd, packet_t * p) {
         printf("%d ", (int)temp);
     }
     printf("\n");
-//    while (temp != EOF) {
-//        readData(fd, &temp, 1);
-//        
-//        printf("%d ", (int)temp);
-//    }
-//    printf("\n");
+    
+    printf("eof:");
+    while (temp != EOF_PACKET) {
+        readData(fd, &temp, 1);
+        
+        printf("%d ", (int)temp);
+    }
+    printf("\n");
     
     char rx_checksum = calcCheckSum(p);
     tempValid = (p->checksum[0] == rx_checksum);
