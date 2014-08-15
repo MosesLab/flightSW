@@ -36,8 +36,8 @@ LockingQueue hkdownQueue; //Pass packets from flight SW to hkdown thread
 
 /*FPGA server queues*/
 LockingQueue scit_image_queue; //Pass images from science timeline to fpga server
-LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
-
+LockingQueue gpio_out_queue;    // Pass gpio values and requests from control to fpga server
+LockingQueue gpio_req_queue;    //Pass GPIO requested by control from server to control
 LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 
 LockingQueue telem_image_queue; //Pass image filepaths to telemetry

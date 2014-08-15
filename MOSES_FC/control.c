@@ -258,12 +258,21 @@ void * fpga_server(void * arg) {
                 gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
 
                 /*Check if request or assert*/
-                if (gpio_out->out_val != REQ_POWER) {
-                    /*apply output if necessary*/
+                if (gpio_out->out_val == REQ_POWER) {
+                    /*request pin values*/
+                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out->out_val));
+                    if(rc == FALSE){
+                        record("Error reading GPIO request\n");
+                    }
+                    enqueue(&gpio_req_queue, gpio_out);
+                }
+                else {
+                    /*apply output if not request*/
                     rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
+                    free(gpio_out);
                 }
             }
 

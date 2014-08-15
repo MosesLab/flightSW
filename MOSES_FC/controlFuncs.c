@@ -28,32 +28,32 @@ int execPacket(packet_t* p) {
 /*sets the provided subsystem to a new state*/
 int set_power(U32 sys, U32 state) {
     /*off by one since sys starts at 1*/
-        U32 mask = power_subsystem_arr[sys - 1];
-    
+    U32 mask = power_subsystem_arr[sys - 1];
+
     /*bitwise AND state with pin mask*/
     U32 masked_state = mask & state;
-    
+
     /*dynamically allocate and apply new value*/
-    gpio_out_uni * new_state = malloc(sizeof(U32));
+    gpio_out_uni * new_state = malloc(sizeof (U32));
     new_state->out_val = (gpio_power_state.out_val& ~mask) | masked_state;
-    
+
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
-    
+
     return TRUE;
 }
 
 /*gets the current state of the provided subsystem*/
 int get_power(U32 sys, U32 * state_buf) {
 
-//    /*get power state from fpga*/
-//    if (peek_gpio(POWER_OFFSET, state_buf) != TRUE) {
-//        return FALSE;
-//    } else {
-//        /*apply mask so we only get one pin*/
-//        *state_buf = *state_buf & power_subsystem_arr[sys - 1];
-        return TRUE;
-//    }
+    /*dynamically allocate and apply new value*/
+    gpio_out_uni * new_state = malloc(sizeof (U32));
+    new_state->out_val = REQ_POWER;
+
+    /*enqueue new state to fpga server for assertion*/
+    enqueue(&gpio_out_queue, new_state);
+    return TRUE;
+
 }
 
 int hlp_shell(int pipe_fd, packet_t * p) {
@@ -93,13 +93,13 @@ int uDataStart(packet_t* p) {
         }
     }
 
-    
-    
+
+
     /*enqueue sequence to science timeline*/
     enqueue(&sequence_queue, &sequenceMap[i]);
-    
-//    /*send signal to science timeline to start data*/
-//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+
+    //    /*send signal to science timeline to start data*/
+    //    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
 
 
@@ -133,7 +133,7 @@ int uDark1() {
     }
 
     ops.seq_run = TRUE;
-    
+
     /*send signal to science timeline to start data*/
     pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
@@ -155,7 +155,7 @@ int uDark2(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
+
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
@@ -177,7 +177,7 @@ int uDark3(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
+
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
@@ -199,7 +199,7 @@ int uDark4(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
+
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
@@ -528,12 +528,10 @@ int posOnlyDisable(packet_t* p) {
 /*Commands the flight software to turn STIMS ON*/
 int stimsEnable(packet_t* p) {
     record("Command to enable STIMS mode received\n");
-    if(roe_struct.active)
-    {
-    stimOn();
-    //ops.read_block = STMBLK;
-    }
-    else
+    if (roe_struct.active) {
+        stimOn();
+        //ops.read_block = STMBLK;
+    } else
         record("STIM-ON ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -541,12 +539,10 @@ int stimsEnable(packet_t* p) {
 /*Commands the flight software to turn STIMS OFF*/
 int stimsDisable(packet_t* p) {
     record("Command to disable STIMS mode received\n");
-    if(roe_struct.active)
-    {
-    stimOff();
-    //ops.read_block = ....
-    }
-    else
+    if (roe_struct.active) {
+        stimOff();
+        //ops.read_block = ....
+    } else
         record("STIM-OFF ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -554,17 +550,16 @@ int stimsDisable(packet_t* p) {
 /*Commands the flight software to reset the ROE*/
 int resetROE(packet_t* p) {
     record("Command to reset ROE received\n");
-    if(roe_struct.active)
-    {
-    reset();
-    //ops.read_block = ....
-    }
-    else
+    if (roe_struct.active) {
+        reset();
+        //ops.read_block = ....
+    } else
         record("RESET-ROE ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
 
 /*Exit to default mode*/ //Aren't we leaving default mode? -Djk
+
 int disableDefaultROE(packet_t* p) {
     record("Command to exit to default mode received\n");
     if (roe_struct.active) {
@@ -577,11 +572,9 @@ int disableDefaultROE(packet_t* p) {
 /*Commands the flight software to set the ROE to self-test mode*/
 int enableSelftestROE(packet_t* p) {
     record("Command to set ROE to self-test mode received\n");
-    if(roe_struct.active)
-    {
-    selftestMode();
-    }
-    else
+    if (roe_struct.active) {
+        selftestMode();
+    } else
         record("SELF-TEST ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -650,7 +643,7 @@ int queryPower(packet_t* p) {
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
     U32 power_state = OFF;
-//    rc = get_power(subsystem, &power_state);
+    //    rc = get_power(subsystem, &power_state);
     if (rc != TRUE) {
         sprintf(msg, "Failed to query subsystem %d\n", subsystem);
         record(msg);
@@ -658,10 +651,9 @@ int queryPower(packet_t* p) {
         sprintf(msg, "Querying subsystem %d\n", subsystem);
         record(msg);
         packet_t* r;
-        if(power_state){
+        if (power_state) {
             r = constructPacket(PWR_S, STATUS_ON, p->data);
-        }
-        else{
+        } else {
             r = constructPacket(PWR_S, STATUS_OFF, p->data);
         }
         enqueue(&hkdownQueue, r);
@@ -1088,7 +1080,7 @@ int ROE_CCDS_VSS(packet_t* p) {
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
 
-    
+
     funcNumber = 82;
     hlp_hash_size = funcNumber * 2;
 
@@ -1275,7 +1267,7 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = calloc(hlp_hash_size, sizeof(node_t))) == NULL) {
+    if ((hlpHashTable = calloc(hlp_hash_size, sizeof (node_t))) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 

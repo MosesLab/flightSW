@@ -14,6 +14,8 @@
 #include "system.h"
 #include "gpio.h"
 
+#define FPGA_TIMEOUT 50 //milliseconds
+
 #define SIZE_DS_BUFFER          256           // Number of bytes to transfer
 #define FPGA_MEMORY_LOC_0	0x100
 #define DMA_CHAN                0x0
