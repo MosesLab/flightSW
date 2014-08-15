@@ -172,8 +172,7 @@ void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
     char temp;
-    char error[255];
-    char msg[255];
+    char error = '\0';
 
 
 
@@ -189,19 +188,15 @@ void readPacket(int fd, packet_t * p) {
     ioctl(fd, FIONREAD);
     //            continue_read = TRUE;
 
-    /*read data until the start of the packet is read*/
-    int i = 0;
-    readData(fd, &temp, 1);
-//    while (temp != STARTBYTE) {
-//        error[i] = temp;
-//        readData(fd, &temp, 1);
-//        i = (i + 1) % 255; //circular array so it can't be overrun
-//        error[i] = '\0'; //Add null char to string
-//    }
+   
 
-    if (i > 0) {
-        sprintf(msg, "BAD PACKET START : %s\n", error);
-        record(msg);
+    readData(fd, &temp, 1);
+    while (temp != STARTBYTE) {
+        error += temp;
+        readData(fd, &temp, 1);
+    }
+    if (error != '\0') {
+        record("Bad packet start\n");
     }
 
     tempValid = readData(fd, p->timeStamp, 6);
@@ -236,9 +231,9 @@ void readPacket(int fd, packet_t * p) {
     //            record("checksum\n");
 
     readData(fd, &temp, 1);
-//    while (temp != ENDBYTE) {
-//        readData(fd, &temp, 1);
-//    }
+    while (temp != ENDBYTE) {
+        readData(fd, &temp, 1);
+    }
 
     char rx_checksum = calcCheckSum(p);
     tempValid = (p->checksum[0] == rx_checksum);
