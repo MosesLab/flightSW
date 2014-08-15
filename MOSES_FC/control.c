@@ -222,11 +222,11 @@ void * fpga_server(void * arg) {
 
     record("-->FPGA Serer thread started\n");
 
-    /*initialize GPIO pins*/
-    init_gpio();
-
     /*initialize DMA pipeline*/
     initializeDMA();
+
+    /*initialize GPIO pins*/
+    init_gpio();
 
     /*Initialize locking queues for thread sync*/
     lockingQueue_init(&scit_image_queue);
