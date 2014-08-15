@@ -191,6 +191,7 @@ void readPacket(int fd, packet_t * p) {
    
 
     readData(fd, &temp, 1);
+    printf("start:");
     while (temp != STARTBYTE) {
         error += temp;
         printf("%d\n", (int)temp);
@@ -232,6 +233,7 @@ void readPacket(int fd, packet_t * p) {
     readData(fd, p->checksum, 1);
     //            record("checksum\n");
 
+    printf("end:");
     readData(fd, &temp, 1);
     while (temp != ENDBYTE) {
         readData(fd, &temp, 1);
