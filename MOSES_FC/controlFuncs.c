@@ -35,7 +35,7 @@ int set_power(U32 sys, U32 state) {
 
     /*apply new state to global memory*/
     gpio_power_state.out_val = (gpio_power_state.out_val & ~mask) | masked_state;
-    
+
     /*dynamically allocate and copy new value*/
     gpio_out_uni * new_state = malloc(sizeof (U32));
     *new_state = gpio_power_state;
@@ -55,18 +55,15 @@ int get_power(U32 sys, U32 * state_buf) {
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
-    
+
     gpio_out_uni * req_state = dequeue(&gpio_req_queue);
-    
+
     /*off by one since sys starts at 1*/
     U32 mask = power_subsystem_arr[sys - 1];
-    
-    if(mask & req_state->out_val){
-        return TRUE;
-    }
-    else{
-        return FALSE;
-    }  
+
+    *state_buf = mask & req_state->out_val;
+
+    return TRUE;
 
 }
 
@@ -657,7 +654,7 @@ int queryPower(packet_t* p) {
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
     U32 power_state = OFF;
-    //    rc = get_power(subsystem, &power_state);
+    rc = get_power(subsystem, &power_state);
     if (rc != TRUE) {
         sprintf(msg, "Failed to query subsystem %d\n", subsystem);
         record(msg);

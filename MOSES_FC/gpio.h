@@ -41,20 +41,21 @@
 #define SHUTTER_CLOSE_SIM 0x2
 
 /*Power is controlled by FPGA GPIO pins*/
-#define LATCH 0x4
-#define SHUTTER_SIM 0x8
-#define ROE_SIM 0x800000
-#define PREMOD_SIM 0x1000000
-#define TCS_1_SIM 0x2000000
-#define TCS_3_SIM 0x4000000
-#define TCS_2_SIM 0x8000000
-#define TCS_SIM 0x10000000
-#define REG_5V_SIM 0x20000000
-#define REG_12V_SIM 0x40000000
-#define H_ALPHA_SIM 0x80000000
+#define SHUTTER_SIM     0x00000001
+#define ROE_SIM         0x00000002
+#define PREMOD_SIM      0x00000004
+#define TCS_1_SIM       0x00000008
+#define TCS_3_SIM       0x00000010
+#define TCS_2_SIM       0x00000020
+#define TCS_SIM         0x00000040
+#define REG_5V_SIM      0x00000080
+#define REG_12V_SIM     0x00000100
+#define H_ALPHA_SIM     0x00000200
+#define LATCH           0x00000400
+
 
 /*requests for data are inicated by writina all ones to the gpio out queue*/
-#define REQ_POWER 0xFFFFFFFF
+#define REQ_POWER       0xFFFFFFFF
 
 /*GPIO write variables*/
 extern PLX_DEVICE_OBJECT fpga_dev;
