@@ -105,7 +105,7 @@ void * write_data(void * arg) {
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
         image->filename = filename;
-        image->name = image->seq->sequenceName; //Add the information to the image
+        image->name = image->seq_name; //Add the information to the image
         image->date = ddate;
         image->time = dtime;
         //image.duration = duration;

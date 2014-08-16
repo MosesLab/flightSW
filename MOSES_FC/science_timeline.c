@@ -78,6 +78,7 @@ void * science_timeline(void * arg) {
             int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
 
             image->duration = duration;
+            image->seq_name = currentSequence->sequenceName;
 
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
