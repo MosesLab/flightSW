@@ -27,12 +27,6 @@
 #define CATALOG "/mdata/imageindex.xml"
 #define DATADIR "/mdata"
 
-/*should be obsfucated by sendTM.c*/
-//roeImage_t* constructImage(char*, int data[][IMAGE_HEIGHT], int);
-//void recordImage(roeImage_t*);
-//void sendImage(roeImage_t *, int);
-
-
 void constructEmpty();
 void constructImage(roeimage_t*, short** pdata,int* psize,char channels,int pbitpix);
 void init(roeimage_t*, short** data, int *size,char, int);

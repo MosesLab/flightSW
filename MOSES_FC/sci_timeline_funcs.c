@@ -65,9 +65,6 @@ void * write_data(void * arg) {
     
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
-    
-    lockingQueue_init(&fpga_image_queue);
-//    init_signal_handler_image();
 
     while (ts_alive) {
 
@@ -89,7 +86,7 @@ void * write_data(void * arg) {
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
-        roeimage_t * image = dequeue(&fpga_image_queue);
+        roeimage_t * image = dequeue(&lqueue[fpga_image]);
         record("Dequeued new image\n");
 
         /*Initialize the image*/
@@ -125,7 +122,7 @@ void * write_data(void * arg) {
             imgPtr_t newPtr;
             newPtr.filePath = filename;
             newPtr.next = NULL;
-            enqueue(&telem_image_queue, &newPtr); //enqueues the path for telem
+            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
             record("Filename pushed to telemetry queue\n");
         }
 
@@ -161,19 +158,19 @@ int wait_exposure(int microsec) {
 
 /*this function sets up the signal handler to run
   runsig when a signal is received from the experiment manager*/
-void init_signal_handler_image() {
-
-    sigfillset(&oldmaskimage); //save the old mask
-    sigemptyset(&maskimage); //create a blank new mask
-    sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
-
-    /*no signal dispositions for signals between threads*/
-    run_action_image.sa_mask = oldmaskimage;
-    run_action_image.sa_flags = 0;
-
-    sigaction(SIGUSR2, &run_action_image, NULL);
-    record("Signal handler initiated.\n");
-}
+//void init_signal_handler_image() {
+//
+//    sigfillset(&oldmaskimage); //save the old mask
+//    sigemptyset(&maskimage); //create a blank new mask
+//    sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
+//
+//    /*no signal dispositions for signals between threads*/
+//    run_action_image.sa_mask = oldmaskimage;
+//    run_action_image.sa_flags = 0;
+//
+//    sigaction(SIGUSR2, &run_action_image, NULL);
+//    record("Signal handler initiated.\n");
+//}
 
 void timeval_subtract(struct timeval * result, struct timeval start, struct timeval end) {
 

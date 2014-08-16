@@ -8,13 +8,18 @@
 
 #include "gpio.h"
 
+PLX_PCI_BAR_PROP bar_properties;
+PLX_ACCESS_TYPE type_bit;
+U8 bar_index;
+U32 bar_sz_buffer;
+
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data) {
     RETURN_CODE rc; //return code
     U32 return_val = TRUE;
 
     /*write data to device*/
-    rc = PlxPci_PciBarSpaceWrite(&fpga_dev, bar_index, offset, &data, sz_buffer, type_bit, FALSE);
+    rc = PlxPci_PciBarSpaceWrite(&fpga_dev, bar_index, offset, &data, bar_sz_buffer, type_bit, FALSE);
 
     /*Check if write was successful*/
     if (rc != ApiSuccess) {
@@ -31,7 +36,7 @@ int peek_gpio(U32 offset, U32 * data_buf) {
     U32 return_val = TRUE;
 
     /*read data from device*/
-    rc = PlxPci_PciBarSpaceRead(&fpga_dev, bar_index, offset, data_buf, sz_buffer, type_bit, FALSE);
+    rc = PlxPci_PciBarSpaceRead(&fpga_dev, bar_index, offset, data_buf, bar_sz_buffer, type_bit, FALSE);
 
     /*Check if write was successful*/
     if (rc != ApiSuccess) {

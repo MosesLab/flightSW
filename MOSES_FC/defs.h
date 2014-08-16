@@ -82,7 +82,7 @@ typedef struct {
 
 } moses_ops_t;
 
-/*structure to store attributes of system*/
+/*structure to store attributes of a sequence*/
 typedef struct {
     unsigned int numFrames;
     double exposureTimes[10]; //need to figure out how to assign size based on sequence file

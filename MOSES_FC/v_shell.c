@@ -70,37 +70,3 @@ int vshell_init() {
     return 0;
 }
 
-///*executes commands carried by shell packets in virtual shell*/
-//void execute(int * in_pipe, packet_t * p) {
-//    FILE * in_stream;
-//
-//    //    close(in_pipe[P_READ]);    //close other end first
-//    in_stream = fdopen(in_pipe[P_WRITE], "w"); //Open as file pointer
-//    if (in_stream == NULL) {
-//        fprintf(stderr, "Opening stdin pipe failed: %s \n", (char*) strerror(errno));
-//        return;
-//    }
-//
-//    //    write(in_stream, p->data, p->dataLength);
-//    fwrite(p->data, sizeof (char), p->dataSize, in_stream);
-//
-//    fclose(in_stream);
-//}
-//
-///*provides interface for reading from piped stdout of virtual shell 
-// returns number of characters read*/
-//int shell_read(int * out_pipe, char * buf) {
-//    FILE * out_stream;
-//    int result;
-//
-//    //    close(out_pipe[P_WRITE]);  //close other end first
-//    out_stream = fdopen(out_pipe[P_READ], "r");
-//    if (out_stream == NULL) {
-//        fprintf(stderr, "Opening stdout pipe failed.\n");
-//        return EXIT_FAILURE;
-//    }
-//
-//    result = fread(buf, sizeof (char), 255, out_stream);
-//    fclose(out_stream);
-//    return result;
-//}

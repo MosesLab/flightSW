@@ -15,6 +15,7 @@
 #include "control.h"
 #include "science_timeline.h"
 #include "sequence.h"
+#include "lockingQueue.h"
 
 /*IO constants*/
 #define NUM_IO 4
@@ -32,28 +33,39 @@
 #define FPGA_SERVER_CONF "FPGA_SERVER_THREAD"
 
 
-volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
 
-pid_t main_pid;
-int quit_sig;
-struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
-sigset_t mask, oldmask;         //masks for SIGINT signal
+/*Global quit variable declaration*/
+extern volatile sig_atomic_t ts_alive;     //variable modified by signal handler, setting this to false will end the threads
 
+/*Quit signal varibles*/
+extern pid_t main_pid;
+extern int quit_sig;
+extern struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
+extern sigset_t mask, oldmask;         //masks for SIGINT signal
 
 /*configuration variables*/
-int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations
-   
-node_t** config_hash_table;
+extern int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations   
+extern node_t** config_hash_table;
+
+/*enum and definition must match! or unhappiness will occur*/
+#define QUEUE_NUM 8
+enum queues{
+    sequence,
+    scit_image,
+    fpga_image,
+    telem_image,
+    gpio_in,
+    gpio_out,
+    gpio_req,
+    hkdown   
+};
+
+/*lock queues for thread sync */
+extern LockingQueue lqueue[QUEUE_NUM];
+extern uint lqueue_num;
 
 void main_init();
 void read_moses_config();
-
-//enum moses_io{
-//  hlp_up_interface,
-//  hlp_down_interface,
-//  roe_interface,
-//  synclink_interface,
-//};
 
 void quit_signal(int);  //signal handler
 void start_threads();

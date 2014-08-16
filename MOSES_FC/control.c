@@ -1,16 +1,20 @@
 #include "control.h"
 #include "roe_image.h"
 
+/*global variable delcaration*/
+moses_ops_t ops;
+gpio_out_uni gpio_power_state;
+
 /* hlp_control is a thread that reads packets from the housekeeping uplink and 
  * executes the commands contained within the packets 
  */
 void * hlp_control(void * arg) {
-    prctl(PR_SET_NAME, "CONTROL", 0, 0, 0);
-    record("-->HLP control thread started : %.4x\n\n");
-
     int f_up = 0;
     int stdin_des;
     char msg[255];
+
+    prctl(PR_SET_NAME, "CONTROL", 0, 0, 0);
+    record("-->HLP control thread started : %.4x\n\n");
 
     /*initialize virtual shell*/
     vshell_init();
@@ -23,9 +27,6 @@ void * hlp_control(void * arg) {
 
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
-
-    /*initialize gpio input control queue*/
-    lockingQueue_init(&gpio_in_queue);
 
     /*set up global GPIO output state*/
     gpio_power_state.val = 0x0;
@@ -102,7 +103,7 @@ void * hlp_control(void * arg) {
                     record("BAD PACKET EXECUTION\n");
                 }
                 packet_t* nextp = constructPacket(ackType, ACK, data);
-                enqueue(&hkdownQueue, nextp);
+                enqueue(&lqueue[hkdown], nextp);
 
 
             }
@@ -111,7 +112,7 @@ void * hlp_control(void * arg) {
         } else if (control_type == GPIO_INP) {
 
             /*dequeue next packet from gpio input queue*/
-            gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&gpio_in_queue);
+            gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
 
             sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
             record(msg);
@@ -137,11 +138,11 @@ void * hlp_control(void * arg) {
  * the housekeeping downlink
  */
 void * hlp_down(void * arg) {
-    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
-
     unsigned int fdown = 0;
+    
+    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);   
 
-    sleep(2); //sleep to give control a chance to initialize queue
+//    sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
     /*Open housekeeping downlink using configuration file*/
@@ -153,12 +154,9 @@ void * hlp_down(void * arg) {
         record("HK down serial connection not configured\n");
     }
 
-    /*initialize locking queue for hk down packets*/
-    lockingQueue_init(&hkdownQueue);
-
     while (ts_alive) {
 
-        packet_t * p = (packet_t *) dequeue(&hkdownQueue); //dequeue the next packet once it becomes available
+        packet_t * p = (packet_t *) dequeue(&lqueue[hkdown]); //dequeue the next packet once it becomes available
 
         if (!ts_alive) break; //If the program has terminated, break out of the loop
         if (p->status) {
@@ -207,7 +205,7 @@ void * hlp_shell_out(void * arg) {
 
             /*push onto hk down queue*/
             packet_t * sr = constructPacket(SHELL_S, OUTPUT, buf);
-            enqueue(&hkdownQueue, sr);
+            enqueue(&lqueue[hkdown], sr);
         }
         free(buf);
     }
@@ -224,7 +222,7 @@ void * hlp_housekeeping(void * arg) {
     record("-->HLP Housekeeping thread started....\n\n");
     while (ts_alive) {
         packet_t * p = constructPacket(GDPKT, ACK, NULL);
-        enqueue(&hkdownQueue, p);
+        enqueue(&lqueue[hkdown], p);
         sleep(1);
     }
     return NULL;
@@ -253,10 +251,6 @@ void * fpga_server(void * arg) {
     /*initialize GPIO pins*/
     init_gpio();
 
-    /*Initialize locking queues for thread sync*/
-    lockingQueue_init(&scit_image_queue);
-    lockingQueue_init(&gpio_out_queue);
-
     /*main server control loop*/
     while (ts_alive) {
         U32 interrupt = 0;
@@ -267,12 +261,12 @@ void * fpga_server(void * arg) {
             record("Error during wait\n");
         }
 
-       /**
-        * Unlatch the power latch if it was latched before timeout
-        * 
-        * This statement requires that the timeout on the interrupt wait must be 
-        * similar to the latch pulse length (66ms).
-        */
+        /**
+         * Unlatch the power latch if it was latched before timeout
+         * 
+         * This statement requires that the timeout on the interrupt wait must be 
+         * similar to the latch pulse length (66ms).
+         */
         if (temp_state) {
 
             /*deassert latch*/
@@ -283,7 +277,7 @@ void * fpga_server(void * arg) {
             if (rc == FALSE) {
                 record("Error writing GPIO output\n");
             }
-            
+
             /*free gpio value*/
             free(temp_state);
             temp_state = NULL;
@@ -303,23 +297,23 @@ void * fpga_server(void * arg) {
 
             /*check if new GPIO output is available*/
             if (occupied(&gpio_out_queue)) {
-                gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
+                gpio_out_uni * gpio_out_val = dequeue(&lqueue[gpio_out]);
 
                 /*Check if request or assert*/
-                if (gpio_out->val == REQ_POWER) {
+                if (gpio_out_val->val == REQ_POWER) {
                     /*request pin values*/
-                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out->val));
+                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out_val->val));
                     if (rc == FALSE) {
                         record("Error reading GPIO request\n");
                     }
-                    enqueue(&gpio_req_queue, gpio_out);
+                    enqueue(&lqueue[gpio_req], gpio_out_val);
                 } else {
                     /*apply output if not request*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out->val);
+                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
-                    temp_state = gpio_out;
+                    temp_state = gpio_out_val;
                     //                    free(gpio_out);
                 }
             }
@@ -347,13 +341,13 @@ void * telem(void * arg) {
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
 
-    lockingQueue_init(&telem_image_queue);
+    lockingQueue_init(&lqueue[telem_image]);
 
     while (ts_alive) {
         //        if (roeQueue.count != 0) {
         //dequeue imgPtr_t here
 
-        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&telem_image_queue); //RTS
+        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
         char * curr_path = curr_image->filePath;
 
         //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
@@ -363,7 +357,7 @@ void * telem(void * arg) {
             //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
         } else fclose(fp);
-        if ((&telem_image_queue)->first != NULL) {
+        if ((&lqueue[telem_image])->first != NULL) {
 
             fseek(fp, 0, SEEK_END); // seek to end of file
             fseek(fp, 0, SEEK_SET);

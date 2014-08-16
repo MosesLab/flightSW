@@ -7,8 +7,28 @@
 
 #include "main.h"
 
-/*
+volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
+
+unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
+thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
+void * targs[NUM_RROBIN + NUM_FIFO];
+pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
+
+pid_t main_pid;
+int quit_sig;
+struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
+sigset_t mask, oldmask;         //masks for SIGINT signal
+
+int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations  
+node_t** config_hash_table;
+
+LockingQueue lqueue[QUEUE_NUM];
+
+/**
+ * Main program entry point. Reads configuration file to configure program.
+ * Starts flight software threads based off of configs.
  * 
+ * @return 0 upon successful exit
  */
 int main(void) {
 
@@ -127,8 +147,7 @@ void init_quit_signal_handler() {
 
 /*set up hash table with configuration strings to match values in moses.conf*/
 void main_init() {
-    num_threads = NUM_RROBIN + NUM_FIFO;
-    unsigned int config_size = num_threads + NUM_IO;
+    uint config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
 
     /*allocate strings to match with configuration file*/
@@ -154,7 +173,7 @@ void main_init() {
     }
 
     /*fill hash table with array of strings matching indices for configuration values*/
-    int i;
+    uint i;
     for (i = 0; i < config_size; i++) {
         int * int_def = malloc(sizeof (int));
         *int_def = i;
@@ -173,6 +192,10 @@ void main_init() {
     tfuncs[image_writer_thread] = write_data;
     tfuncs[fpga_server_thread] = fpga_server;
 
+    /*initialize locking queues*/
+    for(i = 0; i < QUEUE_NUM; i++){
+        lockingQueue_init(&lqueue[i]);
+    }
 
 }
 

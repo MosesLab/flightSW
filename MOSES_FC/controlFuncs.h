@@ -22,9 +22,9 @@
 #include "defs.h"
 #include "control.h"
 
-extern LockingQueue hkdownQueue;
-extern LockingQueue sequence_queue;
-extern LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+//extern LockingQueue hkdownQueue;
+//extern LockingQueue sequence_queue;
+//extern LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
 //extern LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 extern pid_t main_pid;
 

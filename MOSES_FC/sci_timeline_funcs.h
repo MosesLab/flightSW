@@ -15,17 +15,17 @@
 #include "gpio.h"
 #include "dma.h"
 
-LockingQueue fpga_image_queue;
+//LockingQueue fpga_image_queue;
 
-sigset_t maskimage, oldmaskimage;
-int caught_image_signal;
-struct sigaction run_action_image;  
+//sigset_t maskimage, oldmaskimage;
+//int caught_image_signal;
+//struct sigaction run_action_image;  
 
 int wait_exposure(int);
 int takeExposure(double duration,int sig);
 void * write_data(void *);
-void init_signal_handler_image();
-void runsig2();
+//void init_signal_handler_image();
+//void runsig2();
 void timeval_subtract(struct timeval*, struct timeval, struct timeval);
 
 #endif	/* SCI_TIMELINE_FUNCS_H */

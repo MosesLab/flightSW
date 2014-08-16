@@ -11,6 +11,22 @@
 
 #include "dma.h"
 
+/*global variable declaration*/
+PLX_DEVICE_OBJECT fpga_dev;
+PLX_DMA_PROP      DmaProp;
+PLX_INTERRUPT     plx_intr;
+PLX_NOTIFY_OBJECT plx_event;
+U8                dmaChannel;
+PLX_DMA_PARAMS    DmaParams;
+PLX_PHYSICAL_MEM  PciBuffer; 
+U32*		  pBufferMem;
+void**		  pVa;
+//PLX_PCI_BAR_PROP bar_properties;
+//PLX_ACCESS_TYPE type_bit;
+//U8 bar_index;
+//U32 bar_sz_buffer;
+
+
 int initializeDMA() {
     int rc;
 
@@ -79,7 +95,7 @@ int initializeDMA() {
 
     /*initialize bar properties*/
     bar_index = (U8) GPIO_BAR_INDEX;
-    sz_buffer = PLX_BUFFER_WIDTH;
+    bar_sz_buffer = PLX_BUFFER_WIDTH;
     type_bit = BitSize32;
 
     /*Read current BAR properties*/

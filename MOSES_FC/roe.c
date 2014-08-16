@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct ReadOutElectronics roe_struct;
+
 int activate() {
     //char msg[100];
     pthread_mutex_lock(&roe_struct.mx);

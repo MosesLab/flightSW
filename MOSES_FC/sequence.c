@@ -9,10 +9,12 @@
 
 #include "sequence.h"
 #include "system.h"
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
 #include <dirent.h>
+
+/*global variable declaration*/
+int seq_map_size;
+sequence_t *sequenceMap;
+sequence_t tempSequence;
 
 sequence_t constructSequence(char *filepath) {
     int i;
@@ -67,10 +69,7 @@ void loadSequences() {
             if (strstr(dir->d_name, ".seq") != NULL) {
                 numfiles++;
             }
-
-            //printf("%s\n", dir->d_name);
         }
-
         closedir(d);
     }
 

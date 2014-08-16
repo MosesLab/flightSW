@@ -9,6 +9,7 @@
 #define	CONTROL_H
 
 #include "system.h"
+#include "main.h"
 #include "lockingQueue.h"
 #include <termios.h>
 #include <signal.h>
@@ -29,29 +30,28 @@
 #define SYNCLINK_START 0
 #define SYNCLINK_END 1
 
-extern volatile sig_atomic_t ts_alive;
+//extern volatile sig_atomic_t ts_alive;
 
 /*struct to control state of experiment*/
-moses_ops_t ops;
+extern moses_ops_t ops;
 
-LockingQueue hkdownQueue; //Pass packets from flight SW to hkdown thread
+//LockingQueue hLockingQueue lqueue[hkdown + 1];kdownQueue; //Pass packets from flight SW to hkdown thread
 
 /*FPGA server queues*/
-LockingQueue scit_image_queue; //Pass images from science timeline to fpga server
-LockingQueue gpio_out_queue;    // Pass gpio values and requests from control to fpga server
-LockingQueue gpio_req_queue;    //Pass GPIO requested by control from server to control
-LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
-
-LockingQueue telem_image_queue; //Pass image filepaths to telemetry
+//LockingQueue scit_image_queue; //Pass images from science timeline to fpga server
+//LockingQueue gpio_out_queue;    // Pass gpio values and requests from control to fpga server
+//LockingQueue gpio_req_queue;    //Pass GPIO requested by control from server to control
+//LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
+//
+//LockingQueue telem_image_queue; //Pass image filepaths to telemetry
 
 /*Current state of powered subsystems*/
-gpio_out_uni gpio_power_state;
+extern gpio_out_uni gpio_power_state;
 
 /*hlp_control initializations*/
 void* hlp_control(void *);
 
 /*hlp_down thread initializations*/
-
 void* hlp_down(void*);
 
 /*housekeeping initializations*/ 

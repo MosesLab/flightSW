@@ -10,9 +10,9 @@
 #include "defs.h"
 //#include "system.h"
 
-int seq_map_size;
-sequence_t *sequenceMap;
-sequence_t tempSequence;
+extern int seq_map_size;
+extern sequence_t *sequenceMap;
+extern sequence_t tempSequence;
 
 sequence_t constructSequence(char *filepath);
 void loadSequences();

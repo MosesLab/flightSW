@@ -21,12 +21,9 @@ void * science_timeline(void * arg) {
     //sleep(1);
 
     record("-->Science Timeline thread started....\n\n");
-//    init_signal_handler_stl();
 
-    /*initialize locking queue for exposure sequences packets*/
-    lockingQueue_init(&sequence_queue);
     
-//    void init_shutter();
+//    void init_shutter();      //Would still like to do this
 
 
     /* wait for ROE to become active */
@@ -43,7 +40,7 @@ void * science_timeline(void * arg) {
     while (ts_alive) {
         
         /*wait until sequence is enqueued*/
-        sequence_t * currentSequence = (sequence_t *) dequeue(&sequence_queue); 
+        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]); 
         
         ops.seq_run = TRUE;
         
@@ -53,8 +50,8 @@ void * science_timeline(void * arg) {
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
         packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence->sequenceName);
-        enqueue(&hkdownQueue, a);
-        enqueue(&hkdownQueue, b);
+        enqueue(&lqueue[hkdown], a);
+        enqueue(&lqueue[hkdown], b);
 
         /* for each exposure in the sequence */
         int i;
@@ -86,8 +83,8 @@ void * science_timeline(void * arg) {
 
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             b = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
-            enqueue(&hkdownQueue, a);
-            enqueue(&hkdownQueue, b);
+            enqueue(&lqueue[hkdown], a);
+            enqueue(&lqueue[hkdown], b);
 
             /*initialize index( these will start at -1 and be incremented by DMA*/
 
@@ -101,20 +98,12 @@ void * science_timeline(void * arg) {
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
-            enqueue(&hkdownQueue, a);
+            enqueue(&lqueue[hkdown], a);
            
             /*Enqueue image to image writer thread*/
             record("Queue image for writing.\n");
-            enqueue(&fpga_image_queue, image);
+            enqueue(&lqueue[fpga_image], image);
                     
-            
-//            /* write buffer data to disk  and telemetry*/
-//            record("Signal disk write SIGUSR2 .\n");
-//            //poll for response? 
-//            if (ops.dma_write == 1 && threads[image_writer_thread]) {
-//                pthread_kill(threads[image_writer_thread], SIGUSR2); //tell image_writer to start dma transfer
-//            }
-
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */
@@ -124,7 +113,7 @@ void * science_timeline(void * arg) {
         record(msg);
 
         a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);
-        enqueue(&hkdownQueue, a);
+        enqueue(&lqueue[hkdown], a);
         record("Done witps.seq_run = FAh sequences\n");
         ops.seq_run = FALSE;
 
@@ -134,18 +123,18 @@ void * science_timeline(void * arg) {
     return NULL;
 }
 
-/*this function sets up the signal handler to run
-  runsig when a signal is received from the experiment manager*/
-void init_signal_handler_stl() {
-
-    sigfillset(&oldmaskstl); //save the old mask
-    sigemptyset(&maskstl); //create a blank new mask
-    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
-
-    /*no signal dispositions for signals between threads*/
-    run_action.sa_mask = oldmaskstl;
-    run_action.sa_flags = 0;
-
-    sigaction(SIGUSR1, &run_action, NULL);
-    record("Signal handler initiated.\n");
-}
+///*this function sets up the signal handler to run
+//  runsig when a signal is received from the experiment manager*/
+//void init_signal_handler_stl() {
+//
+//    sigfillset(&oldmaskstl); //save the old mask
+//    sigemptyset(&maskstl); //create a blank new mask
+//    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
+//
+//    /*no signal dispositions for signals between threads*/
+//    run_action.sa_mask = oldmaskstl;
+//    run_action.sa_flags = 0;
+//
+//    sigaction(SIGUSR1, &run_action, NULL);
+//    record("Signal handler initiated.\n");
+//}

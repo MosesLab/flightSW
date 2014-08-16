@@ -14,14 +14,14 @@
 #define NUM_RROBIN      4
 #define NUM_FIFO        4
 
-unsigned int num_threads;
+extern unsigned int num_threads;
 
 typedef void*(*thread_func)(void*);
 
-thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
-void * targs[NUM_RROBIN + NUM_FIFO];
+extern thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
+extern void * targs[NUM_RROBIN + NUM_FIFO];
 
-pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
+extern pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 /*enum must match define RROBIN and FIFO above*/
 enum thread_config {

@@ -19,22 +19,22 @@
 
 #define PULSE 150000
 
-sigset_t maskstl, oldmaskstl;
-int caught_signal;
-struct sigaction run_action;   
+//sigset_t maskstl, oldmaskstl;
+//int caught_signal;
+//struct sigaction run_action;   
 
 extern volatile sig_atomic_t ts_alive;
 
-extern LockingQueue hkdownQueue;
-LockingQueue sequence_queue;
-extern LockingQueue fpga_image_queue;
+//extern LockingQueue hkdownQueue;
+//LockingQueue sequence_queue;
+//extern LockingQueue fpga_image_queue;
 
 
 extern moses_ops_t ops; //struct storing operational state
 
 
 void run_sig();
-void init_signal_handler_stl();
+//void init_signal_handler_stl();
 void* science_timeline(void *);
 
 
