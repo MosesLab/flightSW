@@ -132,7 +132,7 @@ void set_power(U32 sys, U32 state) {
     gpio_power_state.val = (gpio_power_state.val & ~mask) | masked_state;
 
     /*dynamically allocate and copy new value*/
-    gpio_out_uni * new_state = calloc(1, sizeof(U32));
+    gpio_out_uni * new_state = malloc(sizeof(U32));
     *new_state = gpio_power_state;
     
     /*apply latch*/
