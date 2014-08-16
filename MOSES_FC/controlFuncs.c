@@ -32,18 +32,18 @@ int execPacket(packet_t* p) {
  * @param g
  * @return status of executed control functions
  */
-void exec_gpio(gpio_in_uni * g){
-    
-    
+void exec_gpio(gpio_in_uni * g) {
+
+
     /*loop through output to find asserted pins*/
     unsigned int i;
-    for(i = 0; i < NUM_CONTROL_GPIO; i++){
-        
+    for (i = 0; i < NUM_CONTROL_GPIO; i++) {
+
         U32 control_enable = g->val & gpio_control_mask[i];
-        if(control_enable){
+        if (control_enable) {
             (*functionTable[i])();
         }
-        
+
     }
 }
 
@@ -218,15 +218,8 @@ int uDataStart(packet_t* p) {
         }
     }
 
-
-
     /*enqueue sequence to science timeline*/
-//    enqueue(&sequence_queue, &sequenceMap[i]);
-
-    //    /*send signal to science timeline to start data*/
-    //    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-
-
+    enqueue(&sequence_queue, &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
@@ -254,15 +247,12 @@ int uDark1() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
-    ops.seq_run = TRUE;
-
-    /*send signal to science timeline to start data*/
-//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-
-
+    /*enqueue sequence to science timeline*/
+    enqueue(&sequence_queue, &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK1, NULL);
     enqueue(&hkdownQueue, r);
@@ -281,10 +271,8 @@ int uDark2(packet_t* p) {
         }
     }
 
-    ops.seq_run = TRUE;
-
-    /*send signal to science timeline to start data*/
-//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&sequence_queue, &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, r);
@@ -303,10 +291,8 @@ int uDark3(packet_t* p) {
         }
     }
 
-    ops.seq_run = TRUE;
-
-    /*send signal to science timeline to start data*/
-//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&sequence_queue, &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK3, NULL);
     enqueue(&hkdownQueue, r);
@@ -325,10 +311,8 @@ int uDark4(packet_t* p) {
         }
     }
 
-    ops.seq_run = TRUE;
-
-    /*send signal to science timeline to start data*/
-//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&sequence_queue, &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK4, NULL);
     enqueue(&hkdownQueue, r);
@@ -362,7 +346,9 @@ int uTest(packet_t* p) {
 /*Timer control functions*/
 int tDataStart(packet_t* p) {
     record("Received data start Timer\n");
-    //Insert timer handling code here
+    
+    
+    
     packet_t* r = constructPacket(TIMER_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1147,11 +1133,11 @@ void hlpHashInit() {
     stringTable[USleep] = UPLINK_S SLEEP;
     stringTable[UWake] = UPLINK_S WAKE;
     stringTable[UTest] = UPLINK_S TEST;
-    stringTable[TDataStart] = "NOTUSED1" ;      // Use useless strings so a zero hash
-    stringTable[TDataStop] = "NOTUSED2" ;       // doesn't start timers
-    stringTable[TDark2] = "NOTUSED3" ;
-    stringTable[TDark4] ="NOTUSED4" ;
-    stringTable[TSleep] = "NOTUSED5" ;
+    stringTable[TDataStart] = "NOTUSED1"; // Use useless strings so a zero hash
+    stringTable[TDataStop] = "NOTUSED2"; // doesn't start timers
+    stringTable[TDark2] = "NOTUSED3";
+    stringTable[TDark4] = "NOTUSED4";
+    stringTable[TSleep] = "NOTUSED5";
     stringTable[SetSeq] = MDAQ_RQS_S ST_SEQUENCE;
     stringTable[SetOut] = MDAQ_RQS_S ST_OFN;
     stringTable[GetSeqName] = MDAQ_RQS_S GT_SEQ_NM;

@@ -91,28 +91,6 @@ void * write_data(void * arg) {
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&fpga_image_queue);
         record("Dequeued new image\n");
-        
-//        /* Wait for SIGUSR2 (When received response from ROE readout)*/
-//        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
-//        record("Waiting for signal...\n");
-//        sigwait(&maskimage, &caught_image_signal);
-//        pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
-//        record("SIGUSR2 Received\n");
-
-        //        gettimeofday(&expstart, NULL);
-        //        //initializeDMA();
-        //        
-        //        /*DMA Channel is open, now send GPIO*/
-        //        write_gpio(POWER_OFFSET, 0x0F);
-        //        sleep(1);
-        //        write_gpio(POWER_OFFSET, 0x00);
-        //        /*Buffer updated here*/
-        //        //dmaRead();
-        //        gettimeofday(&expstop, NULL);
-
-        //        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
-
-        /*Clear DMA block*/
 
         /*Initialize the image*/
         constructImage(image, BUFFER, index, channels, 16);
@@ -126,43 +104,14 @@ void * write_data(void * arg) {
         sprintf(filename, "%s.roe", ftimedate);
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-//        record("Copy image...\n");
-//        image.filename = filename;
-//        image.name = image->seq->sequenceName; //Add the information to the image
-//        image.date = ddate;
-//        image.time = dtime;
-//        //image.duration = duration;
-//        image.width = 2048;
-//        image.height = 1024;
-//
-//        /* Copy original image to temporary struct for image_writer_thread access.
-//         * This is to ensure that the image can be written to disk without being overwritten
-//         * by the next exposure */
-//
-//        memcpy(&tempimage, &image, sizeof (tempimage));
-//
-//        tempimage.filename = strdup(image.filename);
-//        tempimage.name = strdup(image.name); //string
-//        tempimage.bitpix = image.bitpix;
-//        tempimage.width = image.width;
-//        tempimage.height = image.height;
-//        tempimage.date = strdup(image.date); //string
-//        tempimage.time = strdup(image.time); //string
-//        tempimage.origin = strdup(image.origin); //string
-//        tempimage.instrument = strdup(image.instrument); //string
-//        tempimage.observer = strdup(image.observer); //string
-//        tempimage.object = strdup(image.object); //string 
-//        tempimage.duration = image.duration;
-//        tempimage.channels = image.channels;
-//        tempimage.size[0] = image.size[0];
-//        tempimage.size[1] = image.size[1];
-//        tempimage.size[2] = image.size[2];
-//        tempimage.size[3] = image.size[3];
-//        
-//        for (i = 0; i < 4; i++){
-//            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
-//        }
-//        
+        image.filename = filename;
+        image.name = image->seq->sequenceName; //Add the information to the image
+        image.date = ddate;
+        image.time = dtime;
+        //image.duration = duration;
+        image.width = 2048;
+        image.height = 1024;
+
         record("Image Opened\n");
 
         /*write the image and metadata to disk*/

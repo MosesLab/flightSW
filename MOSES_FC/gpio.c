@@ -103,10 +103,10 @@ void close_shutter() {
 /*sets up the memory used in powering the instrument*/
 void init_gpio() {
     /*initialize acknowledge register*/
-    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
+    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);    
 
     /*enable GPIO pins on the FPGA*/
-    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+//    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
 
     U32 mask = 0x00000001;
     unsigned int i;
