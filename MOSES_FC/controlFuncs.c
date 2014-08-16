@@ -108,8 +108,10 @@ int disablePower(packet_t* p) {
 
     record("Command to disable subsystem power received\n");
     //Insert control code here
-    int subsystem = strtol(p->data, NULL, 16);
-    set_power(subsystem, OFF);
+    unsigned int subsystem = strtol(p->data, NULL, 16);
+    if (subsystem < NUM_SUBSYSTEM) {
+        set_power(subsystem, OFF);
+    }
 
     sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
     record(msg);
@@ -132,7 +134,7 @@ void set_power(U32 sys, U32 state) {
     gpio_power_state.val = (gpio_power_state.val & ~mask) | masked_state;
 
     /*dynamically allocate and copy new value*/
-    gpio_out_uni * new_state = malloc(sizeof (U32));
+    gpio_out_uni * new_state = calloc(1, sizeof(U32));
     *new_state = gpio_power_state;
 
     /*enqueue new state to fpga server for assertion*/
@@ -346,9 +348,9 @@ int uTest(packet_t* p) {
 /*Timer control functions*/
 int tDataStart(packet_t* p) {
     record("Received data start Timer\n");
-    
-    
-    
+
+
+
     packet_t* r = constructPacket(TIMER_S, DATASTART, NULL);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
