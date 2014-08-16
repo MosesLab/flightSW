@@ -90,6 +90,8 @@ void open_shutter() {
 
     /*deassert pin*/
     outb(SHUTTER_OFFSET, 0x00);
+    
+    iopl(0);
 }
 
 /*VDX FPIO*/
@@ -110,6 +112,8 @@ void close_shutter() {
 
     /*deassert pin*/
     outb(SHUTTER_OFFSET, 0x00);
+    
+    iopl(0);
 }
 
 /*sets up the memory used in powering the instrument*/
