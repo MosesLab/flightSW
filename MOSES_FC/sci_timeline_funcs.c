@@ -104,13 +104,13 @@ void * write_data(void * arg) {
         sprintf(filename, "%s.roe", ftimedate);
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-        image.filename = filename;
-        image.name = image->seq->sequenceName; //Add the information to the image
-        image.date = ddate;
-        image.time = dtime;
+        image->filename = filename;
+        image->name = image->seq->sequenceName; //Add the information to the image
+        image->date = ddate;
+        image->time = dtime;
         //image.duration = duration;
-        image.width = 2048;
-        image.height = 1024;
+        image->width = 2048;
+        image->height = 1024;
 
         record("Image Opened\n");
 
