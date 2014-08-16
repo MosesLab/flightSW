@@ -12,34 +12,21 @@
 
 void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
-
+    char sindex[2];
+    char sframe[10];   
+    
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
-
-    /*set thread priority*/
-    //    int ret;
-    //    struct sched_param params;
-    //    params.sched_priority = sched_get_priority_max(SCHED_RR);
-    //    ret = pthread_setschedparam(pthread_self(), SCHED_RR, &params);
-    //    if (ret != 0) {
-    //        // Print the error
-    //        record("Unsuccessful in setting thread realtime prio\n");
-    //        return NULL;
-    //    }
-    //    sprintf(msg, "Thread priority is: %d\n", params.__sched_priority);
-    //    record(msg);
-
-
-    char sindex[2];
-    char sframe[10];
 
     //sleep(1);
 
     record("-->Science Timeline thread started....\n\n");
-    init_signal_handler_stl();
+//    init_signal_handler_stl();
 
     /*initialize locking queue for exposure sequences packets*/
     lockingQueue_init(&sequence_queue);
+    
+    void init_shutter();
 
 
     /* wait for ROE to become active */
@@ -54,20 +41,6 @@ void * science_timeline(void * arg) {
     //exitDefault();
 
     while (ts_alive) {
-//        if (ops.seq_run == FALSE) {
-//            record("Sequence stopped, wait for signal to start\n");
-//
-//            pthread_sigmask(SIG_BLOCK, &maskstl, &oldmaskstl);
-//            sigwait(&maskstl, &caught_signal);
-//            pthread_sigmask(SIG_UNBLOCK, &maskstl, &oldmaskstl);
-//
-//            ops.seq_run = TRUE;
-//
-//            record("SIGUSR1 received, starting sequence\n");
-//        }
-
-        /*establish current sequence */
-//        currentSequence = sequenceMap[ops.sequence];
         
         /*wait until sequence is enqueued*/
         sequence_t * currentSequence = (sequence_t *) dequeue(&sequence_queue); 

@@ -89,8 +89,9 @@ int handle_gpio_in();
 void open_shutter();
 void close_shutter();
 
-
+/*initialize gpio for reading and writing*/
 void init_gpio();
+void init_shutter();
 
 /*this enumeration should be changed when we decide on power formats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 enum power_subsystem_pins{

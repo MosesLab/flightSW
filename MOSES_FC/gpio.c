@@ -90,7 +90,7 @@ void open_shutter() {
 void close_shutter() {
     record("Closing Shutter\n");
 
-        /*assert pin*/
+    /*assert pin*/
     outb(SHUTTER_OFFSET, SHUTTER_CLOSE);
 
     /*wait for pulse length*/
@@ -103,10 +103,10 @@ void close_shutter() {
 /*sets up the memory used in powering the instrument*/
 void init_gpio() {
     /*initialize acknowledge register*/
-    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);    
+    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
     /*enable GPIO pins on the FPGA*/
-//    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+    //    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
 
     U32 mask = 0x00000001;
     unsigned int i;
@@ -121,15 +121,20 @@ void init_gpio() {
         mask = mask << 1;
     }
 
-    /*activate VDX GPIO with driver call*/
-    iopl(3);
-
-    /*initialize pins for writing*/
-    outb(0x03, SHUTTER_ENABLE);
-
     /*Initialize all power GPIO into write mode*/
     //    int i;
     //    for (i = 0; i < NUM_SUBSYSTEM; i++) {
     //        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
     //    }
+}
+
+/**
+ * makes driver call for shutter gpuo
+ */
+void init_shutter() {
+    /*activate VDX GPIO with driver call*/
+    iopl(3);
+
+    /*initialize pins for writing*/
+    outb(0x03, SHUTTER_ENABLE);
 }

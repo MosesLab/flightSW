@@ -174,8 +174,6 @@ void readPacket(int fd, packet_t * p) {
     char temp = '\0';
     char error = '\0';
 
-    record("Entered read packet\n");
-
 
     //        input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
     //        //if(input==0) puts("select returned");
