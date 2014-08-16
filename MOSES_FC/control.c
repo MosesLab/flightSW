@@ -5,7 +5,7 @@
  * executes the commands contained within the packets 
  */
 void * hlp_control(void * arg) {
-    prctl(PR_SET_NAME, "HLP_CONTROL", 0, 0, 0);
+    prctl(PR_SET_NAME, "CONTROL", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
 
     int f_up = 0;

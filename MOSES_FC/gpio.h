@@ -10,6 +10,7 @@
 
 #include "system.h"
 #include "lockingQueue.h"
+#include <sys/io.h>
 
 
 #define ON 0xFFFFFFFF
@@ -40,21 +41,24 @@
 //#define POWER_DIRECTION_OFFSET 0x14
 
 /*Shutter is controlled by VDX GPIO pins*/
-#define SHUTTER_OPEN_SIM 0x1
-#define SHUTTER_CLOSE_SIM 0x2
+#define SHUTTER_ENABLE 0x98
+#define SHUTTER_OFFSET 0x78
+#define SHUTTER_OPEN 0x1
+#define SHUTTER_CLOSE 0x2
+#define SHUTTER_PULSE 200000 //usec
 
 /*Power is controlled by FPGA GPIO pins*/
-#define SHUTTER_SIM     0x00000001
-#define ROE_SIM         0x00000002
-#define PREMOD_SIM      0x00000004
-#define TCS_1_SIM       0x00000008
-#define TCS_3_SIM       0x00000010
-#define TCS_2_SIM       0x00000020
-#define TCS_SIM         0x00000040
-#define REG_5V_SIM      0x00000080
-#define REG_12V_SIM     0x00000100
-#define H_ALPHA_SIM     0x00000200
-#define LATCH           0x00000400
+//#define SHUTTER_SIM     0x00000001
+//#define ROE_SIM         0x00000002
+//#define PREMOD_SIM      0x00000004
+//#define TCS_1_SIM       0x00000008
+//#define TCS_3_SIM       0x00000010
+//#define TCS_2_SIM       0x00000020
+//#define TCS_SIM         0x00000040
+//#define REG_5V_SIM      0x00000080
+//#define REG_12V_SIM     0x00000100
+//#define H_ALPHA_SIM     0x00000200
+//#define LATCH           0x00000400
 
 
 /*requests for data are inicated by writina all ones to the gpio out queue*/
@@ -76,15 +80,14 @@ LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga serve
 LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 
 /*poke gpio pins*/
-//int write_gpio(U32,U32,U32);
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
 
 int handle_gpio_in();
 
 /*use write gpio to open/close shutter*/
-int open_shutter();
-int close_shutter();
+void open_shutter();
+void close_shutter();
 
 
 void init_gpio();
