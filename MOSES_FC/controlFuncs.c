@@ -26,6 +26,28 @@ int execPacket(packet_t* p) {
 }
 
 /**
+ * Determines what control functions have been asserted via gpio pins. Then
+ * executes control function
+ * 
+ * @param g
+ * @return status of executed control functions
+ */
+void exec_gpio(gpio_in_uni * g){
+    
+    
+    /*loop through output to find asserted pins*/
+    unsigned int i;
+    for(i = 0; i < NUM_CONTROL_GPIO; i++){
+        
+        U32 control_enable = g->val & gpio_control_mask[i];
+        if(control_enable){
+            (*functionTable[i])();
+        }
+        
+    }
+}
+
+/**
  * Control wait blocks until there is input available on either the file
  * descriptor or the queue
  * 
@@ -33,29 +55,27 @@ int execPacket(packet_t* p) {
  * @return 0 if failure, 1 if input is available on file descriptor,
  * 2 if input is available on the queue
  */
-int control_wait(int fd, LockingQueue * queue){
+int control_wait(int fd, LockingQueue * queue) {
     int ret_val = FALSE;
     int rc;
-    
-    while(!ret_val){
+
+    while (!ret_val) {
         /*wait for input on file desciptor*/
-        rc = input_timeout(fd, 0, 50000);        // wait for 5ms for input  
-        
-        if(rc == 0){    //timeout  
-            
+        rc = input_timeout(fd, 0, 50000); // wait for 5ms for input  
+
+        if (rc == 0) { //timeout  
+
             /*check queue for input*/
-            if(occupied(queue)){
-                ret_val = 2;    //queue has input
+            if (occupied(queue)) {
+                ret_val = 2; //queue has input
             }
-        }
-        else if(rc == 1){       // fd has input
-            ret_val = rc;       
-        } 
-        else{
+        } else if (rc == 1) { // fd has input
+            ret_val = rc;
+        } else {
             break;
         }
     }
-    
+
     return ret_val;
 }
 
@@ -75,7 +95,7 @@ int enablePower(packet_t* p) {
 
     sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
     record(msg);
-    
+
     packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
     enqueue(&hkdownQueue, r);
 
@@ -93,7 +113,7 @@ int disablePower(packet_t* p) {
 
     sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
     record(msg);
-    
+
     packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
     enqueue(&hkdownQueue, r);
 
@@ -103,13 +123,13 @@ int disablePower(packet_t* p) {
 /*sets the provided subsystem to a new state*/
 void set_power(U32 sys, U32 state) {
     /*off by one since sys starts at 1*/
-    U32 mask = power_subsystem_arr[sys - 1];
+    U32 mask = power_subsystem_mask[sys - 1];
 
     /*bitwise AND state with pin mask*/
     U32 masked_state = mask & state;
 
     /*apply new state to global memory*/
-    gpio_power_state.out_val = (gpio_power_state.out_val & ~mask) | masked_state;
+    gpio_power_state.val = (gpio_power_state.val & ~mask) | masked_state;
 
     /*dynamically allocate and copy new value*/
     gpio_out_uni * new_state = malloc(sizeof (U32));
@@ -130,7 +150,7 @@ int queryPower(packet_t* p) {
 
     /*dynamically allocate request for power state*/
     gpio_out_uni * new_state = malloc(sizeof (U32));
-    new_state->out_val = REQ_POWER;
+    new_state->val = REQ_POWER;
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
@@ -139,10 +159,10 @@ int queryPower(packet_t* p) {
     gpio_out_uni * req_state = dequeue(&gpio_req_queue);
 
     /*off by one since sys starts at 1*/
-    U32 mask = power_subsystem_arr[subsystem - 1];
+    U32 mask = power_subsystem_mask[subsystem - 1];
 
     /*AND with mask to find state of requested power pin*/
-    power_state = mask & req_state->out_val;
+    power_state = mask & req_state->val;
 
     sprintf(msg, "Querying subsystem %d\n", subsystem);
     record(msg);
@@ -201,7 +221,7 @@ int uDataStart(packet_t* p) {
 
 
     /*enqueue sequence to science timeline*/
-    enqueue(&sequence_queue, &sequenceMap[i]);
+//    enqueue(&sequence_queue, &sequenceMap[i]);
 
     //    /*send signal to science timeline to start data*/
     //    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
@@ -240,7 +260,7 @@ int uDark1() {
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
 
 
@@ -264,7 +284,7 @@ int uDark2(packet_t* p) {
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
     enqueue(&hkdownQueue, r);
@@ -286,7 +306,7 @@ int uDark3(packet_t* p) {
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
     packet_t* r = constructPacket(UPLINK_S, DARK3, NULL);
     enqueue(&hkdownQueue, r);
@@ -308,7 +328,7 @@ int uDark4(packet_t* p) {
     ops.seq_run = TRUE;
 
     /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+//    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
 
     packet_t* r = constructPacket(UPLINK_S, DARK4, NULL);
     enqueue(&hkdownQueue, r);
@@ -1108,9 +1128,7 @@ int ROE_CCDS_VSS(packet_t* p) {
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
-
-
-    funcNumber = 82;
+    funcNumber = 87; //This number must be set and must be correct
     hlp_hash_size = funcNumber * 2;
 
     /*allocate space for control strings*/
@@ -1129,6 +1147,11 @@ void hlpHashInit() {
     stringTable[USleep] = UPLINK_S SLEEP;
     stringTable[UWake] = UPLINK_S WAKE;
     stringTable[UTest] = UPLINK_S TEST;
+    stringTable[TDataStart] = "NOTUSED1" ;      // Use useless strings so a zero hash
+    stringTable[TDataStop] = "NOTUSED2" ;       // doesn't start timers
+    stringTable[TDark2] = "NOTUSED3" ;
+    stringTable[TDark4] ="NOTUSED4" ;
+    stringTable[TSleep] = "NOTUSED5" ;
     stringTable[SetSeq] = MDAQ_RQS_S ST_SEQUENCE;
     stringTable[SetOut] = MDAQ_RQS_S ST_OFN;
     stringTable[GetSeqName] = MDAQ_RQS_S GT_SEQ_NM;
@@ -1205,14 +1228,13 @@ void hlpHashInit() {
     stringTable[ROE_CS_VSS] = HK_RQS_S CCDB_VSS;
 
     /*allocate space for function pointers*/
-    hlpControl* functionTable;
     if ((functionTable = calloc(funcNumber, sizeof (hlpControl))) == NULL) {
         record("malloc failed to allocate control function array\n");
     }
 
     /*array of function pointers to match with control strings*/
     functionTable[UDataStart] = &uDataStart;
-    functionTable[UDataStop] = uDataStop;
+    functionTable[UDataStop] = &uDataStop;
     functionTable[UDark1] = &uDark1;
     functionTable[UDark2] = &uDark2;
     functionTable[UDark3] = &uDark3;
@@ -1220,6 +1242,11 @@ void hlpHashInit() {
     functionTable[USleep] = &uSleep;
     functionTable[UWake] = &uWake;
     functionTable[UTest] = &uTest;
+    functionTable[TDataStart] = &uDataStart;
+    functionTable[TDataStop] = &uDataStop;
+    functionTable[TDark2] = &uDark2;
+    functionTable[TDark4] = &uDark4;
+    functionTable[TSleep] = &uSleep;
     functionTable[SetSeq] = &setSequence;
     functionTable[SetOut] = &setOutputName;
     functionTable[GetSeqName] = &getSeqName;

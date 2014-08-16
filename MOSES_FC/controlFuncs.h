@@ -42,7 +42,7 @@ extern gpio_out_uni gpio_power_state;
 int funcNumber; // number of control functions  
 int hlp_hash_size;
 node_t** hlpHashTable;
-
+hlpControl* functionTable;
 
 /*helper functions for control*/
 void hlpHashInit();
@@ -175,11 +175,11 @@ enum control{
     UWake,
     UTest,
     
-//    TDataStart,
-//    TDataStop,
-//    TDark2,
-//    TDark4,
-//    TSleep,
+    TDataStart,
+    TDataStop,
+    TDark2,
+    TDark4,
+    TSleep,
     
     SetSeq,     //Set Sequence Command
     SetOut,      //Set Ouput Filename Command

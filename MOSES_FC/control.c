@@ -28,7 +28,7 @@ void * hlp_control(void * arg) {
     lockingQueue_init(&gpio_in_queue);
 
     /*set up global GPIO output state*/
-    gpio_power_state.out_val = 0x0;
+    gpio_power_state.val = 0x0;
 
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
@@ -111,10 +111,10 @@ void * hlp_control(void * arg) {
             /*dequeue next packet from gpio input queue*/
             gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&gpio_in_queue);
 
-            sprintf(msg, "GPIO value: %d\n", (U32)(gpio_control->in_val));
+            sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
             record(msg);
 
-            //            free(gpio_control);       //double free??????????????????????????????????????????
+            free(gpio_control); //double free??????????????????????????????????????????
 
 
         } else {
@@ -278,16 +278,16 @@ void * fpga_server(void * arg) {
                 gpio_out_uni * gpio_out = dequeue(&gpio_out_queue);
 
                 /*Check if request or assert*/
-                if (gpio_out->out_val == REQ_POWER) {
+                if (gpio_out->val == REQ_POWER) {
                     /*request pin values*/
-                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out->out_val));
+                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out->val));
                     if (rc == FALSE) {
                         record("Error reading GPIO request\n");
                     }
                     enqueue(&gpio_req_queue, gpio_out);
                 } else {
                     /*apply output if not request*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out->out_val);
+                    rc = poke_gpio(GPIO_OUT_REG, gpio_out->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }

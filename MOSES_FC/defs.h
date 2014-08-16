@@ -66,7 +66,7 @@ typedef struct {
 } LockingQueue;
 
 /*typedef for array of function pointers for HLP packets*/
-typedef int(*hlpControl)(packet_t*);
+typedef int(*hlpControl)();
 
 /*Node structure for hash table*/
 
@@ -117,21 +117,21 @@ typedef struct imgPtr { //Create image path node
 
 /*bit field for passing gpio inputs */
 typedef struct {
-    unsigned int tdark2 : 1;
-    unsigned int tdark4 : 1;
-    unsigned int tdatastart : 1;
-    unsigned int tdatastop : 1;
-    unsigned int tsleep : 1;
-
+    unsigned int udatastart : 1;
+    unsigned int udatastop : 1;
     unsigned int udark1 : 1;
     unsigned int udark2 : 1;
     unsigned int udark3 : 1;
     unsigned int udark4 : 1;
     unsigned int usleep : 1;
     unsigned int uwake : 1;
-    unsigned int udatastart : 1;
-    unsigned int udatastop : 1;
     unsigned int utest : 1;
+
+    unsigned int tdark2 : 1;
+    unsigned int tdark4 : 1;
+    unsigned int tdatastart : 1;
+    unsigned int tdatastop : 1;
+    unsigned int tsleep : 1;
 
     unsigned int shutter_sig : 1;
 
@@ -140,12 +140,12 @@ typedef struct {
 
 /*union to allow gpio in bit fields to be taken as ints*/
 typedef union gpio_in_uni {
-    U32 in_val;
-    gpio_in_bf in_bf;
-}gpio_in_uni;
+    U32 val;
+    gpio_in_bf bf;
+} gpio_in_uni;
 
 /*bit field for passing gpio outputs*/
-typedef struct {    
+typedef struct {
     unsigned int shutter : 1;
     unsigned int roe : 1;
     unsigned int premod : 1;
@@ -157,15 +157,15 @@ typedef struct {
     unsigned int reg_12V : 1;
     unsigned int h_alpha : 1;
     unsigned int latch : 1;
-    
+
     unsigned int unused_out : 19;
 
-}gpio_out_bf;
+} gpio_out_bf;
 
 /*union to allow gpio out bit fields to be taken as ints*/
 typedef union gpio_out_uni {
-    U32 out_val;
-    gpio_in_bf out_bf;
+    U32 val;
+    gpio_in_bf bf;
 } gpio_out_uni;
 
 

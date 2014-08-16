@@ -24,6 +24,9 @@
 #define GPIO_I_INT_REG 0x0000000C
 #define GPIO_I_INT_ACK 0x00000008
 
+/*Control GPIO input macros*/
+#define NUM_CONTROL_GPIO 14
+
 /*register for output gpio*/
 #define GPIO_OUT_REG 0x14
 /*Shutter macros*/
@@ -66,7 +69,8 @@ extern U32              sz_buffer;
 
 
 /*array to hold power pin macros*/
-U32 power_subsystem_arr[NUM_SUBSYSTEM];
+U32 power_subsystem_mask[NUM_SUBSYSTEM];
+U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
 LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
 LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control

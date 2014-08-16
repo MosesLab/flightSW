@@ -97,11 +97,11 @@ int peek_gpio(U32 offset, U32 * data_buf) {
 
 int handle_gpio_in() {
     int rc;
-//    char msg[255];
+    //    char msg[255];
     U32 gpio_state = 0;
 
     /*allocate dynamic space for gpio value*/
-    gpio_in_uni * gpio_in = malloc(sizeof(gpio_in_uni));
+    gpio_in_uni * gpio_in = malloc(sizeof (gpio_in_uni));
 
     /*read pins that initiated interrupt from fpga*/
     rc = peek_gpio(GPIO_I_INT_REG, &gpio_state);
@@ -118,7 +118,7 @@ int handle_gpio_in() {
     }
 
     /*enqueue value to send to gpio control*/
-    gpio_in->in_val = gpio_state;
+    gpio_in->val = gpio_state;
     enqueue(&gpio_in_queue, gpio_in);
 
     return TRUE;
@@ -140,22 +140,95 @@ int handle_gpio_in() {
 
 /*sets up the memory used in powering the instrument*/
 void init_gpio() {
-    power_subsystem_arr[shutter_driver] = SHUTTER_SIM;
-    power_subsystem_arr[roe] = ROE_SIM;
-    power_subsystem_arr[pre_mod] = PREMOD_SIM;
-    power_subsystem_arr[tcs_1] = TCS_1_SIM;
-    power_subsystem_arr[tcs_3] = TCS_3_SIM;
-    power_subsystem_arr[tcs_2] = TCS_2_SIM;
-    power_subsystem_arr[tcs] = TCS_SIM;
-    power_subsystem_arr[reg_5V] = REG_5V_SIM;
-    power_subsystem_arr[reg_12V] = REG_12V_SIM;
-    power_subsystem_arr[h_alpha] = H_ALPHA_SIM;
-
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
     /*enable GPIO pins on the FPGA*/
     poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+
+//    power_subsystem_mask[shutter_driver] = SHUTTER_SIM;
+//    power_subsystem_mask[roe] = ROE_SIM;
+//    power_subsystem_mask[pre_mod] = PREMOD_SIM;
+//    power_subsystem_mask[tcs_1] = TCS_1_SIM;
+//    power_subsystem_mask[tcs_3] = TCS_3_SIM;
+//    power_subsystem_mask[tcs_2] = TCS_2_SIM;
+//    power_subsystem_mask[tcs] = TCS_SIM;
+//    power_subsystem_mask[reg_5V] = REG_5V_SIM;
+//    power_subsystem_mask[reg_12V] = REG_12V_SIM;
+//    power_subsystem_mask[h_alpha] = H_ALPHA_SIM;
+    
+    U32 mask = 0x00000001;
+    unsigned int i;
+    for(i = 0; i < NUM_SUBSYSTEM; i++){
+        power_subsystem_mask[i] = mask;
+        mask = mask << 1;
+    }
+    
+    mask = 0x00000001;
+    for(i = 0; i < NUM_CONTROL_GPIO; i++){
+        gpio_control_mask[i] = mask;
+        mask = mask << 1;
+    }
+
+//    /*define union to set up masks*/
+//    gpio_in_uni gset;
+//    gset->val = 0;
+//
+//    gset->bf->udatastart = 1;
+//    gpio_control_mask[UDataStart] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf->udatastop = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
+//
+//    gset->bf - = 1;
+//    gpio_control_mask[] = gset->val;
+//    gset->val = 0;
 
 
 
