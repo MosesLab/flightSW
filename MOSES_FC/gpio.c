@@ -83,7 +83,7 @@ void open_shutter() {
     outb(0x03, SHUTTER_ENABLE);
 
     /*assert pin*/
-    outb(SHUTTER_OFFSET, SHUTTER_OPEN);
+    outb(SHUTTER_OPEN, SHUTTER_OFFSET);
 
     /*wait for pulse length*/
     usleep(SHUTTER_PULSE);
@@ -105,7 +105,7 @@ void close_shutter() {
     outb(0x03, SHUTTER_ENABLE);
 
     /*assert pin*/
-    outb(SHUTTER_OFFSET, SHUTTER_CLOSE);
+    outb(SHUTTER_CLOSE, SHUTTER_OFFSET,);
 
     /*wait for pulse length*/
     usleep(SHUTTER_PULSE);
