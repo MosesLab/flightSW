@@ -191,13 +191,10 @@ void readPacket(int fd, packet_t * p) {
    
 
     readData(fd, &temp, 1);
-    printf("start:");
     while (temp != STARTBYTE) {
         error += temp;
-        printf("%d\n", (int)temp);
         readData(fd, &temp, 1);
     }
-    printf("\n");
     if (error != '\0') {
         record("Bad packet start\n");
     }
@@ -233,22 +230,16 @@ void readPacket(int fd, packet_t * p) {
     readData(fd, p->checksum, 1);
     //            record("checksum\n");
 
-    printf("end:");
+
     readData(fd, &temp, 1);
     while (temp != ENDBYTE) {
         readData(fd, &temp, 1);
-        
-        printf("%d ", (int)temp);
     }
-    printf("\n");
-    
-    printf("eof:");
+
     while (temp != EOF_PACKET) {
-        readData(fd, &temp, 1);
-        
-        printf("%d ", (int)temp);
+        readData(fd, &temp, 1);    
     }
-    printf("\n");
+
     
     char rx_checksum = calcCheckSum(p);
     tempValid = (p->checksum[0] == rx_checksum);
