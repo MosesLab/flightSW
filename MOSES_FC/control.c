@@ -59,7 +59,7 @@ void * hlp_control(void * arg) {
             record("malloc failed to allocate packet\n");
         }
 
-        int control_type = control_wait(f_up, &gpio_in_queue);
+        int control_type = control_wait(f_up, &lqueue[gpio_in]);
 
         if (control_type == HLP_PACKET) {
 
@@ -296,7 +296,7 @@ void * fpga_server(void * arg) {
         } else if (interrupt == TIMEOUT_INT) {
 
             /*check if new GPIO output is available*/
-            if (occupied(&gpio_out_queue)) {
+            if (occupied(&lqueue[gpio_out])) {
                 gpio_out_uni * gpio_out_val = dequeue(&lqueue[gpio_out]);
 
                 /*Check if request or assert*/

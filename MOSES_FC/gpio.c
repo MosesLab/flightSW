@@ -12,6 +12,8 @@ PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 U8 bar_index;
 U32 bar_sz_buffer;
+U32 power_subsystem_mask[NUM_SUBSYSTEM];
+U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data) {
@@ -54,7 +56,7 @@ int handle_gpio_in() {
     U32 gpio_state = 0;
 
     /*allocate dynamic space for gpio value*/
-    gpio_in_uni * gpio_in = malloc(sizeof (gpio_in_uni));
+    gpio_in_uni * gpio_in_state = malloc(sizeof (gpio_in_uni));
 
     /*read pins that initiated interrupt from fpga*/
     rc = peek_gpio(GPIO_I_INT_REG, &gpio_state);
@@ -71,8 +73,8 @@ int handle_gpio_in() {
     }
 
     /*enqueue value to send to gpio control*/
-    gpio_in->val = gpio_state;
-    enqueue(&gpio_in_queue, gpio_in);
+    gpio_in_state->val = gpio_state;
+    enqueue(&lqueue[gpio_in], gpio_in_state);
 
     return TRUE;
 }

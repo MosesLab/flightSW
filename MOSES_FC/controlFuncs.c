@@ -139,7 +139,7 @@ void set_power(U32 sys, U32 state) {
     new_state->bf.latch = 1;
 
     /*enqueue new state to fpga server for assertion*/
-    enqueue(&gpio_out_queue, new_state);
+    enqueue(&lqueue[gpio_out], new_state);
 }
 
 /*Query the power status of the payload subsystem*/
@@ -156,7 +156,7 @@ int queryPower(packet_t* p) {
     new_state->val = REQ_POWER;
 
     /*enqueue new state to fpga server for assertion*/
-    enqueue(&gpio_out_queue, new_state);
+    enqueue(&lqueue[gpio_out], new_state);
 
     /*wait for reply for request*/
     gpio_out_uni * req_state = dequeue(&lqueue[gpio_req]);

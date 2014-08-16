@@ -12,6 +12,7 @@
 #include "lockingQueue.h"
 #include <sys/io.h>
 #include "dma.h"
+#include "main.h"
 
 
 #define ON 0xFFFFFFFF
@@ -80,11 +81,11 @@ extern U8 bar_index;
 extern U32 bar_sz_buffer;
 
 /*array to hold power pin macros*/
-U32 power_subsystem_mask[NUM_SUBSYSTEM];
-U32 gpio_control_mask[NUM_CONTROL_GPIO];
+extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
+extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
-LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
-LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
+//LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+//LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
