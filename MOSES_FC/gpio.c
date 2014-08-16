@@ -101,7 +101,7 @@ int handle_gpio_in() {
     U32 gpio_state = 0;
 
     /*allocate dynamic space for gpio value*/
-    gpio_in_uni * gpio_in = malloc(sizeof (gpio_in_uni));
+    gpio_in_uni * gpio_in = malloc(sizeof(gpio_in_uni));
 
     /*read pins that initiated interrupt from fpga*/
     rc = peek_gpio(GPIO_I_INT_REG, &gpio_state);
@@ -119,7 +119,7 @@ int handle_gpio_in() {
 
     /*enqueue value to send to gpio control*/
     gpio_in->in_val = gpio_state;
-    enqueue(&gpio_in_queue, &gpio_in);
+    enqueue(&gpio_in_queue, gpio_in);
 
     return TRUE;
 }

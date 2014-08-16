@@ -240,7 +240,7 @@ void * fpga_server(void * arg) {
 
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
-    record("-->FPGA Serer thread started\n");
+    record("-->FPGA Server thread started\n");
 
     /*initialize DMA pipeline*/
     initializeDMA();
