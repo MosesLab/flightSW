@@ -47,6 +47,7 @@ hlpControl* functionTable;
 /*helper functions for control*/
 void hlpHashInit();
 int execPacket(packet_t*);
+void exec_gpio(gpio_in_uni *);
 int control_wait(int, LockingQueue*);
 
 
