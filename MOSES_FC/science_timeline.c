@@ -26,7 +26,7 @@ void * science_timeline(void * arg) {
     /*initialize locking queue for exposure sequences packets*/
     lockingQueue_init(&sequence_queue);
     
-    void init_shutter();
+//    void init_shutter();
 
 
     /* wait for ROE to become active */

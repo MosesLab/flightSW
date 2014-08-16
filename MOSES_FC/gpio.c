@@ -75,6 +75,12 @@ int handle_gpio_in() {
 /*GPIO pin on VDX controls shutter*/
 void open_shutter() {
     record("Opening shutter\n");
+    
+    /*activate VDX GPIO with driver call*/
+    iopl(3);
+
+    /*initialize pins for writing*/
+    outb(0x03, SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OFFSET, SHUTTER_OPEN);
@@ -89,6 +95,12 @@ void open_shutter() {
 /*VDX FPIO*/
 void close_shutter() {
     record("Closing Shutter\n");
+    
+    /*activate VDX GPIO with driver call*/
+    iopl(3);
+
+    /*initialize pins for writing*/
+    outb(0x03, SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OFFSET, SHUTTER_CLOSE);
