@@ -89,7 +89,7 @@ void open_shutter() {
     usleep(SHUTTER_PULSE);
 
     /*deassert pin*/
-    outb(SHUTTER_OFFSET, 0x00);
+    outb(0x00, SHUTTER_OFFSET);
     
     iopl(0);
 }
@@ -111,7 +111,7 @@ void close_shutter() {
     usleep(SHUTTER_PULSE);
 
     /*deassert pin*/
-    outb(SHUTTER_OFFSET, 0x00);
+    outb(0x00, SHUTTER_OFFSET);
     
     iopl(0);
 }
