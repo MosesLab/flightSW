@@ -56,91 +56,7 @@ int takeExposure(double duration, int sig) {
     return actual;
 }
 
-/* write_data will be part of a new thread that will be in
- * waiting mode until it is called to write an image to a file. 
-   A signal, SIGUSR2, will be sent when DMA is ready to transfer
-   data to memory and will initialize the writing to disk*/
-void * write_data(void * arg) {
-    char msg[100];
-    
-    /*Set thread name*/
-    prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
 
-    while (ts_alive) {
-
-        short *BUFFER[4];
-        /*create pixel buffers */
-        int i;
-        for (i = 0; i < 4; i++) {
-            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-        }
-        /*initialize index( these will start at -1 and be incremented by DMA*/
-        int index[4] = {2200000, 2200000, 2200000, 2200000};
-        
-        char filename[80];
-        char ftimedate[80];
-        char dtime[100];
-        char ddate[100];
-
-        char channels = ops.channels;
-
-        /*Wait for image to be enqueued*/
-        record("Waiting for new image...\n");
-        roeimage_t * image = dequeue(&lqueue[fpga_image]);
-        record("Dequeued new image\n");
-
-        /*Initialize the image*/
-        constructImage(image, BUFFER, index, channels, 16);
-        /* Get data for image details*/
-        time_t curTime = time(NULL);
-        struct tm *broken = localtime(&curTime);
-        strftime(dtime, 20, "%H:%M:%S", broken);
-        strftime(ddate, 20, "%y-%m-%d", broken); //get date
-        strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
-        //construct a unique filename	
-        sprintf(filename, "%s.roe", ftimedate);
-        sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
-
-        image->filename = filename;
-        image->name = image->seq_name; //Add the information to the image
-        image->date = ddate;
-        image->time = dtime;
-        //image.duration = duration;
-        image->width = 2048;
-        image->height = 1024;
-
-        record("Image Opened\n");
-
-        /*write the image and metadata to disk*/
-        writeToFile(image);
-        
-        sprintf(msg, "File %s successfully written to disk.\n", filename);
-        record(msg);
-
-        /*push the filename onto the telemetry queue*/
-        if (ops.tm_write == 1) {
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
-            record("Filename pushed to telemetry queue\n");
-        }
-
-
-        /*need to free allocated image to prevent memory leak --RTS*/
-        free(image->data[0]);
-        free(image->data[1]);
-        free(image->data[2]);
-        free(image->data[3]);
-        free(BUFFER[0]);
-        free(BUFFER[1]);
-        free(BUFFER[2]);
-        free(BUFFER[3]);
-        free(image);
-    }//end while ts_alive
-
-    return 0;
-}
 
 int wait_exposure(int microsec) {
     /*This function doesnt work*/
@@ -155,22 +71,6 @@ int wait_exposure(int microsec) {
     return ((end.tv_sec - start.tv_sec)*1000000 +
             (end.tv_usec - start.tv_usec));
 }
-
-/*this function sets up the signal handler to run
-  runsig when a signal is received from the experiment manager*/
-//void init_signal_handler_image() {
-//
-//    sigfillset(&oldmaskimage); //save the old mask
-//    sigemptyset(&maskimage); //create a blank new mask
-//    sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
-//
-//    /*no signal dispositions for signals between threads*/
-//    run_action_image.sa_mask = oldmaskimage;
-//    run_action_image.sa_flags = 0;
-//
-//    sigaction(SIGUSR2, &run_action_image, NULL);
-//    record("Signal handler initiated.\n");
-//}
 
 void timeval_subtract(struct timeval * result, struct timeval start, struct timeval end) {
 

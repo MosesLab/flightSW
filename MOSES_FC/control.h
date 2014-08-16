@@ -30,20 +30,8 @@
 #define SYNCLINK_START 0
 #define SYNCLINK_END 1
 
-//extern volatile sig_atomic_t ts_alive;
-
 /*struct to control state of experiment*/
 extern moses_ops_t ops;
-
-//LockingQueue hLockingQueue lqueue[hkdown + 1];kdownQueue; //Pass packets from flight SW to hkdown thread
-
-/*FPGA server queues*/
-//LockingQueue scit_image_queue; //Pass images from science timeline to fpga server
-//LockingQueue gpio_out_queue;    // Pass gpio values and requests from control to fpga server
-//LockingQueue gpio_req_queue;    //Pass GPIO requested by control from server to control
-//LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
-//
-//LockingQueue telem_image_queue; //Pass image filepaths to telemetry
 
 /*Current state of powered subsystems*/
 extern gpio_out_uni gpio_power_state;
@@ -56,7 +44,7 @@ void* hlp_down(void*);
 
 /*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
-void * telem(void *);
+
 
 void * hlp_shell_out(void *);
 

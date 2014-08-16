@@ -32,15 +32,9 @@
 
 /*register for output gpio*/
 #define GPIO_OUT_REG 0x14
-/*Shutter macros*/
-//#define SHUTTER_OFFSET 0x14
-
 
 /*Power macros*/
 #define NUM_SUBSYSTEM 10
-//#define POWER_OFFSET 0x2C
-//#define POWER_OFFSET 0x10
-//#define POWER_DIRECTION_OFFSET 0x14
 
 /*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_ENABLE  0x98
@@ -66,14 +60,6 @@
 /*requests for data are inicated by writina all ones to the gpio out queue*/
 #define REQ_POWER       0xFFFFFFFF
 
-///*GPIO write variables*/
-//extern PLX_DEVICE_OBJECT fpga_dev;
-//extern PLX_PCI_BAR_PROP bar_properties;
-//extern PLX_ACCESS_TYPE  type_bit;
-//extern U8               bar_index;
-//extern U32              bar_sz_buffer;
-
-
 /*BAR space read/write variables*/
 extern PLX_PCI_BAR_PROP bar_properties;
 extern PLX_ACCESS_TYPE type_bit;
@@ -83,9 +69,6 @@ extern U32 bar_sz_buffer;
 /*array to hold power pin macros*/
 extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
 extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
-
-//LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
-//LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
@@ -101,18 +84,5 @@ void close_shutter();
 void init_gpio();
 void init_shutter();
 
-/*this enumeration should be changed when we decide on power formats!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//enum power_subsystem_pins{
-//    shutter_driver,
-//    roe,
-//    pre_mod,
-//    tcs_1,
-//    tcs_3,
-//    tcs_2,
-//    tcs,
-//    reg_5V,
-//    reg_12V,
-//    h_alpha,
-//};
 #endif	/* GPIO_H */
 

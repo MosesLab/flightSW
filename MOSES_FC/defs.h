@@ -9,7 +9,6 @@
 #ifndef DEFS_H
 #define	DEFS_H
 
-#include <signal.h>
 #include <pthread.h>
 #include "plx/PlxApi.h"
 #include "plx/PlxInit.h"
@@ -17,11 +16,8 @@
 #define FALSE 0
 #define TRUE 1
 
-
 #define STARTBYTE '%'
 #define ENDBYTE '^'
-
-
 
 #define CH0		0x1	//0x8
 #define CH1		0x2	//0x4
@@ -31,7 +27,6 @@
 /*Packet structure for parsing and storing HLP packets*/
 typedef struct {
     /*Packet attributes*/
-    //        void * next;    //next item in the locking queue    
     unsigned int dataSize;
     int status;
     char* control;
@@ -71,14 +66,14 @@ typedef int(*hlpControl)();
 /*Node structure for hash table*/
 
 /* This struct will contain the variables that represent the status of the system*/
-typedef struct {
+typedef struct {    
     unsigned int sequence;
-    char channels;
     unsigned int seq_run;
     unsigned int roe_power;
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;
+    char channels;
 
 } moses_ops_t;
 

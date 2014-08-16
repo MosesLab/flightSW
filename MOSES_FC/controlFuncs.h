@@ -31,13 +31,6 @@ extern pid_t main_pid;
 /*Power GPIO output state*/
 extern gpio_out_uni gpio_power_state;
 
-/*
- * Array containing uplink subtypes. Used in a map from uplink functions to 
- * their corresponding uplink subtype
- */ 
-//char* uplinkMap[9];
-//void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated
-
 /*initialize hash table to find functions based on packet string*/
 int funcNumber; // number of control functions  
 int hlp_hash_size;

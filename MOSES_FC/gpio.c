@@ -8,6 +8,7 @@
 
 #include "gpio.h"
 
+/*global variable declaration*/
 PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 U8 bar_index;
