@@ -34,7 +34,6 @@ int execPacket(packet_t* p) {
  */
 void exec_gpio(gpio_in_uni * g) {
 
-
     /*loop through output to find asserted pins*/
     unsigned int i;
     for (i = 0; i < NUM_CONTROL_GPIO; i++) {
@@ -43,7 +42,6 @@ void exec_gpio(gpio_in_uni * g) {
         if (control_enable) {
             (*functionTable[i])();
         }
-
     }
 }
 
@@ -136,6 +134,9 @@ void set_power(U32 sys, U32 state) {
     /*dynamically allocate and copy new value*/
     gpio_out_uni * new_state = calloc(1, sizeof(U32));
     *new_state = gpio_power_state;
+    
+    /*apply latch*/
+    new_state->bf.latch = 1;
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&gpio_out_queue, new_state);
@@ -177,8 +178,6 @@ int queryPower(packet_t* p) {
         r = constructPacket(PWR_S, STATUS_OFF, p->data);
     }
     enqueue(&hkdownQueue, r);
-
-
 
     return GOOD_PACKET;
 }

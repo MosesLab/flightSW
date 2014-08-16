@@ -165,7 +165,7 @@ typedef struct {
 /*union to allow gpio out bit fields to be taken as ints*/
 typedef union gpio_out_uni {
     U32 val;
-    gpio_in_bf bf;
+    gpio_out_bf bf;
 } gpio_out_uni;
 
 

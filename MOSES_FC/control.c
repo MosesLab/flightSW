@@ -67,7 +67,7 @@ void * hlp_control(void * arg) {
             recordPacket(p);
 
             if (ts_alive) {
-                if (p->status == GOOD_PACKET) { //check checksum
+                if (p->status == GOOD_PACKET) {
                     switch (p->type[0]) {
                         case SHELL:
                             hlp_shell(stdin_des, p);
@@ -88,9 +88,11 @@ void * hlp_control(void * arg) {
                     }
                 }
 
+                /*create data to send with ACK*/
                 char* data;
                 data = concat(2, p->type, p->subtype);
 
+                /*respond to control packet with ACK*/
                 char* ackType;
                 if (p->status == GOOD_PACKET) {
 
@@ -113,10 +115,10 @@ void * hlp_control(void * arg) {
 
             sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
             record(msg);
-            
+
             exec_gpio(gpio_control);
 
-            free(gpio_control); //double free??????????????????????????????????????????
+            free(gpio_control);
 
 
         } else {
@@ -194,7 +196,7 @@ void * hlp_shell_out(void * arg) {
         buf = calloc(sizeof (char), 256);
 
         /*use select() to monitor output pipe*/
-        data = input_timeout(stdout_des, 10000, 0);
+        data = input_timeout(stdout_des, 10000, 0); //Shouldn't need to timeout
 
         if (data) {
 
@@ -239,6 +241,7 @@ void * hlp_housekeeping(void * arg) {
  */
 void * fpga_server(void * arg) {
     int rc;
+    gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
 
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
@@ -264,11 +267,34 @@ void * fpga_server(void * arg) {
             record("Error during wait\n");
         }
 
+       /**
+        * Unlatch the power latch if it was latched before timeout
+        * 
+        * This statement requires that the timeout on the interrupt wait must be 
+        * similar to the latch pulse length (66ms).
+        */
+        if (temp_state) {
+
+            /*deassert latch*/
+            temp_state->bf.latch = 0;
+
+            /*Poke unlatched value to FPGA*/
+            rc = poke_gpio(GPIO_OUT_REG, temp_state->val);
+            if (rc == FALSE) {
+                record("Error writing GPIO output\n");
+            }
+            
+            /*free gpio value*/
+            free(temp_state);
+            temp_state = NULL;
+        }
+
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
 
             // need to check if DMA or GPIO input here by peeking at fpga register
 
+            /*send input gpio to control thread*/
             rc = handle_gpio_in();
             if (rc == FALSE) {
                 record("Error handling GPIO\n");
@@ -293,7 +319,8 @@ void * fpga_server(void * arg) {
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
-                    free(gpio_out);
+                    temp_state = gpio_out;
+                    //                    free(gpio_out);
                 }
             }
 
