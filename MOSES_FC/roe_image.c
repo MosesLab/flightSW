@@ -51,11 +51,11 @@ void setData(roeimage_t * image, int *psize, char pchannels) {
 
     for (i = 0; i < 4; i++) {
 
-        if (psize[i] != 0) {
+//        if (psize[i] != 0) {
             image->data[i] = malloc(SIZE_DS_BUFFER);
             /*Copy the data*/
 //            memcpy((char *) image->data[i], (char *) pdata[i], image->size[i]); //copy data
-        }
+//        }
 
 
     }
