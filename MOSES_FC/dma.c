@@ -156,10 +156,8 @@ void sort(roeimage_t * image) {
     for (i = 0; i < frag; i++) {
         register uint l = 0;
         for (j = 0; j < (buf_size); j++) {
-            for (k = 0; k < 4; k++) {
-               dest_buf[k][j] = virt_buf[i][l];
-               l++;
-            }
+               dest_buf[k][(j * i) /4] = virt_buf[i][j];
+               k = (k + 1) % 4;
         }
        dest_size[i] = buf_size;    //number of pixels
     }
