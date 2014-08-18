@@ -88,7 +88,7 @@ void open_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb(0x03, SHUTTER_ENABLE);
+//        outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OPEN, SHUTTER_OFFSET);
@@ -110,7 +110,7 @@ void close_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+//    outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);
@@ -126,7 +126,7 @@ void close_shutter() {
 
 /*sets up the memory used in powering the instrument*/
 int init_gpio() {
-    int rc;   
+    int rc;
 
     U32 mask = 0x00000001;
     unsigned int i;
@@ -155,21 +155,21 @@ int init_gpio() {
         PlxSdkErrorDisplay(rc);
         return FALSE;
     }
-    
+
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
     /*enable GPIO pins on the FPGA*/
     //    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
-    
+
     /*Initialize all power GPIO into write mode*/
     //    int i;
     //    for (i = 0; i < NUM_SUBSYSTEM; i++) {
     //        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
     //    }
-    
+
     return TRUE;
-    
+
 }
 
 /**
@@ -180,5 +180,5 @@ void init_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb(0x03, SHUTTER_ENABLE);
+    outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
 }
