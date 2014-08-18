@@ -32,7 +32,7 @@ void record(const char* message) {
     sprintf(theTime, "%d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000));
 
 
-    fwrite("[", 1, 2, outfile);
+    fwrite("[", 1, 1, outfile);
 
     /*write the date and the message to the file*/
     fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
