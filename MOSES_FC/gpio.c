@@ -110,7 +110,7 @@ void close_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb(0x03, SHUTTER_ENABLE);
+    outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);
