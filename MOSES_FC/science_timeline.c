@@ -178,6 +178,7 @@ void * write_data(void * arg) {
         //image.duration = duration;
         image->width = 2048;
         image->height = 1024;
+        
 
         record("Image Opened\n");
 

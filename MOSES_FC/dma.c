@@ -149,6 +149,7 @@ void sort(roeimage_t * image) {
                 image->data[k][j] = virt_buf[i][j];
             }
         }
+        image->size[i] = SIZE_DS_BUFFER;
     }
 }
 
