@@ -237,7 +237,7 @@ void * fpga_server(void * arg) {
             }
 
             /*check if image input is available*/
-            /*TESTING!!!!!!! Do not use in real life*/
+            /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
                 
                 record("Dequeue new image\n");
@@ -250,9 +250,11 @@ void * fpga_server(void * arg) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
                 }
 
-                record("Sort image");                       
+                record("Sort image\n");                       
                 
                 sort(dma_image);
+                
+                record("Enqueue image to writer\n");
 
                 enqueue(&lqueue[fpga_image], dma_image);
 
