@@ -296,7 +296,7 @@ void * hlp_down(void * arg) {
         if (!ts_alive) break; //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
-            recordPacket(p); //save packet to logfile for debugging   
+//            recordPacket(p); //save packet to logfile for debugging   
             free(p); //Clean up after packet is sent
         } else {
             record("Bad hlp_down packet\n");
