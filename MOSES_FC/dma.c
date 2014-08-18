@@ -154,7 +154,6 @@ void sort(roeimage_t * image) {
     short ** dest_buf = image->data;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
-        register uint l = 0;
         for (j = 0; j < (buf_size); j++) {
                dest_buf[k][(j * i) /4] = virt_buf[i][j];
                k = (k + 1) % 4;
