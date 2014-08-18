@@ -159,7 +159,7 @@ void writeToFile(roeimage_t * image) {
     
     for (i = 0; i < 4; i++) {
         if (image->channels & (char) (1 << i))
-            fwrite(image->data[i], sizeof (short), image->size[i], dataOut);
+            fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
     }
     fclose(dataOut);
     

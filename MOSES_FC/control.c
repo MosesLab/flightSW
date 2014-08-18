@@ -239,12 +239,19 @@ void * fpga_server(void * arg) {
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life*/
             if (occupied(&lqueue[scit_image])) {
+                
+                record("Dequeue new image\n");
+                
                 roeimage_t * dma_image = dequeue(&lqueue[scit_image]);
 
+                record("Preform DMA transfer from FPGA\n");
+                
                 for (i = 0; i < NUM_FRAGMENT; i++) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
                 }
 
+                record("Sort image");                       
+                
                 sort(dma_image);
 
                 enqueue(&lqueue[fpga_image], dma_image);
