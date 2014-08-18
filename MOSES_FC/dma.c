@@ -151,8 +151,8 @@ void sort(roeimage_t * image) {
     register uint i, j, k;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
-    short dest_buf[][] = image->data;
-    uint dest_size[] = image->size;
+    short ** dest_buf = image->data;
+    uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
             for (k = 0; k < 4; k++) {
