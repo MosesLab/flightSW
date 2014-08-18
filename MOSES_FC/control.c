@@ -66,7 +66,7 @@ void * hlp_control(void * arg) {
 
             /*read next packet from HKUP*/
             readPacket(f_up, p);
-            recordPacket(p);
+//            recordPacket(p);
 
             if (ts_alive) {
                 if (p->status == GOOD_PACKET) {
