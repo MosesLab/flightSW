@@ -18,7 +18,7 @@
 
 #define SIZE_DS_BUFFER          4194304          // Number of bytes to transfer (1/4 of image)
 #define NUM_FRAGMENT            4
-#define FPGA_MEMORY_LOC_0       0x0000004
+#define FPGA_MEMORY_LOC_0       0x0000014
 #define DMA_CHAN                0x0
 #define DMA_TIMEOUT             10000 //ms
 
