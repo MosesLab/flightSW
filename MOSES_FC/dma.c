@@ -19,7 +19,7 @@ PLX_NOTIFY_OBJECT plx_event;
 U8 dmaChannel;
 PLX_DMA_PARAMS dma_params[NUM_FRAGMENT];
 PLX_PHYSICAL_MEM pci_buffer[NUM_FRAGMENT];
-U64* virt_buf[NUM_FRAGMENT];
+short* virt_buf[NUM_FRAGMENT];
 
 /**
  * Opens PLX PCI device and starts the dma engine
@@ -69,7 +69,7 @@ int initializeDMA() {
  * @param user_buf:pointer to the virtual address allocated to the CPLB
  * @return 1 fi success, 0 if failure
  */
-int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, U64 ** user_buf) {
+int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, short ** user_buf) {
     int rc;
 
     memset(pci_buf, 0, sizeof (PLX_PHYSICAL_MEM));
@@ -120,7 +120,7 @@ int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, U64 
 int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     int rc;
 
-    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, (3 * 1000)); //last parameter is timeout in ms
+    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout); 
 
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
@@ -144,7 +144,7 @@ void finish() {
 void sort(roeimage_t * image) {
     uint i, j, k;
     for (i = 0; i < NUM_FRAGMENT; i++) {
-        for (j = 0; j < SIZE_DS_BUFFER; j++) {
+        for (j = 0; j < (SIZE_DS_BUFFER / 2); j++) {
             for (k = 0; k < 4; k++) {
                 image->data[k][j] = virt_buf[i][j];
             }

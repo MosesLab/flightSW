@@ -38,13 +38,13 @@ extern PLX_DEVICE_OBJECT fpga_dev;
 /*Driver can only allocate 1/4 of image. DMA transfer must be fragmented*/
 extern PLX_DMA_PARAMS    dma_params[NUM_FRAGMENT];
 extern PLX_PHYSICAL_MEM  pci_buffer[NUM_FRAGMENT];
-extern U64*              virt_buf[NUM_FRAGMENT];
+extern short*              virt_buf[NUM_FRAGMENT];
 
 
 int initializeDMA();
 int interrupt_wait(U32*);
 int dmaRead(PLX_DMA_PARAMS, U64);
-int allocate_buffer(PLX_DMA_PARAMS*, PLX_PHYSICAL_MEM*, U64 **);
+int allocate_buffer(PLX_DMA_PARAMS*, PLX_PHYSICAL_MEM*, short **);
 void sort(roeimage_t*);
 int dmaClearBlock();
 void dmaClose();

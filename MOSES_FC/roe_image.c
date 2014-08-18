@@ -50,7 +50,6 @@ void setData(roeimage_t * image, int *psize, char pchannels) {
     image->channels = pchannels; // set the channel information
 
     for (i = 0; i < 4; i++) {
-        /*Delete preexisting data*/
 
         if (psize[i] != 0) {
             image->data[i] = malloc(SIZE_DS_BUFFER);
