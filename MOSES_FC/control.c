@@ -244,7 +244,7 @@ void * fpga_server(void * arg) {
                 
                 roeimage_t * dma_image = dequeue(&lqueue[scit_image]);
 
-                record("Preform DMA transfer from FPGA\n");
+                record("Perform DMA transfer from FPGA\n");
                 
                 for (i = 0; i < NUM_FRAGMENT; i++) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
