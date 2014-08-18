@@ -13,20 +13,18 @@
 
 /*global variable declaration*/
 PLX_DEVICE_OBJECT fpga_dev;
-PLX_DMA_PROP      DmaProp;
-PLX_INTERRUPT     plx_intr;
+PLX_DMA_PROP DmaProp;
+PLX_INTERRUPT plx_intr;
 PLX_NOTIFY_OBJECT plx_event;
-U8                dmaChannel;
-PLX_DMA_PARAMS    DmaParams;
-PLX_PHYSICAL_MEM  PciBuffer; 
-U32*		  pBufferMem;
-void**		  pVa;
-//PLX_PCI_BAR_PROP bar_properties;
-//PLX_ACCESS_TYPE type_bit;
-//U8 bar_index;
-//U32 bar_sz_buffer;
+U8 dmaChannel;
+PLX_DMA_PARAMS dma_params[NUM_FRAGMENT];
+PLX_PHYSICAL_MEM pci_buffer[NUM_FRAGMENT];
+U64* virt_buf[NUM_FRAGMENT];
 
-
+/**
+ * Opens PLX PCI device and starts the dma engine
+ * @return 1 if success, 0 if failure
+ */
 int initializeDMA() {
     int rc;
 
@@ -39,6 +37,9 @@ int initializeDMA() {
         exit(-1);
     }
 
+    /*reset device dma transfer*/
+    PlxPci_DeviceReset(&fpga_dev);
+
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
 
@@ -46,6 +47,9 @@ int initializeDMA() {
     DmaProp.ReadyInput = 1; // Enable READY# input 
     DmaProp.Burst = 1; // Use burst of 4LW 
     DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
+    DmaProp.ConstAddrLocal = 1; //set to only transfer one dword ONLY FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    dmaChannel = DMA_CHAN;
 
     // Use Channel 0 
     rc = PlxPci_DmaChannelOpen(&fpga_dev, dmaChannel, &DmaProp);
@@ -55,9 +59,32 @@ int initializeDMA() {
         return (FALSE);
     }
 
-    printf("OK");
-    // Get Common buffer information 
-    rc = PlxPci_CommonBufferProperties(&fpga_dev, &PciBuffer);
+    return TRUE;
+}
+
+/**
+ * Allocates a contiguous, page-locked buffer(CPLB) for DMAing images into memory
+ * @param dma_param:struct containing dma parameters to be linked to CPLB
+ * @param pci_buf:stuct to be filled with CPLB parameters
+ * @param user_buf:pointer to the virtual address allocated to the CPLB
+ * @return 1 fi success, 0 if failure
+ */
+int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, U64 ** user_buf) {
+    int rc;
+
+    memset(pci_buf, 0, sizeof (PLX_PHYSICAL_MEM));
+
+    pci_buf->Size = SIZE_DS_BUFFER;
+
+    /*allocate page-locked contiguous common buffer*/
+    rc = PlxPci_PhysicalMemoryAllocate(&fpga_dev, pci_buf, TRUE);
+    if (rc != ApiSuccess) {
+        printf("*ERROR* - API failed\n");
+        PlxSdkErrorDisplay(rc);
+    }
+
+
+    rc = PlxPci_PhysicalMemoryMap(&fpga_dev, pci_buf);
     if (rc != ApiSuccess) {
         printf("*ERROR* - API failed\n");
         PlxSdkErrorDisplay(rc);
@@ -65,48 +92,21 @@ int initializeDMA() {
         return (FALSE);
     }
 
-    printf("OK");
-
-    printf("\n    Common buffer information:\n"
+    printf("\n    Mem Allocator information:\n"
             "     Bus Physical Addr:  %016llx\n"
             "     CPU Physical Addr:  %016llx\n"
             "     Size             :  %d bytes\n",
-            PciBuffer.PhysicalAddr,
-            PciBuffer.CpuPhysical,
-            PciBuffer.Size);
+            pci_buf->PhysicalAddr,
+            pci_buf->CpuPhysical,
+            pci_buf->Size);
 
-
-    pVa = (void**) &pBufferMem; //pVa = A pointer to a buffer to hold the virtual address 
-
-    rc = PlxPci_CommonBufferMap(&fpga_dev, pVa);
-    if (rc != ApiSuccess) {
-        printf("*ERROR* - API failed\n");
-        PlxSdkErrorDisplay(rc);
-        /*Unlock Mutex*/
-        return (FALSE);
-    }
+    *user_buf = PLX_INT_TO_PTR(pci_buf->UserAddr);
 
     // Fill in DMA transfer parameters 
-    DmaParams.PciAddr = PciBuffer.PhysicalAddr;
-    DmaParams.LocalAddr = FPGA_MEMORY_LOC_0;
-    DmaParams.ByteCount = SIZE_DS_BUFFER;
-
-    DmaParams.Direction = PLX_DMA_LOC_TO_PCI;
-
-    /*initialize bar properties*/
-    bar_index = (U8) GPIO_BAR_INDEX;
-    bar_sz_buffer = PLX_BUFFER_WIDTH;
-    type_bit = BitSize32;
-
-    /*Read current BAR properties*/
-    rc = PlxPci_PciBarProperties(&fpga_dev, bar_index, &bar_properties);
-
-    /*Check if bar properties were read successfully*/
-    if (rc != ApiSuccess) {
-        record("*ERROR* - API failed, unable to read BAR properties \n");
-        PlxSdkErrorDisplay(rc);
-        return FALSE;
-    }
+    dma_param->PciAddr = pci_buf->PhysicalAddr;
+    dma_param->LocalAddr = FPGA_MEMORY_LOC_0;
+    dma_param->ByteCount = SIZE_DS_BUFFER;
+    dma_param->Direction = PLX_DMA_LOC_TO_PCI;
 
     return TRUE;
 }
@@ -117,22 +117,10 @@ int initializeDMA() {
  * 
  * @return 
  */
-int dmaRead() {
+int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     int rc;
 
-    /*Allocate Space for incoming data*/
-    pBufferMem = malloc(SIZE_DS_BUFFER);
-    if (pBufferMem == NULL) {
-        printf("*ERROR* - Source buffer allocation failed");
-        return (FALSE);
-    }
-    memset(pBufferMem, 0, SIZE_DS_BUFFER);
-
-
-
-    printf("DMA Read\n");
-
-    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &DmaParams, (3 * 1000)); //last parameter is timeout in ms
+    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, (3 * 1000)); //last parameter is timeout in ms
 
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
@@ -151,6 +139,17 @@ int dmaRead() {
 
 void finish() {
 
+}
+
+void sort(roeimage_t * image) {
+    uint i, j, k;
+    for (i = 0; i < NUM_FRAGMENT; i++) {
+        for (j = 0; j < SIZE_DS_BUFFER; j++) {
+            for (k = 0; k < 4; k++) {
+                image->data[k][j] = virt_buf[i][j];
+            }
+        }
+    }
 }
 
 /**
@@ -207,15 +206,17 @@ int interrupt_wait(U32 * interrupt) {
  * @return 1 if success, 0 if failure
  */
 int dmaClearBlock() {
-    int rc;
 
-    pVa = (void**) &pBufferMem; //pVa = A pointer to a buffer to hold the virtual address
+    int i, rc;
+    for (i = 0; i < NUM_FRAGMENT; i++) {
+        rc = PlxPci_PhysicalMemoryUnmap(&fpga_dev, &pci_buffer[i]);
 
-    rc = PlxPci_CommonBufferUnmap(&fpga_dev, pVa);
-    if (rc != ApiSuccess) {
-        printf("*ERROR* - API failed\n");
-        PlxSdkErrorDisplay(rc);
-        return (FALSE);
+        //    PlxPci_CommonBufferUnmap(&fpga_dev, pVa);
+        if (rc != ApiSuccess) {
+            printf("*ERROR* - API failed\n");
+            PlxSdkErrorDisplay(rc);
+            return (FALSE);
+        }
     }
 
     printf("DMA Block Cleared\n");
@@ -244,4 +245,5 @@ void dmaClose() {
             //printf("%d", bPass);
         }
     }
+    PlxPci_DeviceClose(&fpga_dev);
 }

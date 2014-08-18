@@ -83,7 +83,7 @@ int handle_gpio_in() {
 /*GPIO pin on VDX controls shutter*/
 void open_shutter() {
     record("Opening shutter\n");
-    
+
     /*activate VDX GPIO with driver call*/
     iopl(3);
 
@@ -98,14 +98,14 @@ void open_shutter() {
 
     /*deassert pin*/
     outb(0x00, SHUTTER_OFFSET);
-    
+
     iopl(0);
 }
 
 /*VDX FPIO*/
 void close_shutter() {
     record("Closing Shutter\n");
-    
+
     /*activate VDX GPIO with driver call*/
     iopl(3);
 
@@ -120,17 +120,13 @@ void close_shutter() {
 
     /*deassert pin*/
     outb(0x00, SHUTTER_OFFSET);
-    
+
     iopl(0);
 }
 
 /*sets up the memory used in powering the instrument*/
-void init_gpio() {
-    /*initialize acknowledge register*/
-    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
-
-    /*enable GPIO pins on the FPGA*/
-    //    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+int init_gpio() {
+    int rc;   
 
     U32 mask = 0x00000001;
     unsigned int i;
@@ -145,11 +141,35 @@ void init_gpio() {
         mask = mask << 1;
     }
 
+    /*initialize bar properties*/
+    bar_index = (U8) GPIO_BAR_INDEX;
+    bar_sz_buffer = PLX_BUFFER_WIDTH;
+    type_bit = BitSize32;
+
+    /*Read current BAR properties*/
+    rc = PlxPci_PciBarProperties(&fpga_dev, bar_index, &bar_properties);
+
+    /*Check if bar properties were read successfully*/
+    if (rc != ApiSuccess) {
+        record("*ERROR* - API failed, unable to read BAR properties \n");
+        PlxSdkErrorDisplay(rc);
+        return FALSE;
+    }
+    
+    /*initialize acknowledge register*/
+    poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
+
+    /*enable GPIO pins on the FPGA*/
+    //    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+    
     /*Initialize all power GPIO into write mode*/
     //    int i;
     //    for (i = 0; i < NUM_SUBSYSTEM; i++) {
     //        write_gpio(POWER_DIRECTION_OFFSET, power_subsystem_arr[i], ON);
     //    }
+    
+    return TRUE;
+    
 }
 
 /**

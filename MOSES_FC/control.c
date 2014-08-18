@@ -150,8 +150,24 @@ void * fpga_server(void * arg) {
     /*initialize DMA pipeline*/
     initializeDMA();
 
+    /*Allocate buffer for image fragments*/
+    uint i;
+    for (i = 0; i < NUM_FRAGMENT; i++) {
+        allocate_buffer(&dma_params[i], &pci_buffer[i], &virt_buf[i]);
+    }
+
     /*initialize GPIO pins*/
-    init_gpio();
+    rc = init_gpio();
+    if (rc == FALSE) {
+        record("Error initializing GPIO pins\n");
+    }
+
+    /*insert simulated byte to be read by dma*/
+    /*ONLY FOR TESTING!!!!!! DONT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+    rc = poke_gpio(FPGA_MEMORY_LOC_0, 0xFAFAFAFA);\
+    if (rc == FALSE) {
+        record("Error initializing DMA data\n");
+    }
 
     /*main server control loop*/
     while (ts_alive) {
@@ -222,11 +238,18 @@ void * fpga_server(void * arg) {
 
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life*/
-            //            if(occupied(&scit_image_queue)){             
-            //                roeimage_t * dma_image = dequeue(&scit_image_queue);
-            //                
-            //                
-            //            }
+            if (occupied(&lqueue[scit_image])) {
+                roeimage_t * dma_image = dequeue(&lqueue[scit_image]);
+
+                for (i = 0; i < NUM_FRAGMENT; i++) {
+                    dmaRead(dma_params[i], DMA_TIMEOUT);
+                }
+
+                sort(dma_image);
+
+                enqueue(&lqueue[fpga_image], dma_image);
+
+            }
 
         }
 
@@ -241,10 +264,10 @@ void * fpga_server(void * arg) {
  */
 void * hlp_down(void * arg) {
     unsigned int fdown = 0;
-    
-    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);   
 
-//    sleep(2); //sleep to give control a chance to initialize queue
+    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
+
+    //    sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n\n");
 
     /*Open housekeeping downlink using configuration file*/

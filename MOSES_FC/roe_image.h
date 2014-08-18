@@ -28,9 +28,9 @@
 #define DATADIR "/mdata"
 
 void constructEmpty();
-void constructImage(roeimage_t*, short** pdata,int* psize,char channels,int pbitpix);
-void init(roeimage_t*, short** data, int *size,char, int);
-void setData(roeimage_t*, short **data, int *size, char channels);
+void constructImage(roeimage_t*, int* psize,char channels,int pbitpix);
+void init(roeimage_t*, int *size,char, int);
+void setData(roeimage_t*, int *size, char channels);
 void writeToFile(roeimage_t*);
 
 

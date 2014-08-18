@@ -16,18 +16,18 @@ void constructEmpty() {
 
 }
 
-void constructImage(roeimage_t * image, short** pdata, int* psize, char channels, int pbitpix) {
+void constructImage(roeimage_t * image, int* psize, char channels, int pbitpix) {
     int i;
     for (i = 0; i < 4; i++){
         image->size[i] = 0;
     }
-    init(image, pdata, psize, channels, pbitpix);
+    init(image, psize, channels, pbitpix);
 }
 
-void init(roeimage_t * image, short** pdata, int *psize, char channels, int pbitpix) {
+void init(roeimage_t * image, int *psize, char channels, int pbitpix) {
     /* Set image values*/
     image->bitpix = pbitpix;
-    setData(image, pdata, psize, channels);
+    setData(image , psize, channels);
 
     image->width = 0;
     image->height = 0;
@@ -44,7 +44,7 @@ void init(roeimage_t * image, short** pdata, int *psize, char channels, int pbit
 }
 
 /* Set the data for this image*/
-void setData(roeimage_t * image, short **pdata, int *psize, char pchannels) {
+void setData(roeimage_t * image, int *psize, char pchannels) {
     int i;
 
     image->channels = pchannels; // set the channel information
@@ -52,11 +52,10 @@ void setData(roeimage_t * image, short **pdata, int *psize, char pchannels) {
     for (i = 0; i < 4; i++) {
         /*Delete preexisting data*/
 
-        image->size[i] = psize[i]; //set the correct size
         if (psize[i] != 0) {
-            image->data[i] = (short *) malloc(2200000 * sizeof (short));
+            image->data[i] = malloc(SIZE_DS_BUFFER);
             /*Copy the data*/
-            memcpy((char *) image->data[i], (char *) pdata[i], image->size[i]); //copy data
+//            memcpy((char *) image->data[i], (char *) pdata[i], image->size[i]); //copy data
         }
 
 

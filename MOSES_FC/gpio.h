@@ -24,8 +24,8 @@
 /*registers for interrupt-driven gpio*/
 #define GPIO_I_STATE_REG 0x00000000
 #define GPIO_I_INT_ENABLE 0x00000004
-#define GPIO_I_INT_REG 0x0000000C
 #define GPIO_I_INT_ACK 0x00000008
+#define GPIO_I_INT_REG 0x0000000C
 
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
@@ -81,7 +81,7 @@ void open_shutter();
 void close_shutter();
 
 /*initialize gpio for reading and writing*/
-void init_gpio();
+int init_gpio();
 void init_shutter();
 
 #endif	/* GPIO_H */

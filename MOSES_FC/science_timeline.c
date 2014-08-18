@@ -13,8 +13,8 @@
 void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
-    char sframe[10];   
-    
+    char sframe[10];
+
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
 
@@ -22,8 +22,8 @@ void * science_timeline(void * arg) {
 
     record("-->Science Timeline thread started....\n\n");
 
-    
-//    void init_shutter();      //Would still like to do this -- causes segfault
+
+    //    void init_shutter();      //Would still like to do this -- causes segfault
 
 
     /* wait for ROE to become active */
@@ -38,12 +38,12 @@ void * science_timeline(void * arg) {
     //exitDefault();
 
     while (ts_alive) {
-        
+
         /*wait until sequence is enqueued*/
-        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]); 
-        
+        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
+
         ops.seq_run = TRUE;
-        
+
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
 
@@ -68,8 +68,12 @@ void * science_timeline(void * arg) {
                 break;
             }
 
+            /*construct new image to read data into*/
             roeimage_t * image = malloc(sizeof(roeimage_t));
-            
+            int index[4] = {0, 0, 0, 0};        //incremented when the data is sorted
+            char channels = ops.channels;
+            constructImage(image, index, channels, 16);
+
             sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
             record(msg);
             int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
@@ -92,18 +96,18 @@ void * science_timeline(void * arg) {
 
             /* Command ROE to Readout*/
             //readOut(...);
-            
+
             //wait 4 seconds for response from ROE that readout is complete
             sleep(4);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
-           
+
             /*Enqueue image to image writer thread*/
             record("Queue image for writing.\n");
-            enqueue(&lqueue[fpga_image], image);
-                    
+            enqueue(&lqueue[scit_image], image);
+
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */
@@ -129,35 +133,34 @@ void * science_timeline(void * arg) {
    data to memory and will initialize the writing to disk*/
 void * write_data(void * arg) {
     char msg[100];
-    
+
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
 
+    record("-->Image Writer thread started....\n\n");
+
     while (ts_alive) {
 
-        short *BUFFER[4];
-        /*create pixel buffers */
-        int i;
-        for (i = 0; i < 4; i++) {
-            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-        }
-        /*initialize index( these will start at -1 and be incremented by DMA*/
-        int index[4] = {2200000, 2200000, 2200000, 2200000};
-        
+//        short *BUFFER[4];
+//        /*create pixel buffers */
+//        int i;
+//        for (i = 0; i < 4; i++) {
+//            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
+//        }
+
+
         char filename[80];
         char ftimedate[80];
         char dtime[100];
         char ddate[100];
 
-        char channels = ops.channels;
+        
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
         record("Dequeued new image\n");
-
-        /*Initialize the image*/
-        constructImage(image, BUFFER, index, channels, 16);
+        
         /* Get data for image details*/
         time_t curTime = time(NULL);
         struct tm *broken = localtime(&curTime);
@@ -180,7 +183,7 @@ void * write_data(void * arg) {
 
         /*write the image and metadata to disk*/
         writeToFile(image);
-        
+
         sprintf(msg, "File %s successfully written to disk.\n", filename);
         record(msg);
 
@@ -199,10 +202,6 @@ void * write_data(void * arg) {
         free(image->data[1]);
         free(image->data[2]);
         free(image->data[3]);
-        free(BUFFER[0]);
-        free(BUFFER[1]);
-        free(BUFFER[2]);
-        free(BUFFER[3]);
         free(image);
     }//end while ts_alive
 
