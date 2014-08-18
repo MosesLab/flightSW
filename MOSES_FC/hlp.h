@@ -56,6 +56,7 @@
 //SHELL Subtypes 
 #define INPUT	   "INP"
 #define OUTPUT	   "OUT"
+#define INTERRUPT  "INT"
 
 //MDAQ Subtypes
 #define ST_SEQUENCE "SSQ"

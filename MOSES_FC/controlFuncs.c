@@ -201,7 +201,11 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 
             return GOOD_PACKET;
         }
-    } else {
+    } else if(strcmp(p->subtype, INTERRUPT) == 0){
+        kill(vshell_pid, SIGINT);
+        return GOOD_PACKET;
+    }
+    else {
         return BAD_PACKET;
     }
 }

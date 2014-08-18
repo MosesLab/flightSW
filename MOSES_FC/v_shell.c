@@ -67,6 +67,6 @@ int vshell_init() {
         return -1; //shouldn't return if it worked correctly
     }
 
-    return 0;
+    return result;
 }
 

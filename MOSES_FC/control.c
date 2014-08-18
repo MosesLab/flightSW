@@ -4,6 +4,7 @@
 /*global variable delcaration*/
 moses_ops_t ops;
 gpio_out_uni gpio_power_state;
+pid_t vshell_pid;
 
 /* hlp_control is a thread that reads packets from the housekeeping uplink and 
  * executes the commands contained within the packets 
@@ -17,7 +18,7 @@ void * hlp_control(void * arg) {
     record("-->HLP control thread started : %.4x\n\n");
 
     /*initialize virtual shell*/
-    vshell_init();
+    vshell_pid = vshell_init();
 
     /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);

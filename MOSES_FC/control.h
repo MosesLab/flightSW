@@ -32,6 +32,7 @@
 
 /*struct to control state of experiment*/
 extern moses_ops_t ops;
+extern pid_t vshell_pid;
 
 /*Current state of powered subsystems*/
 extern gpio_out_uni gpio_power_state;
@@ -44,7 +45,6 @@ void* hlp_down(void*);
 
 /*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
-
 
 void * hlp_shell_out(void *);
 
