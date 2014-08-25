@@ -7,7 +7,7 @@
 
 #include "main.h"
 
-volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
+volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 
 unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
@@ -16,10 +16,10 @@ pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
 int quit_sig;
-struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
-sigset_t mask, oldmask;         //masks for SIGINT signal
+struct sigaction quit_action; //action to be taken when ^C (SIGINT) is entered
+sigset_t mask, oldmask; //masks for SIGINT signal
 
-int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations  
+int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
 node_t** config_hash_table;
 
 LockingQueue lqueue[QUEUE_NUM];
@@ -46,11 +46,13 @@ int main(void) {
     /*record this thread's PID*/
     main_pid = getpid();
 
+    /*Use signals to inform the program to quit*/
+    init_quit_signal_handler();
+
     /*start threads indicated by configuration file*/
     start_threads();
 
     /*Upon program termiation (^c) attempt to join the threads*/
-    init_quit_signal_handler();
     //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
     //    while (ts_alive) {
     //        sigsuspend(&oldmask); // wait here until the program is killed
@@ -193,7 +195,7 @@ void main_init() {
     tfuncs[fpga_server_thread] = fpga_server;
 
     /*initialize locking queues*/
-    for(i = 0; i < QUEUE_NUM; i++){
+    for (i = 0; i < QUEUE_NUM; i++) {
         lockingQueue_init(&lqueue[i]);
     }
 
