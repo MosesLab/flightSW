@@ -15,7 +15,7 @@ void * targs[NUM_RROBIN + NUM_FIFO];
 pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
-int quit_sig;
+int quit_sig = 0;
 struct sigaction quit_action; //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask; //masks for SIGINT signal
 
@@ -64,7 +64,7 @@ int main(void) {
     pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
     
     char msg[255];
-    sprintf(msg, "ts_alive: %d\n", ts_alive);
+    sprintf(msg, "quit sig: %d\n", quit_sig);
     record(msg);
     
 
