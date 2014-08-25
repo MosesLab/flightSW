@@ -62,6 +62,11 @@ int main(void) {
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
     sigwait(&mask, &quit_sig);
     pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+    
+    char msg[255];
+    sprintf(msg, "ts_alive: %d\n", ts_alive);
+    record(msg);
+    
 
     /*SIGINT caught, ending program*/
     join_threads();
