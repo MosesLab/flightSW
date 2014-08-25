@@ -122,16 +122,16 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //    void * returns;
+        void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
-    //    sleep(1);
+        sleep(1);
 
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-            //            pthread_join(threads[i], &returns);
-            pthread_cancel(threads[i]);
+                        pthread_join(threads[i], &returns);
+//            pthread_cancel(threads[i]);
         }
     }
 }
@@ -145,7 +145,7 @@ void init_quit_signal_handler() {
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = 0;
+    quit_action.sa_flags = SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment initialization signal handling*/
@@ -195,8 +195,6 @@ void main_init() {
     config_strings[image_writer_thread] = IMAGE_WRITER_CONF;
     config_strings[fpga_server_thread] = FPGA_SERVER_CONF;
 
-
-    /*must offset by NUM_THREADS to be enumerated correctly*/
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
