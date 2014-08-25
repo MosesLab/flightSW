@@ -61,9 +61,10 @@ int main(void) {
 
     while (ts_alive) {
 
-        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-        sigwait(&mask, &quit_sig);
-        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+//        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+//        sigwait(&mask, &quit_sig);
+//        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+        sleep(1);
     }
 
     char msg[255];
