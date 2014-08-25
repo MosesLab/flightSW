@@ -64,7 +64,7 @@ int main(void) {
 //        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
 //        sigwait(&mask, &quit_sig);
 //        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-        sleep(1);
+        wait(0);
     }
 
     char msg[255];
@@ -175,12 +175,12 @@ void quit_signal(int sig) {
 
 /*signal experiment to initialize power subsystems*/
 void init_signal(int sig){
-    record("Received SIGUSR1");
+    record("Received SIGUSR1\n");
 }
 
 /*Signal experiment to start gathering data*/
 void start_signal(int sig){
-    record("Received SIGUSR2");
+    record("Received SIGUSR2\n");
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
