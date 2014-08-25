@@ -16,7 +16,7 @@ pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
 int quit_sig = 0;
-struct sigaction quit_action; //action to be taken when ^C (SIGINT) is entered
+struct sigaction quit_action, init_action, start_action; //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask; //masks for SIGINT signal
 
 int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
@@ -59,14 +59,17 @@ int main(void) {
     //    }
     //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
 
-    pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-    sigwait(&mask, &quit_sig);
-    pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-    
+    while (ts_alive) {
+
+        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+        sigwait(&mask, &quit_sig);
+        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+    }
+
     char msg[255];
     sprintf(msg, "quit sig: %d\n", quit_sig);
     record(msg);
-    
+
 
     /*SIGINT caught, ending program*/
     join_threads();
@@ -76,10 +79,6 @@ int main(void) {
     return 0;
 }
 
-/*signal all threads to exit*/
-void quit_signal(int sig) {
-    ts_alive = 0;
-}
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads() {
@@ -144,12 +143,43 @@ void join_threads() {
 void init_quit_signal_handler() {
     sigfillset(&oldmask); //save the old mask
     sigemptyset(&mask); //create a blank new mask
+    
+    /*quit signal handling*/
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
     quit_action.sa_flags = 0;
-
     sigaction(SIGINT, &quit_action, NULL);
+
+    /*experiment initialization signal handling*/
+    sigaddset(&mask, SIGUSR1);
+    init_action.sa_handler = init_signal;
+    init_action.sa_mask = oldmask;
+    init_action.sa_flags = 0;
+    sigaction(SIGUSR1, &init_action, NULL);
+    
+    /*experiment data start signal handling*/
+    sigaddset(&mask, SIGUSR2);
+    start_action.sa_handler = start_signal;
+    start_action.sa_mask = oldmask;
+    start_action.sa_flags = 0;
+    sigaction(SIGUSR2, &start_action, NULL);
+    
+}
+
+/*signal all threads to exit*/
+void quit_signal(int sig) {
+    ts_alive = 0;
+}
+
+/*signal experiment to initialize power subsystems*/
+void init_signal(int sig){
+    record("Received SIGUSR1");
+}
+
+/*Signal experiment to start gathering data*/
+void start_signal(int sig){
+    record("Received SIGUSR2");
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
