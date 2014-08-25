@@ -211,7 +211,7 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 }
 
 /*Uplink control functions*/
-int uDataStart(packet_t* p) {
+int uDataStart() {
     record("Received data start Uplink\n");
 
     unsigned int i;
@@ -231,7 +231,7 @@ int uDataStart(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uDataStop(packet_t* p) {
+int uDataStop() {
     record("Received data stop Uplink\n");
     //Insert uplink handling code here
 
@@ -264,7 +264,7 @@ int uDark1() {
     return GOOD_PACKET;
 }
 
-int uDark2(packet_t* p) {
+int uDark2() {
     record("Received Dark2 Uplink\n");
     //Insert uplink handling code here
 
@@ -284,7 +284,7 @@ int uDark2(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uDark3(packet_t* p) {
+int uDark3() {
     record("Received Dark3 Uplink\n");
     //Insert uplink handling code here
 
@@ -304,7 +304,7 @@ int uDark3(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uDark4(packet_t* p) {
+int uDark4() {
     record("Received Dark4 Uplink\n");
     //Insert uplink handling code here
 
@@ -324,7 +324,7 @@ int uDark4(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uSleep(packet_t* p) {
+int uSleep() {
     record("Received shutdown Uplink\n");
     //Insert uplink handling code here
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
@@ -332,7 +332,7 @@ int uSleep(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uWake(packet_t* p) {
+int uWake() {
     record("Received shutdown pending Uplink\n");
     //Insert uplink handling code here
     packet_t* newp = constructPacket(UPLINK_S, WAKE, NULL);
@@ -340,7 +340,7 @@ int uWake(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int uTest(packet_t* p) {
+int uTest() {
     record("Received test Uplink\n");
     //Insert uplink handling code here
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
@@ -349,7 +349,7 @@ int uTest(packet_t* p) {
 }
 
 /*Timer control functions*/
-int tDataStart(packet_t* p) {
+int tDataStart() {
     record("Received data start Timer\n");
 
 
@@ -359,7 +359,7 @@ int tDataStart(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int tDataStop(packet_t* p) {
+int tDataStop() {
     record("Received data stop Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DATASTOP, NULL);
@@ -367,7 +367,7 @@ int tDataStop(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int tDark2(packet_t* p) {
+int tDark2() {
     record("Received Dark2 Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DARK2, NULL);
@@ -375,7 +375,7 @@ int tDark2(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int tDark4(packet_t* p) {
+int tDark4() {
     record("Received Dark4 Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DARK4, NULL);
@@ -383,7 +383,7 @@ int tDark4(packet_t* p) {
     return GOOD_PACKET;
 }
 
-int tSleep(packet_t* p) {
+int tSleep() {
     record("Received shutdown Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, SLEEP, NULL);

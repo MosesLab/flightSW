@@ -67,10 +67,6 @@ int main(void) {
         wait(0);
     }
 
-    char msg[255];
-    sprintf(msg, "quit sig: %d\n", quit_sig);
-    record(msg);
-
 
     /*SIGINT caught, ending program*/
     join_threads();
@@ -180,7 +176,8 @@ void init_signal(int sig){
 
 /*Signal experiment to start gathering data*/
 void start_signal(int sig){
-    record("Received SIGUSR2\n");
+    record("Flight computer asserted Data Start\n");
+    uDataStart();
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
