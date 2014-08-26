@@ -17,8 +17,7 @@ void * hlp_control(void * arg) {
     prctl(PR_SET_NAME, "CONTROL", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
 
-    /*initialize virtual shell*/
-    vshell_pid = vshell_init();
+
 
     /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);

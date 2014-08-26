@@ -49,8 +49,13 @@ int main(void) {
     /*Use signals to inform the program to quit*/
     init_quit_signal_handler();
 
+    /*initialize virtual shell*/
+    vshell_pid = vshell_init();
+
     /*start threads indicated by configuration file*/
     start_threads();
+
+
 
     /*Upon program termiation (^c) attempt to join the threads*/
     //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
@@ -61,9 +66,9 @@ int main(void) {
 
     while (ts_alive) {
 
-//        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-//        sigwait(&mask, &quit_sig);
-//        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+        //        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+        //        sigwait(&mask, &quit_sig);
+        //        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
         wait(0);
     }
 
@@ -75,7 +80,6 @@ int main(void) {
 
     return 0;
 }
-
 
 /*this method takes a function pointer and starts it as a new thread*/
 void start_threads() {
@@ -122,16 +126,16 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-        void * returns;
+//    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
-        sleep(1);
+    sleep(1);
 
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-                        pthread_join(threads[i], &returns);
-//            pthread_cancel(threads[i]);
+//            pthread_join(threads[i], &returns);
+                        pthread_cancel(threads[i]);
         }
     }
 }
@@ -140,7 +144,7 @@ void join_threads() {
 void init_quit_signal_handler() {
     sigfillset(&oldmask); //save the old mask
     sigemptyset(&mask); //create a blank new mask
-    
+
     /*quit signal handling*/
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
@@ -154,14 +158,14 @@ void init_quit_signal_handler() {
     init_action.sa_mask = oldmask;
     init_action.sa_flags = 0;
     sigaction(SIGUSR1, &init_action, NULL);
-    
+
     /*experiment data start signal handling*/
     sigaddset(&mask, SIGUSR2);
     start_action.sa_handler = start_signal;
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR2, &start_action, NULL);
-    
+
 }
 
 /*signal all threads to exit*/
@@ -170,12 +174,12 @@ void quit_signal(int sig) {
 }
 
 /*signal experiment to initialize power subsystems*/
-void init_signal(int sig){
+void init_signal(int sig) {
     record("Received SIGUSR1\n");
 }
 
 /*Signal experiment to start gathering data*/
-void start_signal(int sig){
+void start_signal(int sig) {
     record("Flight computer signaled Data Start\n");
     uDataStart();
 }
