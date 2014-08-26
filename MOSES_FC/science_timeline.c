@@ -23,7 +23,7 @@ void * science_timeline(void * arg) {
     record("-->Science Timeline thread started....\n\n");
 
 
-        void init_shutter();      //Would still like to do this -- causes segfault
+//        void init_shutter();      //Would still like to do this -- causes segfault
 
 
     /* wait for ROE to become active */

@@ -176,7 +176,7 @@ void init_signal(int sig){
 
 /*Signal experiment to start gathering data*/
 void start_signal(int sig){
-    record("Flight computer asserted Data Start\n");
+    record("Flight computer signaled Data Start\n");
     uDataStart();
 }
 
