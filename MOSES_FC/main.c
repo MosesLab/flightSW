@@ -72,7 +72,8 @@ int main(void) {
         wait(0);
     }
 
-
+    record("exited wait\n");
+    
     /*SIGINT caught, ending program*/
     join_threads();
 
@@ -132,6 +133,8 @@ void join_threads() {
     sleep(1);
     
     kill(vshell_pid, SIGTERM);
+    
+    record("killed bash\n");
 
     int i;
     for (i = 0; i < num_threads; i++) {
