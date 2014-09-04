@@ -64,13 +64,13 @@ int main(void) {
     //    }
     //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
 
-    while (ts_alive) {
+//    while (ts_alive) {
 
-        //        pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-        //        sigwait(&mask, &quit_sig);
-        //        pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-        wait(0);
-    }
+                pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+                sigwait(&mask, &quit_sig);
+                pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+//        wait(0);
+//    }
 
     record("exited wait\n");
     
