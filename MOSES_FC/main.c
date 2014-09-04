@@ -152,30 +152,18 @@ void init_quit_signal_handler() {
     quit_action.sa_flags = SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
-    /*experiment initialization signal handling*/
-    sigaddset(&mask, SIGUSR1);
-    init_action.sa_handler = init_signal;
-    init_action.sa_mask = oldmask;
-    init_action.sa_flags = 0;
-    sigaction(SIGUSR1, &init_action, NULL);
-
     /*experiment data start signal handling*/
-    sigaddset(&mask, SIGUSR2);
+    sigaddset(&mask, SIGUSR1);
     start_action.sa_handler = start_signal;
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
-    sigaction(SIGUSR2, &start_action, NULL);
+    sigaction(SIGUSR1, &start_action, NULL);
 
 }
 
 /*signal all threads to exit*/
 void quit_signal(int sig) {
     ts_alive = 0;
-}
-
-/*signal experiment to initialize power subsystems*/
-void init_signal(int sig) {
-    record("Received SIGUSR1\n");
 }
 
 /*Signal experiment to start gathering data*/

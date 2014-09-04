@@ -162,53 +162,7 @@ void sort(roeimage_t * image) {
     }
 }
 
-/**
- * interrupt_wait() will wait on the PCI interrupt line and determine if GPIO 
- * input or DMA requested the interrupt
- * 
- * @return 1 if success 0 if failure
- */
-int interrupt_wait(U32 * interrupt) {
-    int rc;
 
-    /*clear and reset interrupt structure*/
-    memset(&plx_intr, 0, sizeof (PLX_INTERRUPT));
-
-    /*set interrupt structure*/
-    plx_intr.LocalToPci = 1; //set bit 11
-    //    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
-
-    /*enable interrupt on PLX bridge*/
-    rc = PlxPci_InterruptEnable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
-    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
-
-    /*register for interrupt with kernel*/
-    rc = PlxPci_NotificationRegisterFor(&fpga_dev, &plx_intr, &plx_event);
-    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
-
-    /*wait for interrupt*/
-    int waitrc = PlxPci_NotificationWait(&fpga_dev, &plx_event, FPGA_TIMEOUT);
-
-    /*disable interrupt*/
-    rc = PlxPci_InterruptDisable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
-    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
-
-    /*handle return code of wait function*/
-    if (waitrc == ApiWaitTimeout) {
-        *interrupt = TIMEOUT_INT;
-        return TRUE;
-    } else if (waitrc == ApiSuccess) {
-        *interrupt = INP_INT;
-        return TRUE;
-    } else if (waitrc == ApiWaitCanceled) {
-        record("Wait canceled\n");
-        return FALSE;
-    } else {
-        record("Wait returned an unknown value\n");
-        return FALSE;
-    }
-
-}
 
 /**
  * Clear page-locked DMA buffer out of memory

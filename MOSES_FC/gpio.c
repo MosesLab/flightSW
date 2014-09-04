@@ -51,6 +51,11 @@ int peek_gpio(U32 offset, U32 * data_buf) {
     return return_val;
 }
 
+/**
+ * Upon receiving a GPIO input interrupt the FPGA server calls this function to
+ * take the correct action based off which pin is asserted
+ * @return 
+ */
 int handle_gpio_in() {
     int rc;
     //    char msg[255];
@@ -88,7 +93,7 @@ void open_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-//        outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OPEN, SHUTTER_OFFSET);
@@ -110,7 +115,7 @@ void close_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);

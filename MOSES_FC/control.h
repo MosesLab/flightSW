@@ -48,6 +48,6 @@ void * hlp_housekeeping(void * arg);
 
 void * hlp_shell_out(void *);
 
-void * fpga_server(void *);
+
 
 #endif /*CONTROL_H*/

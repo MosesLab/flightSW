@@ -16,6 +16,7 @@
 #include "science_timeline.h"
 #include "sequence.h"
 #include "lockingQueue.h"
+#include "fpga.h"
 
 /*IO constants*/
 #define NUM_IO 4

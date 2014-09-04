@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/control.o \
 	${OBJECTDIR}/controlFuncs.o \
 	${OBJECTDIR}/dma.o \
+	${OBJECTDIR}/fpga.o \
 	${OBJECTDIR}/gpio.o \
 	${OBJECTDIR}/hashTable.o \
 	${OBJECTDIR}/lockingQueue.o \
@@ -97,6 +98,11 @@ ${OBJECTDIR}/dma.o: dma.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/dma.o dma.c
+
+${OBJECTDIR}/fpga.o: fpga.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/fpga.o fpga.c
 
 ${OBJECTDIR}/gpio.o: gpio.c 
 	${MKDIR} -p ${OBJECTDIR}
