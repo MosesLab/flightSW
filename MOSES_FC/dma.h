@@ -20,7 +20,7 @@
 #define NUM_FRAGMENT            4
 #define FPGA_MEMORY_LOC_0       0x0000014
 #define DMA_CHAN                0x0
-#define DMA_TIMEOUT             10000 //ms
+#define DMA_TIMEOUT             5000 //ms
 
 #define INP_INT             0x00000001
 #define DMA_INP_INT         0x80000000

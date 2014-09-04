@@ -130,6 +130,8 @@ void join_threads() {
 
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
+    
+    kill(vshell_pid, SIGTERM);
 
     int i;
     for (i = 0; i < num_threads; i++) {
