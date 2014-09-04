@@ -493,7 +493,7 @@ int receiveAck(int fd, char *data, int size, char target) {
             }
         }
     }
-    printf("Aknowledgment timeout\n");
+    printf("Acknowledgment timeout\n");
     return -1;
 }
 
