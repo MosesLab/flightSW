@@ -80,6 +80,8 @@ void * science_timeline(void * arg) {
 
             image->duration = duration;
             image->seq_name = currentSequence->sequenceName;
+            image->num_exp = i+1;       //Index of exposure in sequence
+            image->num_frames = currentSequence->numFrames; //Number of exposures this sequence
 
             /*push packets with information about frame(index and exposure length) */
             sprintf(sindex, "%d", i);
@@ -185,7 +187,7 @@ void * write_data(void * arg) {
         /*write the image and metadata to disk*/
         writeToFile(image);
 
-        sprintf(msg, "File %s successfully written to disk.\n", filename);
+        sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
         record(msg);
 
         /*push the filename onto the telemetry queue*/

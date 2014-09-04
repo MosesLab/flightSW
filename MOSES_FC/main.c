@@ -165,6 +165,7 @@ void init_quit_signal_handler() {
 
 /*signal all threads to exit*/
 void quit_signal(int sig) {
+    record("SIGINT received\n");
     ts_alive = 0;
 }
 
