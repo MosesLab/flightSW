@@ -12,7 +12,7 @@
 int takeExposure(double duration, int sig) {
     char msg[100];
     struct timeval expstop, expstart, expmid, shutdiff, expdiff;
-    int dur = (int) (duration * 1000000) + PULSE; //duration is the exposure length in microseconds'
+    int dur = (int) (duration * 1000000); //duration is the exposure length in microseconds'
     int actual; // computer recorded time interval between opening and closing the shutter
 
     //int i;
@@ -21,6 +21,9 @@ int takeExposure(double duration, int sig) {
 
     if (sig == 1) // use the shutter for Data sequence 
     {
+        /*exposure duration should be lengthened to accout for shutter openeing*/
+        dur = dur + PULSE;
+        
         /*start measuring exposure duration*/
         gettimeofday(&expstart, NULL);
 
@@ -35,9 +38,11 @@ int takeExposure(double duration, int sig) {
         int open_time = shutdiff.tv_sec * 1000000 + shutdiff.tv_usec;
         int time_wait = dur - open_time;
 
-        //wait for exposure duration, calculate with the pulse
-        actual = wait_exposure(time_wait) + open_time - PULSE;
+//        //wait for exposure duration, calculate with the pulse
+//        actual = wait_exposure(time_wait) + open_time - PULSE;
         
+        /*sleep for remaining exposure duration*/
+        usleep(time_wait);      
 
         gettimeofday(&expstop, NULL);
         // send close shutter signal to DIO
@@ -49,16 +54,19 @@ int takeExposure(double duration, int sig) {
         //clear the pin
 
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
+        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec - PULSE;
     } else // performing dark exposure, just wait
     {
         gettimeofday(&expstart, NULL);
-        actual = wait_exposure(dur) - PULSE;
+        usleep(dur);
         gettimeofday(&expstop, NULL);
+        
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
+        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     }
     return actual;
 }
