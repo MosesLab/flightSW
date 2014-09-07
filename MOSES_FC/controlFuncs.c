@@ -134,9 +134,6 @@ void set_power(U32 sys, U32 state) {
     /*dynamically allocate and copy new value*/
     gpio_out_uni * new_state = malloc(sizeof(U32));
     *new_state = gpio_power_state;
-    
-    /*apply latch*/
-    new_state->bf.latch = 1;
 
     /*enqueue new state to fpga server for assertion*/
     enqueue(&lqueue[gpio_out], new_state);

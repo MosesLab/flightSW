@@ -15,7 +15,7 @@ void * fpga_server(void * arg) {
 
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
-    record("-->FPGA Server thread started\n");
+    record("-->FPGA Server thread started....\n");
 
     /*initialize DMA pipeline*/
     initializeDMA();
@@ -67,7 +67,7 @@ void * fpga_server(void * arg) {
             }
 
             /*free gpio value*/
-            free(temp_state);
+            free(temp_state);   //Free GPIO output struct from assert
             temp_state = NULL;
         }
 
@@ -101,8 +101,19 @@ void * fpga_server(void * arg) {
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
-                    temp_state = gpio_out_val;
-                    //                    free(gpio_out);
+                    
+                    usleep(1000);       //sleep for 1ms before applying latch
+                    
+                    /*apply latch*/
+                    gpio_out_val->bf.latch = 1;
+                                        
+                    /*apply latched output*/
+                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
+                    if (rc == FALSE) {
+                        record("Error writing GPIO output\n");
+                    }
+                                      
+                    temp_state = gpio_out_val;  //write to this variable so we know to delatch next timeout
                 }
             }
 

@@ -20,7 +20,7 @@ void * science_timeline(void * arg) {
 
     //sleep(1);
 
-    record("-->Science Timeline thread started....\n\n");
+    record("-->Science Timeline thread started....\n");
 
 
 //        void init_shutter();      //Would still like to do this -- causes segfault
@@ -139,7 +139,7 @@ void * write_data(void * arg) {
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
 
-    record("-->Image Writer thread started....\n\n");
+    record("-->Image Writer thread started....\n");
 
     while (ts_alive) {
 
@@ -214,7 +214,7 @@ void * write_data(void * arg) {
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
-    record("-->High-speed Telemetry thread started....\n\n");
+    record("-->High-speed Telemetry thread started....\n");
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
