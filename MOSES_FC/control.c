@@ -12,12 +12,9 @@ pid_t vshell_pid;
 void * hlp_control(void * arg) {
     int f_up = 0;
     int stdin_des;
-    char msg[255];
 
-    prctl(PR_SET_NAME, "CONTROL", 0, 0, 0);
+    prctl(PR_SET_NAME, "HLP_CONTROL", 0, 0, 0);
     record("-->HLP control thread started : %.4x\n\n");
-
-
 
     /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
@@ -59,69 +56,49 @@ void * hlp_control(void * arg) {
             record("malloc failed to allocate packet\n");
         }
 
-        int control_type = control_wait(f_up, &lqueue[gpio_in]);
+        /*read next packet from HKUP*/
+        readPacket(f_up, p);
+        //            recordPacket(p);
 
-        if (control_type == HLP_PACKET) {
-
-            /*read next packet from HKUP*/
-            readPacket(f_up, p);
-//            recordPacket(p);
-
-            if (ts_alive) {
-                if (p->status == GOOD_PACKET) {
-                    switch (p->type[0]) {
-                        case SHELL:
-                            hlp_shell(stdin_des, p);
-                            break;
-                        case MDAQ_RQS:
-                        case UPLINK:
-                        case PWR:
-                            p->control = concat(2, p->type, p->subtype);
-                            p->status = execPacket(p);
-                            break;
-                        case HK_RQS:
-                            p->control = concat(3, p->type, p->subtype, p->data);
-                            p->status = execPacket(p);
-                            break;
-                        default:
-                            p->status = BAD_PACKET;
-                            break;
-                    }
+        if (ts_alive) {
+            if (p->status == GOOD_PACKET) {
+                switch (p->type[0]) {
+                    case SHELL:
+                        hlp_shell(stdin_des, p);
+                        break;
+                    case MDAQ_RQS:
+                    case UPLINK:
+                    case PWR:
+                        p->control = concat(2, p->type, p->subtype);
+                        p->status = execPacket(p);
+                        break;
+                    case HK_RQS:
+                        p->control = concat(3, p->type, p->subtype, p->data);
+                        p->status = execPacket(p);
+                        break;
+                    default:
+                        p->status = BAD_PACKET;
+                        break;
                 }
-
-                /*create data to send with ACK*/
-                char* data;
-                data = concat(2, p->type, p->subtype);
-
-                /*respond to control packet with ACK*/
-                char* ackType;
-                if (p->status == GOOD_PACKET) {
-
-                    ackType = GDPKT;
-                } else {
-                    ackType = BDPKT;
-                    record("BAD PACKET EXECUTION\n");
-                }
-                packet_t* nextp = constructPacket(ackType, ACK, data);
-                enqueue(&lqueue[hkdown], nextp);
             }
 
-        } else if (control_type == GPIO_INP) {
+            /*create data to send with ACK*/
+            char* data;
+            data = concat(2, p->type, p->subtype);
 
-            /*dequeue next packet from gpio input queue*/
-            gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
+            /*respond to control packet with ACK*/
+            char* ackType;
+            if (p->status == GOOD_PACKET) {
 
-            sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
-            record(msg);
-
-            /*execute control sequence based off of read gpio value*/
-            exec_gpio(gpio_control);
-
-            free(gpio_control);
-
-        } else {
-            record("Waiting for input failed\n");
+                ackType = GDPKT;
+            } else {
+                ackType = BDPKT;
+                record("BAD PACKET EXECUTION\n");
+            }
+            packet_t* nextp = constructPacket(ackType, ACK, data);
+            enqueue(&lqueue[hkdown], nextp);
         }
+
         free(p);
     }
     /*need to clean up properly but these don't allow the program to terminate correctly*/
@@ -130,7 +107,29 @@ void * hlp_control(void * arg) {
     return NULL;
 }
 
+void * gpio_control(void * arg) {
+    char msg[255];
 
+    prctl(PR_SET_NAME, "GPIO_CONTROL", 0, 0, 0);
+    record("-->HLP control thread started : %.4x\n\n");
+
+    while (ts_alive) {
+        /*dequeue next packet from gpio input queue*/
+        gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
+
+        sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
+        record(msg);
+
+        /*execute control sequence based off of read gpio value*/
+        exec_gpio(gpio_control);
+
+        free(gpio_control);
+    }
+    
+    return NULL;
+
+
+}
 
 /*
  * hlp_down is a thread that waits on a packet from a queue and sends it over 
@@ -160,7 +159,7 @@ void * hlp_down(void * arg) {
         if (!ts_alive) break; //If the program has terminated, break out of the loop
         if (p->status) {
             sendPacket(p, fdown);
-//            recordPacket(p); //save packet to logfile for debugging   
+            //            recordPacket(p); //save packet to logfile for debugging   
             free(p); //Clean up after packet is sent
         } else {
             record("Bad hlp_down packet\n");

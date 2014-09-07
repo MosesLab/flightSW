@@ -35,7 +35,7 @@ enum thread_config {
     telem_thread,
     hlp_down_thread,
     hlp_shell_thread,
-    hlp_hk_thread,
+    gpio_control_thread,
     
     /*IO configs*/
     hlp_up_interface,

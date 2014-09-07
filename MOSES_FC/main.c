@@ -92,7 +92,7 @@ void start_threads() {
     /*fill array of arguments for pthread call*/
     targs[hlp_control_thread] = &config_values[hlp_up_interface];
     targs[hlp_down_thread] = &config_values[hlp_down_interface];
-    targs[hlp_hk_thread] = NULL;
+    targs[gpio_control_thread] = NULL;
     targs[hlp_shell_thread] = NULL;
     targs[sci_timeline_thread] = NULL;
     targs[telem_thread] = NULL;
@@ -184,9 +184,9 @@ void main_init() {
     char * config_strings[num_threads + NUM_IO];
 
     /*allocate strings to match with configuration file*/
-    config_strings[hlp_control_thread] = CONTROL_CONF;
+    config_strings[hlp_control_thread] = HLP_CONTROL_CONF;
     config_strings[hlp_down_thread] = DOWN_CONF;
-    config_strings[hlp_hk_thread] = HK_CONF;
+    config_strings[gpio_control_thread] = GPIO_CONTROL_CONF;
     config_strings[hlp_shell_thread] = SHELL_CONF;
     config_strings[sci_timeline_thread] = SCIENCE_CONF;
     config_strings[telem_thread] = TELEM_CONF;
@@ -216,7 +216,7 @@ void main_init() {
     /*fill array of function pointer for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
-    tfuncs[hlp_hk_thread] = hlp_housekeeping;
+    tfuncs[gpio_control_thread] = hlp_housekeeping;
     tfuncs[hlp_shell_thread] = hlp_shell_out;
     tfuncs[sci_timeline_thread] = science_timeline;
     tfuncs[telem_thread] = telem;

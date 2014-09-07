@@ -40,6 +40,8 @@ extern gpio_out_uni gpio_power_state;
 /*hlp_control initializations*/
 void* hlp_control(void *);
 
+void * gpio_control(void *);
+
 /*hlp_down thread initializations*/
 void* hlp_down(void*);
 
