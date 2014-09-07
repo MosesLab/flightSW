@@ -221,9 +221,9 @@ void readPacket(int fd, packet_t * p) {
 //            record("checksum\n");
             readData(fd, &temp, 1);
 //            record("endbyte\n");
-            while (temp != ENDBYTE) {
-                readData(fd, &temp, 1);
-            }
+//            while (temp != ENDBYTE) {
+//                readData(fd, &temp, 1);
+//            }
 //            record("eof\n");
 //            while (temp != EOF) {
 //                readData(fd, &temp, 1);
