@@ -17,7 +17,7 @@
 #include "hlp.h"
 #include "packet.h"
 
-#define PULSE 150000
+#define PULSE 50000     //50 ms result of 150ms open time and 50 ms closing time-->75ms - 25ms = 50ms
 
 extern volatile sig_atomic_t ts_alive;
 
