@@ -23,6 +23,7 @@
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/hlp.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/sequence.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/fpga.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
@@ -34,6 +35,7 @@
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/gpio.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/fpga.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/logger.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/dma.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.h</file>

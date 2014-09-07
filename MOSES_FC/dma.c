@@ -131,7 +131,7 @@ int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
             // Timed out waiting for DMA completion 
-            printf("Timeout");
+            printf("Timeout\n");
             return (FALSE);
         } else {
             printf("*ERROR* - API failed\n");
