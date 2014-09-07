@@ -171,7 +171,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
-    char temp;
+    char temp = '\0';
     //    char * error = "";
 
     int continue_read = FALSE;
@@ -192,35 +192,35 @@ void readPacket(int fd, packet_t * p) {
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
-            //            record("Timestamp\n");
+                        record("Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad type\n");
-            //            record("type\n");
+                        record("type\n");
 
             tempValid = readData(fd, p->subtype, 3);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad subtype\n");
-            //            record("subtype\n");
+                        record("subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data length\n");
             p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
-            //            char msg[255];
-            //            sprintf(msg, "data length %d\n", p->dataSize);
-            //            record(msg);
+                        char msg[255];
+                        sprintf(msg, "data length %d\n", p->dataSize);
+                        record(msg);
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
-            //            record("data\n");
+                        record("data\n");
 
             readData(fd, p->checksum, 1);
-            //            record("checksum\n");
+                        record("checksum\n");
             readData(fd, &temp, 1);
-            //            record("endbyte\n");
+                        record("endbyte\n");
             while (temp != ENDBYTE) {
                 readData(fd, &temp, 1);
             }
