@@ -36,7 +36,7 @@ int takeExposure(double duration, int sig) {
         int time_wait = dur - open_time;
 
         //wait for exposure duration, calculate with the pulse
-        actual = wait_exposure(time_wait) - PULSE;
+        actual = wait_exposure(time_wait) + open_time - PULSE;
         
 
         gettimeofday(&expstop, NULL);
