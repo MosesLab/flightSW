@@ -216,7 +216,7 @@ void main_init() {
     /*fill array of function pointer for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
-    tfuncs[gpio_control_thread] = hlp_housekeeping;
+    tfuncs[gpio_control_thread] = gpio_control;
     tfuncs[hlp_shell_thread] = hlp_shell_out;
     tfuncs[sci_timeline_thread] = science_timeline;
     tfuncs[telem_thread] = telem;
