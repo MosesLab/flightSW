@@ -224,10 +224,10 @@ void readPacket(int fd, packet_t * p) {
             while (temp != ENDBYTE) {
                 readData(fd, &temp, 1);
             }
-            record("eof\n");
-            while (temp != EOF) {
-                readData(fd, &temp, 1);
-            }
+//            record("eof\n");
+//            while (temp != EOF) {
+//                readData(fd, &temp, 1);
+//            }
 
             char rx_checksum = calcCheckSum(p);
             tempValid = (p->checksum[0] == rx_checksum);
