@@ -165,7 +165,7 @@ int init_gpio() {
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
     /*enable GPIO pins on the FPGA*/
-    //    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+        poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
 
     /*Initialize all power GPIO into write mode*/
     //    int i;
