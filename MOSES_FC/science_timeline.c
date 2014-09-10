@@ -40,15 +40,15 @@ void * science_timeline(void * arg) {
     
 
     /* wait for ROE to become active */
-    //record("Waiting for ROE to become active...\n");
-    //while(!roe_struct.active)
-    //    usleep(20000);
-    //record("ROE Active\n");
+    record("Waiting for ROE to become active...\n");
+    while(!roe_struct.active)
+        usleep(20000);
+    record("ROE Active\n");
 
     /* if ROE active, set to known state (exit default, reset, exit default) */
-    //exitDefault();
-    //reset();
-    //exitDefault();
+    exitDefault();
+    reset();
+    exitDefault();
 
     while (ts_alive) {
         if (ops.seq_run == FALSE) {
@@ -64,10 +64,9 @@ void * science_timeline(void * arg) {
         }
 
         /* if ROE active, set to known state (exit default, reset, exit default) */
-        //Add code here
-        //exitDefault();
-        //reset();
-        //exitDefault();
+        exitDefault();
+        reset();
+        exitDefault();
 
 
         /*establish current sequence */
@@ -116,7 +115,7 @@ void * science_timeline(void * arg) {
             record("Done with exposure, perform data collection.\n");
 
             /* Command ROE to Readout*/
-            //readOut(...);
+            readOut(ops.read_block,100000);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);

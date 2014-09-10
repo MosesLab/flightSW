@@ -83,6 +83,7 @@ typedef struct
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;
+    char* read_block;
     
 }moses_ops_t;
 

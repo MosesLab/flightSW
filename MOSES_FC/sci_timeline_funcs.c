@@ -15,10 +15,11 @@ int takeExposure(double duration, int sig) {
     int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
     int actual; // computer recorded time interval between opening and closing the shutter
 
-    //int i;
-    //for(i = 0; i < 5; i++)
-    //flush(); //Flush ROE 5 times
-
+    int i;
+    for(i = 0; i < 5; i++)
+    {
+    flush(); //Flush ROE 5 times
+    }
     if (sig == 1) // use the shutter for Data sequence 
     {
         //send open shutter signal to DIO

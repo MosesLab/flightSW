@@ -659,9 +659,7 @@ int FC_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V voltage*/
 int ROE_2_5V_V(packet_t* p) {
     record("Request for ROE +2.5V voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P2_5VD_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS2_5VD);
+    char* response = (char*)getHK(VPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -670,9 +668,7 @@ int ROE_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V current*/
 int ROE_2_5V_I(packet_t* p) {
     record("Request for ROE +2.5V current received\n");
-    //Insert control code here  
-    char* response = ROE_P2_5VD_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS2_5VD);
+    char* response = (char*)getHK(CPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -701,9 +697,7 @@ int FC_POS_5V_V(packet_t* p) {
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P5VAA_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS5VA_A);
+    char* response = (char*)getHK(VPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -713,8 +707,8 @@ int ROE_POS_5V_VA(packet_t* p) {
 int ROE_POS_5V_VB(packet_t* p) {
     record("Request for ROE +5.0V B Channel voltage received\n");
     //Insert control code here  
-    char* response = ROE_P5VAB_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS5VA_B);
+    //char* response = ROE_P5VAB_V "0.0"; //test EGSE
+    char* response = (char*)getHK(VPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -723,10 +717,8 @@ int ROE_POS_5V_VB(packet_t* p) {
 /*Request for ROE +5.0V D Channel voltage*/
 int ROE_POS_5V_VD(packet_t* p) {
     record("Request for ROE +5.0V D Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P5VD_V "0.0"; //test EGSE
+    char* response = (char*)getHK(VPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    //char* response = getHK(VPOS5VD);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
@@ -734,9 +726,7 @@ int ROE_POS_5V_VD(packet_t* p) {
 /*Request for ROE +5.0V A Channel current*/
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P5VAA_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS5VA_A);
+    char* response = (char*)getHK(CPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -745,9 +735,7 @@ int ROE_POS_5V_IA(packet_t* p) {
 /*Request for ROE +5.0V B Channel current*/
 int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P5VAB_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS5VA_B);
+    char* response = (char*)getHK(CPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -756,9 +744,7 @@ int ROE_POS_5V_IB(packet_t* p) {
 /*Request for ROE +5.0V D Channel current*/
 int ROE_POS_5V_ID(packet_t* p) {
     record("Request for ROE +5.0V D Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P5VD_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS5VD);
+    char* response = (char*)getHK(CPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -767,9 +753,7 @@ int ROE_POS_5V_ID(packet_t* p) {
 /*Request for ROE -5.0V A Channel voltage*/
 int ROE_NEG_5V_VA(packet_t* p) {
     record("Request for ROE -5.0V A Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_N5VAA_V "0.0"; //test EGSE
-    //char* response = getHK(VNEG5VA_A);
+    char* response = (char*)getHK(VNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -778,9 +762,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
 /*Request for ROE -5.0V B Channel voltage*/
 int ROE_NEG_5V_VB(packet_t* p) {
     record("Request for ROE -5.0V B Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_N5VAB_V "0.0"; //test EGSE
-    //char* response = getHK(VNEG5VA_B);
+    char* response = (char*)getHK(VNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -789,9 +771,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
 /*Request for ROE -10.0V A Channel voltage*/
 int ROE_NEG_10V_VA(packet_t* p) {
     record("Request for ROE -10.0V A Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_N10VA_V "0.0"; //test EGSE
-    //char* response = getHK(VNEG10V_A);
+    char* response = (char*)getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -800,9 +780,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
 /*Request for ROE -10.0V B Channel voltage*/
 int ROE_NEG_10V_VB(packet_t* p) {
     record("Request for ROE -10.0V B Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_N10VB_V "0.0"; //test EGSE
-    //char* response = getHK(VNEG10V_A);
+    char* response = (char*)getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -811,9 +789,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
 /*Request for ROE -5.0V A Channel current*/
 int ROE_NEG_5V_IA(packet_t* p) {
     record("Request for ROE -5.0V A Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_N5VAA_I "0.0"; //test EGSE
-    //char* response = getHK(CNEG5VA_A);
+    char* response = (char*)getHK(CNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -822,9 +798,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
 /*Request for ROE -5.0V B Channel current*/
 int ROE_NEG_5V_IB(packet_t* p) {
     record("Request for ROE -5.0V B Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_N5VAB_I "0.0"; //test EGSE
-    //char* response = getHK(CNEG5VA_B);
+    char* response = (char*)getHK(CNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -843,9 +817,7 @@ int FC_12V_V(packet_t* p) {
 /*Request for ROE +12V A Channel voltage*/
 int ROE_12V_VA(packet_t* p) {
     record("Request for ROE +12V A Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P12VA_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS12V_A);
+    char* response = (char*)getHK(VPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -854,9 +826,7 @@ int ROE_12V_VA(packet_t* p) {
 /*Request for ROE +12V B Channel voltage*/
 int ROE_12V_VB(packet_t* p) {
     record("Request for ROE +12V B Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P12VB_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS12V_B);
+    char* response = (char*)getHK(VPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -865,9 +835,7 @@ int ROE_12V_VB(packet_t* p) {
 /*Request for ROE +12V A Channel current*/
 int ROE_12V_IA(packet_t* p) {
     record("Request for ROE +12V A Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P12VA_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS12V_A);
+    char* response = (char*)getHK(CPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -876,9 +844,7 @@ int ROE_12V_IA(packet_t* p) {
 /*Request for ROE +12V B Channel current*/
 int ROE_12V_IB(packet_t* p) {
     record("Request for ROE +12V B Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P12VB_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS12V_B);
+    char* response = (char*)getHK(CPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -887,9 +853,7 @@ int ROE_12V_IB(packet_t* p) {
 /*Request for ROE +36V A Channel voltage*/
 int ROE_36V_VA(packet_t* p) {
     record("Request for ROE +36V A Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P36VA_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS36V_A);
+    char* response = (char*)getHK(VPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -898,9 +862,7 @@ int ROE_36V_VA(packet_t* p) {
 /*Request for ROE +36V B Channel voltage*/
 int ROE_36V_VB(packet_t* p) {
     record("Request for ROE +36V B Channel voltage received\n");
-    //Insert control code here  
-    char* response = ROE_P36VB_V "0.0"; //test EGSE
-    //char* response = getHK(VPOS36V_B);
+    char* response = (char*)getHK(VPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -909,9 +871,7 @@ int ROE_36V_VB(packet_t* p) {
 /*Request for ROE +36V A Channel current*/
 int ROE_36V_IA(packet_t* p) {
     record("Request for ROE +36V A Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P36VA_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS36V_A);
+    char* response = (char*)getHK(CPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -920,9 +880,7 @@ int ROE_36V_IA(packet_t* p) {
 /*Request for ROE +36V B Channel current*/
 int ROE_36V_IB(packet_t* p) {
     record("Request for ROE +36V B Channel current received\n");
-    //Insert control code here  
-    char* response = ROE_P36VB_I "0.0"; //test EGSE
-    //char* response = getHK(CPOS36V_B);
+    char* response = (char*)getHK(CPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -961,9 +919,7 @@ int FC_TEMP_3(packet_t* p) {
 /*Request for ROE upper temperature*/
 int ROE_TEMP_UPPER(packet_t* p) {
     record("Request for ROE upper temperature received\n");
-    //Insert control code here  
-    char* response = UPPER "0.0"; //test EGSE
-    //char* response = getHK(UPPER_TEMP);
+    char* response = (char*)getHK(UPPER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -972,10 +928,8 @@ int ROE_TEMP_UPPER(packet_t* p) {
 /*Request for ROE lower temperature*/
 int ROE_TEMP_LOWER(packet_t* p) {
     record("Request for ROE lower temperature received\n");
-    //Insert control code here  
-    char* response = LOWER "0.0"; //test EGSE
+    char* response = (char*)getHK(LOWER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    //char* response = getHK(LOWER_TEMP);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
 }
@@ -983,9 +937,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
 /*Request for CCDA_VOD current from the ROE*/
 int ROE_CCDA_VOD(packet_t* p) {
     record("Request for ROE CCDA_VOD current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDA_VODC);
+    char* response = (char*)getHK(CCDA_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -994,9 +946,7 @@ int ROE_CCDA_VOD(packet_t* p) {
 /*Request for CCDA_VRD current from the ROE*/
 int ROE_CCDA_VRD(packet_t* p) {
     record("Request for ROE CCDA_VRD current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDA_VRDC);
+    char* response = (char*)getHK(CCDA_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1005,9 +955,7 @@ int ROE_CCDA_VRD(packet_t* p) {
 /*Request for CCDA_VSS current from the ROE*/
 int ROE_CCDA_VSS(packet_t* p) {
     record("Request for ROE CCDA_VSS current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDA_VSSC);
+    char* response = (char*)getHK(CCDA_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1016,9 +964,7 @@ int ROE_CCDA_VSS(packet_t* p) {
 /*Request for CCDS_VOD current from the ROE*/
 int ROE_CCDS_VOD(packet_t* p) {
     record("Request for ROE CCDS_VOD current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDB_VODC);
+    char* response = (char*)getHK(CCDB_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1027,9 +973,7 @@ int ROE_CCDS_VOD(packet_t* p) {
 /*Request for CCDS_VRD current from the ROE*/
 int ROE_CCDS_VRD(packet_t* p) {
     record("Request for ROE CCDS_VRD current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDB_VRDC);
+    char* response = (char*)getHK(CCDB_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;
@@ -1038,9 +982,7 @@ int ROE_CCDS_VRD(packet_t* p) {
 /*Request for CCDS_VSS current from the ROE*/
 int ROE_CCDS_VSS(packet_t* p) {
     record("Request for ROE CCDS_VSS current received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
-    //char* response = getHK(CCDB_VSSC);
+    char* response = (char*)getHK(CCDB_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&hkdownQueue, r);
     return GOOD_PACKET;

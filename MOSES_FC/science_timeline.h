@@ -16,6 +16,7 @@
 #include "defs.h"
 #include "hlp.h"
 #include "packet.h"
+#include "roe.h"
 
 #define PULSE 150000
 

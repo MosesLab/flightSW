@@ -21,41 +21,33 @@ int activate() {
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
-        struct termios oldtio_up, newtio_up;
         int fd = open(ROE_DEV, O_RDWR); // | O_NOCTTY);
         if (fd < 0) {
             printf("%s\n", strerror(errno));
             record("Couldnt connect\n");
             exit(-1);
         } else {
-            /*save current serial port settings*/
-            tcgetattr(fd, &oldtio_up);
-
-            /*clear struct for new port settings*/
-            bzero(&newtio_up, sizeof (newtio_up));
-
-            /*set flags for non-canonical serial connection*/
-            newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
-            newtio_up.c_cflag &= ~(PARENB | PARODD);
-            newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-            //newtio_up.c_iflag |= ISTRIP;
-            newtio_up.c_oflag &= ~OPOST;
-            newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
-
-            /*set non-canonical attributes*/
-            newtio_up.c_cc[VTIME] = 1;
-            newtio_up.c_cc[VMIN] = 255;
-
-            tcflush(fd, TCIFLUSH);
-            tcsetattr(fd, TCSANOW, &newtio_up);
+            fcntl(fd, F_SETFL, FNDELAY);
+            struct termios options;
+            tcgetattr(fd, &options);
+            cfsetispeed(&options, B9600);
+            cfsetospeed(&options, B9600);
+            options.c_cflag |= (CLOCAL | CREAD);
+            options.c_cflag &= ~PARENB;
+            options.c_cflag &= ~CSTOPB;
+            options.c_cflag &= ~CSIZE;
+            options.c_cflag |= CS8;
+            options.c_oflag &= ~OPOST;
+            options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+            tcsetattr(fd, TCSANOW, &options);
             roe_struct.roeLink = fd;
-            record("Connection established. DEFAULT MODE\n");
+            roe_struct.active = TRUE;
+            record("Connection established. DEFAULT MODE, ROE Active.\n");
+
         }
     }
-    //roe.roeLink = fd;
-    roe_struct.active = TRUE;
+
     pthread_mutex_unlock(&roe_struct.mx);
-    record("ROE Active\n");
     return 0;
 
 }
@@ -77,10 +69,8 @@ int deactivate() {
 //Exit Roe default mode and enter manual mode
 
 int exitDefault() {
-    //char msg[100];
     int var;
     record("Attempting to exit default mode.\n");
-    //record(msg);
 
     pthread_mutex_lock(&roe_struct.mx);
 
@@ -272,7 +262,7 @@ int selftestMode() {
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("selfTest error, ack\n");
-        return -1; //Get Acknowledgement of Command
+        return -1; //Get Acknowledgment of Command
     }
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
@@ -306,7 +296,7 @@ int stimOn() {
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("stimOn error, ack\n");
-        return -1; //Get Acknowledgement of Command
+        return -1; //Get Acknowledgment of Command
     }
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
@@ -372,7 +362,7 @@ int readOut(char* block, int delay) {
     char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
-        return -1; //Get Acknowledgement of Command
+        return -1; //Get Acknowledgment of Command
     }
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
@@ -416,52 +406,103 @@ int flush() {
 
 //Request the Analogue Electronics
 
-/*char* getAE() {
-    pthread_mutex_lock(&roe.mx);
+char* getAE() {
+    pthread_mutex_lock(&roe_struct.mx);
+unsigned char aTable[] = "0123456789ABCDEF00";
+	char params[8];
+	char command[2];
+	command[0] = ROE_AE_REQ;
+        int i,j;
+	for(i = 7; i >= 0; i--)
+	{
+		command[1] = i;
+		for(j = 0; j < 2; j++)
+		{	//Write the command
+			if(write(roe_struct.roeLink,(char*)&command[j],1) != 1) 
+			{
+				pthread_mutex_unlock(&roe_struct.mx);
+				return "";
+			}
+		}
+		char response;	//Wait for a response
+    		if(receiveAck(roe_struct.roeLink,(char *)&response,1,ROE_AE_RES) == -1) 
+		{
+			pthread_mutex_unlock(&roe_struct.mx);
+			return "";
+		}
+    		char value;	//Read the value of the parameter
+    		if(readRoe(roe_struct.roeLink,&value,1) == -1) 
+		{
+			pthread_mutex_unlock(&roe_struct.mx);
+			return "";
+		}
+		params[7-i] = value;
+	}	
 
-    //do getAE stuff 
-
-    pthread_mutex_unlock(&roe.mx);
-
-    return 0;
-    char aTable[17] = "0123456789ABCDEF";
-    unsigned char params[8] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
-    char* result = "";
-    for(int i = 0; i < 8; i++)
-    {
-            result += aTable[params[i]/16];
-            result += aTable[params[i]%16];
-            //result += aTable[params[i]/16];
-    }
-    return result;
-}*/
+	char* result = ""; //format the parameters as a string
+	for(i = 0; i < 8; i++)
+	{	
+		//DBGF2("0x%d%d\n",params[i]/16,params[i]%16);
+		result += aTable[params[i]/16];
+		result += aTable[params[i]%16];
+	}	
+	pthread_mutex_unlock(&roe_struct.mx);		//Unlock the mutex
+	return result;		//Return the string of parameters
+}
 
 //Set the Analogue Electronics
 
-/*int setAE(char* paramstring) {
-    pthread_mutex_lock(&roe.mx);
+int setAE(char* paramstring) {
+    pthread_mutex_lock(&roe_struct.mx); //Lock the mutex
+    char params[9];
+    params[0] = 0x45;
+    int i;
+    for (i = 0; i < 16; i += 2) {
+        params[(i / 2) + 1] = (atoh_roe(paramstring[i])*16 + atoh_roe(paramstring[i + 1]));
+    }
 
-    //do setAE stuff 
+    for (i = 0; i < 9; i++) { //Write the command and parameters to the command link
+        if (write(roe_struct.roeLink, (char*) &params[i], 1) != 1) {
+            pthread_mutex_unlock(&roe_struct.mx);
+            return -1;
+        }
+    }
 
-    pthread_mutex_unlock(&roe.mx);
+    usleep(500000); //Wait for the command to finish	
+    char ack;
+    if (receiveAck(roe_struct.roeLink, &ack, 1, ROE_AE_RES) == -1) {
+        pthread_mutex_unlock(&roe_struct.mx);
+        return -1; //Wait for an acknowledgement
+    }
+    char status;
+    if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
+        pthread_mutex_unlock(&roe_struct.mx);
+        return -1; //Read the status of command execution
+    }
+
+    pthread_mutex_unlock(&roe_struct.mx);
     record("Setting AE Params.\n");
-    return 0;
-}*/
+    return status;
+}
 
-//write string to roe
+//Write string to roe
 
-/*int manualWrite(char* msg, int size) {
-    pthread_mutex_lock(&roe.mx);
+int manualWrite(char* msg, int size) {
+    pthread_mutex_lock(&roe_struct.mx);
 
-    //do manual Write stuff 
+    if(write(roe_struct.roeLink,(void *)msg,size) != size)
+	{
+		pthread_mutex_unlock(&roe_struct.mx);
+		return -1;
+	}
+    	usleep(100000); //Wait for the command to complete
 
-    pthread_mutex_unlock(&roe.mx);
+    pthread_mutex_unlock(&roe_struct.mx);
     record("Writing manual string to ROE.\n");
     return 0;
-}*/
+}
 
 int readRoe(int fd, char *data, int size) {
-    //printf("fd readRoe: %d\n", fd);
     //Times out after 50000 tries
     //int timeout;
     int input;
@@ -495,9 +536,9 @@ int receiveAck(int fd, char *data, int size, char target) {
     return -1;
 }
 
-/*int atoh(char c) {
+int atoh_roe(char c) {
     return (c >= 0 && c <= 9) ? (c & 0x0F) : ((c & 0x0F) + 9);
-}*/
+}
 
 int input_timeout_roe(int filedes, unsigned int seconds) {
     fd_set set;

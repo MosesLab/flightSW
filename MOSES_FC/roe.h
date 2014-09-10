@@ -87,6 +87,7 @@ int setAE(char* paramstring);
 int manualWrite(char* msg, int size);
 int receiveAck(int fd,char *data,int size,char target);
 int input_timeout_roe(int filedes, unsigned int seconds);
+int atoh_roe(char c);
 //int recieveAck(int fd,char *data,int size,char target = 0x03);
 int readRoe(int fd, char *data, int size);
 int sendDummyData();
