@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct ReadOutElectronics roe_struct;
+
 int activate() {
     //char msg[100];
     pthread_mutex_lock(&roe_struct.mx);
@@ -532,7 +534,7 @@ int receiveAck(int fd, char *data, int size, char target) {
             }
         }
     }
-    printf("Aknowledgment timeout\n");
+    printf("Acknowledgment timeout\n");
     return -1;
 }
 

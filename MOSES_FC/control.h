@@ -9,6 +9,7 @@
 #define	CONTROL_H
 
 #include "system.h"
+#include "main.h"
 #include "lockingQueue.h"
 #include <termios.h>
 #include <signal.h>
@@ -21,33 +22,34 @@
 #include "send_TM.h"
 #include "v_shell.h"
 #include "gpio.h"
+#include "dma.h"
 
-
+#define HLP_PACKET      1
+#define GPIO_INP        2
 
 #define SYNCLINK_START 0
 #define SYNCLINK_END 1
 
-extern volatile sig_atomic_t ts_alive;
-
 /*struct to control state of experiment*/
-moses_ops_t ops;
+extern moses_ops_t ops;
+extern pid_t vshell_pid;
 
-/*Locking queues to safely pass data between threads*/
-LockingQueue hkdownQueue;
-LockingQueue roeQueue;
+/*Current state of powered subsystems*/
+extern gpio_out_uni gpio_power_state;
 
 /*hlp_control initializations*/
 void* hlp_control(void *);
 
-/*hlp_down thread initializations*/
+void * gpio_control(void *);
 
+/*hlp_down thread initializations*/
 void* hlp_down(void*);
 
 /*housekeeping initializations*/ 
 void * hlp_housekeeping(void * arg);
 
-void * telem(void *);
-
 void * hlp_shell_out(void *);
+
+
 
 #endif /*CONTROL_H*/

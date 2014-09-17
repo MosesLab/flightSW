@@ -11,8 +11,8 @@
 
 int takeExposure(double duration, int sig) {
     char msg[100];
-    struct timeval expstop, expstart, expdiff;
-    int dur = (int) (duration * 1000000); // - PULSE; //duration is the exposure length in microseconds'
+    struct timeval expstop, expstart, expmid, shutdiff, expdiff;
+    int dur = (int) (duration * 1000000); //duration is the exposure length in microseconds'
     int actual; // computer recorded time interval between opening and closing the shutter
 
     int i;
@@ -22,18 +22,30 @@ int takeExposure(double duration, int sig) {
     }
     if (sig == 1) // use the shutter for Data sequence 
     {
-        //send open shutter signal to DIO
-        open_shutter();
-
+        /*exposure duration should be lengthened to accout for shutter openeing*/
+        dur = dur + PULSE;
+        
+        /*start measuring exposure duration*/
         gettimeofday(&expstart, NULL);
 
-        //wait for interval to open shutter
+        //send open shutter signal to DIO
+        open_shutter();
+        
+        /*take another time measurement to determine remaining time to wait */
+        gettimeofday(&expmid, NULL);
+        
+        /*calculate remaining time to wait, including pulse*/
+        timeval_subtract(&shutdiff, expstart, expmid);
+        int open_time = shutdiff.tv_sec * 1000000 + shutdiff.tv_usec;
+        int time_wait = dur - open_time;
 
-        //clear pin to avoid excess current
+//        //wait for exposure duration, calculate with the pulse
+//        actual = wait_exposure(time_wait) + open_time - PULSE;
+        
+        /*sleep for remaining exposure duration*/
+        usleep(time_wait);      
 
-        //wait for exposure duration, calculate with the pulse
-        actual = wait_exposure(dur) + PULSE;
-
+        gettimeofday(&expstop, NULL);
         // send close shutter signal to DIO
         close_shutter();
 
@@ -41,154 +53,23 @@ int takeExposure(double duration, int sig) {
         // wait for interval to close shutter
 
         //clear the pin
-        gettimeofday(&expstop, NULL);
+
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
+        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec - PULSE;
     } else // performing dark exposure, just wait
     {
         gettimeofday(&expstart, NULL);
-        actual = wait_exposure(dur); //+PULSE);
+        usleep(dur);
         gettimeofday(&expstop, NULL);
+        
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu seconds, %lu microseconds\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
+        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     }
     return actual;
-}
-
-/* write_data will be part of a new thread that will be in
- * waiting mode until it is called to write an image to a file. 
-   A signal, SIGUSR2, will be sent when DMA is ready to transfer
-   data to memory and will initialize the writing to disk*/
-void * write_data(void * arg) {
-    char msg[100];
-    
-    /*Set thread name*/
-    prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
-    
-    init_signal_handler_image();
-
-    while (ts_alive) {
-
-        short *BUFFER[4];
-        /*create pixel buffers */
-        int i;
-        for (i = 0; i < 4; i++) {
-            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-        }
-        /*initialize index( these will start at -1 and be incremented by DMA*/
-        int index[4] = {2200000, 2200000, 2200000, 2200000};
-        
-        char filename[80];
-        char ftimedate[80];
-        char dtime[100];
-        char ddate[100];
-
-        char channels = ops.channels;
-
-        
-        /* Wait for SIGUSR2 (When received response from ROE readout)*/
-        pthread_sigmask(SIG_BLOCK, &maskimage, &oldmaskimage);
-        record("Waiting for signal...\n");
-        sigwait(&maskimage, &caught_image_signal);
-        pthread_sigmask(SIG_UNBLOCK, &maskimage, &oldmaskimage);
-        record("SIGUSR2 Received\n");
-
-        //        gettimeofday(&expstart, NULL);
-        //        //initializeDMA();
-        //        
-        //        /*DMA Channel is open, now send GPIO*/
-        //        write_gpio(POWER_OFFSET, 0x0F);
-        //        sleep(1);
-        //        write_gpio(POWER_OFFSET, 0x00);
-        //        /*Buffer updated here*/
-        //        //dmaRead();
-        //        gettimeofday(&expstop, NULL);
-
-        //        sprintf(msg, "Time from initialize to Interrupt received: %lu seconds, %lu microseconds\n", expstop.tv_sec - expstart.tv_sec, expstop.tv_usec - expstart.tv_usec);
-
-        /*Clear DMA block*/
-
-        /*Initialize the image*/
-        constructImage(BUFFER, index, channels, 16);
-        /* Get data for image details*/
-        time_t curTime = time(NULL);
-        struct tm *broken = localtime(&curTime);
-        strftime(dtime, 20, "%H:%M:%S", broken);
-        strftime(ddate, 20, "%y-%m-%d", broken); //get date
-        strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
-        //construct a unique filename	
-        sprintf(filename, "%s.roe", ftimedate);
-        sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
-
-        record("Copy image...\n");
-        image.filename = filename;
-        image.name = currentSequence.sequenceName; //Add the information to the image
-        image.date = ddate;
-        image.time = dtime;
-        //image.duration = duration;
-        image.width = 2048;
-        image.height = 1024;
-
-        /* Copy original image to temporary struct for image_writer_thread access.
-         * This is to ensure that the image can be written to disk without being overwritten
-         * by the next exposure */
-
-        memcpy(&tempimage, &image, sizeof (tempimage));
-
-        tempimage.filename = strdup(image.filename);
-        tempimage.name = strdup(image.name); //string
-        tempimage.bitpix = image.bitpix;
-        tempimage.width = image.width;
-        tempimage.height = image.height;
-        tempimage.date = strdup(image.date); //string
-        tempimage.time = strdup(image.time); //string
-        tempimage.origin = strdup(image.origin); //string
-        tempimage.instrument = strdup(image.instrument); //string
-        tempimage.observer = strdup(image.observer); //string
-        tempimage.object = strdup(image.object); //string 
-        tempimage.duration = image.duration;
-        tempimage.channels = image.channels;
-        tempimage.size[0] = image.size[0];
-        tempimage.size[1] = image.size[1];
-        tempimage.size[2] = image.size[2];
-        tempimage.size[3] = image.size[3];
-        
-        for (i = 0; i < 4; i++){
-            memcpy((char *) tempimage.data[i], (char *) image.data[i], image.size[i]); //copy data
-        }
-        
-        record("Image Opened\n");
-
-        /*write the image and metadata to disk*/
-        writeToFile();
-        
-        sprintf(msg, "File %s successfully written to disk.\n", filename);
-        record(msg);
-
-        /*push the filename onto the telemetry queue*/
-        if (ops.tm_write == 1) {
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&roeQueue, &newPtr); //enqueues the path for telem
-            record("Filename pushed to telemetry queue\n");
-        }
-
-
-        /*need to free allocated image to prevent memory leak --RTS*/
-        free(image.data[0]);
-        free(image.data[1]);
-        free(image.data[2]);
-        free(image.data[3]);
-        free(BUFFER[0]);
-        free(BUFFER[1]);
-        free(BUFFER[2]);
-        free(BUFFER[3]);
-    }//end while ts_alive
-
-    return 0;
 }
 
 int wait_exposure(int microsec) {
@@ -198,34 +79,18 @@ int wait_exposure(int microsec) {
     gettimeofday(&start, NULL);
 
     usleep(microsec);
-    
+
     gettimeofday(&end, NULL);
 
     return ((end.tv_sec - start.tv_sec)*1000000 +
             (end.tv_usec - start.tv_usec));
 }
 
-/*this function sets up the signal handler to run
-  runsig when a signal is received from the experiment manager*/
-void init_signal_handler_image() {
-
-    sigfillset(&oldmaskimage); //save the old mask
-    sigemptyset(&maskimage); //create a blank new mask
-    sigaddset(&maskimage, SIGUSR2); //add SIGUSR1 to mask
-
-    /*no signal dispositions for signals between threads*/
-    run_action_image.sa_mask = oldmaskimage;
-    run_action_image.sa_flags = 0;
-
-    sigaction(SIGUSR2, &run_action_image, NULL);
-    record("Signal handler initiated.\n");
-}
-
 void timeval_subtract(struct timeval * result, struct timeval start, struct timeval end) {
 
-    long t = (end.tv_sec*1e6 + end.tv_usec) - (start.tv_sec*1e6 + start.tv_usec);
-    
+    long t = (end.tv_sec * 1e6 + end.tv_usec) - (start.tv_sec * 1e6 + start.tv_usec);
+
     result->tv_sec = t / 1e6;
     result->tv_usec = t - result->tv_sec * 1e6;
-    
+
 }

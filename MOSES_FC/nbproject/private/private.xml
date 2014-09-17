@@ -9,28 +9,42 @@
         <group>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/control.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/moses.conf</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/gpio.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/synclink.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/moses_threads.h</file>
-            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/controlFuncs.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/control.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roehk.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/science_timeline.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxApi.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/sequence.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/hlp.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/sequence.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/fpga.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/packet.h</file>
-            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/main.c</file>
-            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/lockingQueue.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/main.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/packet.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/plx/PlxStat.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/logger.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/gpio.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/defs.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/system.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/fpga.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/logger.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/dma.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.c</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/dma.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/v_shell.c</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/sci_timeline_funcs.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.h</file>
+            <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/send_TM.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/roe_image.h</file>
             <file>file:/home/byrdie/NetBeansProjects/flightSW/MOSES_FC/hashTable.c</file>
         </group>

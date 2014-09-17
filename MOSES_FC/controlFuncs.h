@@ -22,23 +22,27 @@
 #include "defs.h"
 #include "control.h"
 
-extern LockingQueue hkdownQueue;
+//extern LockingQueue hkdownQueue;
+//extern LockingQueue sequence_queue;
+//extern LockingQueue gpio_out_queue;    // Pass gpio values from producers to fpga server
+//extern LockingQueue gpio_in_queue;     //Pass GPIO values from fpga server to gpio control
 extern pid_t main_pid;
 
-/*
- * Array containing uplink subtypes. Used in a map from uplink functions to 
- * their corresponding uplink subtype
- */ 
-//char* uplinkMap[9];
-//void (*tmuFuncs[14])(void);   //part of timer and uplink map, obsfucated
+/*Power GPIO output state*/
+extern gpio_out_uni gpio_power_state;
 
 /*initialize hash table to find functions based on packet string*/
 int funcNumber; // number of control functions  
 int hlp_hash_size;
 node_t** hlpHashTable;
+hlpControl* functionTable;
 
+/*helper functions for control*/
 void hlpHashInit();
 int execPacket(packet_t*);
+void exec_gpio(gpio_in_uni *);
+int control_wait(int, LockingQueue*);
+
 
 /*HLP uplink control functions*/
 int uDataStart();
@@ -113,6 +117,7 @@ int resetSW(packet_t*);           //Reset MDAQ and flight software
 /*HLP power control functions*/
 int enablePower(packet_t*);       //Turn power On for specified subsystems
 int disablePower(packet_t*);      //Turn power Off for specified subsystems
+void set_power(U32, U32);
 int queryPower(packet_t*);        //Query power for specified subsystems
 
 /*HLP housekeeping control functions*/
@@ -164,11 +169,11 @@ enum control{
     UWake,
     UTest,
     
-//    TDataStart,
-//    TDataStop,
-//    TDark2,
-//    TDark4,
-//    TSleep,
+    TDataStart,
+    TDataStop,
+    TDark2,
+    TDark4,
+    TSleep,
     
     SetSeq,     //Set Sequence Command
     SetOut,      //Set Ouput Filename Command

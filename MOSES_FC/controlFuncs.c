@@ -25,6 +25,160 @@ int execPacket(packet_t* p) {
 
 }
 
+/**
+ * Determines what control functions have been asserted via gpio pins. Then
+ * executes control function
+ * 
+ * @param g
+ * @return status of executed control functions
+ */
+void exec_gpio(gpio_in_uni * g) {
+
+    /*loop through output to find asserted pins*/
+    unsigned int i;
+    for (i = 0; i < NUM_CONTROL_GPIO; i++) {
+
+        U32 control_enable = g->val & gpio_control_mask[i];
+        if (control_enable) {
+            (*functionTable[i])();
+        }
+    }
+}
+
+/**
+ * Control wait blocks until there is input available on either the file
+ * descriptor or the queue
+ * 
+ * @param int, LockingQueue
+ * @return 0 if failure, 1 if input is available on file descriptor,
+ * 2 if input is available on the queue
+ */
+int control_wait(int fd, LockingQueue * queue) {
+    int ret_val = FALSE;
+    int rc;
+
+    while (!ret_val) {
+        /*wait for input on file desciptor*/
+        rc = input_timeout(fd, 0, 50000); // wait for 5ms for input  
+
+        if (rc == 0) { //timeout  
+
+            /*check queue for input*/
+            if (occupied(queue)) {
+                ret_val = 2; //queue has input
+            }
+        } else if (rc == 1) { // fd has input
+            ret_val = rc;
+        } else {
+            break;
+        }
+    }
+
+    return ret_val;
+}
+
+/*
+ * Power control functions
+ */
+
+/*Command the payload subsystem to power on*/
+int enablePower(packet_t* p) {
+    char msg[256];
+
+    record("Command to enable subsystem power received\n");
+
+    //Insert control code here  
+    int subsystem = strtol(p->data, NULL, 16);
+    set_power(subsystem, ON);
+
+    sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
+    record(msg);
+
+    packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
+    enqueue(&lqueue[hkdown], r);
+
+    return GOOD_PACKET;
+}
+
+/*Command the payload subsystem to power off*/
+int disablePower(packet_t* p) {
+    char msg[256];
+
+    record("Command to disable subsystem power received\n");
+    //Insert control code here
+    unsigned int subsystem = strtol(p->data, NULL, 16);
+    if (subsystem < NUM_SUBSYSTEM) {
+        set_power(subsystem, OFF);
+    }
+
+    sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
+    record(msg);
+
+    packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
+    enqueue(&lqueue[hkdown], r);
+
+    return GOOD_PACKET;
+}
+
+/*sets the provided subsystem to a new state*/
+void set_power(U32 sys, U32 state) {
+    /*off by one since sys starts at 1*/
+    U32 mask = power_subsystem_mask[sys - 1];
+
+    /*bitwise AND state with pin mask*/
+    U32 masked_state = mask & state;
+
+    /*apply new state to global memory*/
+    gpio_power_state.val = (gpio_power_state.val & ~mask) | masked_state;
+
+    /*dynamically allocate and copy new value*/
+    gpio_out_uni * new_state = malloc(sizeof(U32));
+    *new_state = gpio_power_state;
+
+    /*enqueue new state to fpga server for assertion*/
+    enqueue(&lqueue[gpio_out], new_state);
+}
+
+/*Query the power status of the payload subsystem*/
+int queryPower(packet_t* p) {
+    char msg[256];
+
+    record("Command to query subsystem power received\n");
+
+    unsigned int subsystem = strtol(p->data, NULL, 16);
+    U32 power_state = OFF;
+
+    /*dynamically allocate request for power state*/
+    gpio_out_uni * new_state = malloc(sizeof (U32));
+    new_state->val = REQ_POWER;
+
+    /*enqueue new state to fpga server for assertion*/
+    enqueue(&lqueue[gpio_out], new_state);
+
+    /*wait for reply for request*/
+    gpio_out_uni * req_state = dequeue(&lqueue[gpio_req]);
+
+    /*off by one since sys starts at 1*/
+    U32 mask = power_subsystem_mask[subsystem - 1];
+
+    /*AND with mask to find state of requested power pin*/
+    power_state = mask & req_state->val;
+
+    sprintf(msg, "Querying subsystem %d\n", subsystem);
+    record(msg);
+
+    /*send response packet*/
+    packet_t* r;
+    if (power_state) {
+        r = constructPacket(PWR_S, STATUS_ON, p->data);
+    } else {
+        r = constructPacket(PWR_S, STATUS_OFF, p->data);
+    }
+    enqueue(&lqueue[hkdown], r);
+
+    return GOOD_PACKET;
+}
+
 int hlp_shell(int pipe_fd, packet_t * p) {
     if (strcmp(p->subtype, INPUT) == 0) {
         char msg[255];
@@ -40,47 +194,48 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 
             /*send shell acknowledge*/
             packet_t * r = constructPacket(SHELL_S, ACK, p->data);
-            enqueue(&hkdownQueue, r);
+            enqueue(&lqueue[hkdown], r);
 
             return GOOD_PACKET;
         }
-    } else {
+    } else if(strcmp(p->subtype, INTERRUPT) == 0){
+        kill(vshell_pid, SIGINT);
+        return GOOD_PACKET;
+    }
+    else {
         return BAD_PACKET;
     }
 }
 
 /*Uplink control functions*/
-int uDataStart(packet_t* p) {
+int uDataStart() {
     record("Received data start Uplink\n");
 
-    int i;
+    unsigned int i;
     for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
-    ops.seq_run = TRUE;
-    
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-
-
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DATASTART, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uDataStop(packet_t* p) {
+int uDataStop() {
     record("Received data stop Uplink\n");
     //Insert uplink handling code here
 
     ops.seq_run = FALSE;
 
     packet_t* r = constructPacket(UPLINK_S, DATASTOP, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -94,22 +249,19 @@ int uDark1() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
-    ops.seq_run = TRUE;
-    
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
-
-
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK1, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uDark2(packet_t* p) {
+int uDark2() {
     record("Received Dark2 Uplink\n");
     //Insert uplink handling code here
 
@@ -120,18 +272,16 @@ int uDark2(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
-    ops.seq_run = TRUE;
 
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK2, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uDark3(packet_t* p) {
+int uDark3() {
     record("Received Dark3 Uplink\n");
     //Insert uplink handling code here
 
@@ -142,18 +292,16 @@ int uDark3(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
-    ops.seq_run = TRUE;
 
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK3, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uDark4(packet_t* p) {
+int uDark4() {
     record("Received Dark4 Uplink\n");
     //Insert uplink handling code here
 
@@ -164,79 +312,79 @@ int uDark4(packet_t* p) {
             ops.sequence = i;
         }
     }
-    
-    ops.seq_run = TRUE;
 
-    /*send signal to science timeline to start data*/
-    pthread_kill(threads[sci_timeline_thread], SIGUSR1);
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
     packet_t* r = constructPacket(UPLINK_S, DARK4, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uSleep(packet_t* p) {
+int uSleep() {
     record("Received shutdown Uplink\n");
     //Insert uplink handling code here
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int uWake(packet_t* p) {
+int uWake() {
     record("Received shutdown pending Uplink\n");
     //Insert uplink handling code here
     packet_t* newp = constructPacket(UPLINK_S, WAKE, NULL);
-    enqueue(&hkdownQueue, newp);
+    enqueue(&lqueue[hkdown], newp);
     return GOOD_PACKET;
 }
 
-int uTest(packet_t* p) {
+int uTest() {
     record("Received test Uplink\n");
     //Insert uplink handling code here
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Timer control functions*/
-int tDataStart(packet_t* p) {
+int tDataStart() {
     record("Received data start Timer\n");
-    //Insert timer handling code here
+
+
+
     packet_t* r = constructPacket(TIMER_S, DATASTART, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int tDataStop(packet_t* p) {
+int tDataStop() {
     record("Received data stop Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DATASTOP, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int tDark2(packet_t* p) {
+int tDark2() {
     record("Received Dark2 Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DARK2, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int tDark4(packet_t* p) {
+int tDark4() {
     record("Received Dark4 Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, DARK4, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
-int tSleep(packet_t* p) {
+int tSleep() {
     record("Received shutdown Timer\n");
     //Insert timer handling code here
     packet_t* r = constructPacket(TIMER_S, SLEEP, NULL);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 /*
@@ -263,7 +411,7 @@ int getSeqName(packet_t* p) {
     //Insert control code here
     char* name = "testname"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_NM, name);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -273,7 +421,7 @@ int getSeqInfo(packet_t* p) {
     //Insert control code here
     char* info = "testinfo"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -283,7 +431,7 @@ int getCurSeqName(packet_t* p) {
     //Insert control code here
     char* name = "testname"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_SEQ, name);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -293,7 +441,7 @@ int getCurFrameLen(packet_t* p) {
     //Insert control code here  
     char* response = "0.0"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -303,7 +451,7 @@ int getCurFrameIndex(packet_t* p) {
     //Insert control code here  
     char* response = "0"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -313,7 +461,7 @@ int getOutputName(packet_t* p) {
     //Insert control code here  
     char* response = "testOuputFilename"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -323,7 +471,7 @@ int getSelftestStatus(packet_t* p) {
     //Insert control code here  
     char* response = "test"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_SLFT_STS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -333,7 +481,7 @@ int getStimsStatus(packet_t* p) {
     //Insert control code here  
     char* response = "test"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_STM_STS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -343,7 +491,7 @@ int getTelemStatus(packet_t* p) {
     //Insert control code here  
     char* response = "test"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_TLM_STS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -353,7 +501,7 @@ int getCh0Status(packet_t* p) {
     //Insert control code here  
     char* response = "test"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_CH0_STS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -363,7 +511,7 @@ int getPosOnlyStatus(packet_t* p) {
     //Insert control code here  
     char* response = "test"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, GT_POS_STS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -389,7 +537,7 @@ int findAndJump(packet_t* p) {
     //Insert control code here  
     char* response = "0"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -400,7 +548,7 @@ int jumpToExp(packet_t* p) {
     //Insert control code here  
     char* response = "0"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 /*CONFLICTING INTERFACES*/
@@ -421,7 +569,7 @@ int findAndReplace(packet_t* p) {
     //Insert control code here  
     char* response = "0,0"; //test EGSE
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -441,16 +589,8 @@ int endSequence(packet_t* p) {
 int exitSW(packet_t* p) {
     record("Command to terminate received\n");
 
-    /*necessary for platform dependencies*/
-    //    if (config_values[hlp_up_interface] == 1) {
-    //        kill(getpid(), SIGINT);
-    //    } else {
-    //        kill(getppid(), SIGINT);
-    //    }
-
     kill(main_pid, SIGINT);
 
-    //    pthread_kill(main_pid, SIGINT);
     return GOOD_PACKET;
 }
 
@@ -493,12 +633,10 @@ int posOnlyDisable(packet_t* p) {
 /*Commands the flight software to turn STIMS ON*/
 int stimsEnable(packet_t* p) {
     record("Command to enable STIMS mode received\n");
-    if(roe_struct.active)
-    {
-    stimOn();
-    //ops.read_block = STMBLK;
-    }
-    else
+    if (roe_struct.active) {
+        stimOn();
+        //ops.read_block = STMBLK;
+    } else
         record("STIM-ON ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -506,12 +644,10 @@ int stimsEnable(packet_t* p) {
 /*Commands the flight software to turn STIMS OFF*/
 int stimsDisable(packet_t* p) {
     record("Command to disable STIMS mode received\n");
-    if(roe_struct.active)
-    {
-    stimOff();
-    //ops.read_block = ....
-    }
-    else
+    if (roe_struct.active) {
+        stimOff();
+        //ops.read_block = ....
+    } else
         record("STIM-OFF ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -519,17 +655,16 @@ int stimsDisable(packet_t* p) {
 /*Commands the flight software to reset the ROE*/
 int resetROE(packet_t* p) {
     record("Command to reset ROE received\n");
-    if(roe_struct.active)
-    {
-    reset();
-    //ops.read_block = ....
-    }
-    else
+    if (roe_struct.active) {
+        reset();
+        //ops.read_block = ....
+    } else
         record("RESET-ROE ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
 
 /*Exit to default mode*/ //Aren't we leaving default mode? -Djk
+
 int disableDefaultROE(packet_t* p) {
     record("Command to exit to default mode received\n");
     if (roe_struct.active) {
@@ -542,11 +677,9 @@ int disableDefaultROE(packet_t* p) {
 /*Commands the flight software to set the ROE to self-test mode*/
 int enableSelftestROE(packet_t* p) {
     record("Command to set ROE to self-test mode received\n");
-    if(roe_struct.active)
-    {
-    selftestMode();
-    }
-    else
+    if (roe_struct.active) {
+        selftestMode();
+    } else
         record("SELF-TEST ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
 }
@@ -557,80 +690,7 @@ int resetSW(packet_t* p) {
     return GOOD_PACKET;
 }
 
-/*
- * Power control functions
- */
 
-/*Command the payload subsystem to power on*/
-int enablePower(packet_t* p) {
-    char msg[256];
-
-    record("Command to enable subsystem power received\n");
-
-    //Insert control code here  
-    int subsystem = strtol(p->data, NULL, 16);
-    int rc = set_power(subsystem, ON);
-
-    /*check that API returned correctly*/
-    if (rc != TRUE) {
-        record("Failed to enable power\n");
-    } else {
-        sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
-        packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-        enqueue(&hkdownQueue, r);
-    }
-    return GOOD_PACKET;
-}
-
-/*Command the payload subsystem to power off*/
-int disablePower(packet_t* p) {
-    char msg[256];
-
-    record("Command to disable subsystem power received\n");
-    //Insert control code here
-    int subsystem = strtol(p->data, NULL, 16);
-    int rc = set_power(subsystem, OFF);
-
-    /*check that API returned correctly*/
-    if (rc != TRUE) {
-        record("Failed to disable power\n");
-    } else {
-        sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
-        record(msg);
-        packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
-        enqueue(&hkdownQueue, r);
-    }
-    return GOOD_PACKET;
-}
-
-/*Query the power status of the payload subsystem*/
-int queryPower(packet_t* p) {
-    char msg[256];
-
-    record("Command to query subsystem power received\n");
-
-    //Insert control code here  
-    int subsystem = strtol(p->data, NULL, 16);
-    U32 power_state;
-    if (get_power(subsystem, &power_state) != TRUE) {
-        sprintf(msg, "Failed to query subsystem %d\n", subsystem);
-        record(msg);
-    } else {
-        sprintf(msg, "Querying subsystem %d\n", subsystem);
-        record(msg);
-        packet_t* r;
-        if(power_state){
-            r = constructPacket(PWR_S, STATUS_ON, p->data);
-        }
-        else{
-            r = constructPacket(PWR_S, STATUS_OFF, p->data);
-        }
-        enqueue(&hkdownQueue, r);
-    }
-
-
-    return GOOD_PACKET;
-}
 
 /*
  * Housekeeping control functions
@@ -642,7 +702,7 @@ int FC_2V_V(packet_t* p) {
     //Insert control code here  
     char* response = "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, POS2_0V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -652,7 +712,7 @@ int FC_2_5V_V(packet_t* p) {
     //Insert control code here  
     char* response = FC_P2_5V_V "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -661,7 +721,7 @@ int ROE_2_5V_V(packet_t* p) {
     record("Request for ROE +2.5V voltage received\n");
     char* response = (char*)getHK(VPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -670,7 +730,7 @@ int ROE_2_5V_I(packet_t* p) {
     record("Request for ROE +2.5V current received\n");
     char* response = (char*)getHK(CPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -680,7 +740,7 @@ int FC_3_3V_V(packet_t* p) {
     //Insert control code here  
     char* response = "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, POS3_3V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -690,7 +750,7 @@ int FC_POS_5V_V(packet_t* p) {
     //Insert control code here  
     char* response = FC_P5V_V "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -699,7 +759,7 @@ int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
     char* response = (char*)getHK(VPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -710,7 +770,7 @@ int ROE_POS_5V_VB(packet_t* p) {
     //char* response = ROE_P5VAB_V "0.0"; //test EGSE
     char* response = (char*)getHK(VPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -728,7 +788,7 @@ int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
     char* response = (char*)getHK(CPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -737,7 +797,7 @@ int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
     char* response = (char*)getHK(CPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -746,7 +806,7 @@ int ROE_POS_5V_ID(packet_t* p) {
     record("Request for ROE +5.0V D Channel current received\n");
     char* response = (char*)getHK(CPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -755,7 +815,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
     record("Request for ROE -5.0V A Channel voltage received\n");
     char* response = (char*)getHK(VNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -764,7 +824,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     record("Request for ROE -5.0V B Channel voltage received\n");
     char* response = (char*)getHK(VNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -773,7 +833,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
     record("Request for ROE -10.0V A Channel voltage received\n");
     char* response = (char*)getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -782,7 +842,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
     record("Request for ROE -10.0V B Channel voltage received\n");
     char* response = (char*)getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -791,7 +851,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
     record("Request for ROE -5.0V A Channel current received\n");
     char* response = (char*)getHK(CNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -800,7 +860,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
     record("Request for ROE -5.0V B Channel current received\n");
     char* response = (char*)getHK(CNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -810,7 +870,7 @@ int FC_12V_V(packet_t* p) {
     //Insert control code here  
     char* response = FC_P12V_V "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -819,7 +879,7 @@ int ROE_12V_VA(packet_t* p) {
     record("Request for ROE +12V A Channel voltage received\n");
     char* response = (char*)getHK(VPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -828,7 +888,7 @@ int ROE_12V_VB(packet_t* p) {
     record("Request for ROE +12V B Channel voltage received\n");
     char* response = (char*)getHK(VPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -837,7 +897,7 @@ int ROE_12V_IA(packet_t* p) {
     record("Request for ROE +12V A Channel current received\n");
     char* response = (char*)getHK(CPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -846,7 +906,7 @@ int ROE_12V_IB(packet_t* p) {
     record("Request for ROE +12V B Channel current received\n");
     char* response = (char*)getHK(CPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -855,7 +915,7 @@ int ROE_36V_VA(packet_t* p) {
     record("Request for ROE +36V A Channel voltage received\n");
     char* response = (char*)getHK(VPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -864,7 +924,7 @@ int ROE_36V_VB(packet_t* p) {
     record("Request for ROE +36V B Channel voltage received\n");
     char* response = (char*)getHK(VPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -873,7 +933,7 @@ int ROE_36V_IA(packet_t* p) {
     record("Request for ROE +36V A Channel current received\n");
     char* response = (char*)getHK(CPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -882,7 +942,7 @@ int ROE_36V_IB(packet_t* p) {
     record("Request for ROE +36V B Channel current received\n");
     char* response = (char*)getHK(CPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -892,7 +952,7 @@ int FC_TEMP_1(packet_t* p) {
     //Insert control code here  
     char* response = TEMP1 "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -902,7 +962,7 @@ int FC_TEMP_2(packet_t * p) {
     //Insert control code here  
     char* response = TEMP2 "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -912,7 +972,7 @@ int FC_TEMP_3(packet_t* p) {
     //Insert control code here  
     char* response = TEMP3 "0.0"; //test EGSE
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -921,7 +981,7 @@ int ROE_TEMP_UPPER(packet_t* p) {
     record("Request for ROE upper temperature received\n");
     char* response = (char*)getHK(UPPER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -939,7 +999,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     record("Request for ROE CCDA_VOD current received\n");
     char* response = (char*)getHK(CCDA_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -948,7 +1008,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     record("Request for ROE CCDA_VRD current received\n");
     char* response = (char*)getHK(CCDA_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -957,7 +1017,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     record("Request for ROE CCDA_VSS current received\n");
     char* response = (char*)getHK(CCDA_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -966,7 +1026,7 @@ int ROE_CCDS_VOD(packet_t* p) {
     record("Request for ROE CCDS_VOD current received\n");
     char* response = (char*)getHK(CCDB_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -975,7 +1035,7 @@ int ROE_CCDS_VRD(packet_t* p) {
     record("Request for ROE CCDS_VRD current received\n");
     char* response = (char*)getHK(CCDB_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -984,13 +1044,13 @@ int ROE_CCDS_VSS(packet_t* p) {
     record("Request for ROE CCDS_VSS current received\n");
     char* response = (char*)getHK(CCDB_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
-    funcNumber = 82;
+    funcNumber = 87; //This number must be set and must be correct
     hlp_hash_size = funcNumber * 2;
 
     /*allocate space for control strings*/
@@ -1009,6 +1069,11 @@ void hlpHashInit() {
     stringTable[USleep] = UPLINK_S SLEEP;
     stringTable[UWake] = UPLINK_S WAKE;
     stringTable[UTest] = UPLINK_S TEST;
+    stringTable[TDataStart] = "NOTUSED1"; // Use useless strings so a zero hash
+    stringTable[TDataStop] = "NOTUSED2"; // doesn't start timers
+    stringTable[TDark2] = "NOTUSED3";
+    stringTable[TDark4] = "NOTUSED4";
+    stringTable[TSleep] = "NOTUSED5";
     stringTable[SetSeq] = MDAQ_RQS_S ST_SEQUENCE;
     stringTable[SetOut] = MDAQ_RQS_S ST_OFN;
     stringTable[GetSeqName] = MDAQ_RQS_S GT_SEQ_NM;
@@ -1085,14 +1150,13 @@ void hlpHashInit() {
     stringTable[ROE_CS_VSS] = HK_RQS_S CCDB_VSS;
 
     /*allocate space for function pointers*/
-    hlpControl* functionTable;
     if ((functionTable = calloc(funcNumber, sizeof (hlpControl))) == NULL) {
         record("malloc failed to allocate control function array\n");
     }
 
     /*array of function pointers to match with control strings*/
     functionTable[UDataStart] = &uDataStart;
-    functionTable[UDataStop] = uDataStop;
+    functionTable[UDataStop] = &uDataStop;
     functionTable[UDark1] = &uDark1;
     functionTable[UDark2] = &uDark2;
     functionTable[UDark3] = &uDark3;
@@ -1100,6 +1164,11 @@ void hlpHashInit() {
     functionTable[USleep] = &uSleep;
     functionTable[UWake] = &uWake;
     functionTable[UTest] = &uTest;
+    functionTable[TDataStart] = &uDataStart;
+    functionTable[TDataStop] = &uDataStop;
+    functionTable[TDark2] = &uDark2;
+    functionTable[TDark4] = &uDark4;
+    functionTable[TSleep] = &uSleep;
     functionTable[SetSeq] = &setSequence;
     functionTable[SetOut] = &setOutputName;
     functionTable[GetSeqName] = &getSeqName;
@@ -1176,7 +1245,7 @@ void hlpHashInit() {
     functionTable[ROE_CS_VSS] = &ROE_CCDS_VSS;
 
     /*initialize memory for function hash table*/
-    if ((hlpHashTable = calloc(sizeof (node_t) * hlp_hash_size, 1)) == NULL) {
+    if ((hlpHashTable = calloc(hlp_hash_size, sizeof (node_t))) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
