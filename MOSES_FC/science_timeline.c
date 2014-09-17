@@ -43,20 +43,18 @@ void * science_timeline(void * arg) {
         sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;
+        
+        sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
+        record(msg);
 
             record("SIGUSR1 received, starting sequence\n");
-        }
+        
 
         /* if ROE active, set to known state (exit default, reset, exit default) */
         exitDefault();
         reset();
         exitDefault();
 
-
-        /*establish current sequence */
-        currentSequence = sequenceMap[ops.sequence];
-        sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence.sequenceName, ops.sequence);
-        record(msg);
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);

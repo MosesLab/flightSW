@@ -779,7 +779,7 @@ int ROE_POS_5V_VD(packet_t* p) {
     record("Request for ROE +5.0V D Channel voltage received\n");
     char* response = (char*)getHK(VPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -990,7 +990,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
     record("Request for ROE lower temperature received\n");
     char* response = (char*)getHK(LOWER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
-    enqueue(&hkdownQueue, r);
+    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
