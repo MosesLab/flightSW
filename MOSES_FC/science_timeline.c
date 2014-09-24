@@ -96,8 +96,8 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence->exposureTimes[i]);
 
-            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
-            b = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
+            a = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
+            b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRML, sframe);
             enqueue(&lqueue[hkdown], a);
             enqueue(&lqueue[hkdown], b);
 
@@ -112,7 +112,7 @@ void * science_timeline(void * arg) {
             sleep(4);
 
             /* push packet w/info about end read out */
-            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
+            a = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
 
             /*Enqueue image to image writer thread*/
