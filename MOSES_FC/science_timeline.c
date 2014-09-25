@@ -28,14 +28,14 @@ void * science_timeline(void * arg) {
 
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
-    while(!roe_struct.active)
-        usleep(20000);
-    record("ROE Active\n");
+    //while(!roe_struct.active)
+    //    usleep(20000);
+    //record("ROE Active\n");
 
     /* if ROE active, set to known state (exit default, reset, exit default) */
-    exitDefault();
-    reset();
-    exitDefault();
+    //exitDefault();
+    //reset();
+    //exitDefault();
 
     while (ts_alive) {
 
@@ -51,9 +51,9 @@ void * science_timeline(void * arg) {
         
 
         /* if ROE active, set to known state (exit default, reset, exit default) */
-        exitDefault();
-        reset();
-        exitDefault();
+        //exitDefault();
+        //reset();
+        //exitDefault();
 
 
         /* push packets w/info about current sequence */
@@ -67,6 +67,7 @@ void * science_timeline(void * arg) {
         for (i = 0; i < currentSequence->numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
+             a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
             /* check for running, roe active.... */
 
             //If ROE not active?
@@ -118,7 +119,8 @@ void * science_timeline(void * arg) {
             /*Enqueue image to image writer thread*/
             record("Queue image for writing.\n");
             enqueue(&lqueue[scit_image], image);
-
+            
+            a = (packet_t*) constructPacket(MDAQ_RSP, END_EXP, (char *) NULL);
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */

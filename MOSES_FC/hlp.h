@@ -102,6 +102,8 @@
 #define EXIT_DFLT   "XDF"
 #define SET_SLFTST  "SLF"
 #define RESET_MDAQ  "RST" //Not Implemented
+#define BEGIN_EXP   "EST"
+#define END_EXP     "ESP"
 //#define FIRESIG     "COM"
 //#define STOP_EXP    "EXP"
 //#define SHUTTER_OPN "SHO"
