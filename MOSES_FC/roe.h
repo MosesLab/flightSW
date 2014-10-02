@@ -44,22 +44,7 @@
 #include <stdlib.h>
 
 struct ReadOutElectronics
-{
-    int isActive;
-    int activate;
-    int deactivate;
-    int exitDefault;
-    int selfTestMode;
-    int stimOn;
-    int stimOff;
-    int readOut;
-    int flush;
-    int getHK;
-    int getMode;
-    int reset;
-    char* getAE;
-    int manualWrite;
-    
+{   
     int active;
     int state;
     int atoh; //ascii to hex
@@ -70,6 +55,7 @@ struct ReadOutElectronics
     pthread_mutex_t mx;
 };
 
+//extern struct ReadOutElectronics roe_struct;
 struct ReadOutElectronics roe_struct;
 
 int activate();
@@ -87,6 +73,7 @@ int setAE(char* paramstring);
 int manualWrite(char* msg, int size);
 int receiveAck(int fd,char *data,int size,char target);
 int input_timeout_roe(int filedes, unsigned int seconds);
+int atoh_roe(char c);
 //int recieveAck(int fd,char *data,int size,char target = 0x03);
 int readRoe(int fd, char *data, int size);
 int sendDummyData();

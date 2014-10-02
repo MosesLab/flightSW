@@ -16,23 +16,18 @@
 #include "defs.h"
 #include "hlp.h"
 #include "packet.h"
+#include "roe.h"
 
-#define PULSE 150000
-
-sigset_t maskstl, oldmaskstl;
-int caught_signal;
-struct sigaction run_action;   
+#define PULSE 50000     //50 ms result of 150ms open time and 50 ms closing time-->75ms - 25ms = 50ms
 
 extern volatile sig_atomic_t ts_alive;
-extern LockingQueue hkdownQueue;
 
 extern moses_ops_t ops; //struct storing operational state
 
 
-void run_sig();
-void init_signal_handler_stl();
-void* science_timeline(void *);
-
+void * science_timeline(void *);
+void * write_data(void *);
+void * telem(void *);
 
 
 

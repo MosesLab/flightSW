@@ -7,8 +7,28 @@
 
 #include "main.h"
 
-/*
+volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
+
+unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
+thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
+void * targs[NUM_RROBIN + NUM_FIFO];
+pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
+
+pid_t main_pid;
+int quit_sig = 0;
+struct sigaction quit_action, init_action, start_action; //action to be taken when ^C (SIGINT) is entered
+sigset_t mask, oldmask; //masks for SIGINT signal
+
+int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
+node_t** config_hash_table;
+
+LockingQueue lqueue[QUEUE_NUM];
+
+/**
+ * Main program entry point. Reads configuration file to configure program.
+ * Starts flight software threads based off of configs.
  * 
+ * @return 0 upon successful exit
  */
 int main(void) {
 
@@ -26,32 +46,40 @@ int main(void) {
     /*record this thread's PID*/
     main_pid = getpid();
 
+    /*Use signals to inform the program to quit*/
+    init_quit_signal_handler();
+
+    /*initialize virtual shell*/
+    vshell_pid = vshell_init();
+
     /*start threads indicated by configuration file*/
     start_threads();
 
+
+
     /*Upon program termiation (^c) attempt to join the threads*/
-    init_quit_signal_handler();
     //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
     //    while (ts_alive) {
     //        sigsuspend(&oldmask); // wait here until the program is killed
     //    }
     //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
 
-    pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-    sigwait(&mask, &quit_sig);
-    pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+//    while (ts_alive) {
 
+                pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+                sigwait(&mask, &quit_sig);
+                pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+//        wait(0);
+//    }
+
+    record("exited wait\n");
+    
     /*SIGINT caught, ending program*/
     join_threads();
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
     return 0;
-}
-
-/*signal all threads to exit*/
-void quit_signal(int sig) {
-    ts_alive = 0;
 }
 
 /*this method takes a function pointer and starts it as a new thread*/
@@ -64,11 +92,12 @@ void start_threads() {
     /*fill array of arguments for pthread call*/
     targs[hlp_control_thread] = &config_values[hlp_up_interface];
     targs[hlp_down_thread] = &config_values[hlp_down_interface];
-    targs[hlp_hk_thread] = NULL;
+    targs[gpio_control_thread] = NULL;
     targs[hlp_shell_thread] = NULL;
     targs[sci_timeline_thread] = NULL;
     targs[telem_thread] = NULL;
     targs[image_writer_thread] = NULL;
+    targs[fpga_server_thread] = NULL;
 
     /**
      * FIFO thread attribute loop
@@ -98,16 +127,20 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //    void * returns;
+//    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
-    //    sleep(1);
+    sleep(1);
+    
+    kill(vshell_pid, SIGTERM);
+    
+    record("killed bash\n");
 
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-            //            pthread_join(threads[i], &returns);
-            pthread_cancel(threads[i]);
+//            pthread_join(threads[i], &returns);
+                        pthread_cancel(threads[i]);
         }
     }
 }
@@ -116,42 +149,62 @@ void join_threads() {
 void init_quit_signal_handler() {
     sigfillset(&oldmask); //save the old mask
     sigemptyset(&mask); //create a blank new mask
+
+    /*quit signal handling*/
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = 0;
-
+    quit_action.sa_flags = SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
+
+    /*experiment data start signal handling*/
+//    sigaddset(&mask, SIGUSR1);
+    start_action.sa_handler = start_signal;
+    start_action.sa_mask = oldmask;
+    start_action.sa_flags = 0;
+    sigaction(SIGUSR1, &start_action, NULL);
+
+}
+
+/*signal all threads to exit*/
+void quit_signal(int sig) {
+    record("SIGINT received\n");
+    ts_alive = 0;
+}
+
+/*Signal experiment to start gathering data*/
+void start_signal(int sig) {
+    record("Flight computer signaled Data Start\n");
+    uDataStart();
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
 void main_init() {
-    num_threads = NUM_RROBIN + NUM_FIFO;
-    unsigned int config_size = num_threads + NUM_IO;
+    uint config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
 
     /*allocate strings to match with configuration file*/
-    config_strings[hlp_control_thread] = CONTROL_CONF;
+    config_strings[hlp_control_thread] = HLP_CONTROL_CONF;
     config_strings[hlp_down_thread] = DOWN_CONF;
-    config_strings[hlp_hk_thread] = HK_CONF;
+    config_strings[gpio_control_thread] = GPIO_CONTROL_CONF;
     config_strings[hlp_shell_thread] = SHELL_CONF;
     config_strings[sci_timeline_thread] = SCIENCE_CONF;
     config_strings[telem_thread] = TELEM_CONF;
     config_strings[image_writer_thread] = IMAGE_WRITER_CONF;
+    config_strings[fpga_server_thread] = FPGA_SERVER_CONF;
 
-    /*must offset by NUM_THREADS to be enumerated correctly*/
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
     config_strings[synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/
-    if ((config_hash_table = calloc(sizeof (node_t) * config_size, 1)) == NULL) {
+    if ((config_hash_table = calloc(config_size, sizeof (node_t))) == NULL) {
         record("malloc failed to allocate hash table\n");
     }
 
     /*fill hash table with array of strings matching indices for configuration values*/
-    int i;
+    uint i;
     for (i = 0; i < config_size; i++) {
         int * int_def = malloc(sizeof (int));
         *int_def = i;
@@ -163,12 +216,17 @@ void main_init() {
     /*fill array of function pointer for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
-    tfuncs[hlp_hk_thread] = hlp_housekeeping;
+    tfuncs[gpio_control_thread] = gpio_control;
     tfuncs[hlp_shell_thread] = hlp_shell_out;
     tfuncs[sci_timeline_thread] = science_timeline;
     tfuncs[telem_thread] = telem;
     tfuncs[image_writer_thread] = write_data;
+    tfuncs[fpga_server_thread] = fpga_server;
 
+    /*initialize locking queues*/
+    for (i = 0; i < QUEUE_NUM; i++) {
+        lockingQueue_init(&lqueue[i]);
+    }
 
 }
 

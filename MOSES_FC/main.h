@@ -15,12 +15,14 @@
 #include "control.h"
 #include "science_timeline.h"
 #include "sequence.h"
+#include "lockingQueue.h"
+#include "fpga.h"
 
 /*IO constants*/
 #define NUM_IO 4
-#define CONTROL_CONF "HLP_CONTROL_THREAD"
+#define HLP_CONTROL_CONF "HLP_CONTROL_THREAD"
 #define DOWN_CONF "HLP_DOWN_THREAD"
-#define HK_CONF "HLP_HK_THREAD"
+#define GPIO_CONTROL_CONF "GPIO_CONTROL_THREAD"
 #define SCIENCE_CONF "SCIENCE_THREAD"
 #define TELEM_CONF "TELEM_THREAD"
 #define SHELL_CONF "HLP_SHELL_THREAD"
@@ -29,32 +31,46 @@
 #define ROE_CONF "ROE"
 #define SYNCLINK_CONF "SYNCLINK_TM"
 #define IMAGE_WRITER_CONF "IMAGE_THREAD"
+#define FPGA_SERVER_CONF "FPGA_SERVER_THREAD"
 
 
-volatile sig_atomic_t ts_alive = 1;     //variable modified by signal handler, setting this to false will end the threads
 
-pid_t main_pid;
-int quit_sig;
-struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
-sigset_t mask, oldmask;         //masks for SIGINT signal
+/*Global quit variable declaration*/
+extern volatile sig_atomic_t ts_alive;     //variable modified by signal handler, setting this to false will end the threads
 
+/*Quit signal varibles*/
+extern pid_t main_pid;
+extern int quit_sig;
+extern struct sigaction quit_action;   //action to be taken when ^C (SIGINT) is entered
+extern sigset_t mask, oldmask;         //masks for SIGINT signal
 
 /*configuration variables*/
-int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations
-   
-node_t** config_hash_table;
+extern int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO];        //array of values holding moses program configurations   
+extern node_t** config_hash_table;
+
+/*enum and definition must match! or unhappiness will occur*/
+#define QUEUE_NUM 8
+enum queues{
+    sequence,
+    scit_image,
+    fpga_image,
+    telem_image,
+    gpio_in,
+    gpio_out,
+    gpio_req,
+    hkdown   
+};
+
+/*lock queues for thread sync */
+extern LockingQueue lqueue[QUEUE_NUM];
+extern uint lqueue_num;
 
 void main_init();
 void read_moses_config();
 
-//enum moses_io{
-//  hlp_up_interface,
-//  hlp_down_interface,
-//  roe_interface,
-//  synclink_interface,
-//};
-
 void quit_signal(int);  //signal handler
+void init_signal(int sig);
+void start_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();

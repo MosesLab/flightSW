@@ -31,6 +31,8 @@
 #define HKUP 1
 #define HKDOWN 0
 
+#define EOF_PACKET 0x04
+
 extern volatile sig_atomic_t ts_alive;
 
 /*variable declaration*/

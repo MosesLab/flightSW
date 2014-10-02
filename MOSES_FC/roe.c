@@ -1,7 +1,7 @@
 /**************************************************
  * Author: David Keltgen                           *
  * Company: Montana State University: MOSES LAB    *
- * File Name: roe.c              *
+ * File Name: roeReal.c              *
  * Date:  June 4 2014                              *
  * Description: Software representation of the     *
  *              Read Out Electronics(ROE).         *
@@ -15,49 +15,44 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "main.h"
+#include "logger.h"
 
-int activate() {
+int activateROE() {
     //char msg[100];
+    int fd;
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
-        struct termios oldtio_up, newtio_up;
-        int fd = open(ROE_DEV, O_RDWR); // | O_NOCTTY);
+        fd = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY);
         if (fd < 0) {
             printf("%s\n", strerror(errno));
             record("Couldnt connect\n");
+            pthread_mutex_unlock(&roe_struct.mx);
             exit(-1);
-        } else {
-            /*save current serial port settings*/
-            tcgetattr(fd, &oldtio_up);
-
-            /*clear struct for new port settings*/
-            bzero(&newtio_up, sizeof (newtio_up));
-
-            /*set flags for non-canonical serial connection*/
-            newtio_up.c_cflag |= DOWNBAUD | CS8 | CSTOPB | HUPCL | CLOCAL;
-            newtio_up.c_cflag &= ~(PARENB | PARODD);
-            newtio_up.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-            //newtio_up.c_iflag |= ISTRIP;
-            newtio_up.c_oflag &= ~OPOST;
-            newtio_up.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
-
-            /*set non-canonical attributes*/
-            newtio_up.c_cc[VTIME] = 1;
-            newtio_up.c_cc[VMIN] = 255;
-
-            tcflush(fd, TCIFLUSH);
-            tcsetattr(fd, TCSANOW, &newtio_up);
-            roe_struct.roeLink = fd;
-            record("Connection established. DEFAULT MODE\n");
         }
-    }
-    //roe.roeLink = fd;
-    roe_struct.active = TRUE;
-    pthread_mutex_unlock(&roe_struct.mx);
-    record("ROE Active\n");
-    return 0;
-
+       	fcntl(fd,F_SETFL,FNDELAY);
+	struct termios options;
+	tcgetattr(fd,&options);
+	cfsetispeed(&options,B9600);
+	cfsetospeed(&options,B9600);
+	options.c_cflag |= (CLOCAL|CREAD);
+	options.c_cflag &= ~PARENB;
+	options.c_cflag &= ~CSTOPB;
+	options.c_cflag &= ~CSIZE;
+	options.c_cflag |= CS8;
+	options.c_oflag &= ~OPOST;
+	options.c_lflag &= ~(ICANON|ECHO|ECHOE|ISIG);
+	tcsetattr(fd,TCSANOW,&options);
+        
+        record("Connection established. DEFAULT MODE\n");
+        roe_struct.roeLink = fd;
+        roe_struct.active = TRUE;
+}
+        pthread_mutex_unlock(&roe_struct.mx);
+        record("ROE Active\n");
+        return fd;
+    
 }
 
 int deactivate() {
@@ -78,7 +73,7 @@ int deactivate() {
 
 int exitDefault() {
     //char msg[100];
-    int var;
+    printf("Attempting to exit default mode.\n");
     record("Attempting to exit default mode.\n");
     //record(msg);
 
@@ -127,13 +122,17 @@ int exitDefault() {
         0x00, 0x00, 0x00};
 
     char command = EXIT_DEFAULT;
-    if (write(roe_struct.roeLink, &command, 1) != 1) //Write Command to ROE Link
+    int val;
+    val = write(roe_struct.roeLink, (char *)&command, 1); //Write Command to ROE Link
+    printf("write: %d\n", val);
+    if(val != 1)
     {
         record("Exit Default Error, write\n");
         pthread_mutex_unlock(&roe_struct.mx);
         return -1;
     }
-    usleep(500000); //Wait for command to finish
+    
+    usleep(5000000); //Wait for command to finish
     char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         record("Did not receive ack from ROE!\n");
@@ -143,10 +142,12 @@ int exitDefault() {
     printf("received ack, reading the status\n");
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
+        
         record("Exit Default Error, status\n");
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Status of Command Execution
     }
+    printf("Status = %c\n", status);
     roe_struct.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.
@@ -155,36 +156,29 @@ int exitDefault() {
     if (roeCustomRead) {
         if (status != -1) {
             int i;
-            for (i = 0; i < blockSize; i++) {
-                var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
-                if (var == -1) record("Custom read write failed Block 1");
-            }
-            for (i = 0; i < blockSize; i++) {
-                var = write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
-                if (var == -1) record("Custom read write failed Block 1");
-            }
-            for (i = 0; i < blockSize; i++) {
-                var = write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
-                if (var == -1) record("Custom read write failed Block 1");
-            }
-            for (i = 0; i < blockSize; i++) {
-                var = write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
-                if (var == -1) record("Custom read write failed Block 1");
-            }
+            for (i = 0; i < blockSize; i++)
+                write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+            for (i = 0; i < blockSize; i++)
+                write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+            for (i = 0; i < blockSize; i++)
+                write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
+            for (i = 0; i < blockSize; i++)
+                write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
 
             record("Exiting Default Mode\n");
         } else {
             record("Status = -1, not entering default mode\n");
         }
     }
-    pthread_mutex_unlock(&roe_struct.mx);
-    return 0;
+        pthread_mutex_unlock(&roe_struct.mx);
+        return 0;
+    }
 
-}
 
 /*For testing serial connection only*/
 int sendDummyData() {
-    int var;
+    pthread_mutex_lock(&roe_struct.mx);
+    
     int blockSize = 67;
     int block1[] = {0x46, 0x08, 0x00, 0x09, 0x12, 0x18, 0x25, 0x28,
         0x30, 0xF8, 0x34, 0xF8, 0x34, 0xF8, 0xF8, 0x80,
@@ -197,17 +191,28 @@ int sendDummyData() {
         0xFC, 0xFC, 0xFC};
 
     int i;
-    for (i = 0; i < blockSize; i++) {
-        var = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
-        if (var == -1) record("Custom read write failed Block 1");
-    }
-
+while(1)
+{
+    int val;
+    for (i = 0; i < blockSize; i++){
+        val = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+	printf("%d\n", val);
+	}
+    sleep(1);
+ }   
+    pthread_mutex_unlock(&roe_struct.mx);
+    
     return 0;
 }
 
 //Request House Keeping data from roe;
 
 int getHK(char hkparam) {
+    
+    if(!roe_struct.active)
+    {
+        record("ROE not active in getHK\n");
+    }
     pthread_mutex_lock(&roe_struct.mx);
     char command[2] = {ROE_HK_REQ, hkparam};
     int i;
@@ -217,8 +222,8 @@ int getHK(char hkparam) {
             record("getHK error, write\n");
             return -1;
         }
-    char response;
-    if (receiveAck(roe_struct.roeLink, (char *) &response, 1, ROE_HK_RES) == -1) {
+    char ack;
+    if (receiveAck(roe_struct.roeLink, (char *) &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
         return -1; //Get Ack
@@ -247,7 +252,7 @@ int reset() {
         pthread_mutex_unlock(&roe_struct.mx);
         return -1;
     }
-    roe_struct.mode = MANUAL;
+    roe_struct.mode = DEFAULT;
     usleep(500000); //Wait for the command to complete
     pthread_mutex_unlock(&roe_struct.mx);
     record("Reseting to Default Mode\n");
@@ -262,7 +267,9 @@ int selftestMode() {
     char selftst[9] = {0x45, 0x99, 0x99, 0x77, 0x4F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1) {
+        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1)
+        {
+            pthread_mutex_unlock(&roe_struct.mx);
             record("selfTest error, write\n");
             return -1;
         }
@@ -280,7 +287,7 @@ int selftestMode() {
         record("selfTest error, read\n");
         return -1; //Get Status of Command Execution
     }
-
+    
 
     pthread_mutex_unlock(&roe_struct.mx);
     record("Entering Self Test Mode\n");
@@ -296,7 +303,9 @@ int stimOn() {
     char stimon[9] = {0x45, 0x99, 0x99, 0x77, 0x3F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1) {
+        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1)
+        {
+            pthread_mutex_unlock(&roe_struct.mx);
             record("stimOn error, write\n");
             return -1;
         }
@@ -329,7 +338,9 @@ int stimOff() {
     char stimoff[9] = {0x45, 0x99, 0x99, 0x77, 0x2F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1) {
+        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1)
+        {
+            pthread_mutex_unlock(&roe_struct.mx);
             record("stimOff error, write\n");
             return -1;
         }
@@ -366,17 +377,23 @@ int readOut(char* block, int delay) {
 
     int i;
     for (i = 0; i < 2; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) return -1;
-
+        if (write(roe_struct.roeLink, (char*) &command[i], 1) != 1)
+        {
+            pthread_mutex_unlock(&roe_struct.mx);
+            record("Readout Error, write\n");
+            return -1;
+        }
     usleep(delay); //Wait for the command to complete
     char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
+        record("Readout Error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
+        record("Readout Error, read\n");
         return -1; //Get Status of Command Execution
     }
 
@@ -394,11 +411,17 @@ int flush() {
     char command[2] = {START_CSG, 0x00};
 
     for (i = 0; i < 2; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) return -1;
+        if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1)
+        {
+            pthread_mutex_unlock(&roe_struct.mx);
+            record("Flush Error, write\n");
+            return -1;
+        }
 
     char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
+        record("Flush Error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
     char status = 0;
@@ -406,7 +429,8 @@ int flush() {
         readRoe(roe_struct.roeLink, &status, 1); //Wait for endofsequence, faster than usleep(***)
     }
     readRoe(roe_struct.roeLink, &status, 1); //Get the status of command execution
-
+    printf("Flush status: %c\n", status);
+    
     pthread_mutex_unlock(&roe_struct.mx);
     record("Flushing CCD's\n");
     return 0;
@@ -469,7 +493,7 @@ int readRoe(int fd, char *data, int size) {
     input = input_timeout_roe(fd, 1);
     if (input > 0) {
         if (read(fd, data, size) != -1) {
-            printf("data read, exiting readRoe\n");
+            printf("data read, exiting readRoe %c<---data\n", *data);
             return 0;
         }
     }
@@ -481,23 +505,28 @@ int readRoe(int fd, char *data, int size) {
 
 int receiveAck(int fd, char *data, int size, char target) {
     int timeout;
+	char msg[100];
+    record("Inside receiveAck\n");
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds
     {
         if (readRoe(fd, data, size) != -1) { //Return only if read data is an acknowledgement
-            if (*data == target) {
-                printf("Acknowledgment successful\n");
+      sprintf(msg,"Data:%c, target:%c\n", *data, target);
+      record(msg);
+      if (*data == target) {
+                record("Acknowledgment successful\n");
                 return 0;
             }
         }
     }
-    printf("Aknowledgment timeout\n");
+    sprintf(msg,"Aknowledgment timeout %c<--data\n", *data);
+	record(msg);
     return -1;
 }
 
-/*int atoh(char c) {
+int atoh_roe(char c) {
     return (c >= 0 && c <= 9) ? (c & 0x0F) : ((c & 0x0F) + 9);
-}*/
+}
 
 int input_timeout_roe(int filedes, unsigned int seconds) {
     fd_set set;

@@ -171,7 +171,7 @@ int init_serial_connection(int hkup, char * serial_path) {
 void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
-    char temp;
+    char temp = '\0';
     //    char * error = "";
 
     int continue_read = FALSE;
@@ -188,7 +188,7 @@ void readPacket(int fd, packet_t * p) {
         if (clearBuffer) {
             //            ioctl(fd, FIONREAD);
             continue_read = TRUE;
-            record("\n");
+//            record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
@@ -221,11 +221,13 @@ void readPacket(int fd, packet_t * p) {
 //            record("checksum\n");
             readData(fd, &temp, 1);
 //            record("endbyte\n");
-
-
-            while (temp != ENDBYTE) {
-                readData(fd, &temp, 1);
-            }
+//            while (temp != ENDBYTE) {
+//                readData(fd, &temp, 1);
+//            }
+//            record("eof\n");
+//            while (temp != EOF) {
+//                readData(fd, &temp, 1);
+//            }
 
             char rx_checksum = calcCheckSum(p);
             tempValid = (p->checksum[0] == rx_checksum);
@@ -238,17 +240,17 @@ void readPacket(int fd, packet_t * p) {
             //            ioctl(fd, FIONREAD);
         }
     }
+
 }
 
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
     char temp;
     int result = TRUE;
-    int select_rc = 1;
 
     int rsz = read(fd, data, len);
-    while (rsz < len && select_rc == 1) {
-            rsz += read(fd, data + rsz, len - rsz);
+    while (rsz < len) {
+        rsz += read(fd, data + rsz, len - rsz);
     }
 
     int i;
