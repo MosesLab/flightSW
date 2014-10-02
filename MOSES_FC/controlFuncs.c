@@ -288,7 +288,7 @@ int uDark3() {
     int i;
     for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
-        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+        if (strstr(sequenceMap[i].sequenceName, "dark3") != NULL) {
             ops.sequence = i;
         }
     }
@@ -308,7 +308,7 @@ int uDark4() {
     int i;
     for (i = 0; i < 5; i++)//replace 5 with sequence map size
     {
-        if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
+        if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
         }
     }
@@ -323,7 +323,8 @@ int uDark4() {
 
 int uSleep() {
     record("Received shutdown Uplink\n");
-    //Insert uplink handling code here
+    /* Shut down Power.....*/
+    
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -339,7 +340,7 @@ int uWake() {
 
 int uTest() {
     record("Received test Uplink\n");
-    //Insert uplink handling code here
+    /*Only thing needed done here is sending a packet*/
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -468,8 +469,8 @@ int getOutputName(packet_t* p) {
 /*Commands the flight software to determine if he ROE is in self-test mode*/
 int getSelftestStatus(packet_t* p) {
     record("Get self-test mode status command received\n");
-    //Insert control code here  
-    char* response = "test"; //test EGSE
+    char response[5];
+    sprintf(response,"%s",(ops.read_block == STMBLK)?"ON":"OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_SLFT_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -478,8 +479,8 @@ int getSelftestStatus(packet_t* p) {
 /*Commands the flight software to determine if the ROE is in STIMS mode*/
 int getStimsStatus(packet_t* p) {
     record("Get STIMS mode status command received\n");
-    //Insert control code here  
-    char* response = "test"; //test EGSE
+    char response[5];
+    sprintf(response,"%s",(ops.read_block == STBLK)?"ON":"OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_STM_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -597,45 +598,58 @@ int exitSW(packet_t* p) {
 /*commands the flight software to turn telemetry ON*/
 int telemEnable(packet_t* p) {
     record("Command to enable telemetry received\n");
+    ops.tm_write = ON;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to turn telemetry OFF*/
 int telemDisable(packet_t* p) {
     record("Command to disable telemetry received\n");
+    ops.tm_write = OFF;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to turn channel 0 ON*/
 int ch0Enable(packet_t* p) {
     record("Command to enable Channel 0 received\n");
+    ops.channels |= CH0;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to turn Channel 0 OFF*/
 int ch0Disable(packet_t* p) {
     record("Command to disable Channel 0 received\n");
+    ops.channels &= ~CH0;
     return GOOD_PACKET;
 }
 
 /* Commands the flight software to enable only positive channel */
 int posOnlyEnable(packet_t* p) {
     record("Command to enable only positive channel received\n");
+    ops.channels = CH3;
     return GOOD_PACKET;
 }
 
 /* Commands the flight software to disable only positive channel */
 int posOnlyDisable(packet_t* p) {
     record("Command to disable only positive channel received\n");
+    ops.channels = CH1 | CH2 | CH3;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to turn STIMS ON*/
 int stimsEnable(packet_t* p) {
-    record("Command to enable STIMS mode received\n");
+    record("Command to enable STIMS mode received.\n");
     if (roe_struct.active) {
-        stimOn();
-        //ops.read_block = STMBLK;
+        int var = stimOn();
+        if(var == -1)
+        {
+            record("Did not go into STIMS mode.\n");
+        }
+        else
+        {
+        ops.read_block = STMBLK;
+        }
     } else
         record("STIM-ON ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -645,8 +659,16 @@ int stimsEnable(packet_t* p) {
 int stimsDisable(packet_t* p) {
     record("Command to disable STIMS mode received\n");
     if (roe_struct.active) {
-        stimOff();
-        //ops.read_block = ....
+        int var = stimOff();
+        if(var == -1)
+        {
+            record("ROE did not turn STIMS off.\n");
+        }
+        else
+        {
+	ops.read_block = 
+                (ops.roe_custom_read == TRUE)?READBLK_CUSTOM:READBLK_DEFAULT;
+        }
     } else
         record("STIM-OFF ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -657,7 +679,8 @@ int resetROE(packet_t* p) {
     record("Command to reset ROE received\n");
     if (roe_struct.active) {
         reset();
-        //ops.read_block = ....
+        ops.read_block = 
+		(ops.roe_custom_read == TRUE)?READBLK_CUSTOM:READBLK_DEFAULT;
     } else
         record("RESET-ROE ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -666,9 +689,13 @@ int resetROE(packet_t* p) {
 /*Exit to default mode*/ //Aren't we leaving default mode? -Djk
 
 int disableDefaultROE(packet_t* p) {
-    record("Command to exit to default mode received\n");
+    record("Command to exit to default mode received.\n");
     if (roe_struct.active) {
-        exitDefault();
+        int var = exitDefault();
+        if(var == -1)
+        {
+            record("ROE did not exit default mode.\n");
+        }
     } else
         record("EXIT-DEFAULT ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -676,9 +703,17 @@ int disableDefaultROE(packet_t* p) {
 
 /*Commands the flight software to set the ROE to self-test mode*/
 int enableSelftestROE(packet_t* p) {
-    record("Command to set ROE to self-test mode received\n");
+    record("Command to set ROE to self-test mode received.\n");
     if (roe_struct.active) {
-        selftestMode();
+        int var = selftestMode();
+        if(var == -1)
+        {
+            record("Did not enter self test mode\n");
+        }
+        else
+        {
+        ops.read_block = STBLK;
+        }
     } else
         record("SELF-TEST ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -719,7 +754,7 @@ int FC_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V voltage*/
 int ROE_2_5V_V(packet_t* p) {
     record("Request for ROE +2.5V voltage received\n");
-    char* response = (char*)getHK(VPOS2_5VD);
+    char* response = getHK(VPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -728,7 +763,7 @@ int ROE_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V current*/
 int ROE_2_5V_I(packet_t* p) {
     record("Request for ROE +2.5V current received\n");
-    char* response = (char*)getHK(CPOS2_5VD);
+    char* response = getHK(CPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -757,7 +792,7 @@ int FC_POS_5V_V(packet_t* p) {
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
-    char* response = (char*)getHK(VPOS5VA_A);
+    char* response = getHK(VPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -768,7 +803,7 @@ int ROE_POS_5V_VB(packet_t* p) {
     record("Request for ROE +5.0V B Channel voltage received\n");
     //Insert control code here  
     //char* response = ROE_P5VAB_V "0.0"; //test EGSE
-    char* response = (char*)getHK(VPOS5VA_B);
+    char* response = getHK(VPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -777,7 +812,7 @@ int ROE_POS_5V_VB(packet_t* p) {
 /*Request for ROE +5.0V D Channel voltage*/
 int ROE_POS_5V_VD(packet_t* p) {
     record("Request for ROE +5.0V D Channel voltage received\n");
-    char* response = (char*)getHK(VPOS5VD);
+    char* response = getHK(VPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -786,7 +821,7 @@ int ROE_POS_5V_VD(packet_t* p) {
 /*Request for ROE +5.0V A Channel current*/
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
-    char* response = (char*)getHK(CPOS5VA_A);
+    char* response = getHK(CPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -795,7 +830,7 @@ int ROE_POS_5V_IA(packet_t* p) {
 /*Request for ROE +5.0V B Channel current*/
 int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
-    char* response = (char*)getHK(CPOS5VA_B);
+    char* response = getHK(CPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -804,7 +839,7 @@ int ROE_POS_5V_IB(packet_t* p) {
 /*Request for ROE +5.0V D Channel current*/
 int ROE_POS_5V_ID(packet_t* p) {
     record("Request for ROE +5.0V D Channel current received\n");
-    char* response = (char*)getHK(CPOS5VD);
+    char* response = getHK(CPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -813,7 +848,7 @@ int ROE_POS_5V_ID(packet_t* p) {
 /*Request for ROE -5.0V A Channel voltage*/
 int ROE_NEG_5V_VA(packet_t* p) {
     record("Request for ROE -5.0V A Channel voltage received\n");
-    char* response = (char*)getHK(VNEG5VA_A);
+    char* response = getHK(VNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -822,7 +857,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
 /*Request for ROE -5.0V B Channel voltage*/
 int ROE_NEG_5V_VB(packet_t* p) {
     record("Request for ROE -5.0V B Channel voltage received\n");
-    char* response = (char*)getHK(VNEG5VA_B);
+    char* response = getHK(VNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -831,7 +866,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
 /*Request for ROE -10.0V A Channel voltage*/
 int ROE_NEG_10V_VA(packet_t* p) {
     record("Request for ROE -10.0V A Channel voltage received\n");
-    char* response = (char*)getHK(VNEG10V_A);
+    char* response = getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -840,7 +875,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
 /*Request for ROE -10.0V B Channel voltage*/
 int ROE_NEG_10V_VB(packet_t* p) {
     record("Request for ROE -10.0V B Channel voltage received\n");
-    char* response = (char*)getHK(VNEG10V_A);
+    char* response = getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -849,7 +884,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
 /*Request for ROE -5.0V A Channel current*/
 int ROE_NEG_5V_IA(packet_t* p) {
     record("Request for ROE -5.0V A Channel current received\n");
-    char* response = (char*)getHK(CNEG5VA_A);
+    char* response = getHK(CNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -858,7 +893,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
 /*Request for ROE -5.0V B Channel current*/
 int ROE_NEG_5V_IB(packet_t* p) {
     record("Request for ROE -5.0V B Channel current received\n");
-    char* response = (char*)getHK(CNEG5VA_B);
+    char* response = getHK(CNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -877,7 +912,7 @@ int FC_12V_V(packet_t* p) {
 /*Request for ROE +12V A Channel voltage*/
 int ROE_12V_VA(packet_t* p) {
     record("Request for ROE +12V A Channel voltage received\n");
-    char* response = (char*)getHK(VPOS12V_A);
+    char* response = getHK(VPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -886,7 +921,7 @@ int ROE_12V_VA(packet_t* p) {
 /*Request for ROE +12V B Channel voltage*/
 int ROE_12V_VB(packet_t* p) {
     record("Request for ROE +12V B Channel voltage received\n");
-    char* response = (char*)getHK(VPOS12V_B);
+    char* response = getHK(VPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -895,7 +930,7 @@ int ROE_12V_VB(packet_t* p) {
 /*Request for ROE +12V A Channel current*/
 int ROE_12V_IA(packet_t* p) {
     record("Request for ROE +12V A Channel current received\n");
-    char* response = (char*)getHK(CPOS12V_A);
+    char* response = getHK(CPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -904,7 +939,7 @@ int ROE_12V_IA(packet_t* p) {
 /*Request for ROE +12V B Channel current*/
 int ROE_12V_IB(packet_t* p) {
     record("Request for ROE +12V B Channel current received\n");
-    char* response = (char*)getHK(CPOS12V_B);
+    char* response = getHK(CPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -913,7 +948,7 @@ int ROE_12V_IB(packet_t* p) {
 /*Request for ROE +36V A Channel voltage*/
 int ROE_36V_VA(packet_t* p) {
     record("Request for ROE +36V A Channel voltage received\n");
-    char* response = (char*)getHK(VPOS36V_A);
+    char* response = getHK(VPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -922,7 +957,7 @@ int ROE_36V_VA(packet_t* p) {
 /*Request for ROE +36V B Channel voltage*/
 int ROE_36V_VB(packet_t* p) {
     record("Request for ROE +36V B Channel voltage received\n");
-    char* response = (char*)getHK(VPOS36V_B);
+    char* response = getHK(VPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -931,7 +966,7 @@ int ROE_36V_VB(packet_t* p) {
 /*Request for ROE +36V A Channel current*/
 int ROE_36V_IA(packet_t* p) {
     record("Request for ROE +36V A Channel current received\n");
-    char* response = (char*)getHK(CPOS36V_A);
+    char* response = getHK(CPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -940,7 +975,7 @@ int ROE_36V_IA(packet_t* p) {
 /*Request for ROE +36V B Channel current*/
 int ROE_36V_IB(packet_t* p) {
     record("Request for ROE +36V B Channel current received\n");
-    char* response = (char*)getHK(CPOS36V_B);
+    char* response = getHK(CPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -979,7 +1014,7 @@ int FC_TEMP_3(packet_t* p) {
 /*Request for ROE upper temperature*/
 int ROE_TEMP_UPPER(packet_t* p) {
     record("Request for ROE upper temperature received\n");
-    char* response = (char*)getHK(UPPER_TEMP);
+    char* response = getHK(UPPER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -988,7 +1023,7 @@ int ROE_TEMP_UPPER(packet_t* p) {
 /*Request for ROE lower temperature*/
 int ROE_TEMP_LOWER(packet_t* p) {
     record("Request for ROE lower temperature received\n");
-    char* response = (char*)getHK(LOWER_TEMP);
+    char* response = getHK(LOWER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -997,7 +1032,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
 /*Request for CCDA_VOD current from the ROE*/
 int ROE_CCDA_VOD(packet_t* p) {
     record("Request for ROE CCDA_VOD current received\n");
-    char* response = (char*)getHK(CCDA_VODC);
+    char* response = getHK(CCDA_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1006,7 +1041,7 @@ int ROE_CCDA_VOD(packet_t* p) {
 /*Request for CCDA_VRD current from the ROE*/
 int ROE_CCDA_VRD(packet_t* p) {
     record("Request for ROE CCDA_VRD current received\n");
-    char* response = (char*)getHK(CCDA_VRDC);
+    char* response = getHK(CCDA_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1015,7 +1050,7 @@ int ROE_CCDA_VRD(packet_t* p) {
 /*Request for CCDA_VSS current from the ROE*/
 int ROE_CCDA_VSS(packet_t* p) {
     record("Request for ROE CCDA_VSS current received\n");
-    char* response = (char*)getHK(CCDA_VSSC);
+    char* response = getHK(CCDA_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1024,7 +1059,7 @@ int ROE_CCDA_VSS(packet_t* p) {
 /*Request for CCDS_VOD current from the ROE*/
 int ROE_CCDS_VOD(packet_t* p) {
     record("Request for ROE CCDS_VOD current received\n");
-    char* response = (char*)getHK(CCDB_VODC);
+    char* response = getHK(CCDB_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1033,7 +1068,7 @@ int ROE_CCDS_VOD(packet_t* p) {
 /*Request for CCDS_VRD current from the ROE*/
 int ROE_CCDS_VRD(packet_t* p) {
     record("Request for ROE CCDS_VRD current received\n");
-    char* response = (char*)getHK(CCDB_VRDC);
+    char* response = getHK(CCDB_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1042,7 +1077,7 @@ int ROE_CCDS_VRD(packet_t* p) {
 /*Request for CCDS_VSS current from the ROE*/
 int ROE_CCDS_VSS(packet_t* p) {
     record("Request for ROE CCDS_VSS current received\n");
-    char* response = (char*)getHK(CCDB_VSSC);
+    char* response = getHK(CCDB_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
