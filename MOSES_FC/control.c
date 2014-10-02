@@ -61,30 +61,40 @@ void * hlp_control(void * arg) {
         recordPacket(p);
 
         if (ts_alive) {
-            if (p->status == GOOD_PACKET) { //check checksum
-                /*case statement not necessary here, can get away with just one call
-                 * to execpacket
-                 */
-                switch (p->type[0]) {
-                    case SHELL:
-                        hlp_shell(stdin_des, p);
-                        break;
-                    case MDAQ_RQS:
-                    case UPLINK:
-                    case PWR:
-                        p->control = concat(2, p->type, p->subtype);
-                        p->status = execPacket(p);
-                        break;
-                    case HK_RQS:
-                        //                    printf("HK Request Packet\n");
-                        p->control = concat(3, p->type, p->subtype, p->data);
-                        p->status = execPacket(p);
-                        break;
-                    default:
-                        //                    printf("Bad Packet type\n");
-                        p->status = BAD_PACKET;
-                        break;
-                }
+            /*case statement not necessary here, can get away with just one call
+             * to execpacket
+             */
+            switch (p->type[0]) {
+                case SHELL:
+                    //                    record("Shell packet\n");
+                    /*write to input of virtual shell*/
+                    hlp_shell(stdin_des, p);
+
+                    break;
+                case MDAQ_RQS:
+                    //                    record("DAQ packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case UPLINK:
+                    //                    record("HLP Uplink packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case PWR:
+                    //                    record("Power packet\n");
+                    p->control = concat(2, p->type, p->subtype);
+                    p->status = execPacket(p);
+                    break;
+                case HK_RQS:
+                    //                    record("HK Request Packet\n");
+                    p->control = concat(3, p->type, p->subtype, p->data);
+                    p->status = execPacket(p);
+                    break;
+                default:
+                    //                    record("Bad Packet type\n");
+                    p->status = BAD_PACKET;
+                    break;
             }
 
             char* data;
@@ -229,6 +239,7 @@ void * telem(void * arg) {
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
+    char *msg = NULL;
 
     lockingQueue_init(&roeQueue);
 
@@ -243,25 +254,29 @@ void * telem(void * arg) {
         fp = fopen(curr_path, "r");
 
         if (fp == NULL) { //Error opening file
-            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
+            //                record("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+            sprintf(msg,"fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
+            record(msg);
         } else fclose(fp);
         if ((&roeQueue)->first != NULL) {
 
-            fseek(fp, 0, SEEK_END); // seek to end of file
-            fseek(fp, 0, SEEK_SET);
+//            fseek(fp, 0, SEEK_END); // seek to end of file; are these necessary?
+//            fseek(fp, 0, SEEK_SET);
 
-            int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
+            int send_check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
 
-            if (xmlTrigger == 1) {
-                xmlTrigger = 0;
-            } else if (xmlTrigger == 0) {
-                xmlTrigger = 1;
+            if (send_check == 1) {
+                
+                if (xmlTrigger == 1) {
+                    xmlTrigger = 0;
+                } else if (xmlTrigger == 0) {
+                    xmlTrigger = 1;
+                }
+            } else if (send_check == 2) {
+                record("ts_alive died! Image write failed\n");
             }
-
-            if (check == 0) {
-                //                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
-            }
+            
+            
         }
         //        }
         //        else {
@@ -274,5 +289,7 @@ void * telem(void * arg) {
         //
         //        }
     }
+    
     return NULL;
+    
 }

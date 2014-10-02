@@ -75,12 +75,12 @@
 #endif
 
 #ifndef BUFSIZ
-#define BUFSIZ 1024
+#define BUFSIZ 4096
 #endif
 
 /*Function to demonstrate correct command line input*/
 void display_usage(void) {
-    printf("Usage: sendTM <devname> \n"
+    record("Usage: sendTM <devname> \n"
             "devname = device name (optional) (e.g. /dev/ttyUSB0 etc. "
             "Default is /dev/ttyUSB0)\n");
 }
@@ -92,16 +92,11 @@ int synclink_init(int killSwitch) {
      * in the PATH. 
      */
 
-    int fd, rc;
+    int rc, fd = NULL;
     int sigs, idle;
     char *devname = "/dev/ttyUSB0";
+    char *msg = NULL;
     
-    /* open serial device with O_NONBLOCK to ignore DCD input */
-    fd = open(devname, O_TRUNC, 0);
-    if (fd < 0) {
-        printf("open error=%d %s\n", errno, strerror(errno));
-        return fd;
-    }
 
     if (killSwitch == 0) {
 
@@ -124,9 +119,16 @@ int synclink_init(int killSwitch) {
             wait(&child_status); //Wait for child to finish
         }
 
-        printf("send HDLC data on %s\n", devname);
+        sprintf(msg,"send HDLC data on %s\n", devname);
+        record(msg);
 
-
+        /* open serial device with O_NONBLOCK to ignore DCD input */
+        fd = open(devname, O_TRUNC, 0);                 // Why are we opening like this instead of "open(devname, O_RDWR | O_NONBLOCK, 0)"?
+        if (fd < 0) {
+            sprintf(msg,"open error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return fd;
+        }
 
         /*
          * set N_HDLC line discipline
@@ -137,16 +139,18 @@ int synclink_init(int killSwitch) {
          */
         rc = ioctl(fd, TIOCSETD, &ldisc);
         if (rc < 0) {
-            printf("set line discipline error=%d %s\n",
+            sprintf(msg,"set line discipline error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
         /* get current device parameters */
         rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
+            sprintf(msg,"ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
@@ -171,8 +175,9 @@ int synclink_init(int killSwitch) {
         /* set current device parameters */
         rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
+            sprintf(msg,"ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
@@ -180,22 +185,22 @@ int synclink_init(int killSwitch) {
         idle = HDLC_TXIDLE_ALT_ZEROS_ONES;
         rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
+            sprintf(msg,"ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
-
-
 
         /* set device to blocking mode for reads and writes */
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
 
-        printf("Turn on RTS and DTR serial outputs\n");
+        record("Turn on RTS and DTR serial outputs\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIS, &sigs);
         if (rc < 0) {
-            printf("assert DTR/RTS error=%d %s\n",
+            sprintf(msg,"assert DTR/RTS error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
@@ -204,16 +209,19 @@ int synclink_init(int killSwitch) {
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
     }
     else if (killSwitch == 1) { //Turns off synclink
-        printf("synclink killSwitch: Turn off RTS and DTR\n");
+        record("synclink killSwitch: Turn off RTS and DTR\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIC, &sigs);
         if (rc < 0) {
-            printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            sprintf(msg,"negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            record(msg);
             return rc;
         }
+    
+        /* Close the device*/
+        close(fd);
+    
     }
-
-
 
     return fd;
 }
@@ -222,9 +230,9 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
 
     int rc;
 //    int killTrigger = 0;
-    int size = 1024;
-    unsigned char databuf[1024];
-    unsigned char temp[1024];
+    int size = BUFSIZ;
+    unsigned char databuf[BUFSIZ];
+    unsigned char temp[BUFSIZ];
     unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
 
     char *imagename = NULL;
@@ -232,6 +240,7 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
     int frame_count = 0; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
+    char *msg = NULL;
 
     char* xmlfile = "/mdata/imageindex.xml";
 
@@ -251,17 +260,19 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
             /*Open image file for reading into a buffered stream*/
             fp = fopen(imagename, "r");
             if (fp == NULL) {
-                printf("fopen(%s) error=%d %s\n", imagename, errno, strerror(errno));
+                sprintf(msg,"fopen(%s) error=%d %s\n", imagename, errno, strerror(errno));
+                record(msg);
                 return 1;
             }
             /*Buffer the stream using the standard system bufsiz*/
             rc = setvbuf(fp, NULL, _IOFBF, BUFSIZ);
             if (rc != 0) {
-                printf("setvbuf error=%d %s\n", errno, strerror(errno));
+                sprintf(msg,"setvbuf error=%d %s\n", errno, strerror(errno));
+                record(msg);
                 return rc;
             }
 
-            printf("Sending data...\n");
+            record("Sending data...\n");
             gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
             int totalSize = 0;
             unsigned int rd = fread(databuf, 1, size, fp);
@@ -270,7 +281,8 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
                 //into the temp buffer
                 rc = write(fd, databuf, rd);
                 if (rc < 0) {
-                    printf("write error=%d %s\n", errno, strerror(errno));
+                    sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                    record(msg);
                     break;
                 }
                 /* block until all data sent */
@@ -282,55 +294,44 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
             if (rc < 0) return rc; //Finishes the write error handling after the break
             rc = write(fd, endbuf, 5);
             if (rc < 0) {
-                printf("write error=%d %s\n", errno, strerror(errno));
+                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                record(msg);
             }
 
             /*block until all data sent*/
             rc = tcdrain(fd);
 
-            /*clear the data buffer*/
+            /*clear the data buffer and close image file*/
             fflush(fp);
+            fclose(fp);
 
 
             gettimeofday(&time_end, NULL); //Timing
-            printf("all data sent\n");
-            printf("Sent %d bytes of data from file %s.\n", totalSize, imagename);
+            record("all data sent\n");
+            sprintf(msg,"Sent %d bytes of data from file %s.\n", totalSize, imagename);
+            record(msg);
             time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
                     + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
-            printf("Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+            sprintf(msg,"Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+            record(msg);
             
-            
-/*jackson this is not correct, xmltrigger will automatically be reset when 
- send_image(3) is placed on the stack. Correct implementation would use a loop that
- * runs twice, once for the image, once for the xml file */
-//        } else {
-//
-//            if (killTrigger == 1) { //If everything is done
-//                return 0;
-//            }
-//
-//            sleep(2);
-//
-//        }
+            return 1;
+
     }
 
-    printf("Turn off RTS and DTR\n");
-    int sigs = TIOCM_RTS + TIOCM_DTR;
-    rc = ioctl(fd, TIOCMBIC, &sigs);
-    if (rc < 0) {
-        printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
-        return rc;
-    }
-
-    /* Close the device and the image file*/
-    close(fd);
-    fclose(fp);
-
-
-    if (xmlTrigger == 1) {
-        return 1;
-    } else return 0; //return send status
-
-
+    /* We shouldn't need to turn off the synclink */
+//    record("Turn off RTS and DTR\n");
+//    int sigs = TIOCM_RTS + TIOCM_DTR;
+//    rc = ioctl(fd, TIOCMBIC, &sigs);
+//    if (rc < 0) {
+//        record("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+//        return rc;
+//    }
+//
+//    /* Close the device and the image file*/
+//    close(fd);
+//    fclose(fp);
+    
+    return 2;
 
 }
