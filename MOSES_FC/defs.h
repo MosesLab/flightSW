@@ -24,6 +24,11 @@
 #define CH2		0x4	//0x2
 #define CH3		0x8	//0x1
 
+#define READBLK_CUSTOM	0x08	//0x03 is standard, 0x08 is custom
+#define READBLK_DEFAULT	0x03
+#define STBLK		0x07
+#define STMBLK		0x06
+
 /*Packet structure for parsing and storing HLP packets*/
 typedef struct {
     /*Packet attributes*/
@@ -74,7 +79,7 @@ typedef struct {
     unsigned int dma_write;
     unsigned int tm_write;
     char channels;
-    char* read_block;
+    unsigned int read_block;
     
 }moses_ops_t;
 

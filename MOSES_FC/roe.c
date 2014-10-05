@@ -207,7 +207,7 @@ while(1)
 
 //Request House Keeping data from roe;
 
-int getHK(char hkparam) {
+char* getHK(char hkparam) {
     
     if(!roe_struct.active)
     {
@@ -220,22 +220,28 @@ int getHK(char hkparam) {
         if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("getHK error, write\n");
-            return -1;
+            return "FF";
         }
     char ack;
     if (receiveAck(roe_struct.roeLink, (char *) &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
-        return -1; //Get Ack
+        return "FF"; //Get Ack
     }
     char value;
     if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
-        return -1; //Read HK Value	mx.unlock();
+        return "FF"; //Read HK Value	mx.unlock();
     }
+    /*This value will be sent over telemetry as a string,
+      convert this value(byte) to a char array */
+    char* value_char;
+    value_char = (char *) calloc(3, sizeof (char*));
+    sprintf(value_char,"%c",value);
+   
     pthread_mutex_unlock(&roe_struct.mx);
-    return value; //Return the HK Value
+    return value_char; //Return the HK Value
 
 }
 
@@ -369,7 +375,7 @@ int stimOff() {
         Refer to the Preamble in the header file for legal blocks 
         and their descriptions. */
 
-int readOut(char* block, int delay) {
+int readOut(int block, int delay) {
     pthread_mutex_lock(&roe_struct.mx);
 
     //char command[2] = {START_CSG,block};
