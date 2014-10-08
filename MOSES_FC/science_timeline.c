@@ -9,7 +9,7 @@
  **************************************************/
 
 #include "science_timeline.h"
-
+sequence_t * currentSequence;
 void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];

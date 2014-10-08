@@ -28,29 +28,27 @@ sequence_t constructSequence(char *filepath) {
     }
     file = fopen(filepath, "r");
 
-    //printf("filepath: %s\n", filepath);
-    
     int rc;
-    
+
     rc = fscanf(file, "%s\n", input_data); //scan "SEQUENCE"
-    if(rc < 0) record("Error reading sequence\n");
-    
+    if (rc < 0) record("Error reading sequence\n");
+
     rc = fscanf(file, "%s %s\n", input_data, input_data); //scan "NAME" and filepath
-    if(rc < 0) record("Error reading sequence\n");
-    
+    if (rc < 0) record("Error reading sequence\n");
+
     rc = fscanf(file, "%s %d\n", input_data, &tempSequence.numFrames); //scan "COUNT" and number of exposures 
-    if(rc < 0) record("Error reading sequence\n");
-    
+    if (rc < 0) record("Error reading sequence\n");
+
     rc = fscanf(file, "%s ", input_data); //scan "BEGIN"
-    if(rc < 0) record("Error reading sequence\n");
+    if (rc < 0) record("Error reading sequence\n");
 
     //scan the exposures
     for (i = 0; i < (tempSequence.numFrames - 1); i++) {
         rc = fscanf(file, "%lf ", &tempSequence.exposureTimes[i]);
-        if(rc < 0) record("Error reading sequence\n");
+        if (rc < 0) record("Error reading sequence\n");
     }
     rc = fscanf(file, "%lf\n", &tempSequence.exposureTimes[tempSequence.numFrames - 1]);
-    if(rc < 0) record("Error reading sequence\n");
+    if (rc < 0) record("Error reading sequence\n");
 
     return tempSequence;
 }
@@ -91,3 +89,144 @@ void loadSequences() {
 
     }
 }
+
+void reload(char* file) {
+    pthread_mutex_lock(&currentSequence->mx);
+    currentSequence->corrupt = FALSE;
+
+    if (strstr(file, ".seq") != NULL) {
+        constructSequence(file);
+    }
+
+    pthread_mutex_lock(&currentSequence->mx);
+
+}
+
+int findAndJump_seq(double num) {
+    return -1;
+}
+
+void jump(int frame) {
+
+}
+
+void save() {
+    int i;
+    char msg[100];
+    FILE *outfile; // for writing
+    outfile = fopen(currentSequence->filename, "w"); // write to this file
+    sprintf(msg, "SEQUENCE: \n     NAME: %s", currentSequence->sequenceName);
+    fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
+    sprintf(msg, "\n     COUNT: %d", currentSequence->numFrames);
+    fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
+    sprintf(msg, "\n     BEGIN: \n          ");
+    fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
+    for(i = 0; i < currentSequence->numFrames; i++)
+    {
+        sprintf(msg,"%6.3f ",currentSequence->exposureTimes[i]);
+        fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
+    }
+    sprintf(msg, "\n     END: ");
+    fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
+    
+}
+void saveAs(char* file) {
+    pthread_mutex_lock(&currentSequence->mx);
+    currentSequence->filename = file;
+    save();
+    pthread_mutex_unlock(&currentSequence->mx);
+}
+
+void scale(double ratio) {
+    int i;
+    pthread_mutex_lock(&currentSequence->mx);
+    if (ratio <= 0) return; //Check if ratio is valid
+    for (i = 0; i < currentSequence->numFrames; i++)
+        currentSequence->exposureTimes[i] *= ratio;
+    pthread_mutex_unlock(&currentSequence->mx);
+
+}
+
+const char * findAndReplace_seq(double original, double newValue) {
+    int i;
+    pthread_mutex_lock(&currentSequence->mx); //Lock Mutex
+    char result[50]; //Start with empty string
+    char* result2;
+    result2 = (char *) calloc(50, sizeof (char*));
+    char next[20];
+    for (i = 0; i < currentSequence->numFrames; i++) //Look through entire sequence
+    {
+        if (currentSequence->exposureTimes[i] == original) //Compare current exposure with target
+        {
+            currentSequence->exposureTimes[i] = newValue; //replace
+            sprintf(next, "%d,", i); //format string with current index
+            strncat(result, next, sizeof(result));
+        }
+    }
+    pthread_mutex_unlock(&currentSequence->mx); //Unlock mutex
+    strcpy(result2, result);
+    return result2;
+}
+
+void translate(double delta) {
+    int i;
+    pthread_mutex_lock(&currentSequence->mx); //Lock Mutex
+    for (i = 0; i < currentSequence->numFrames; i++) {
+        currentSequence->exposureTimes[i] += delta; //Translate exposure
+        if (currentSequence->exposureTimes[i] < 0) currentSequence->exposureTimes[i] = 0; //Set any negative exposures to zero
+    }
+    pthread_mutex_unlock(&currentSequence->mx);
+}
+
+void reset_seq() {
+    currentSequence->currentFrame = 0;
+}
+
+void setNum(int n) {
+    sequenceMap[n].num = n;
+}
+
+int getNum() {
+    return currentSequence->num;
+}
+
+int getExposureCount() {
+    return currentSequence->numFrames;
+}
+
+
+double getCurrentExposure()
+{
+    return currentSequence->exposureTimes[currentSequence->currentFrame];
+}
+
+/*toString returns a string representation of the whole sequence*/
+const char * toString(int n) {
+    int i;
+    char next[20];
+    char* next2;
+    char result[50]; //Start with empty string
+    char* result2;
+    result2 = (char *) calloc(50, sizeof (char*));
+    //pthread_mutex_lock(&currentSequence.mx); //Lock Mutex
+    next2 = "Sequence: ";
+    strcpy(next, next2);
+    for(i = 0; i < sequenceMap[n].numFrames; i++)
+    {
+        sprintf(next, "%6.3f", sequenceMap[n].exposureTimes[i]);
+        strncat(result, next, sizeof(result));
+    }
+    
+    //pthread_mutex_unlock(&currentSequence.mx); //Lock Mutex
+    strcpy(result2, result);
+    return result2;
+    
+
+}
+
+
+
+
+
+
+

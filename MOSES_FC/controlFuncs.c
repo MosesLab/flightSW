@@ -8,8 +8,6 @@
  * event of telemetry input, e.g. timers, uplinks and hlp packets.
  */
 #include "controlFuncs.h"
-#include "roe.h"
-#include "roehk.h"
 
 /*
  * Determines control string for uplink packets and finds the corresponding 
@@ -132,7 +130,7 @@ void set_power(U32 sys, U32 state) {
     gpio_power_state.val = (gpio_power_state.val & ~mask) | masked_state;
 
     /*dynamically allocate and copy new value*/
-    gpio_out_uni * new_state = malloc(sizeof(U32));
+    gpio_out_uni * new_state = malloc(sizeof (U32));
     *new_state = gpio_power_state;
 
     /*enqueue new state to fpga server for assertion*/
@@ -198,11 +196,10 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 
             return GOOD_PACKET;
         }
-    } else if(strcmp(p->subtype, INTERRUPT) == 0){
+    } else if (strcmp(p->subtype, INTERRUPT) == 0) {
         kill(vshell_pid, SIGINT);
         return GOOD_PACKET;
-    }
-    else {
+    } else {
         return BAD_PACKET;
     }
 }
@@ -212,7 +209,7 @@ int uDataStart() {
     record("Received data start Uplink\n");
 
     unsigned int i;
-    for (i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
@@ -245,7 +242,7 @@ int uDark1() {
 
 
     int i;
-    for (i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
@@ -266,7 +263,7 @@ int uDark2() {
     //Insert uplink handling code here
 
     int i;
-    for (i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
@@ -286,7 +283,7 @@ int uDark3() {
     //Insert uplink handling code here
 
     int i;
-    for (i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
         if (strstr(sequenceMap[i].sequenceName, "dark3") != NULL) {
             ops.sequence = i;
@@ -306,7 +303,7 @@ int uDark4() {
     //Insert uplink handling code here
 
     int i;
-    for (i = 0; i < 5; i++)//replace 5 with sequence map size
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
         if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
@@ -324,7 +321,7 @@ int uDark4() {
 int uSleep() {
     record("Received shutdown Uplink\n");
     /* Shut down Power.....*/
-    
+
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -368,6 +365,14 @@ int tDataStop() {
 int tDark2() {
     record("Received Dark2 Timer\n");
     //Insert timer handling code here
+    int i;
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
+            ops.sequence = i;
+            break;
+        }
+    }
     packet_t* r = constructPacket(TIMER_S, DARK2, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -376,6 +381,14 @@ int tDark2() {
 int tDark4() {
     record("Received Dark4 Timer\n");
     //Insert timer handling code here
+    int i;
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
+    {
+        if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
+            ops.sequence = i;
+            break;
+        }
+    }
     packet_t* r = constructPacket(TIMER_S, DARK4, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -395,7 +408,14 @@ int tSleep() {
 /*Associates a sequence name with a signal number*/
 int setSequence(packet_t* p) {
     record("Set sequence command received\n");
-    //Insert set sequence code here
+    char data[32];
+    strcpy(data, p->data);
+    char temp = data[2];
+    data[2] = '\0';
+    int num = atoi(data);
+    data[2] = temp;
+    reload(data + 2);
+    sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
     return GOOD_PACKET;
 }
 
@@ -409,8 +429,12 @@ int setOutputName(packet_t* p) {
 /*Get sequence name that corresponds to the signal number in the data field*/
 int getSeqName(packet_t* p) {
     record("Get sequence name command received\n");
-    //Insert control code here
-    char* name = "testname"; //test EGSE
+
+    char numstr[16];
+    char name[128];
+    strcpy(numstr, p->data);
+    strcpy(name, sequenceMap[atoi(numstr)].sequenceName);
+
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_NM, name);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -419,8 +443,10 @@ int getSeqName(packet_t* p) {
 /*Generates a string representation of the sequence file*/
 int getSeqInfo(packet_t* p) {
     record("Get sequence info command received\n");
-    //Insert control code here
-    char* info = "testinfo"; //test EGSE
+    char numstr[16];
+    char info[256];
+    strcpy(numstr,p->data);
+    strcpy(info,toString(numstr));
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -429,8 +455,7 @@ int getSeqInfo(packet_t* p) {
 /*Commands the flight software to return the currently running sequence*/
 int getCurSeqName(packet_t* p) {
     record("Get current sequence name command received\n");
-    //Insert control code here
-    char* name = "testname"; //test EGSE
+    char* name = currentSequence->sequenceName;
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_SEQ, name);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -439,8 +464,8 @@ int getCurSeqName(packet_t* p) {
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(packet_t* p) {
     record("Get current frame length command received\n");
-    //Insert control code here  
-    char* response = "0.0"; //test EGSE
+    char* response = "test";
+    sprintf(response, "%6.3f", getCurrentExposure());
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -449,8 +474,8 @@ int getCurFrameLen(packet_t* p) {
 /*Command the flight software to return the current frame's index number*/
 int getCurFrameIndex(packet_t* p) {
     record("Get current frame index command received\n");
-    //Insert control code here  
-    char* response = "0"; //test EGSE
+    char* response = "test";
+    sprintf(response, "%d", currentSequence->currentFrame);
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -459,8 +484,7 @@ int getCurFrameIndex(packet_t* p) {
 /*Commands the flight software to return the filename of the output file*/
 int getOutputName(packet_t* p) {
     record("Get output filename command received\n");
-    //Insert control code here  
-    char* response = "testOuputFilename"; //test EGSE
+    char* response = "test";
     packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -470,7 +494,7 @@ int getOutputName(packet_t* p) {
 int getSelftestStatus(packet_t* p) {
     record("Get self-test mode status command received\n");
     char response[5];
-    sprintf(response,"%s",(ops.read_block == STMBLK)?"ON":"OFF");
+    sprintf(response, "%s", (ops.read_block == STMBLK) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_SLFT_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -480,7 +504,7 @@ int getSelftestStatus(packet_t* p) {
 int getStimsStatus(packet_t* p) {
     record("Get STIMS mode status command received\n");
     char response[5];
-    sprintf(response,"%s",(ops.read_block == STBLK)?"ON":"OFF");
+    sprintf(response, "%s", (ops.read_block == STBLK) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_STM_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -489,8 +513,8 @@ int getStimsStatus(packet_t* p) {
 /*Commands the flight software to determine if Telemetry is enabled*/
 int getTelemStatus(packet_t* p) {
     record("Get Telemetry mode status command received\n");
-    //Insert control code here  
-    char* response = "test"; //test EGSE
+    char response[5];
+    sprintf(response, "%s", (ops.tm_write == ON) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_TLM_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -499,8 +523,8 @@ int getTelemStatus(packet_t* p) {
 /*Commands the flight software to determine if Channel 0 data will be recorded*/
 int getCh0Status(packet_t* p) {
     record("Get status of channel 0 record command received\n");
-    //Insert control code here  
-    char* response = "test"; //test EGSE
+    char response[5];
+    sprintf(response, "%s", ((ops.channels & CH0) == CH0) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_CH0_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -509,8 +533,8 @@ int getCh0Status(packet_t* p) {
 /*Commands the flight software to determine if positive channel data will be recorded*/
 int getPosOnlyStatus(packet_t* p) {
     record("Get status of positive channel record command received\n");
-    //Insert control code here  
-    char* response = "test"; //test EGSE
+    char response[5];
+    sprintf(response, "%s", (ops.channels == CH3) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_POS_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -577,12 +601,14 @@ int findAndReplace(packet_t* p) {
 /*Commands the flight software to start the currently loaded sequence*/
 int beginSequence(packet_t* p) {
     record("Command to begin sequence received\n");
+    ops.seq_run = TRUE;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to stop the currently running sequence*/
 int endSequence(packet_t* p) {
     record("Command to stop sequence received\n");
+    ops.seq_run = FALSE;
     return GOOD_PACKET;
 }
 
@@ -642,13 +668,10 @@ int stimsEnable(packet_t* p) {
     record("Command to enable STIMS mode received.\n");
     if (roe_struct.active) {
         int var = stimOn();
-        if(var == -1)
-        {
+        if (var == -1) {
             record("Did not go into STIMS mode.\n");
-        }
-        else
-        {
-        ops.read_block = STMBLK;
+        } else {
+            ops.read_block = STMBLK;
         }
     } else
         record("STIM-ON ERROR: ROE INACTIVE!");
@@ -660,14 +683,11 @@ int stimsDisable(packet_t* p) {
     record("Command to disable STIMS mode received\n");
     if (roe_struct.active) {
         int var = stimOff();
-        if(var == -1)
-        {
+        if (var == -1) {
             record("ROE did not turn STIMS off.\n");
-        }
-        else
-        {
-	ops.read_block = 
-                (ops.roe_custom_read == TRUE)?READBLK_CUSTOM:READBLK_DEFAULT;
+        } else {
+            ops.read_block =
+                    (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
         }
     } else
         record("STIM-OFF ERROR: ROE INACTIVE!");
@@ -679,8 +699,8 @@ int resetROE(packet_t* p) {
     record("Command to reset ROE received\n");
     if (roe_struct.active) {
         reset();
-        ops.read_block = 
-		(ops.roe_custom_read == TRUE)?READBLK_CUSTOM:READBLK_DEFAULT;
+        ops.read_block =
+                (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
     } else
         record("RESET-ROE ERROR: ROE INACTIVE!");
     return GOOD_PACKET;
@@ -692,8 +712,7 @@ int disableDefaultROE(packet_t* p) {
     record("Command to exit to default mode received.\n");
     if (roe_struct.active) {
         int var = exitDefault();
-        if(var == -1)
-        {
+        if (var == -1) {
             record("ROE did not exit default mode.\n");
         }
     } else
@@ -706,13 +725,10 @@ int enableSelftestROE(packet_t* p) {
     record("Command to set ROE to self-test mode received.\n");
     if (roe_struct.active) {
         int var = selftestMode();
-        if(var == -1)
-        {
+        if (var == -1) {
             record("Did not enter self test mode\n");
-        }
-        else
-        {
-        ops.read_block = STBLK;
+        } else {
+            ops.read_block = STBLK;
         }
     } else
         record("SELF-TEST ERROR: ROE INACTIVE!");
@@ -757,6 +773,7 @@ int ROE_2_5V_V(packet_t* p) {
     char* response = getHK(VPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -766,6 +783,7 @@ int ROE_2_5V_I(packet_t* p) {
     char* response = getHK(CPOS2_5VD);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -795,6 +813,7 @@ int ROE_POS_5V_VA(packet_t* p) {
     char* response = getHK(VPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -806,6 +825,7 @@ int ROE_POS_5V_VB(packet_t* p) {
     char* response = getHK(VPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -815,6 +835,7 @@ int ROE_POS_5V_VD(packet_t* p) {
     char* response = getHK(VPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -824,6 +845,7 @@ int ROE_POS_5V_IA(packet_t* p) {
     char* response = getHK(CPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -833,6 +855,7 @@ int ROE_POS_5V_IB(packet_t* p) {
     char* response = getHK(CPOS5VA_B);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -842,6 +865,7 @@ int ROE_POS_5V_ID(packet_t* p) {
     char* response = getHK(CPOS5VD);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -851,6 +875,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
     char* response = getHK(VNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -860,6 +885,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     char* response = getHK(VNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -869,6 +895,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
     char* response = getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -878,6 +905,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
     char* response = getHK(VNEG10V_A);
     packet_t* r = constructPacket(HK_RSP, NEG10V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -887,6 +915,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
     char* response = getHK(CNEG5VA_A);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -896,6 +925,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
     char* response = getHK(CNEG5VA_B);
     packet_t* r = constructPacket(HK_RSP, NEG5V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -915,6 +945,7 @@ int ROE_12V_VA(packet_t* p) {
     char* response = getHK(VPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -924,6 +955,7 @@ int ROE_12V_VB(packet_t* p) {
     char* response = getHK(VPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -933,6 +965,7 @@ int ROE_12V_IA(packet_t* p) {
     char* response = getHK(CPOS12V_A);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -942,6 +975,7 @@ int ROE_12V_IB(packet_t* p) {
     char* response = getHK(CPOS12V_B);
     packet_t* r = constructPacket(HK_RSP, POS12V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -951,6 +985,7 @@ int ROE_36V_VA(packet_t* p) {
     char* response = getHK(VPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -960,6 +995,7 @@ int ROE_36V_VB(packet_t* p) {
     char* response = getHK(VPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -969,6 +1005,7 @@ int ROE_36V_IA(packet_t* p) {
     char* response = getHK(CPOS36V_A);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -978,6 +1015,7 @@ int ROE_36V_IB(packet_t* p) {
     char* response = getHK(CPOS36V_B);
     packet_t* r = constructPacket(HK_RSP, POS36V, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1017,6 +1055,7 @@ int ROE_TEMP_UPPER(packet_t* p) {
     char* response = getHK(UPPER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1026,6 +1065,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
     char* response = getHK(LOWER_TEMP);
     packet_t* r = constructPacket(HK_RSP, TEMP, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1035,6 +1075,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     char* response = getHK(CCDA_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1044,6 +1085,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     char* response = getHK(CCDA_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1053,6 +1095,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     char* response = getHK(CCDA_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1062,6 +1105,7 @@ int ROE_CCDS_VOD(packet_t* p) {
     char* response = getHK(CCDB_VODC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1071,6 +1115,7 @@ int ROE_CCDS_VRD(packet_t* p) {
     char* response = getHK(CCDB_VRDC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
@@ -1080,6 +1125,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     char* response = getHK(CCDB_VSSC);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&lqueue[hkdown], r);
+    free(response);
     return GOOD_PACKET;
 }
 
