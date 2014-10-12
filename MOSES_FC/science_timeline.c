@@ -107,7 +107,7 @@ void * science_timeline(void * arg) {
             record("Done with exposure. Wait for readout...\n");
 
             /* Command ROE to Readout*/
-            readOut(ops.read_block,100000);
+            //readOut(ops.read_block,100000);
 
             //wait 4 seconds for response from ROE that readout is complete
             sleep(4);

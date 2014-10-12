@@ -18,7 +18,7 @@ int takeExposure(double duration, int sig) {
     int i;
     for(i = 0; i < 5; i++)
     {
-    flush(); //Flush ROE 5 times
+        //flush(); //Flush ROE 5 times
     }
     if (sig == 1) // use the shutter for Data sequence 
     {
