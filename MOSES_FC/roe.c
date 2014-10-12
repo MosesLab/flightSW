@@ -20,7 +20,7 @@
 
 int activateROE() {
     //char msg[100];
-    int fd;
+    int fd = 0;
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
