@@ -41,7 +41,7 @@ void * hlp_control(void * arg) {
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;
-    ops.tm_write = ON;
+    ops.tm_write = TRUE;
 
     /*Load the Sequence Map*/
     loadSequences();
