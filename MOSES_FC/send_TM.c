@@ -204,7 +204,7 @@ int synclink_init(int killSwitch) {
             return rc;
         }
 
-        /*enable transmitter*/
+        /*enable transmitter; should this appear before "return"?*/               
         int enable = 1;
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
     }
@@ -332,6 +332,6 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
 //    close(fd);
 //    fclose(fp);
     
-    return 2;
+    return 2;                   //Return 2 if ts_alive=0;
 
 }

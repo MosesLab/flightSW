@@ -248,31 +248,25 @@ void * telem(void * arg) {
         } else fclose(fp);
         if ((&lqueue[telem_image])->first != NULL) {
 
-            fseek(fp, 0, SEEK_END); // seek to end of file
+            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
             fseek(fp, 0, SEEK_SET);
 
             int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
 
-            if (xmlTrigger == 1) {
-                xmlTrigger = 0;
-            } else if (xmlTrigger == 0) {
-                xmlTrigger = 1;
+            if (check == 1) {
+                if (xmlTrigger == 1) {
+                        xmlTrigger = 0;
+                } else if (xmlTrigger == 0) {
+                        xmlTrigger = 1;
+                }
             }
+            
+            
 
-            if (check == 0) {
-                //                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
+            if (check == 2) {
+                record("'ts_alive' not set; data not sent.\n");
             }
         }
-        //        }
-        //        else {
-        //            struct timespec timeToWait;
-        //            struct timeval now;
-        //
-        //            gettimeofday(&now, NULL);
-        //            timeToWait.tv_sec = now.tv_sec + 1;
-        //            timeToWait.tv_nsec = 0;
-        //
-        //        }
     }
     return NULL;
 }

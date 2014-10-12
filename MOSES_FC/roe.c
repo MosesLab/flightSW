@@ -77,6 +77,8 @@ int exitDefault() {
     record("Attempting to exit default mode.\n");
     //record(msg);
 
+    int rc = 0;
+    
     pthread_mutex_lock(&roe_struct.mx);
 
     //New Roe Program
@@ -157,14 +159,18 @@ int exitDefault() {
         if (status != -1) {
             int i;
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+                rc = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+                rc = write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
+                rc = write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
-
+                rc = write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
+            
+            if (rc == 0){
+                record("ROE write failed\n");
+            }
+            
             record("Exiting Default Mode\n");
         } else {
             record("Status = -1, not entering default mode\n");
