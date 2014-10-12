@@ -230,8 +230,6 @@ void * telem(void * arg) {
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
 
-    lockingQueue_init(&lqueue[telem_image]);
-
     while (ts_alive) {
         //        if (roeQueue.count != 0) {
         //dequeue imgPtr_t here
