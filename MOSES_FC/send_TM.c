@@ -92,7 +92,7 @@ int synclink_init(int killSwitch) {
      * in the PATH. 
      */
 
-    int rc, fd = NULL;
+    int rc, fd = 0;
     int sigs, idle;
     char *devname = "/dev/ttyUSB0";
     char *msg = NULL;
