@@ -240,7 +240,7 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
     int frame_count = 0; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
-    char *msg = NULL;
+    char msg[255];
 
     char* xmlfile = "/mdata/imageindex.xml";
 
