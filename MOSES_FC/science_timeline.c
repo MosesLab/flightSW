@@ -239,12 +239,12 @@ void * telem(void * arg) {
         record("Dequeued new image\n");
 
         //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
-        fp = fopen(curr_path, "r");
-
-        if (fp == NULL) { //Error opening file
-            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
-        } 
+//        fp = fopen(curr_path, "r");
+//
+//        if (fp == NULL) { //Error opening file
+//            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
+//            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
+//        } 
         //else fclose(fp); why is this here? RTS
         //if ((&lqueue[telem_image])->first != NULL) { Commented out RTS, pretty sure we don't need this anymore
 
