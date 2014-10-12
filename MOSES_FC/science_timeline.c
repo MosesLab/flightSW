@@ -236,6 +236,7 @@ void * telem(void * arg) {
 
         imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
         char * curr_path = curr_image->filePath;
+        record("Dequeued new image\n");
 
         //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
         fp = fopen(curr_path, "r");
@@ -243,7 +244,8 @@ void * telem(void * arg) {
         if (fp == NULL) { //Error opening file
             //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
-        } else fclose(fp);
+        } 
+        //else fclose(fp); why is this here? RTS
         //if ((&lqueue[telem_image])->first != NULL) { Commented out RTS, pretty sure we don't need this anymore
 
 //            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
