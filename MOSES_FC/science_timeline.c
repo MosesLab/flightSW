@@ -244,10 +244,10 @@ void * telem(void * arg) {
             //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
             printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
         } else fclose(fp);
-        if ((&lqueue[telem_image])->first != NULL) {
+        //if ((&lqueue[telem_image])->first != NULL) { Commented out RTS, pretty sure we don't need this anymore
 
-            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
-            fseek(fp, 0, SEEK_SET);
+//            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
+//            fseek(fp, 0, SEEK_SET);
 
             int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
 
@@ -264,7 +264,7 @@ void * telem(void * arg) {
             if (check == 2) {
                 record("'ts_alive' not set; data not sent.\n");
             }
-        }
+        //}
     }
     return NULL;
 }
