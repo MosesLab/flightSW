@@ -95,7 +95,7 @@ int synclink_init(int killSwitch) {
     int rc, fd = 0;
     int sigs, idle;
     char *devname = "/dev/ttyUSB0";
-    char *msg = NULL;
+    char msg[255];
     
 
     if (killSwitch == 0) {
