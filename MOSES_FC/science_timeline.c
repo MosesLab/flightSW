@@ -226,7 +226,6 @@ void * write_data(void * arg) {
 void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
     record("-->High-speed Telemetry thread started....\n");
-    FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
 
@@ -234,8 +233,9 @@ void * telem(void * arg) {
         //        if (roeQueue.count != 0) {
         //dequeue imgPtr_t here
 
-        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
-        char * curr_path = curr_image->filePath;
+        //imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
+        roeimage_t * new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);          //Which queue do we pull from?
+        //char * curr_path = curr_image->filePath;
         record("Dequeued new image\n");
 
         //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
@@ -251,7 +251,7 @@ void * telem(void * arg) {
 //            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
 //            fseek(fp, 0, SEEK_SET);
 
-            int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
+            int check = send_image(new_image, xmlTrigger, synclink_fd); //Send actual Image
 
             if (check == 1) {
                 if (xmlTrigger == 1) {

@@ -208,7 +208,7 @@ int synclink_init(int killSwitch) {
         int enable = 1;
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
     }
-    else if (killSwitch == 1) { //Turns off synclink
+    else if (killSwitch == 1) {                                 //Turns off synclink
         record("synclink killSwitch: Turn off RTS and DTR\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIC, &sigs);
@@ -226,7 +226,7 @@ int synclink_init(int killSwitch) {
     return fd;
 }
 
-int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
+int send_image(roeimage_t * image, int xmlTrigger, int fd) {
 
     int rc;
 //    int killTrigger = 0;
@@ -251,19 +251,7 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
     if (ts_alive) {
 //        if (roeQueue->count != 0) {
             frame_count = 0;
-            if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
-                imagename = xmlfile;
-            } else if (xmlTrigger == 0) { //If we are on an even loop send an image
-                imagename = image->filePath;
-            }
-
-            /*Open image file for reading into a buffered stream*/
-            fp = fopen(imagename, "r");
-            if (fp == NULL) {
-                sprintf(msg,"fopen(%s) error=%d %s\n", imagename, errno, strerror(errno));
-                record(msg);
-                return 1;
-            }
+            
             /*Buffer the stream using the standard system bufsiz*/
             rc = setvbuf(fp, NULL, _IOFBF, BUFSIZ);
             if (rc != 0) {
@@ -275,23 +263,42 @@ int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
             record("Sending data...\n");
             gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
             int totalSize = 0;
-            unsigned int rd = fread(databuf, 1, size, fp);
-            while (rd > 0) { //RTS changed buffer reading function from fgets to fread to allow for binary data
-                if (frame_count == 10) memcpy(temp, databuf, size); //Store the contents of databuf
-                //into the temp buffer
-                rc = write(fd, databuf, rd);
-                if (rc < 0) {
-                    sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                    record(msg);
-                    break;
+            
+            if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
+                /*Open image file for reading into a buffered stream*/
+                fp = fopen(xmlfile, "r");
+                if (fp == NULL) {
+                        sprintf(msg,"fopen(%s) error=%d %s\n", xmlfile, errno, strerror(errno));
+                        record(msg);
+                        return 1;
                 }
-                /* block until all data sent */
-                rc = tcdrain(fd);
-                frame_count++;
-                totalSize += rd;
-                rd = fread(databuf, 1, size, fp);
-            }
-            if (rc < 0) return rc; //Finishes the write error handling after the break
+                
+                unsigned int rd = fread(databuf, 1, size, fp);
+                while (rd > 0) { //RTS changed buffer reading function from fgets to fread to allow for binary data
+                
+                        if (frame_count == 10) memcpy(temp, databuf, size); //Store the contents of databuf
+                        //into the temp buffer
+                        rc = write(fd, databuf, rd);
+                        if (rc < 0) {
+                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                                record(msg);
+                                break;
+                        }
+                        /* block until all data sent */
+                        rc = tcdrain(fd);
+                        frame_count++;
+                        totalSize += rd;
+                        rd = fread(databuf, 1, size, fp);
+                }
+                
+                if (rc < 0) return rc; //Finishes the write error handling after the break
+                
+            } else if (xmlTrigger == 0) { //If we are on an even loop send an image
+                //WRITE IMAGE HERE
+                //imagename = image->filePath;
+            }            
+            
+            
             rc = write(fd, endbuf, 5);
             if (rc < 0) {
                 sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
