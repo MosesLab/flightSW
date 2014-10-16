@@ -203,11 +203,11 @@ void * write_data(void * arg) {
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
-            record("Filename pushed to telemetry queue\n");
+            //imgPtr_t newPtr;
+            //newPtr.filePath = filename;
+            //newPtr.next = NULL;
+            enqueue(&lqueue[telem_image], &image); //enqueues the path for telem
+            record("Image pushed to telemetry queue\n");
         }
 
 
@@ -227,7 +227,7 @@ void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
     record("-->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
-    int xmlTrigger = 1;
+    int xmlTrigger = 0;
 
     while (ts_alive) {
         //        if (roeQueue.count != 0) {
@@ -259,6 +259,13 @@ void * telem(void * arg) {
                 } else if (xmlTrigger == 0) {
                         xmlTrigger = 1;
                 }
+                
+                /*need to free allocated image to prevent memory leak --RTS*/
+                free(new_image->data[0]);
+                free(new_image->data[1]);
+                free(new_image->data[2]);
+                free(new_image->data[3]);
+                free(new_image);
             }
             
             

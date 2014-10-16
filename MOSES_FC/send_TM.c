@@ -229,11 +229,11 @@ int synclink_init(int killSwitch) {
 int send_image(roeimage_t * image, int xmlTrigger, int fd) {
 
     int rc;
-//    int killTrigger = 0;
+    int i;
     int size = BUFSIZ;
     unsigned char databuf[BUFSIZ];
     unsigned char temp[BUFSIZ];
-    unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
+    //unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
 
     char *imagename = NULL;
     FILE *fp = NULL;
@@ -289,24 +289,49 @@ int send_image(roeimage_t * image, int xmlTrigger, int fd) {
                         frame_count++;
                         totalSize += rd;
                         rd = fread(databuf, 1, size, fp);
+                        
+                        rc = write(fd, "xml.roe", 7);
+                        if (rc < 0) {
+                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                                record(msg);
+                        }
+
+                        /*block until all data sent*/
+                        rc = tcdrain(fd);
+                        
                 }
                 
                 if (rc < 0) return rc; //Finishes the write error handling after the break
                 
             } else if (xmlTrigger == 0) { //If we are on an even loop send an image
                 //WRITE IMAGE HERE
+                for (i=1;i<4;i++){
+                        rc = write(fd, image->data[i], 2000000);
+                        if (rc < 0) {
+                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                                record(msg);
+                                break;
+                        }
+                        
+                        /* block until all data sent */
+                        rc = tcdrain(fd);
+                        
+                        rc = write(fd, image->name, 16);
+                        if (rc < 0) {
+                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                                record(msg);
+                        }
+
+                        /*block until all data sent*/
+                        rc = tcdrain(fd);
+                        
+                }
+                if (rc < 0) return rc; //Finishes the write error handling after the break
                 //imagename = image->filePath;
             }            
             
             
-            rc = write(fd, endbuf, 5);
-            if (rc < 0) {
-                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                record(msg);
-            }
-
-            /*block until all data sent*/
-            rc = tcdrain(fd);
+            
 
             /*clear the data buffer and close image file*/
             fflush(fp);
