@@ -20,5 +20,6 @@ int takeExposure(double duration,int sig);
 
 void timeval_subtract(struct timeval*, struct timeval, struct timeval);
 
+
 #endif	/* SCI_TIMELINE_FUNCS_H */
 

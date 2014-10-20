@@ -499,11 +499,11 @@ int readRoe(int fd, char *data, int size) {
     input = input_timeout_roe(fd, 1);
     if (input > 0) {
         if (read(fd, data, size) != -1) {
-            printf("data read, exiting readRoe %c<---data\n", *data);
+            //printf("data read, exiting readRoe %c<---data\n", *data);
             return 0;
         }
     }
-    printf("readRoe Error\n");
+    //printf("readRoe Error\n");
     return -1;
 }
 
