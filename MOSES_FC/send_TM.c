@@ -290,7 +290,7 @@ int send_image(roeimage_t * image, int xmlTrigger, int fd) {
                         totalSize += rd;
                         rd = fread(databuf, 1, size, fp);
                         
-                        rc = write(fd, "xml.roe", 7);
+                        rc = write(fd, "xml.roe", 7);   //used as ending characters ".roe"
                         if (rc < 0) {
                                 sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
                                 record(msg);
@@ -316,7 +316,7 @@ int send_image(roeimage_t * image, int xmlTrigger, int fd) {
                         /* block until all data sent */
                         rc = tcdrain(fd);
                         
-                        rc = write(fd, image->name, 16);
+                        rc = write(fd, image->name, 16);        //Ending characters "YYMMDDHHmmss.roe"
                         if (rc < 0) {
                                 sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
                                 record(msg);
