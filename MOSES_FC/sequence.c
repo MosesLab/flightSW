@@ -90,6 +90,7 @@ void loadSequences() {
     }
 }
 
+/*
 void reload(char* file) {
     pthread_mutex_lock(&currentSequence_copy->mx);
     currentSequence->corrupt = FALSE;
@@ -201,7 +202,7 @@ double getCurrentExposure()
 }
 
 /*toString returns a string representation of the whole sequence*/
-const char * toString(int n) {
+/*const char * toString(int n) {
     int i;
     char next[20];
     char* next2;
@@ -222,7 +223,7 @@ const char * toString(int n) {
     return result2;
     
 
-}
+} */
 
 
 

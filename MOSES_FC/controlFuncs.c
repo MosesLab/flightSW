@@ -267,6 +267,8 @@ int uDark2() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
+            printf("found the sequence");
+            break;
         }
     }
 
@@ -287,6 +289,7 @@ int uDark3() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark3") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
@@ -307,6 +310,7 @@ int uDark4() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
+            break;
         }
     }
 
@@ -337,7 +341,7 @@ int uWake() {
 
 int uTest() {
     record("Received test Uplink\n");
-    /*Only thing needed done here is sending a packet*/
+    /*Only thing needed done here is send a packet*/
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
