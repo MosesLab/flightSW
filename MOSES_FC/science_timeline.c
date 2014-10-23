@@ -40,8 +40,7 @@ void * science_timeline(void * arg) {
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
-        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
-        currentSequence_copy = currentSequence;
+        currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;
         
