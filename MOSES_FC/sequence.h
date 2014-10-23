@@ -13,7 +13,7 @@
 extern int seq_map_size;
 extern sequence_t *sequenceMap;
 extern sequence_t tempSequence;
-extern sequence_t * currentSequence;
+//extern sequence_t currentSequence_copy;
 
 sequence_t constructSequence(char *filepath);
 void loadSequences();

@@ -23,7 +23,7 @@
 extern volatile sig_atomic_t ts_alive;
 
 extern moses_ops_t ops; //struct storing operational state
-sequence_t * currentSequence;
+sequence_t * currentSequence_copy;
 
 
 void * science_timeline(void *);

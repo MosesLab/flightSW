@@ -91,7 +91,7 @@ void loadSequences() {
 }
 
 void reload(char* file) {
-    pthread_mutex_lock(&currentSequence->mx);
+    pthread_mutex_lock(&currentSequence_copy->mx);
     currentSequence->corrupt = FALSE;
 
     if (strstr(file, ".seq") != NULL) {
@@ -114,7 +114,7 @@ void save() {
     int i;
     char msg[100];
     FILE *outfile; // for writing
-    outfile = fopen(currentSequence->filename, "w"); // write to this file
+    outfile = fopen(currentSequence_copy->filename, "w"); // write to this file
     sprintf(msg, "SEQUENCE: \n     NAME: %s", currentSequence->sequenceName);
     fwrite(msg, sizeof (msg[0]), strlen(msg), outfile);
     sprintf(msg, "\n     COUNT: %d", currentSequence->numFrames);
@@ -131,55 +131,55 @@ void save() {
     
 }
 void saveAs(char* file) {
-    pthread_mutex_lock(&currentSequence->mx);
-    currentSequence->filename = file;
+    pthread_mutex_lock(&currentSequence_copy->mx);
+    currentSequence_copy->filename = file;
     save();
-    pthread_mutex_unlock(&currentSequence->mx);
+    pthread_mutex_unlock(&currentSequence_copy->mx);
 }
 
 void scale(double ratio) {
     int i;
-    pthread_mutex_lock(&currentSequence->mx);
+    pthread_mutex_lock(&currentSequence_copy->mx);
     if (ratio <= 0) return; //Check if ratio is valid
     for (i = 0; i < currentSequence->numFrames; i++)
-        currentSequence->exposureTimes[i] *= ratio;
-    pthread_mutex_unlock(&currentSequence->mx);
+        currentSequence_copy->exposureTimes[i] *= ratio;
+    pthread_mutex_unlock(&currentSequence_copy->mx);
 
 }
 
 const char * findAndReplace_seq(double original, double newValue) {
     int i;
-    pthread_mutex_lock(&currentSequence->mx); //Lock Mutex
+    pthread_mutex_lock(&currentSequence_copy->mx); //Lock Mutex
     char result[50]; //Start with empty string
     char* result2;
     result2 = (char *) calloc(50, sizeof (char*));
     char next[20];
-    for (i = 0; i < currentSequence->numFrames; i++) //Look through entire sequence
+    for (i = 0; i < currentSequence_copy->numFrames; i++) //Look through entire sequence
     {
-        if (currentSequence->exposureTimes[i] == original) //Compare current exposure with target
+        if (currentSequence_copy->exposureTimes[i] == original) //Compare current exposure with target
         {
-            currentSequence->exposureTimes[i] = newValue; //replace
+            currentSequence_copy->exposureTimes[i] = newValue; //replace
             sprintf(next, "%d,", i); //format string with current index
             strncat(result, next, sizeof(result));
         }
     }
-    pthread_mutex_unlock(&currentSequence->mx); //Unlock mutex
+    pthread_mutex_unlock(&currentSequence_copy->mx); //Unlock mutex
     strcpy(result2, result);
     return result2;
 }
 
 void translate(double delta) {
     int i;
-    pthread_mutex_lock(&currentSequence->mx); //Lock Mutex
-    for (i = 0; i < currentSequence->numFrames; i++) {
-        currentSequence->exposureTimes[i] += delta; //Translate exposure
-        if (currentSequence->exposureTimes[i] < 0) currentSequence->exposureTimes[i] = 0; //Set any negative exposures to zero
+    pthread_mutex_lock(&currentSequence_copy->mx); //Lock Mutex
+    for (i = 0; i < currentSequence_copy->numFrames; i++) {
+        currentSequence_copy->exposureTimes[i] += delta; //Translate exposure
+        if (currentSequence_copy->exposureTimes[i] < 0) currentSequence_copy->exposureTimes[i] = 0; //Set any negative exposures to zero
     }
-    pthread_mutex_unlock(&currentSequence->mx);
+    pthread_mutex_unlock(&currentSequence_copy->mx);
 }
 
 void reset_seq() {
-    currentSequence->currentFrame = 0;
+    currentSequence_copy->currentFrame = 0;
 }
 
 void setNum(int n) {
@@ -187,17 +187,17 @@ void setNum(int n) {
 }
 
 int getNum() {
-    return currentSequence->num;
+    return currentSequence_copy->num;
 }
 
 int getExposureCount() {
-    return currentSequence->numFrames;
+    return currentSequence_copy->numFrames;
 }
 
 
 double getCurrentExposure()
 {
-    return currentSequence->exposureTimes[currentSequence->currentFrame];
+    return currentSequence_copy->exposureTimes[currentSequence_copy->currentFrame];
 }
 
 /*toString returns a string representation of the whole sequence*/
