@@ -548,13 +548,23 @@ int getPosOnlyStatus(packet_t* p) {
  floating point value contained within the Data field*/
 int scaleSequence(packet_t* p) {
     record("Command to scale sequence received\n");
+    char numstr[16];
+    //char name[128];
+    strcpy(numstr, p->data);
+    printf("Number to scale by: %d", strtod(numstr));
+    
+    scale(strtod(numstr));
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to translate the current sequence, adding the 
  floating point value in the Data field to each frame in the sequence*/
 int translateSeq(packet_t* p) {
+        char numstr[16];
+    //char name[128];
+    strcpy(numstr, p->data);
     record("Command to translate sequence received\n");
+    translate(strtod(numstr));
     return GOOD_PACKET;
 }
 
@@ -563,8 +573,12 @@ int translateSeq(packet_t* p) {
  this criterion*/
 int findAndJump(packet_t* p) {
     record("Command to Find and Jump received\n");
-    //Insert control code here  
-    char* response = "0"; //test EGSE
+    //Insert control code here
+    char numstr[16];
+    char* response = "0"; //test EGSE        char numstr[16];
+    //char name[128];
+    strcpy(numstr, p->data);
+    findAndJump_seq
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
