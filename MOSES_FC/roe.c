@@ -179,7 +179,7 @@ int exitDefault() {
 //Request House Keeping data from roe;
 
 char* getHK(char hkparam) {
-    char * value_char = malloc(sizeof (char) * 3);
+    char * value_char = malloc(sizeof (char) * 6);
     if (!roe_struct.active) {
         record("ROE not active in getHK\n");
     }
