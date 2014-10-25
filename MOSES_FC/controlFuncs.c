@@ -806,6 +806,7 @@ int FC_POS_5V_V(packet_t* p) {
     record("Request for FC +5.0V voltage received\n");
     //Insert control code here  
     char* response = FC_P5V_V "0.0"; //test EGSE
+    printf("%s\n", response);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -814,8 +815,8 @@ int FC_POS_5V_V(packet_t* p) {
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
-    char *response;
-    response = getHK(VPOS5VA_A);
+    char* response = getHK(VPOS5VA_A);
+    printf("%s\n", response);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
