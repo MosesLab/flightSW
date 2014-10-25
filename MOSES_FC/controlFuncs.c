@@ -814,7 +814,8 @@ int FC_POS_5V_V(packet_t* p) {
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
-    char* response = getHK(VPOS5VA_A);
+    char *response;
+    response = getHK(VPOS5VA_A);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
