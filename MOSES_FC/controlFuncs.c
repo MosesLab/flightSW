@@ -505,8 +505,6 @@ int getCurFrameIndex(packet_t* p) {
 /*Commands the flight software to return the filename of the output file*/
 int getOutputName(packet_t* p) {
     record("Get output filename command received\n");
-    char* response = "test";
-
     packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, dataStub);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -582,8 +580,9 @@ int translateSeq(packet_t* p) {
         char numstr[16];
     //char name[128];
     strcpy(numstr, p->data);
+    char *ptr;
     record("Command to translate sequence received\n");
-    translate(strtod(numstr));
+    translate(strtod(numstr,&ptr));
     return GOOD_PACKET;
 }
 
@@ -595,9 +594,10 @@ int findAndJump(packet_t* p) {
     //Insert control code here
     char numstr[16];
     char* response = "0"; //test EGSE        char numstr[16];
+    char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    sprintf(response,"%2d", findAndJump_seq(strtod(numstr)));
+    sprintf(response,"%2d", findAndJump_seq(strtod(numstr,&ptr)));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -609,9 +609,10 @@ int jumpToExp(packet_t* p) {
     record("Command to Jump to exposure received\n");
     //Insert control code here  
     char numstr[16];
+    char *ptr;
     char* response = "0"; //test EGSE
     strcpy(numstr, p->data);
-    sprintf(response, "%2d", jump(strtod(numstr)));
+    sprintf(response, "%2d", jump(strtod(numstr, &ptr)));
     packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
