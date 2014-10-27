@@ -80,8 +80,10 @@ typedef struct {
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;
-    char channels;
     unsigned int read_block;
+    unsigned int unique_stub;
+    char channels;
+    
     
 }moses_ops_t;
 

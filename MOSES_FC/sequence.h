@@ -20,7 +20,7 @@ void loadSequences();
 void reload(char* file);
 int findAndJump_seq(double);
 const char * findAndReplace_seq();
-void jump(int frame);
+int jump(int frame);
 void save();
 void saveAs();
 void scale();

@@ -351,6 +351,17 @@ int uTest() {
 int tDataStart() {
     record("Received data start Timer\n");
 
+    unsigned int i;
+    for (i = 0; i < SEQ_MAP_SIZE; i++)
+    {
+        if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
+            ops.sequence = i;
+            break;
+        }
+    }
+
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);    
 
 
     packet_t* r = constructPacket(TIMER_S, DATASTART, NULL);
@@ -361,6 +372,9 @@ int tDataStart() {
 int tDataStop() {
     record("Received data stop Timer\n");
     //Insert timer handling code here
+    
+    ops.seq_run = FALSE;
+    
     packet_t* r = constructPacket(TIMER_S, DATASTOP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -424,8 +438,11 @@ int setSequence(packet_t* p) {
 }
 
 /*Uses stem for an output file.*/
+// When is this used??? -djk
 int setOutputName(packet_t* p) {
     record("Set output filename command received\n");
+    strcpy(dataStub, p->data);
+    ops.unique_stub = TRUE;
     //insert control code here
     return GOOD_PACKET;
 }
@@ -489,7 +506,8 @@ int getCurFrameIndex(packet_t* p) {
 int getOutputName(packet_t* p) {
     record("Get output filename command received\n");
     char* response = "test";
-    packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, response);
+
+    packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, dataStub);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
@@ -549,11 +567,12 @@ int getPosOnlyStatus(packet_t* p) {
 int scaleSequence(packet_t* p) {
     record("Command to scale sequence received\n");
     char numstr[16];
+    char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    printf("Number to scale by: %d", strtod(numstr));
+    printf("Number to scale by: %f", strtod(numstr, &ptr));
     
-    scale(strtod(numstr));
+    scale(strtod(numstr,&ptr));
     return GOOD_PACKET;
 }
 
@@ -578,7 +597,7 @@ int findAndJump(packet_t* p) {
     char* response = "0"; //test EGSE        char numstr[16];
     //char name[128];
     strcpy(numstr, p->data);
-    findAndJump_seq
+    sprintf(response,"%2d", findAndJump_seq(strtod(numstr)));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -589,7 +608,10 @@ int findAndJump(packet_t* p) {
 int jumpToExp(packet_t* p) {
     record("Command to Jump to exposure received\n");
     //Insert control code here  
+    char numstr[16];
     char* response = "0"; //test EGSE
+    strcpy(numstr, p->data);
+    sprintf(response, "%2d", jump(strtod(numstr)));
     packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -601,6 +623,10 @@ int jumpToExp(packet_t* p) {
 /*flightSW_2005: Saves the sequence defined in the Data field*/
 int saveSequence(packet_t* p) {
     record("Command to save sequence received\n");
+    /* User enters a sequence name, this will save the current sequence to that name*/
+    char numstr[100];
+    strcpy(numstr, p->data);
+    saveAs(numstr);
     return GOOD_PACKET;
 }
 
@@ -610,7 +636,13 @@ int saveSequence(packet_t* p) {
 int findAndReplace(packet_t* p) {
     record("Command to find and replace received\n");
     //Insert control code here  
-    char* response = "0,0"; //test EGSE
+    //char* response = "0,0"; //test EGSE
+    char response[128];
+     char input[128];
+    strcpy(input,p->data);
+    double num1 = strtod(strtok(input,","), NULL);
+    double num2 = strtod(strtok(NULL,","), NULL);
+    strcpy(response,findAndReplace_seq(num1,num2));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -684,15 +716,24 @@ int posOnlyDisable(packet_t* p) {
 /*Commands the flight software to turn STIMS ON*/
 int stimsEnable(packet_t* p) {
     record("Command to enable STIMS mode received.\n");
+    
     if (roe_struct.active) {
         int var = stimOn();
         if (var == -1) {
             record("Did not go into STIMS mode.\n");
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         } else {
             ops.read_block = STMBLK;
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         }
     } else
+    {
         record("STIM-ON ERROR: ROE INACTIVE!");
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+        enqueue(&lqueue[hkdown], a);
+    }
     return GOOD_PACKET;
 }
 
@@ -703,12 +744,20 @@ int stimsDisable(packet_t* p) {
         int var = stimOff();
         if (var == -1) {
             record("ROE did not turn STIMS off.\n");
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         } else {
             ops.read_block =
                     (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         }
     } else
+    {
         record("STIM-OFF ERROR: ROE INACTIVE!");
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+        enqueue(&lqueue[hkdown], a);
+    }
     return GOOD_PACKET;
 }
 
@@ -720,11 +769,15 @@ int resetROE(packet_t* p) {
         ops.read_block =
                 (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
     } else
+    {
         record("RESET-ROE ERROR: ROE INACTIVE!");
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+        enqueue(&lqueue[hkdown], a);
+    }
     return GOOD_PACKET;
 }
 
-/*Exit to default mode*/ //Aren't we leaving default mode? -Djk
+/*Exit default mode*/
 
 int disableDefaultROE(packet_t* p) {
     record("Command to exit to default mode received.\n");
@@ -732,9 +785,20 @@ int disableDefaultROE(packet_t* p) {
         int var = exitDefault();
         if (var == -1) {
             record("ROE did not exit default mode.\n");
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
+        }
+        else
+        {
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         }
     } else
+    {
         record("EXIT-DEFAULT ERROR: ROE INACTIVE!");
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+        enqueue(&lqueue[hkdown], a);
+    }
     return GOOD_PACKET;
 }
 
@@ -745,11 +809,19 @@ int enableSelftestROE(packet_t* p) {
         int var = selftestMode();
         if (var == -1) {
             record("Did not enter self test mode\n");
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         } else {
             ops.read_block = STBLK;
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
         }
     } else
+    {
         record("SELF-TEST ERROR: ROE INACTIVE!");
+        packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+        enqueue(&lqueue[hkdown], a);
+    }
     return GOOD_PACKET;
 }
 
@@ -795,6 +867,7 @@ int ROE_2_5V_V(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -808,6 +881,7 @@ int ROE_2_5V_I(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS2_5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -856,6 +930,7 @@ int ROE_POS_5V_VB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -869,6 +944,7 @@ int ROE_POS_5V_VD(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -882,6 +958,7 @@ int ROE_POS_5V_IA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -895,6 +972,7 @@ int ROE_POS_5V_IB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -908,6 +986,7 @@ int ROE_POS_5V_ID(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -921,6 +1000,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -934,6 +1014,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -947,6 +1028,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG10V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -960,6 +1042,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG10V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -973,6 +1056,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -986,6 +1070,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1009,6 +1094,7 @@ int ROE_12V_VA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1022,6 +1108,7 @@ int ROE_12V_VB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1035,6 +1122,7 @@ int ROE_12V_IA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1048,6 +1136,7 @@ int ROE_12V_IB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1061,6 +1150,7 @@ int ROE_36V_VA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1074,6 +1164,7 @@ int ROE_36V_VB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1087,6 +1178,7 @@ int ROE_36V_IA(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1100,6 +1192,7 @@ int ROE_36V_IB(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1143,6 +1236,7 @@ int ROE_TEMP_UPPER(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, TEMP, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1156,6 +1250,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, TEMP, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1169,6 +1264,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1182,6 +1278,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1195,6 +1292,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1208,6 +1306,7 @@ int ROE_CCDS_VOD(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1221,6 +1320,7 @@ int ROE_CCDS_VRD(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 
@@ -1234,6 +1334,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
+    free(temp);
     return GOOD_PACKET;
 }
 

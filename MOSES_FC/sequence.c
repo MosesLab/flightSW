@@ -104,11 +104,43 @@ void reload(char* file) {
 }
 
 int findAndJump_seq(double num) {
-    return -1;
+    pthread_mutex_lock(&currentSequence->mx);
+    int i;
+    for(i = 0; i < currentSequence->numFrames; i++)
+    {
+        if (currentSequence.exposureTimes[i] == num)
+        {
+            currentSequence->currentFrame = i;
+        }
+    }
+    pthread_mutex_unlock(&currentSequence->mx);
+    
+    if(currentSequence.exposureTimes[currentSequence.currentFrame] == num)
+    {
+        return currentSequence->currentFrame;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
-void jump(int frame) {
-
+int jump(int frame) {
+    pthread_mutex_lock(&currentSequence->mx);
+    if(frame < currentSequence->numFrames && frame > -1)
+    {
+        currentSequence->currentFrame = frame;
+    }
+    
+    pthread_mutex_unlock(&currentSequence->mx);
+    if(currentSequence->currentFrame == frame)
+    {
+        return currentSequence.currentFrame;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 void save() {

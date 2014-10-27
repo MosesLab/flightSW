@@ -68,6 +68,7 @@ void * science_timeline(void * arg) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
              a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
+             enqueue(&lqueue[hkdown], a);
             /* check for running, roe active.... */
 
             //If ROE not active?
@@ -108,19 +109,25 @@ void * science_timeline(void * arg) {
 
             /* Command ROE to Readout*/
             readOut(ops.read_block,100000);
+            a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
 
             //wait 4 seconds for response from ROE that readout is complete
+            //need to check whether or not ROE sends anything back after 4 minutes
             sleep(4);
 
             /* push packet w/info about end read out */
-            a = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
+            a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);
+            b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
+            enqueue(&lqueue[hkdown], b);
 
             /*Enqueue image to image writer thread*/
             record("Queue image for writing.\n");
             enqueue(&lqueue[scit_image], image);
             
             a = (packet_t*) constructPacket(MDAQ_RSP, END_EXP, (char *) NULL);
+             enqueue(&lqueue[hkdown], a);
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */
