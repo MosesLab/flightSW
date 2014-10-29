@@ -73,7 +73,7 @@ int deactivate() {
 
 int exitDefault() {
     //char msg[100];
-    printf("Attempting to exit default mode.\n");
+    //printf("Attempting to exit default mode.\n");
     record("Attempting to exit default mode.\n");
     //record(msg);
 
@@ -124,7 +124,7 @@ int exitDefault() {
     char command = EXIT_DEFAULT;
     int val;
     val = write(roe_struct.roeLink, (char *) &command, 1); //Write Command to ROE Link
-    printf("write: %d\n", val);
+    //printf("write: %d\n", val);
     if (val != 1) {
         record("Exit Default Error, write\n");
         pthread_mutex_unlock(&roe_struct.mx);

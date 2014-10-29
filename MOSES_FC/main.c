@@ -74,8 +74,21 @@ int main(void) {
 
     record("exited wait\n");
     
-    /*SIGINT caught, ending program*/
+    /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
+    
+    char msg[100];
+    sprintf(msg,"quit_sig: %d\n", quit_sig);
+    record(msg);
+    
+    /* if SIGHUP, a reset command was received. */
+    if(quit_sig == 1)
+    {
+        record("Flight software rebooting...\n");
+        //if (execlp("bash", "bash", "--rcfile", "bashrc", "-i", "-s", (char *) 0) == -1) {
+        //record("ERROR in restarting flight software!\n");
+        //}
+    }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
@@ -163,6 +176,9 @@ void init_quit_signal_handler() {
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR1, &start_action, NULL);
+    
+    /*reset flight software signal handling*/
+    sigaddset(&mask, SIGHUP);
 
 }
 

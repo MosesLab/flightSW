@@ -569,7 +569,7 @@ int scaleSequence(packet_t* p) {
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    printf("Number to scale by: %f", strtod(numstr, &ptr));
+    //printf("Number to scale by: %f", strtod(numstr, &ptr));
     
     scale(strtod(numstr,&ptr));
     return GOOD_PACKET;
@@ -831,17 +831,7 @@ int resetSW(packet_t* p) {
     
     record("Command to reset flight software received\n");
     
-        //pid_t p = fork();
-    
-    /*Then the child process was created*/
-    //if(p != -1)
-    //{
-        /* call on helper path to create new instantiation of moses_fc*/
-        //execlp(helper....)
-       // return -1; // if execlp successful, should never return;
-   // }
-    /*Parent process kills moses_fc*/
-    //kill(main_pid)
+    kill(main_pid, SIGHUP);
     
     return GOOD_PACKET;
 }
