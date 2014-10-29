@@ -426,14 +426,15 @@ int tSleep() {
 /*Associates a sequence name with a signal number*/
 int setSequence(packet_t* p) {
     record("Set sequence command received\n");
-    char data[32];
-    strcpy(data, p->data);
-    char temp = data[2];
-    data[2] = '\0';
-    int num = atoi(data);
-    data[2] = temp;
-    reload(data + 2);
-    sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
+    //char data[32];
+    //strcpy(data, p->data);
+    //char temp = data[2];
+    //data[2] = '\0';
+    //int num = atoi(data);
+    //data[2] = temp;
+    
+    //reload(data + 2);
+    //sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
     return GOOD_PACKET;
 }
 
@@ -597,7 +598,6 @@ int findAndJump(packet_t* p) {
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    printf("%2d",findAndJump_seq(strtod(numstr,&ptr));
     sprintf(response,"%2d", findAndJump_seq(strtod(numstr,&ptr)));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);
@@ -610,10 +610,9 @@ int jumpToExp(packet_t* p) {
     record("Command to Jump to exposure received\n");
     //Insert control code here  
     char numstr[16];
-    char *ptr;
-    char* response = "0"; //test EGSE
+    char response[100];
     strcpy(numstr, p->data);
-    sprintf(response, "%2d", jump(strtod(numstr, &ptr)));
+    sprintf(response, "%2d", jump(atoi(numstr)));
     packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -732,7 +731,7 @@ int stimsEnable(packet_t* p) {
         }
     } else
     {
-        record("STIM-ON ERROR: ROE INACTIVE!");
+        record("STIM-ON ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
     }
@@ -756,7 +755,7 @@ int stimsDisable(packet_t* p) {
         }
     } else
     {
-        record("STIM-OFF ERROR: ROE INACTIVE!");
+        record("STIM-OFF ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
     }
@@ -772,7 +771,7 @@ int resetROE(packet_t* p) {
                 (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
     } else
     {
-        record("RESET-ROE ERROR: ROE INACTIVE!");
+        record("RESET-ROE ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
     }
@@ -797,7 +796,7 @@ int disableDefaultROE(packet_t* p) {
         }
     } else
     {
-        record("EXIT-DEFAULT ERROR: ROE INACTIVE!");
+        record("EXIT-DEFAULT ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
     }
@@ -820,7 +819,7 @@ int enableSelftestROE(packet_t* p) {
         }
     } else
     {
-        record("SELF-TEST ERROR: ROE INACTIVE!");
+        record("SELF-TEST ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
     }
@@ -829,7 +828,21 @@ int enableSelftestROE(packet_t* p) {
 
 /*Command to reset the flight software*/
 int resetSW(packet_t* p) {
+    
     record("Command to reset flight software received\n");
+    
+        //pid_t p = fork();
+    
+    /*Then the child process was created*/
+    //if(p != -1)
+    //{
+        /* call on helper path to create new instantiation of moses_fc*/
+        //execlp(helper....)
+       // return -1; // if execlp successful, should never return;
+   // }
+    /*Parent process kills moses_fc*/
+    //kill(main_pid)
+    
     return GOOD_PACKET;
 }
 

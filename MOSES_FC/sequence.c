@@ -165,7 +165,10 @@ void save() {
 }
 void saveAs(char* file) {
     pthread_mutex_lock(&currentSequence->mx);
-    currentSequence->filename = file;
+    char s1[100];
+    sprintf(s1, "sequence/");
+    strcat(s1,file);
+    currentSequence->filename = s1;
     save();
     pthread_mutex_unlock(&currentSequence->mx);
 }

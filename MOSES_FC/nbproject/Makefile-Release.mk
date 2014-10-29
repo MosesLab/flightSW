@@ -41,6 +41,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/fpga.o \
 	${OBJECTDIR}/gpio.o \
 	${OBJECTDIR}/hashTable.o \
+	${OBJECTDIR}/helper.o \
 	${OBJECTDIR}/lockingQueue.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/main.o \
@@ -113,6 +114,11 @@ ${OBJECTDIR}/hashTable.o: hashTable.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/hashTable.o hashTable.c
+
+${OBJECTDIR}/helper.o: helper.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/helper.o helper.c
 
 ${OBJECTDIR}/lockingQueue.o: lockingQueue.c 
 	${MKDIR} -p ${OBJECTDIR}
