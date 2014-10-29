@@ -467,7 +467,8 @@ int getSeqInfo(packet_t* p) {
     char numstr[16];
     char info[256];
     strcpy(numstr,p->data);
-    strcpy(info,toString(numstr));
+    
+    strcpy(info,toString(atoh(p->data)));
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -485,7 +486,7 @@ int getCurSeqName(packet_t* p) {
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(packet_t* p) {
     record("Get current frame length command received\n");
-    char* response = "test";
+    char response[100]; 
     sprintf(response, "%6.3f", getCurrentExposure());
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
     enqueue(&lqueue[hkdown], r);
@@ -495,7 +496,7 @@ int getCurFrameLen(packet_t* p) {
 /*Command the flight software to return the current frame's index number*/
 int getCurFrameIndex(packet_t* p) {
     record("Get current frame index command received\n");
-    char* response = "test";
+    char response[4];
     sprintf(response, "%d", currentSequence->currentFrame);
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);
     enqueue(&lqueue[hkdown], r);

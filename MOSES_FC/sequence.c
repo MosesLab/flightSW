@@ -108,14 +108,14 @@ int findAndJump_seq(double num) {
     int i;
     for(i = 0; i < currentSequence->numFrames; i++)
     {
-        if (currentSequence.exposureTimes[i] == num)
+        if (currentSequence->exposureTimes[i] == num)
         {
             currentSequence->currentFrame = i;
         }
     }
     pthread_mutex_unlock(&currentSequence->mx);
     
-    if(currentSequence.exposureTimes[currentSequence.currentFrame] == num)
+    if(currentSequence->exposureTimes[currentSequence.currentFrame] == num)
     {
         return currentSequence->currentFrame;
     }
@@ -238,11 +238,11 @@ const char * toString(int n) {
     int i;
     char next[20];
     char* next2;
-    char result[50]; //Start with empty string
+    char result[256]; //Start with empty string
     char* result2;
     result2 = (char *) calloc(50, sizeof (char*));
     //pthread_mutex_lock(&currentSequence.mx); //Lock Mutex
-    next2 = "Sequence: ";
+    result = "Sequence: ";
     strcpy(next, next2);
     for(i = 0; i < sequenceMap[n].numFrames; i++)
     {
