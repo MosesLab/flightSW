@@ -443,7 +443,6 @@ int setOutputName(packet_t* p) {
     record("Set output filename command received\n");
     strcpy(dataStub, p->data);
     ops.unique_stub = TRUE;
-    //insert control code here
     return GOOD_PACKET;
 }
 
@@ -594,10 +593,11 @@ int findAndJump(packet_t* p) {
     record("Command to Find and Jump received\n");
     //Insert control code here
     char numstr[16];
-    char* response = "0"; //test EGSE        char numstr[16];
+    char response[100];
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
+    printf("%2d",findAndJump_seq(strtod(numstr,&ptr));
     sprintf(response,"%2d", findAndJump_seq(strtod(numstr,&ptr)));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);

@@ -78,8 +78,8 @@ void loadSequences() {
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
-                sprintf(strdir, "%s/%s", filepath, dir->d_name);\
-                sequenceMap[i] = constructSequence(strdir);\
+                sprintf(strdir, "%s/%s", filepath, dir->d_name);
+                sequenceMap[i] = constructSequence(strdir);
                 i++;
                 //seq_map_size = i;  //Need to send this variable to science_timeline
             }
@@ -115,7 +115,7 @@ int findAndJump_seq(double num) {
     }
     pthread_mutex_unlock(&currentSequence->mx);
     
-    if(currentSequence->exposureTimes[currentSequence.currentFrame] == num)
+    if(currentSequence->exposureTimes[currentSequence->currentFrame] == num)
     {
         return currentSequence->currentFrame;
     }
@@ -135,7 +135,7 @@ int jump(int frame) {
     pthread_mutex_unlock(&currentSequence->mx);
     if(currentSequence->currentFrame == frame)
     {
-        return currentSequence.currentFrame;
+        return currentSequence->currentFrame;
     }
     else
     {
@@ -237,13 +237,13 @@ double getCurrentExposure()
 const char * toString(int n) {
     int i;
     char next[20];
-    char* next2;
+    //char* next2;
     char result[256]; //Start with empty string
     char* result2;
     result2 = (char *) calloc(50, sizeof (char*));
     //pthread_mutex_lock(&currentSequence.mx); //Lock Mutex
-    result = "Sequence: ";
-    strcpy(next, next2);
+    sprintf(result,"Sequence: ");
+    //strcpy(next, next2);
     for(i = 0; i < sequenceMap[n].numFrames; i++)
     {
         sprintf(next, "%6.3f", sequenceMap[n].exposureTimes[i]);
