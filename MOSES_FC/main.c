@@ -83,11 +83,15 @@ int main(void) {
     
     /* if SIGHUP, a reset command was received. */
     if(quit_sig == 1)
-    {
+    {  
+        pid_t rst_result = fork();
+        if(rst_result == 0) //this is child process
+        {
         sleep(10);
         record("Flight software rebooting...\n");
         if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
         record("ERROR in restarting flight software!\n");
+        }
         }
     }
 
