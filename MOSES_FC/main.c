@@ -84,10 +84,11 @@ int main(void) {
     /* if SIGHUP, a reset command was received. */
     if(quit_sig == 1)
     {
+        sleep(10);
         record("Flight software rebooting...\n");
-        //if (execlp("bash", "bash", "--rcfile", "bashrc", "-i", "-s", (char *) 0) == -1) {
-        //record("ERROR in restarting flight software!\n");
-        //}
+        if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
+        record("ERROR in restarting flight software!\n");
+        }
     }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
