@@ -72,9 +72,6 @@ void * fpga_server(void * arg) {
             if (rc == FALSE) {
                 record("Error handling FPGA input\n");
             } else if (rc == DMA_AVAILABLE) { // DMA available in buffer, begin transfer
-                record("Dequeue new image\n");
-
-                
 
                 record("Perform DMA transfer from FPGA\n");
 
@@ -134,11 +131,12 @@ void * fpga_server(void * arg) {
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
                 U32 output_gpio = 0;
-                
+
+                record("Dequeue new image\n");
                 dma_image = dequeue(&lqueue[scit_image]);
-                
+
                 record("Trigger simulated frame\n");
-                
+
                 //Trigger a frame
                 output_gpio |= (1 << 27);
                 WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);

@@ -144,7 +144,6 @@ int init_gpio() {
     U32 output_gpio = 0;
     U32 output_ddr2_ctrl = 0;
     U32 output_ddr2_addr = 0;
-    U32 input_gpio_int_en = 0;
     U32 input_gpio_int_ack = 0;
 
     U32 mask = 0x00000001;
@@ -179,11 +178,11 @@ int init_gpio() {
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
     /*enable GPIO pins on the FPGA*/
-    //        poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);
+            poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);   // Enable all input gpio interrupts
 
     // Initialize the system
-    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
-    input_gpio_int_ack = 0xFFFFFFFF;
+//    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
+//    input_gpio_int_ack = 0xFFFFFFFF;
     WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack); // Acknowledge all active interrupts, if any
     input_gpio_int_ack = 0x00000000;
     WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
