@@ -66,6 +66,8 @@ void * fpga_server(void * arg) {
 
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
+            
+            record("Interrupt received\n");
 
             /*Call function to handle input interrupt from FPGA*/
             rc = handle_fpga_input();
