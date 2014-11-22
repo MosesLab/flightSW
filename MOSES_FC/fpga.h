@@ -21,5 +21,7 @@ void * fpga_server(void *);
 
 int interrupt_wait(U32*);
 
+roeimage_t * dma_image;
+
 #endif	/* FPGA_H */
 
