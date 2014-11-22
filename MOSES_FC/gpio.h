@@ -26,6 +26,9 @@
 #define GPIO_I_INT_ENABLE 0x00000004
 #define GPIO_I_INT_ACK 0x00000008
 #define GPIO_I_INT_REG 0x0000000C
+#define OUTPUT_GPIO_ADDR		0x14
+#define	OUTPUT_DDR2_ADDRESS_ADDR	0x18
+#define OUTPUT_DDR2_CTRL_ADDR		0x1C
 
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
@@ -74,7 +77,7 @@ extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
 
-int handle_gpio_in();
+int handle_fpga_input();
 
 /*use write gpio to open/close shutter*/
 void open_shutter();

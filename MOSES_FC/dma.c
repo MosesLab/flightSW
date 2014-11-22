@@ -36,11 +36,6 @@ int initializeDMA() {
         PlxSdkErrorDisplay(rc);
         exit(-1);
     }
-    if (rc != ApiSuccess) {
-        //printf("*ERROR* - API failed, unable to open PLX Device\n");
-        PlxSdkErrorDisplay(rc);
-        exit(-1);
-    }
     
     /*reset device dma transfer*/
     rc = PlxPci_DeviceReset(&fpga_dev);

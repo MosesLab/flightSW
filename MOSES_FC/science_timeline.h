@@ -28,6 +28,10 @@ void * science_timeline(void *);
 void * write_data(void *);
 void * telem(void *);
 
+/*signal handling variables*/
+sigset_t maskstl, oldmaskstl;
+//int caught_signal;
+struct sigaction run_action;   //action to be taken when ^C is entered
 
 
 #endif	/* SCIENCETIMELINE_H */

@@ -100,7 +100,7 @@ void * science_timeline(void * arg) {
             //readOut(...);
 
             //wait 4 seconds for response from ROE that readout is complete
-            sleep(4);
+            sleep(5);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
@@ -265,3 +265,21 @@ void * telem(void * arg) {
     }
     return NULL;
 }
+
+///*this function sets up the signal handler to run
+//  runsig when a signal is received from the experiment manager*/
+//void init_signal_handler_stl() {
+//
+//    sigfillset(&oldmaskstl); //save the old mask
+//    sigemptyset(&maskstl); //create a blank new mask
+//    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
+//
+//    /*no signal dispositions for signals between threads*/
+//        run_action.sa_handler = runsig;
+//        run_action.sa_mask = oldmaskstl;
+//        run_action.sa_flags = 0;
+//    
+//        sigaction(SIGUSR1, &run_action, NULL);
+//    record("Signal handler initiated.\n");
+//
+//}

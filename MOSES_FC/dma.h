@@ -23,9 +23,8 @@
 #define DMA_TIMEOUT             5000 //ms
 
 #define INP_INT             0x00000001
-#define DMA_INP_INT         0x80000000
-#define GPIO_INP_INT        0x7FFFFFFF
 #define TIMEOUT_INT         0xFFFFFFFF
+#define DMA_AVAILABLE       0x00000002
 
 extern PLX_DEVICE_OBJECT fpga_dev;
 
