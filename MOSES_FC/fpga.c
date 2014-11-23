@@ -12,6 +12,7 @@
 void * fpga_server(void * arg) {
     int rc;
     gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
+    U32 output_ddr2_ctrl = 0;
 
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
@@ -67,13 +68,14 @@ void * fpga_server(void * arg) {
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
             
+            /*Call function to handle input interrupt from FPGA*/
             record("Interrupt received\n");
 
-            /*Call function to handle input interrupt from FPGA*/
             rc = handle_fpga_input();
             if (rc == FALSE) {
                 record("Error handling FPGA input\n");
             } else if (rc == DMA_AVAILABLE) { // DMA available in buffer, begin transfer
+
 
                 record("Perform DMA transfer from FPGA\n");
 
@@ -81,12 +83,19 @@ void * fpga_server(void * arg) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
                 }
 
-                record("Sort image\n");
+                // Return to IDLE state
+                record("DMA Complete, Returning to IDLE state\n");
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x02 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x00000000 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
+                record("Sort image\n");
                 sort(dma_image);
 
                 record("Enqueue image to writer\n");
-
                 enqueue(&lqueue[fpga_image], dma_image);
             }
 
@@ -133,6 +142,13 @@ void * fpga_server(void * arg) {
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
                 U32 output_gpio = 0;
+
+                record("Set FPGA to buffer state");
+
+                // Set Data Manager State to BUFFER
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x01 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 record("Dequeue new image\n");
                 dma_image = dequeue(&lqueue[scit_image]);
