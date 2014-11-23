@@ -80,7 +80,7 @@ int handle_fpga_input() {
         return FALSE;
     }
 
-    data_manager_state = ((gpio_state & 0x7F800000) >> 23);
+    data_manager_state = ((gpio_state & 0x78000000) >> 27);
     if (data_manager_state == 0x05) {
         return DMA_AVAILABLE;
     } else {
@@ -173,16 +173,16 @@ int init_gpio() {
         PlxSdkErrorDisplay(rc);
         return FALSE;
     }
-
+    
+    /*enable GPIO pins on the FPGA*/
+    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF); // Enable all input gpio interrupts
+    
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
 
-    /*enable GPIO pins on the FPGA*/
-            poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF);   // Enable all input gpio interrupts
-
     // Initialize the system
-//    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
-//    input_gpio_int_ack = 0xFFFFFFFF;
+    //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
+    //    input_gpio_int_ack = 0xFFFFFFFF;
     WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack); // Acknowledge all active interrupts, if any
     input_gpio_int_ack = 0x00000000;
     WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
