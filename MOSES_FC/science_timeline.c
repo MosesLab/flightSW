@@ -23,7 +23,7 @@ void * science_timeline(void * arg) {
     record("-->Science Timeline thread started....\n");
 
 
-//        void init_shutter();      //Would still like to do this -- causes segfault
+    //        void init_shutter();      //Would still like to do this -- causes segfault
 
 
     /* wait for ROE to become active */
@@ -69,8 +69,8 @@ void * science_timeline(void * arg) {
             }
 
             /*construct new image to read data into*/
-            roeimage_t * image = malloc(sizeof(roeimage_t));
-            int index[4] = {0, 0, 0, 0};        //incremented when the data is sorted
+            roeimage_t * image = malloc(sizeof (roeimage_t));
+            int index[4] = {0, 0, 0, 0}; //incremented when the data is sorted
             char channels = ops.channels;
             constructImage(image, index, channels, 16);
 
@@ -80,7 +80,7 @@ void * science_timeline(void * arg) {
 
             image->duration = duration;
             image->seq_name = currentSequence->sequenceName;
-            image->num_exp = i+1;       //Index of exposure in sequence
+            image->num_exp = i + 1; //Index of exposure in sequence
             image->num_frames = currentSequence->numFrames; //Number of exposures this sequence
 
             /*push packets with information about frame(index and exposure length) */
@@ -96,6 +96,10 @@ void * science_timeline(void * arg) {
 
             record("Done with exposure. Wait for readout...\n");
 
+            /*Enqueue image to Science timeline thread*/
+            record("Queue image buffer for DMA transfer.\n");
+            enqueue(&lqueue[scit_image], image);
+
             /* Command ROE to Readout*/
             //readOut(...);
 
@@ -106,9 +110,7 @@ void * science_timeline(void * arg) {
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
 
-            /*Enqueue image to image writer thread*/
-            record("Queue image for writing.\n");
-            enqueue(&lqueue[scit_image], image);
+
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
@@ -143,12 +145,12 @@ void * write_data(void * arg) {
 
     while (ts_alive) {
 
-//        short *BUFFER[4];
-//        /*create pixel buffers */
-//        int i;
-//        for (i = 0; i < 4; i++) {
-//            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-//        }
+        //        short *BUFFER[4];
+        //        /*create pixel buffers */
+        //        int i;
+        //        for (i = 0; i < 4; i++) {
+        //            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
+        //        }
 
 
         char filename[80];
@@ -156,13 +158,13 @@ void * write_data(void * arg) {
         char dtime[100];
         char ddate[100];
 
-        
+
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
         record("Dequeued new image\n");
-        
+
         /* Get data for image details*/
         time_t curTime = time(NULL);
         struct tm *broken = localtime(&curTime);
@@ -180,7 +182,7 @@ void * write_data(void * arg) {
         //image.duration = duration;
         image->width = 2048;
         image->height = 1024;
-        
+
 
         record("Image Opened\n");
 
