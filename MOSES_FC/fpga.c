@@ -201,11 +201,11 @@ int interrupt_wait(U32 * interrupt) {
     if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
 
     /*handle return code of wait function*/
-    if (waitrc == ApiSuccess) {
-        *interrupt = INP_INT;
-        return TRUE;
-    } else if (waitrc == ApiWaitTimeout) {
+    if (waitrc == ApiWaitTimeout) {
         *interrupt = TIMEOUT_INT;
+        return TRUE;
+    } else if (waitrc == ApiSuccess) {
+        *interrupt = INP_INT;
         return TRUE;
     } else if (waitrc == ApiWaitCanceled) {
         record("Wait canceled\n");
@@ -214,5 +214,6 @@ int interrupt_wait(U32 * interrupt) {
         record("Wait returned an unknown value\n");
         return FALSE;
     }
+
 
 }

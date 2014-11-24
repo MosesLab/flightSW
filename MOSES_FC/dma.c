@@ -40,7 +40,6 @@ int initializeDMA() {
     /*reset device dma transfer*/
     rc = PlxPci_DeviceReset(&fpga_dev);
 
-    
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
 
