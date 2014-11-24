@@ -67,7 +67,7 @@ void * fpga_server(void * arg) {
 
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
-            
+
             /*Call function to handle input interrupt from FPGA*/
             record("Interrupt received\n");
 
@@ -143,7 +143,7 @@ void * fpga_server(void * arg) {
             if (occupied(&lqueue[scit_image])) {
                 U32 output_gpio = 0;
 
-                record("Set FPGA to buffer state");
+                record("Set FPGA to buffer state\n");
 
                 // Set Data Manager State to BUFFER
                 output_ddr2_ctrl &= 0x00FFFFFF;
@@ -153,9 +153,8 @@ void * fpga_server(void * arg) {
                 record("Dequeue new image\n");
                 dma_image = dequeue(&lqueue[scit_image]);
 
-                record("Trigger simulated frame\n");
-
                 //Trigger a frame
+                record("Trigger simulated frame\n");
                 output_gpio |= (1 << 27);
                 WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
                 output_gpio &= (0 << 27);
@@ -184,7 +183,7 @@ int interrupt_wait(U32 * interrupt) {
 
     /*set interrupt structure*/
     plx_intr.LocalToPci = 1; //set bit 11
-    //    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
+    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
 
     /*enable interrupt on PLX bridge*/
     rc = PlxPci_InterruptEnable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
