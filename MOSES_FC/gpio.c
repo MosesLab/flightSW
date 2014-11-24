@@ -80,8 +80,8 @@ int handle_fpga_input() {
         return FALSE;
     }
 
-    data_manager_state = ((gpio_state & 0x78000000) >> 27);
-    if (data_manager_state == 0x05) {
+    data_manager_state = ((gpio_state & 0x80000000) >> 31);      //Check bit 31 to see if DMA is available
+    if (data_manager_state == 0x01) {
         return DMA_AVAILABLE;
     } else {
         /*enqueue value to send to gpio control*/
@@ -175,7 +175,7 @@ int init_gpio() {
     }
     
     /*enable GPIO pins on the FPGA*/
-    poke_gpio(GPIO_I_INT_ENABLE, 0xFFFFFFFF); // Enable all input gpio interrupts
+    poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
     
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
