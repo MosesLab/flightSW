@@ -183,7 +183,7 @@ int interrupt_wait(U32 * interrupt) {
 
     /*set interrupt structure*/
     plx_intr.LocalToPci = 1; //set bit 11
-    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
+//    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
 
     /*enable interrupt on PLX bridge*/
     rc = PlxPci_InterruptEnable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
