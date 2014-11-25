@@ -156,6 +156,19 @@ void sort(roeimage_t * image) {
     }
 }
 
+void unsort(roeimage_t * image) {
+    register uint i, j = 0;
+    uint frag = NUM_FRAGMENT;
+    uint buf_size = SIZE_DS_BUFFER / 2;
+    short ** dest_buf = image->data;
+    uint * dest_size = image->size;
+    for (i = 0; i < frag; i++) {
+        for (j = 0; j < (buf_size); j++) {
+               dest_buf[i][j] = virt_buf[i][j];
+        }
+       dest_size[i] = buf_size;    //number of pixels
+    }
+}
 
 
 /**

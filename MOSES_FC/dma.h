@@ -46,6 +46,7 @@ int initializeDMA();
 int dmaRead(PLX_DMA_PARAMS, U64);
 int allocate_buffer(PLX_DMA_PARAMS*, PLX_PHYSICAL_MEM*, short **);
 void sort(roeimage_t*);
+void unsort(roeimage_t * image);
 int dmaClearBlock();
 void dmaClose();
 #endif	/* DMA_H */
