@@ -93,7 +93,7 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 record("Sort image\n");
-                unsort(dma_image);
+                sort(dma_image);
                 
 
                 record("Enqueue image to writer\n");

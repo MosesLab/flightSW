@@ -36,9 +36,9 @@ int initializeDMA() {
         PlxSdkErrorDisplay(rc);
         exit(-1);
     }
-    
+
     /*reset device dma transfer*/
-//    rc = PlxPci_DeviceReset(&fpga_dev);
+    //    rc = PlxPci_DeviceReset(&fpga_dev);
 
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
@@ -120,7 +120,7 @@ int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, shor
 int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     int rc;
 
-    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout); 
+    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout);
 
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
@@ -145,14 +145,29 @@ void sort(roeimage_t * image) {
     register uint i, j, k = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
+    short next_pixel;
     short ** dest_buf = image->data;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
-               dest_buf[k][(j * i) /4] = virt_buf[i][j];
-               k = (k + 1) % 4;
+            next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
+            k = ((i * buf_size) + j) / 4;
+
+            if (next_pixel >= 0xC000) { // Channel 3
+                dest_buf[3][k] = next_pixel;
+                
+            } else if (next_pixel >= 0x8000) { // Channel 2
+                dest_buf[2][k] = next_pixel;
+
+            } else if (next_pixel >= 0x4000) { // Channel 1
+                dest_buf[1][k] = next_pixel;
+
+            } else { // Channel 0
+                dest_buf[0][k] = next_pixel;
+
+            }
         }
-       dest_size[i] = buf_size;    //number of pixels
+        dest_size[i] = buf_size; //number of pixels
     }
 }
 
@@ -164,12 +179,11 @@ void unsort(roeimage_t * image) {
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
-               dest_buf[i][j] = virt_buf[i][j];
+            dest_buf[i][j] = virt_buf[i][j];
         }
-       dest_size[i] = buf_size;    //number of pixels
+        dest_size[i] = buf_size; //number of pixels
     }
 }
-
 
 /**
  * Clear page-locked DMA buffer out of memory
