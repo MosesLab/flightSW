@@ -146,7 +146,7 @@ void sort(roeimage_t * image) {
     register uint i0 = 0 , i1 = 0, i2 = 0, i3 = 0; 
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
-    short next_pixel;
+    unsigned short next_pixel;
     short ** dest_buf = image->data;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
@@ -162,7 +162,7 @@ void sort(roeimage_t * image) {
             } else if (next_pixel >= 0x4000) { // Channel 1
                 dest_buf[1][i1] = next_pixel;
                 i1++;
-            } else { // Channel 0
+            } else {    // Channel 0
                 dest_buf[0][i0] = next_pixel;
                 i0++;
             }
