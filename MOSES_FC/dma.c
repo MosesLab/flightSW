@@ -142,7 +142,8 @@ void finish() {
 }
 
 void sort(roeimage_t * image) {
-    register uint i, j, k = 0;
+    register uint i, j;
+    register uint i0 = 0 , i1 = 0, i2 = 0, i3 = 0; 
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     short next_pixel;
@@ -151,20 +152,19 @@ void sort(roeimage_t * image) {
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
             next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
-            k = ((i * buf_size) + j) / 4;
 
             if (next_pixel >= 0xC000) { // Channel 3
-                dest_buf[3][k] = next_pixel;
-                
+                dest_buf[3][i3] = next_pixel;
+                i3++;
             } else if (next_pixel >= 0x8000) { // Channel 2
-                dest_buf[2][k] = next_pixel;
-
+                dest_buf[2][i2] = next_pixel;
+                i2++;
             } else if (next_pixel >= 0x4000) { // Channel 1
-                dest_buf[1][k] = next_pixel;
-
+                dest_buf[1][i1] = next_pixel;
+                i1++;
             } else { // Channel 0
-                dest_buf[0][k] = next_pixel;
-
+                dest_buf[0][i0] = next_pixel;
+                i0++;
             }
         }
         dest_size[i] = buf_size; //number of pixels
