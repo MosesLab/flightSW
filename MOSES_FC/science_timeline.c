@@ -104,7 +104,7 @@ void * science_timeline(void * arg) {
             //readOut(...);
 
             //wait 4 seconds for response from ROE that readout is complete
-            sleep(5);
+            sleep(6);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
