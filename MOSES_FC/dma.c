@@ -170,8 +170,7 @@ void sort(roeimage_t * image) {
             }
             
             /*make sure the indices aren't too big*/
-            uint max = buf_size - 1;
-            if(i0 > max || i1 > max || i2 > max || i3 > max){
+            if(i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size){
                 record("SCIENCE DATA BUFFER OVERFLOW!");
                 goto end_sort;          // Don't freak out, breaking out of double loop 
             }
