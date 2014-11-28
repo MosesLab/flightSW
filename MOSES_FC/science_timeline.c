@@ -111,7 +111,6 @@ void * science_timeline(void * arg) {
             enqueue(&lqueue[hkdown], a);
 
 
-
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */

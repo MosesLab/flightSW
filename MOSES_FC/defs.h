@@ -100,7 +100,7 @@ typedef struct {
     char* object; // the object in the image
     unsigned int duration; // the duration of the image exposure
     unsigned int size[4];
-    short* data[4]; // the image data
+    unsigned short* data[4]; // the image data
     char channels; //channels included in the image;
     char* seq_name; //sequence that initiated the image
     unsigned int num_exp;
