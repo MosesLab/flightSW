@@ -147,7 +147,7 @@ void sort(roeimage_t * image) {
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short next_pixel = 0;
-    unsigned short ** dest_buf = image->data;
+    unsigned short ** dest_buf = image->data;   //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
     uint * dest_size = image->size;
     
     
@@ -168,8 +168,18 @@ void sort(roeimage_t * image) {
                 dest_buf[0][i0] = next_pixel;
                 i0++;
             }
+            
+            /*make sure the indices aren't too big*/
+            uint max = buf_size - 1;
+            if(i0 > max || i1 > max || i2 > max || i3 > max){
+                record("SCIENCE DATA BUFFER OVERFLOW!");
+                goto end_sort;          // Don't freak out, breaking out of double loop 
+            }
         }
     }
+    end_sort:   // To break out of double loop
+    
+    /*assign sizes for imageindex.xml*/
     dest_size[0] = i0;
     dest_size[1] = i1;
     dest_size[2] = i2;
