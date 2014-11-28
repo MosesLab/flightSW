@@ -158,7 +158,7 @@ void writeToFile(roeimage_t * image) {
     dataOut = fopen(image->filename, "w"); 
     
     for (i = 0; i < 4; i++) {
-        if (image->channels & (char) (1 << i))
+//        if (image->channels & (char) (1 << i)) turn off for DMA testing --RTS 11/28/14
             fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
     }
     fclose(dataOut);
