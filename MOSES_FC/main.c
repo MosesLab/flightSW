@@ -76,6 +76,10 @@ int main(void) {
     
     /*SIGINT caught, ending program*/
     join_threads();
+    
+    dmaClearBlock();
+    
+    dmaClose();
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
