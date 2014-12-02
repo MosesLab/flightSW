@@ -77,8 +77,10 @@ int main(void) {
     /*SIGINT caught, ending program*/
     join_threads();
     
+    record("Release page-locked contiguous buffer\n");
     dmaClearBlock();
     
+    record("Close DMA channel\n");
     dmaClose();
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
