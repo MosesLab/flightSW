@@ -194,8 +194,8 @@ int init_gpio() {
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_ADDRESS_ADDR, output_ddr2_addr); // Sets the DDR2 address to zero (currently unused)
     output_ddr2_ctrl = 0x00000000;
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl); // Set the Data Manager control signal to zero
-    output_fpga_reset = 1;
-    WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_fpga_reset); // Set the Data Manager control signal to zero
+    output_fpga_reset = 0x4000000;
+    WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_fpga_reset); // Set the Data Manager control signal to zero
 
     return TRUE;
 

@@ -30,6 +30,7 @@
 #define	OUTPUT_DDR2_ADDRESS_ADDR	0x18
 #define OUTPUT_DDR2_CTRL_ADDR		0x1C
 
+
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
 
