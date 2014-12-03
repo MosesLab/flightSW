@@ -15,6 +15,10 @@ U8 bar_index;
 U32 bar_sz_buffer;
 U32 power_subsystem_mask[NUM_SUBSYSTEM];
 U32 gpio_control_mask[NUM_CONTROL_GPIO];
+U32 output_ddr2_ctrl = 0;
+U32 output_ddr2_addr = 0;
+U32 input_gpio_int_ack = 0;
+U32 output_gpio = 0;
 
 /*Uses PLX API to write to memory locations on FPGA*/
 int poke_gpio(U32 offset, U32 data) {
@@ -141,11 +145,7 @@ void close_shutter() {
 /*sets up the memory used in powering the instrument*/
 int init_gpio() {
     int rc;
-    U32 output_gpio = 0;
-    U32 output_ddr2_ctrl = 0;
-    U32 output_ddr2_addr = 0;
-    U32 input_gpio_int_ack = 0;
-    U32 output_fpga_reset = 0;
+
 
     U32 mask = 0x00000001;
     unsigned int i;
@@ -194,8 +194,8 @@ int init_gpio() {
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_ADDRESS_ADDR, output_ddr2_addr); // Sets the DDR2 address to zero (currently unused)
     output_ddr2_ctrl = 0x00000000;
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl); // Set the Data Manager control signal to zero
-    output_fpga_reset = 0x4000000;
-    WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_fpga_reset); // Set the Data Manager control signal to zero
+    output_gpio |= (1 << 27);
+    WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio); // Set the Data Manager control signal to zero
 
     return TRUE;
 

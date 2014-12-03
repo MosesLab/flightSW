@@ -12,7 +12,6 @@
 void * fpga_server(void * arg) {
     int rc;
     gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
-    U32 output_ddr2_ctrl = 0;
 
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
@@ -142,7 +141,6 @@ void * fpga_server(void * arg) {
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
-                U32 output_gpio = 0;
 
                 record("Set FPGA to buffer state\n");
 
