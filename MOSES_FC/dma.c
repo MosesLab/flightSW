@@ -21,24 +21,26 @@ PLX_DMA_PARAMS dma_params[NUM_FRAGMENT];
 PLX_PHYSICAL_MEM pci_buffer[NUM_FRAGMENT];
 short* virt_buf[NUM_FRAGMENT];
 
+
+int open_fpga(){
+    int rc;
+
+    rc = GetAndOpenDevice(&fpga_dev, 0x9056);
+    if (rc != ApiSuccess) {
+        //printf("*ERROR* - API failed, unable to open PLX Device\n");
+        PlxSdkErrorDisplay(rc);
+        exit(-1);
+    }
+    return TRUE;
+    
+}
+
 /**
  * Opens PLX PCI device and starts the dma engine
  * @return 1 if success, 0 if failure
  */
 int initializeDMA() {
     int rc;
-
-    /*Lock PLX mutex*/
-    rc = GetAndOpenDevice(&fpga_dev, 0x9056);
-
-    if (rc != ApiSuccess) {
-        //printf("*ERROR* - API failed, unable to open PLX Device\n");
-        PlxSdkErrorDisplay(rc);
-        exit(-1);
-    }
-
-    /*reset device dma transfer*/
-    //    rc = PlxPci_DeviceReset(&fpga_dev);
 
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));

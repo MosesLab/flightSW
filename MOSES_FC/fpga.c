@@ -18,7 +18,7 @@ void * fpga_server(void * arg) {
     record("-->FPGA Server thread started....\n");
 
     /*initialize DMA pipeline*/
-    initializeDMA();
+    open_fpga();
 
     /*Allocate buffer for image fragments*/
     uint i;
@@ -90,6 +90,9 @@ void * fpga_server(void * arg) {
                 output_ddr2_ctrl &= 0x00FFFFFF;
                 output_ddr2_ctrl |= (0x00000000 << 24);
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+                
+                /*close DMA channel*/
+                dmaClose();
 
                 record("Sort image\n");
                 sort(dma_image);
@@ -141,6 +144,9 @@ void * fpga_server(void * arg) {
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
+                
+                /*open DMA channel*/
+                initializeDMA();
 
                 record("Set FPGA to buffer state\n");
 

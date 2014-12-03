@@ -42,6 +42,7 @@ extern PLX_INTERRUPT     plx_intr;
 extern PLX_NOTIFY_OBJECT plx_event;
 
 int initializeDMA();
+int open_fpga();
 
 int dmaRead(PLX_DMA_PARAMS, U64);
 int allocate_buffer(PLX_DMA_PARAMS*, PLX_PHYSICAL_MEM*, short **);
