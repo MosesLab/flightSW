@@ -21,8 +21,7 @@ PLX_DMA_PARAMS dma_params[NUM_FRAGMENT];
 PLX_PHYSICAL_MEM pci_buffer[NUM_FRAGMENT];
 short* virt_buf[NUM_FRAGMENT];
 
-
-int open_fpga(){
+int open_fpga() {
     int rc;
 
     rc = GetAndOpenDevice(&fpga_dev, 0x9056);
@@ -32,7 +31,7 @@ int open_fpga(){
         exit(-1);
     }
     return TRUE;
-    
+
 }
 
 /**
@@ -50,7 +49,7 @@ int initializeDMA() {
     DmaProp.Burst = 1; // Use burst of 4LW 
     DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
     DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
-//    DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
+    //    DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
 
     // Use Channel 0 
@@ -145,14 +144,14 @@ void finish() {
 
 void sort(roeimage_t * image) {
     register uint i, j;
-    register uint i0 = 0 , i1 = 0, i2 = 0, i3 = 0; 
+    register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short next_pixel = 0;
-    unsigned short ** dest_buf = image->data;   //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
+    unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
     uint * dest_size = image->size;
-    
-    
+
+
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
             next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
@@ -166,26 +165,26 @@ void sort(roeimage_t * image) {
             } else if (next_pixel >= 0x4000) { // Channel 1
                 dest_buf[1][i1] = next_pixel;
                 i1++;
-            } else {    // Channel 0
+            } else { // Channel 0
                 dest_buf[0][i0] = next_pixel;
                 i0++;
             }
-            
+
             /*make sure the indices aren't too big*/
-            if(i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size){
+            if (i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size) {
                 record("SCIENCE DATA BUFFER OVERFLOW!\n");
-                goto end_sort;          // Don't freak out, breaking out of double loop 
+                goto end_sort; // Don't freak out, breaking out of double loop 
             }
         }
     }
-    end_sort:   // To break out of double loop
-    
+end_sort: // To break out of double loop
+
     /*assign sizes for imageindex.xml*/
     dest_size[0] = i0;
     dest_size[1] = i1;
     dest_size[2] = i2;
     dest_size[3] = i3;
-    
+
 }
 
 void unsort(roeimage_t * image) {
@@ -244,8 +243,19 @@ void dmaClose() {
             // Attempt to close again 
             PlxPci_DmaChannelClose(&fpga_dev, 0);
 
-            //printf("%d", bPass);
         }
     }
-    PlxPci_DeviceClose(&fpga_dev);
+}
+
+int close_fpga() {
+    int rc;
+
+    rc = PlxPci_DeviceClose(&fpga_dev);
+    if (rc != ApiSuccess) {
+        //printf("*ERROR* - API failed, unable to open PLX Device\n");
+        PlxSdkErrorDisplay(rc);
+        exit(-1);
+    }
+    return TRUE;
+
 }

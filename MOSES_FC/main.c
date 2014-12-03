@@ -81,7 +81,7 @@ int main(void) {
     dmaClearBlock();
     
     record("Close DMA channel\n");
-    dmaClose();
+    close_fpga();
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
