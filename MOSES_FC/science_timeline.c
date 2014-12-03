@@ -96,7 +96,7 @@ void * science_timeline(void * arg) {
 
             record("Done with exposure. Wait for readout...\n");
 
-            /*Enqueue image to Science timeline thread*/
+            /*Enqueue image buffer to fpga server thread for DMA transfer*/
             record("Queue image buffer for DMA transfer.\n");
             enqueue(&lqueue[scit_image], image);
 
@@ -104,7 +104,9 @@ void * science_timeline(void * arg) {
             //readOut(...);
 
             //wait 4 seconds for response from ROE that readout is complete
-            sleep(4.5);
+            pthread_mutex_lock(&dma_done_mutex);
+            pthread_cond_wait(&dma_done_cond, &dma_done_mutex);
+            pthread_mutex_unlock(&dma_done_mutex);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);

@@ -9,6 +9,12 @@
  * @param arg (not used)
  * @return  (not used)
  */
+
+/*global conditional variables for use by science timeline*/
+pthread_condattr_t dma_done_attr;
+pthread_cond_t dma_done_cond;
+pthread_mutex_t dma_done_mutex;
+
 void * fpga_server(void * arg) {
     int rc;
     gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
@@ -16,6 +22,11 @@ void * fpga_server(void * arg) {
     prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
 
     record("-->FPGA Server thread started....\n");
+
+    /*initialize mutex and conditional variables*/
+    pthread_mutex_init(&dma_done_mutex, NULL); //initialize mutex
+    pthread_condattr_init(&dma_done_attr);
+    pthread_cond_init(&dma_done_cond, &dma_done_attr);
 
     /*initialize DMA pipeline*/
     open_fpga();
@@ -81,6 +92,11 @@ void * fpga_server(void * arg) {
                 for (i = 0; i < NUM_FRAGMENT; i++) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
                 }
+                
+                /*Wake up science timeline waiting for DMA completion*/
+                pthread_mutex_lock(&dma_done_mutex);
+                pthread_cond_broadcast(&dma_done_cond); 
+                pthread_mutex_unlock(&dma_done_mutex);
 
                 // Return to IDLE state
                 record("DMA Complete, Returning to IDLE state\n");
@@ -90,13 +106,13 @@ void * fpga_server(void * arg) {
                 output_ddr2_ctrl &= 0x00FFFFFF;
                 output_ddr2_ctrl |= (0x00000000 << 24);
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
-                
+
                 /*close DMA channel*/
                 dmaClose();
 
                 record("Sort image\n");
                 sort(dma_image);
-                
+
 
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
@@ -144,7 +160,7 @@ void * fpga_server(void * arg) {
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
-                
+
                 /*open DMA channel*/
                 initializeDMA();
 
@@ -188,7 +204,7 @@ int interrupt_wait(U32 * interrupt) {
 
     /*set interrupt structure*/
     plx_intr.LocalToPci = 1; //set bit 11
-//    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
+    //    plx_intr.PciMain = 1;		// Bit 8 -- should already been on
 
     /*enable interrupt on PLX bridge*/
     rc = PlxPci_InterruptEnable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT
