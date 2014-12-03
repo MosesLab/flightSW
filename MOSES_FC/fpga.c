@@ -156,7 +156,7 @@ void * fpga_server(void * arg) {
                 record("Trigger simulated frame\n");
                 output_gpio |= (1 << 27);
                 WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
-                output_gpio &= (0 << 27);
+                output_gpio &= 0xF7FFFFFF;
                 WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
 
             }
