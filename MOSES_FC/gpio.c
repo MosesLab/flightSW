@@ -178,6 +178,8 @@ int init_gpio() {
     /*reset FPGA*/
     output_gpio |= (1 << 26);
     WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
+    output_gpio = 0;
+    WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
 
     /*enable GPIO pins on the FPGA*/
     poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
