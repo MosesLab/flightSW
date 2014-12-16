@@ -188,8 +188,8 @@ int init_gpio() {
     //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
     //    input_gpio_int_ack = 0xFFFFFFFF;
     //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack); // Acknowledge all active interrupts, if any
-    input_gpio_int_ack = 0x00000000;
-    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
+//    input_gpio_int_ack = 0x00000000;
+//    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
 //    output_gpio |= 0x00003000; // Set output_gpio value to display LED value 3
 //    WriteDword(&fpga_dev, 2, 0x14, output_gpio)
 
