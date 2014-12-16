@@ -44,11 +44,13 @@ int reset_fpga() {
     gpio_out_state.bf.fpga_reset = 0;
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
 
+    gpio_out_state.bf.fpga_reset = 1;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+
     /*pause program to give fpga a chance to reset completely*/
     sleep(10);
 
-    gpio_out_state.bf.fpga_reset = 1;
-    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+
 
     return TRUE;
 }
