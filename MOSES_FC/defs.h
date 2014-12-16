@@ -66,7 +66,7 @@ typedef int(*hlpControl)();
 /*Node structure for hash table*/
 
 /* This struct will contain the variables that represent the status of the system*/
-typedef struct {    
+typedef struct {
     unsigned int sequence;
     unsigned int seq_run;
     unsigned int roe_power;
@@ -143,19 +143,32 @@ typedef union gpio_in_uni {
 
 /*bit field for passing gpio outputs*/
 typedef struct {
-    unsigned int shutter : 1;
-    unsigned int roe : 1;
-    unsigned int premod : 1;
-    unsigned int tcs0 : 1;
-    unsigned int tcs1 : 1;
-    unsigned int tcs2 : 1;
-    unsigned int tcs3 : 1;
+    unsigned int latch : 1;
     unsigned int reg_5V : 1;
     unsigned int reg_12V : 1;
+    unsigned int tcs4 : 1;
+    unsigned int tcs2 : 1;
+    unsigned int tcs3 : 1;
+    unsigned int premod : 1;
+    unsigned int tcs1 : 1;
+    unsigned int shutter : 1;
+    unsigned int roe : 1;
     unsigned int h_alpha : 1;
-    unsigned int latch : 1;
+    unsigned int cc_pwr : 1;
+    unsigned int led_0 : 1;
+    unsigned int led_1 : 1;
 
-    unsigned int unused_out : 19;
+    unsigned int unused_out_1 : 12;
+    
+    unsigned int fpga_reset : 1;        //0 is reset state, 1 is normal operation
+    unsigned int frame_trigger : 1;
+    unsigned int sw_shutdown : 1;
+    
+    unsigned int unused_out_2 : 1;
+    
+    unsigned int camer_mux_sel : 1;
+    
+    unsigned int unused_out_3 : 1;
 
 } gpio_out_bf;
 

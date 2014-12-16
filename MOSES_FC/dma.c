@@ -33,6 +33,18 @@ int open_fpga() {
     return TRUE;
 
 }
+/**
+ * pulls reset register low and then high to put fpga back into original state
+ * @return 
+ */
+int reset_fpga(){
+    gpio_out_state.bf.fpga_reset = 0;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+    
+    gpio_out_state.bf.fpga_reset = 1;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+    
+}
 
 /**
  * Opens PLX PCI device and starts the dma engine
@@ -40,6 +52,8 @@ int open_fpga() {
  */
 int initializeDMA() {
     int rc;
+    
+    record("Open DMA channel\n")
 
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
@@ -220,7 +234,7 @@ int dmaClearBlock() {
         }
     }
 
-    printf("DMA Block Cleared\n");
+    record("DMA Block Cleared\n");
     return (TRUE);
 }
 
@@ -230,7 +244,7 @@ int dmaClearBlock() {
 void dmaClose() {
     int rc;
 
-    printf("Closing DMA Channel: \n");
+    record("Closing DMA Channel: \n");
     rc = PlxPci_DmaChannelClose(&fpga_dev, dmaChannel);
 
     if (rc != ApiSuccess) {

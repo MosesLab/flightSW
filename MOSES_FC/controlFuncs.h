@@ -29,7 +29,7 @@
 extern pid_t main_pid;
 
 /*Power GPIO output state*/
-extern gpio_out_uni gpio_power_state;
+extern gpio_out_uni gpio_out_state;
 
 /*initialize hash table to find functions based on packet string*/
 int funcNumber; // number of control functions  

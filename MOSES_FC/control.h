@@ -23,6 +23,7 @@
 #include "v_shell.h"
 #include "gpio.h"
 #include "dma.h"
+#include "roe_image.h"
 
 #define HLP_PACKET      1
 #define GPIO_INP        2
@@ -34,8 +35,7 @@
 extern moses_ops_t ops;
 extern pid_t vshell_pid;
 
-/*Current state of powered subsystems*/
-extern gpio_out_uni gpio_power_state;
+
 
 /*hlp_control initializations*/
 void* hlp_control(void *);

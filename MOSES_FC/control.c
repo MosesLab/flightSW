@@ -1,9 +1,9 @@
 #include "control.h"
-#include "roe_image.h"
+
 
 /*global variable delcaration*/
 moses_ops_t ops;
-gpio_out_uni gpio_power_state;
+
 pid_t vshell_pid;
 
 /* hlp_control is a thread that reads packets from the housekeeping uplink and 
@@ -26,7 +26,7 @@ void * hlp_control(void * arg) {
     hlpHashInit();
 
     /*set up global GPIO output state*/
-    gpio_power_state.val = 0x0;
+    gpio_out_state.val = 0x0;
 
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink

@@ -74,11 +74,14 @@ extern U32 bar_sz_buffer;
 extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
 extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
-extern U32 output_gpio;
 extern U32 output_ddr2_ctrl;
 extern U32 output_ddr2_addr;
 extern U32 input_gpio_int_ack;
-extern U32 output_gpio;
+
+
+/*Current state of powered subsystems*/
+extern gpio_out_uni gpio_out_state;
+
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
