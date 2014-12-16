@@ -44,6 +44,8 @@ int reset_fpga(){
     gpio_out_state.bf.fpga_reset = 1;
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
     
+    
+    return TRUE;
 }
 
 /**
@@ -53,7 +55,7 @@ int reset_fpga(){
 int initializeDMA() {
     int rc;
     
-    record("Open DMA channel\n")
+    record("Open DMA channel\n");
 
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));

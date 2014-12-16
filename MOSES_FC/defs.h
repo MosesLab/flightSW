@@ -132,7 +132,9 @@ typedef struct {
 
     unsigned int shutter_sig : 1;
 
-    unsigned int unused_in : 17; //structure needs to be 32 bits
+    unsigned int unused_in : 16; //structure needs to be 32 bits
+    
+    unsigned int dma_ready : 1;
 } gpio_in_bf;
 
 /*union to allow gpio in bit fields to be taken as ints*/

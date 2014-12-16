@@ -71,25 +71,24 @@ int handle_fpga_input() {
     gpio_in_uni * gpio_in_state = malloc(sizeof (gpio_in_uni));
 
     /*read pins that initiated interrupt from fpga*/
-    rc = peek_gpio(GPIO_I_INT_REG, &gpio_in_state);
+    rc = peek_gpio(GPIO_I_INT_REG, &(gpio_in_state->val));
     if (rc == FALSE) {
         record("Error reading GPIO input interrupt\n");
         return FALSE;
     }
 
     /*send acknowledge read gpio value to fpga*/
-    rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state);
+    rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state->val);
     if (rc == FALSE) {
         record("Error acknowledging GPIO input interrupt\n");
         return FALSE;
     }
 
-    data_manager_state = ((gpio_in_state & 0x80000000) >> 31); //Check bit 31 to see if DMA is available
+    data_manager_state = gpio_in_state->bf.dma_ready; //Check bit 31 to see if DMA is available
     if (data_manager_state == 0x01) {
         return DMA_AVAILABLE;
     } else {
         /*enqueue value to send to gpio control*/
-        gpio_in_state->val = gpio_in_state;
         enqueue(&lqueue[gpio_in], gpio_in_state);
 
         return TRUE;
