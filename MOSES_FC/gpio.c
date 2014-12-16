@@ -178,8 +178,6 @@ int init_gpio() {
     /*reset FPGA*/
     output_gpio |= (1 << 26);
     WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
-    output_gpio = 0;
-    WriteDword(&fpga_dev, 2, OUTPUT_GPIO_ADDR, output_gpio);
 
     /*enable GPIO pins on the FPGA*/
     poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
@@ -193,8 +191,8 @@ int init_gpio() {
     //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack); // Acknowledge all active interrupts, if any
     input_gpio_int_ack = 0x00000000;
     WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
-    output_gpio |= 0x00003000; // Set output_gpio value to display LED value 3
-    WriteDword(&fpga_dev, 2, 0x14, output_gpio);
+//    output_gpio |= 0x00003000; // Set output_gpio value to display LED value 3
+//    WriteDword(&fpga_dev, 2, 0x14, output_gpio)
 
     output_ddr2_addr = 0x003FFFFC;
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_ADDRESS_ADDR, output_ddr2_addr); // Sets the DDR2 address to zero (currently unused)
