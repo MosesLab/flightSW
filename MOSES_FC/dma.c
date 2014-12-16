@@ -48,7 +48,7 @@ int reset_fpga() {
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
 
     /*pause program to give fpga a chance to reset completely*/
-    sleep(10);
+    sleep(6);
 
 
 
