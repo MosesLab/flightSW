@@ -162,7 +162,7 @@ void * fpga_server(void * arg) {
             if (occupied(&lqueue[scit_image])) {
 
                 /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                reset_fpga();
+//                reset_fpga();
                 
                 /*open DMA channel*/
                 initializeDMA();

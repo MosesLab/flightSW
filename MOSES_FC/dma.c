@@ -33,20 +33,23 @@ int open_fpga() {
     return TRUE;
 
 }
+
 /**
  * pulls reset register low and then high to put fpga back into original state
  * @return 
  */
-int reset_fpga(){
+int reset_fpga() {
+    record("Resetting FPGA...\n");
+
     gpio_out_state.bf.fpga_reset = 0;
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
-    
+
     /*pause program to give fpga a chance to reset completely*/
     sleep(5);
-    
+
     gpio_out_state.bf.fpga_reset = 1;
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
-    
+
     return TRUE;
 }
 
@@ -56,7 +59,7 @@ int reset_fpga(){
  */
 int initializeDMA() {
     int rc;
-    
+
     record("Open DMA channel\n");
 
     // Clear DMA properties 
