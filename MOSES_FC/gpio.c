@@ -64,8 +64,6 @@ int peek_gpio(U32 offset, U32 * data_buf) {
  */
 int handle_fpga_input() {
     int rc;
-    int data_manager_state = 0;
-//    U32 gpio_in_state = 0;
 
     /*allocate dynamic space for gpio value*/
     gpio_in_uni * gpio_in_state = malloc(sizeof (gpio_in_uni));
@@ -77,24 +75,35 @@ int handle_fpga_input() {
         return FALSE;
     }
 
-    /*send acknowledge read gpio value to fpga*/
-    rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state->val);
-    if (rc == FALSE) {
-        record("Error acknowledging GPIO input interrupt\n");
-        return FALSE;
-    }
+    /*check bit 31 to see if DMA is available*/
+    if (gpio_in_state->bf.dma_ready == 1) {
 
-    data_manager_state = gpio_in_state->bf.dma_ready; //Check bit 31 to see if DMA is available
-    if (data_manager_state == 0x01) {
+        /*only acknowledge the DMA interrupt*/
+        gpio_in_state->val = 0;
+        gpio_in_state->bf.dma_ready = 1;
+
+        /*send acknowledge read gpio value to fpga*/
+        rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state->val);
+        if (rc == FALSE) {
+            record("Error acknowledging GPIO input interrupt\n");
+            return FALSE;
+        }
+
         return DMA_AVAILABLE;
-    } else {
+    } else {    // check for input gpio
+
+        /*send acknowledge read gpio value to fpga*/
+        rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state->val);
+        if (rc == FALSE) {
+            record("Error acknowledging GPIO input interrupt\n");
+            return FALSE;
+        }
+
         /*enqueue value to send to gpio control*/
         enqueue(&lqueue[gpio_in], gpio_in_state);
 
         return TRUE;
     }
-
-
 }
 
 /*GPIO pin on VDX controls shutter*/
@@ -146,7 +155,7 @@ int init_gpio() {
     int rc;
 
     gpio_out_state.val = 0;
-    
+
     U32 mask = 0x00000001;
     unsigned int i;
     for (i = 0; i < NUM_SUBSYSTEM; i++) {
@@ -188,10 +197,10 @@ int init_gpio() {
     //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ENABLE, input_gpio_int_en); // Disable all the input gpio interrupts
     //    input_gpio_int_ack = 0xFFFFFFFF;
     //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack); // Acknowledge all active interrupts, if any
-//    input_gpio_int_ack = 0x00000000;
-//    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
-//    output_gpio |= 0x00003000; // Set output_gpio value to display LED value 3
-//    WriteDword(&fpga_dev, 2, 0x14, output_gpio)
+    //    input_gpio_int_ack = 0x00000000;
+    //    WriteDword(&fpga_dev, 2, GPIO_I_INT_ACK, input_gpio_int_ack);
+    //    output_gpio |= 0x00003000; // Set output_gpio value to display LED value 3
+    //    WriteDword(&fpga_dev, 2, 0x14, output_gpio)
 
     output_ddr2_addr = 0x003FFFFC;
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_ADDRESS_ADDR, output_ddr2_addr); // Sets the DDR2 address to zero (currently unused)
@@ -202,8 +211,6 @@ int init_gpio() {
     return TRUE;
 
 }
-
-
 
 /**
  * makes driver call for shutter gpio
