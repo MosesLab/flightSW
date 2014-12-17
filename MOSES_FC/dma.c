@@ -213,21 +213,28 @@ end_sort: // To break out of double loop
 }
 
 void unsort(roeimage_t * image) {
+    char buf[255];
+    
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short ** dest_buf = image->data;
     unsigned short next_pixel;
+    int beef = 0;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
             next_pixel = virt_buf[i][j];
             if(next_pixel != 0xBEEF){
-                record("NOT DELICOUS BEEF!!!!!!!!!!!\n");
+                beef++;
             }
             dest_buf[i][j] = next_pixel;
         }
         dest_size[i] = buf_size; //number of pixels
+    }
+    if(beef){
+        sprintf(buf, "Not beef, %d times\n", beef);
+        record(buf);
     }
 }
 
