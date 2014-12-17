@@ -217,10 +217,15 @@ void unsort(roeimage_t * image) {
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short ** dest_buf = image->data;
+    unsigned short next_pixel;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
-            dest_buf[i][j] = virt_buf[i][j];
+            next_pixel = virt_buf[i][j];
+            if(next_pixel != 0xBEEF){
+                record("NOT DELICOUS BEEF!!!!!!!!!!!\n");
+            }
+            dest_buf[i][j] = next_pixel;
         }
         dest_size[i] = buf_size; //number of pixels
     }

@@ -111,7 +111,7 @@ void * fpga_server(void * arg) {
                 dmaClose();
 
                 record("Sort image\n");
-                sort(dma_image);
+                unsort(dma_image);
 
 
                 record("Enqueue image to writer\n");
