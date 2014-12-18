@@ -13,9 +13,11 @@
 #ifndef FPGA_H
 #define	FPGA_H
 
+#include <semaphore.h> 
 #include "system.h"
 #include "gpio.h"
 #include "dma.h"
+
 
 void * fpga_server(void *);
 
@@ -23,10 +25,11 @@ int interrupt_wait(U32*);
 
 roeimage_t * dma_image;
 
-/*variables to syncronize science timeline and fpga sever*/
-extern pthread_condattr_t dma_done_attr;
-extern pthread_cond_t dma_done_cond;
-extern pthread_mutex_t dma_done_mutex;
+/*variables to synchronize science timeline and fpga sever*/
+//extern pthread_condattr_t dma_done_attr;
+//extern pthread_cond_t dma_done_cond;
+//extern pthread_mutex_t dma_done_mutex;
+extern sem_t dma_done_sem;
 
 #endif	/* FPGA_H */
 
