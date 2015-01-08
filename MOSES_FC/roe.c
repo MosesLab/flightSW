@@ -19,7 +19,7 @@
 #include "logger.h"
 
 int activateROE() {
-    //char msg[100];
+   
     int fd;
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
@@ -72,7 +72,7 @@ int deactivate() {
 //Exit Roe default mode and enter manual mode
 
 int exitDefault() {
-    //char msg[100];
+     char msg[255];
     //printf("Attempting to exit default mode.\n");
     record("Attempting to exit default mode.\n");
     //record(msg);
@@ -156,13 +156,25 @@ int exitDefault() {
         if (status != -1) {
             int i;
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+                if(write(roe_struct.roeLink, &block1[i], sizeof (block1[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+                if(write(roe_struct.roeLink, &block2[i], sizeof (block2[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
+                if(write(roe_struct.roeLink, &block3[i], sizeof (block3[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
+                if(write(roe_struct.roeLink, &block4[i], sizeof (block4[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
 
             record("Exiting Default Mode\n");
         } else {
