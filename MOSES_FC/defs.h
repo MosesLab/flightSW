@@ -76,7 +76,7 @@ typedef int(*hlpControl)();
 typedef struct {
     unsigned int sequence;
     unsigned int seq_run;
-    unsigned int roe_power;
+    unsigned int roe;
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;

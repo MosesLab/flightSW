@@ -14,8 +14,8 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
     char sframe[10];
-    struct timeval dma_timeout_val;         // need this struct to use gettimeofday()
-    struct timespec dma_timeout_spec;   // need this struct to use sem_timedwait()
+    struct timeval dma_timeout_val; // need this struct to use gettimeofday()
+    struct timespec dma_timeout_spec; // need this struct to use sem_timedwait()
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
@@ -30,14 +30,29 @@ void * science_timeline(void * arg) {
 
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
-    //while(!roe_struct.active)
-    //    usleep(20000);
-    //record("ROE Active\n");
 
-    /* if ROE active, set to known state (exit default, reset, exit default) */
-    //exitDefault();
-    //reset();
-    //exitDefault();
+    int exit_activate_loop = FALSE;
+    while (exit_activate_loop == FALSE) {
+
+        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+            activateROE();
+
+            /* if ROE active, set to known state (exit default, reset, exit default) */
+            exitDefault();
+            reset();
+            exitDefault();
+            record("ROE Active\n");
+            exit_activate_loop = TRUE;
+
+        } else if (config_values[roe_interface] == 0) {
+            exit_activate_loop = TRUE;
+        }
+
+        usleep(20000);
+
+
+
+    }
 
     while (ts_alive) {
 
@@ -45,18 +60,11 @@ void * science_timeline(void * arg) {
         currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;
-        
+
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
 
-            record("SIGUSR1 received, starting sequence\n");
-        
-
-        /* if ROE active, set to known state (exit default, reset, exit default) */
-        //exitDefault();
-        //reset();
-        //exitDefault();
-
+        record("New sequence received, starting sequence\n");
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
@@ -69,11 +77,8 @@ void * science_timeline(void * arg) {
         for (i = 0; i < currentSequence->numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
-             a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
-             enqueue(&lqueue[hkdown], a);
-            /* check for running, roe active.... */
-
-            //If ROE not active?
+            a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
 
             if (ops.seq_run == FALSE) {
                 sprintf(msg, "Sequence not running, breaking out of sequence.\n");
@@ -114,24 +119,25 @@ void * science_timeline(void * arg) {
             enqueue(&lqueue[scit_image], image);
 
             /* Command ROE to Readout*/
-            readOut(ops.read_block,100000);
-            a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
-            enqueue(&lqueue[hkdown], a);
+            if (roe_struct.active) {
+                readOut(ops.read_block, 100000);
+                a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
+                enqueue(&lqueue[hkdown], a);
+            }
+
 
             //wait 10 seconds for signal for DMA completion from FPGA server, if not report timeout
-            gettimeofday(&dma_timeout_val, NULL);   // Get current time since epoch
-            
+            gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
+
             /*convert timespec to timeval to use sem_timedwait*/
-            dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + 10;      // add ten seconds to original time
+            dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + 10; // add ten seconds to original time
             dma_timeout_spec.tv_nsec = dma_timeout_val.tv_usec * 1000;
-            
+
             /*wait on semaphore until dma is done or timeout period is reached*/
-            if(sem_timedwait(&dma_done_sem, &dma_timeout_spec)){
-                printf("%s\n", strerror(errno));
+            if (sem_timedwait(&dma_done_sem, &dma_timeout_spec)) {
+                sprintf(msg, "%s\n", strerror(errno));
+                record(msg);
             }
-//            pthread_mutex_lock(&dma_done_mutex);
-//            pthread_cond_wait(&dma_done_cond, &dma_done_mutex);
-//            pthread_mutex_unlock(&dma_done_mutex);
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);
@@ -156,6 +162,7 @@ void * science_timeline(void * arg) {
     }//end while ts_alive
 
     record("Done with scienceTimeline\n");
+
     return NULL;
 }
 
@@ -221,6 +228,7 @@ void * write_data(void * arg) {
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
+
             imgPtr_t newPtr;
             newPtr.filePath = filename;
             newPtr.next = NULL;

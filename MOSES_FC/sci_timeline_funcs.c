@@ -16,34 +16,36 @@ int takeExposure(double duration, int sig) {
     int actual; // computer recorded time interval between opening and closing the shutter
 
     int i;
-    for(i = 0; i < 5; i++)
-    {
-    flush(); //Flush ROE 5 times
+    if (roe_struct.active) {
+        for (i = 0; i < 5; i++) {
+            flush(); //Flush ROE 5 times
+        }
     }
+
     if (sig == 1) // use the shutter for Data sequence 
     {
         /*exposure duration should be lengthened to accout for shutter openeing*/
         dur = dur + PULSE;
-        
+
         /*start measuring exposure duration*/
         gettimeofday(&expstart, NULL);
 
         //send open shutter signal to DIO
         open_shutter();
-        
+
         /*take another time measurement to determine remaining time to wait */
         gettimeofday(&expmid, NULL);
-        
+
         /*calculate remaining time to wait, including pulse*/
         timeval_subtract(&shutdiff, expstart, expmid);
         int open_time = shutdiff.tv_sec * 1000000 + shutdiff.tv_usec;
         int time_wait = dur - open_time;
 
-//        //wait for exposure duration, calculate with the pulse
-//        actual = wait_exposure(time_wait) + open_time - PULSE;
-        
+        //        //wait for exposure duration, calculate with the pulse
+        //        actual = wait_exposure(time_wait) + open_time - PULSE;
+
         /*sleep for remaining exposure duration*/
-        usleep(time_wait);      
+        usleep(time_wait);
 
         gettimeofday(&expstop, NULL);
         // send close shutter signal to DIO
@@ -63,7 +65,7 @@ int takeExposure(double duration, int sig) {
         gettimeofday(&expstart, NULL);
         usleep(dur);
         gettimeofday(&expstop, NULL);
-        
+
         timeval_subtract(&expdiff, expstart, expstop);
         sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);

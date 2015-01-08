@@ -45,6 +45,7 @@
 
 struct ReadOutElectronics
 {   
+    int present;        // moses.conf roe field is 1 and gpio_ou_bf.roe == 1
     int active;
     int state;
     int atoh; //ascii to hex
@@ -56,10 +57,10 @@ struct ReadOutElectronics
 };
 
 
-//extern struct ReadOutElectronics roe_struct;
-struct ReadOutElectronics roe_struct;
+extern struct ReadOutElectronics roe_struct;
 
-int activate();
+
+int activateROE();
 int deactivate();
 int exitDefault();
 int selftestMode();

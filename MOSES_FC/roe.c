@@ -18,6 +18,8 @@
 #include "main.h"
 #include "logger.h"
 
+struct ReadOutElectronics roe_struct;
+
 int activateROE() {
    
     int fd = 0;
@@ -511,7 +513,7 @@ int receiveAck(int fd, char *data, int size, char target) {
             }
         }
     }
-    sprintf(msg, "Aknowledgment timeout %c<--data\n", *data);
+    sprintf(msg, "Acknowledgment timeout %c <--data \n", *data);
     record(msg);
     return -1;
 }
