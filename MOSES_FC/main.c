@@ -77,6 +77,12 @@ int main(void) {
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
     
+    record("Release page-locked contiguous buffer\n");
+    dmaClearBlock();
+    
+    record("Close DMA channel\n");
+    close_fpga();
+    
     char msg[100];
     sprintf(msg,"quit_sig: %d\n", quit_sig);
     record(msg);
@@ -94,6 +100,8 @@ int main(void) {
         }
         }
     }
+    
+    
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
