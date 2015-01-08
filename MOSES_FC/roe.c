@@ -20,7 +20,7 @@
 
 int activateROE() {
    
-    int fd;
+    int fd = 0;
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
@@ -48,6 +48,9 @@ int activateROE() {
         record("Connection established. DEFAULT MODE\n");
         roe_struct.roeLink = fd;
         roe_struct.active = TRUE;
+    }
+    else{
+        record("ROE not active!\n");
     }
     pthread_mutex_unlock(&roe_struct.mx);
     record("ROE Active\n");
