@@ -233,7 +233,7 @@ void unsort(roeimage_t * image) {
         dest_size[i] = buf_size; //number of pixels
     }
     if(beef){
-        sprintf(buf, "Not beef, %d times\n", beef);
+        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
         record(buf);
     }
 }

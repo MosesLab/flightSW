@@ -146,8 +146,7 @@ void * science_timeline(void * arg) {
 
 /* write_data will be part of a new thread that will be in
  * waiting mode until it is called to write an image to a file. 
-   A signal, SIGUSR2, will be sent when DMA is ready to transfer
-   data to memory and will initialize the writing to disk*/
+ */
 void * write_data(void * arg) {
     char msg[100];
 
