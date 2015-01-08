@@ -195,8 +195,8 @@ const char * findAndReplace_seq(double original, double newValue) {
         if (currentSequence->exposureTimes[i] == original) //Compare current exposure with target
         {
             currentSequence->exposureTimes[i] = newValue; //replace
-            sprintf(next, "%d,", i); //format string with current index
-            strncat(result, next, sizeof(result));
+            sprintf(next, "%d ", i); //format string with current index
+            strncat(result, next, i*2);
         }
     }
     pthread_mutex_unlock(&currentSequence->mx); //Unlock mutex
@@ -250,7 +250,7 @@ const char * toString(int n) {
     for(i = 0; i < sequenceMap[n].numFrames; i++)
     {
         sprintf(next, "%6.3f", sequenceMap[n].exposureTimes[i]);
-        strncat(result, next, sizeof(result));
+        strncat(result, next, i*2);
     }
     
     //pthread_mutex_unlock(&currentSequence.mx); //Lock Mutex
