@@ -29,7 +29,7 @@ void * science_timeline(void * arg) {
 
 
     /* wait for ROE to become active */
-    //record("Waiting for ROE to become active...\n");
+    record("Waiting for ROE to become active...\n");
     //while(!roe_struct.active)
     //    usleep(20000);
     //record("ROE Active\n");
@@ -42,12 +42,21 @@ void * science_timeline(void * arg) {
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
-        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
+        currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;
-
+        
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
+
+            record("SIGUSR1 received, starting sequence\n");
+        
+
+        /* if ROE active, set to known state (exit default, reset, exit default) */
+        //exitDefault();
+        //reset();
+        //exitDefault();
+
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
@@ -60,6 +69,8 @@ void * science_timeline(void * arg) {
         for (i = 0; i < currentSequence->numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
+             a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
+             enqueue(&lqueue[hkdown], a);
             /* check for running, roe active.... */
 
             //If ROE not active?
@@ -89,8 +100,8 @@ void * science_timeline(void * arg) {
             sprintf(sindex, "%d", i);
             sprintf(sframe, "%6.3f", currentSequence->exposureTimes[i]);
 
-            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
-            b = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRML, sframe);
+            a = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
+            b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRML, sframe);
             enqueue(&lqueue[hkdown], a);
             enqueue(&lqueue[hkdown], b);
 
@@ -103,7 +114,9 @@ void * science_timeline(void * arg) {
             enqueue(&lqueue[scit_image], image);
 
             /* Command ROE to Readout*/
-            //readOut(...);
+            readOut(ops.read_block,100000);
+            a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
 
             //wait 10 seconds for signal for DMA completion from FPGA server, if not report timeout
             gettimeofday(&dma_timeout_val, NULL);   // Get current time since epoch
@@ -121,8 +134,10 @@ void * science_timeline(void * arg) {
 //            pthread_mutex_unlock(&dma_done_mutex);
 
             /* push packet w/info about end read out */
-            a = (packet_t*) constructPacket("MDAQ_RSP", GT_CUR_FRMI, sindex);
+            a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);
+            b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
+            enqueue(&lqueue[hkdown], b);
 
 
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);

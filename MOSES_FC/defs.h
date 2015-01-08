@@ -16,6 +16,8 @@
 #define FALSE 0
 #define TRUE 1
 
+#define SEQ_MAP_SIZE 5
+
 #define STARTBYTE '%'
 #define ENDBYTE '^'
 
@@ -23,6 +25,11 @@
 #define CH1		0x2	//0x4
 #define CH2		0x4	//0x2
 #define CH3		0x8	//0x1
+
+#define READBLK_CUSTOM	0x08	//0x03 is standard, 0x08 is custom
+#define READBLK_DEFAULT	0x03
+#define STBLK		0x07
+#define STMBLK		0x06
 
 /*Packet structure for parsing and storing HLP packets*/
 typedef struct {
@@ -73,17 +80,24 @@ typedef struct {
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;
+    unsigned int read_block;
+    unsigned int unique_stub;
     char channels;
-
-} moses_ops_t;
+    
+    
+}moses_ops_t;
 
 /*structure to store attributes of a sequence*/
 typedef struct {
     unsigned int numFrames;
+    unsigned int num;
     double exposureTimes[10]; //need to figure out how to assign size based on sequence file
     unsigned int currentFrame;
     char* sequenceName;
+    char* filename;
     unsigned int seq_type; //1 will be data
+    pthread_mutex_t mx;
+    unsigned int corrupt;
 } sequence_t;
 
 typedef struct {

@@ -27,6 +27,8 @@
 #define CATALOG "/mdata/imageindex.xml"
 #define DATADIR "/mdata"
 
+char			dataStub[128];
+
 void constructEmpty();
 void constructImage(roeimage_t*, int* psize,char channels,int pbitpix);
 void init(roeimage_t*, int *size,char, int);
