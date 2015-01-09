@@ -10,10 +10,6 @@
  * @return  (not used)
  */
 
-/*global conditional variables for use by science timeline*/
-//pthread_condattr_t dma_done_attr;
-//pthread_cond_t dma_done_cond;
-//pthread_mutex_t dma_done_mutex;
 /*replace conditional variable with semaphore since pthread_cond_timedwait() is broken */
 sem_t dma_done_sem;
 
@@ -25,10 +21,6 @@ void * fpga_server(void * arg) {
 
     record("-->FPGA Server thread started....\n");
 
-    /*initialize mutex and conditional variables*/
-//    pthread_mutex_init(&dma_done_mutex, NULL); //initialize mutex
-//    pthread_condattr_init(&dma_done_attr);
-//    pthread_cond_init(&dma_done_cond, &dma_done_attr);
     /*initialize semaphore*/
     sem_init(&dma_done_sem, 0, 0);      //initialize semaphore to zero
 
@@ -98,9 +90,6 @@ void * fpga_server(void * arg) {
                 }
                 
                 /*Wake up science timeline waiting for DMA completion*/
-//                pthread_mutex_lock(&dma_done_mutex);
-//                pthread_cond_broadcast(&dma_done_cond); 
-//                pthread_mutex_unlock(&dma_done_mutex);
                 sem_post(&dma_done_sem);
 
                 // Return to IDLE state
@@ -116,7 +105,7 @@ void * fpga_server(void * arg) {
                 dmaClose();
 
                 record("Sort image\n");
-                unsort(dma_image);
+                sort(dma_image);
 
 
                 record("Enqueue image to writer\n");

@@ -135,7 +135,7 @@ void * science_timeline(void * arg) {
 
             /*wait on semaphore until dma is done or timeout period is reached*/
             if (sem_timedwait(&dma_done_sem, &dma_timeout_spec)) {
-                sprintf(msg, "%s\n", strerror(errno));
+                sprintf(msg, "*ERROR* %s\n", strerror(errno));
                 record(msg);
             }
 

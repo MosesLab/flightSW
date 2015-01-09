@@ -23,12 +23,15 @@ struct ReadOutElectronics roe_struct;
 int activateROE() {
    
     int fd = 0;
+    char msg[255];
+    
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
         fd = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY);
         if (fd < 0) {
-            printf("%s\n", strerror(errno));
+            sprintf(msg, "%s\n", strerror(errno));
+            record(msg);
             record("Couldnt connect\n");
             pthread_mutex_unlock(&roe_struct.mx);
             exit(-1);

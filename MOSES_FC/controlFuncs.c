@@ -905,7 +905,7 @@ int FC_POS_5V_V(packet_t* p) {
     record("Request for FC +5.0V voltage received\n");
     //Insert control code here  
     char* response = FC_P5V_V "0.0"; //test EGSE
-    printf("%s\n", response);
+    record(response);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
