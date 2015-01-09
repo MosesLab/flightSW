@@ -96,7 +96,9 @@ int main(void) {
             record("Flight software rebooting...\n");
             
             /*exit virtual shell process (bash)*/
-            kill(SIGHUP, vshell_pid);
+            kill(SIGKILL, vshell_pid);
+            
+            sleep(2);
             
             if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
                 record("ERROR in restarting flight software!\n");
