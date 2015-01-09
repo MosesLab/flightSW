@@ -51,7 +51,7 @@ int main(void) {
 
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
-    sprintf(msg, "Bash PID is: %d \n, vshell_pid");
+    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
 
     /*start threads indicated by configuration file*/
