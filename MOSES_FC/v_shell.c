@@ -14,9 +14,11 @@ int vshell_init() {
     int rc;
     FILE * rf;
 
+    /*bash signal masks*/
+    sigset_t set;
+    struct sigaction sa;
+
     /*initialize pipes*/
-    //    mknod(STDIN_PIPE, S_IFIFO | 0666, 0);
-    //    mknod(STDOUT_PIPE, S_IFIFO | 0666, 0);
     mkfifo(STDIN_PIPE, 0666);
     mkfifo(STDOUT_PIPE, 0666);
 
@@ -35,6 +37,23 @@ int vshell_init() {
             record("Unsuccessful in setting thread realtime prio\n");
             return 0;
         }
+
+        /* Set up the structure to specify the new action. */
+        memset(&sa, 0, sizeof (struct sigaction));
+        sa.sa_handler = SIG_DFL;
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGTERM, &sa, NULL);
+        sigaction(SIGPIPE, &sa, NULL);
+        sigaction(SIGCHLD, &sa, NULL);
+        sigaction(SIGHUP, &sa, NULL);
+        sigaction(SIGUSR1, &sa, NULL);
+        sigaction(SIGUSR2, &sa, NULL);
+
+        /* unblock all signals */
+        sigfillset(&set);
+        pthread_sigmask(SIG_UNBLOCK, &set, NULL);
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
