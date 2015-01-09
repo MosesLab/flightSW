@@ -50,9 +50,9 @@ int main(int argc, char **argv) {
     init_quit_signal_handler();
 
     /*initialize virtual shell*/
-    //    vshell_pid = vshell_init();
-    //    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
-    //    record(msg);
+    vshell_pid = vshell_init();
+    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
+    record(msg);
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -150,7 +150,7 @@ void join_threads() {
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
 
-    //    kill(vshell_pid, SIGKILL);
+    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
 
