@@ -57,7 +57,6 @@ int vshell_init() {
 
         /*redirect standard input and output*/
         record("Redirecting stdin and stdout\n");
-
         rf = fopen(STDIN_PIPE, "r");
         if (rf == NULL) record("Error opening named pipe\n");
         rf = fopen(STDOUT_PIPE, "w");
@@ -67,6 +66,8 @@ int vshell_init() {
         rc = fclose(stdout);
         if (rc == EOF) record("Failed to close stdout\n");
         fclose(stdin);
+        if (rc == EOF) record("Failed to close stdin\n");
+        fclose(stderr);
         if (rc == EOF) record("Failed to close stdin\n");
 
         /*Copy stdin and stdout to named pipes*/
