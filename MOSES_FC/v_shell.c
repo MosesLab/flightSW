@@ -26,32 +26,9 @@ int vshell_init() {
     mkfifo(STDIN_PIPE, 0666);
     mkfifo(STDOUT_PIPE, 0666);
 
-    /*copy stdin and stdout to save*/
+    /*copy stdin and stdout to save for program reset*/
     int stdin_copy = dup(0);
     int stdout_copy = dup(1);
-
-    /*redirect standard input and output*/
-    record("Redirecting stdin and stdout\n");
-    rf = fopen(STDIN_PIPE, "r");
-    if (rf == NULL) record("Error opening named pipe\n");
-    rf = fopen(STDOUT_PIPE, "w");
-    if (rf == NULL) record("Error opening named pipe\n");
-
-    /*Close stdin and stdout to make sure*/
-    rc = fclose(stdout);
-    if (rc == EOF) record("Failed to close stdout\n");
-    fclose(stdin);
-    if (rc == EOF) record("Failed to close stdin\n");
-    fclose(stderr);
-    if (rc == EOF) record("Failed to close stdin\n");
-
-    /*Copy stdin and stdout to named pipes*/
-    rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
-    if (rf == NULL) record("Failed to redirect stdin\n");
-    rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
-    if (rf == NULL) record("Failed to redirect stdout\n");
-    rf = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
-    if (rf == NULL) record("Failed to redirect stderr\n");
 
     pid_t result = fork();
 
@@ -89,6 +66,29 @@ int vshell_init() {
         /*close other open file descriptors*/
         close(stdin_copy);
         close(stdout_copy);
+
+        /*redirect standard input and output*/
+        record("Redirecting stdin and stdout\n");
+        rf = fopen(STDIN_PIPE, "r");
+        if (rf == NULL) record("Error opening named pipe\n");
+        rf = fopen(STDOUT_PIPE, "w");
+        if (rf == NULL) record("Error opening named pipe\n");
+
+        /*Close stdin and stdout to make sure*/
+        rc = fclose(stdout);
+        if (rc == EOF) record("Failed to close stdout\n");
+        fclose(stdin);
+        if (rc == EOF) record("Failed to close stdin\n");
+        fclose(stderr);
+        if (rc == EOF) record("Failed to close stdin\n");
+
+        /*Copy stdin and stdout to named pipes*/
+        rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
+        if (rf == NULL) record("Failed to redirect stdin\n");
+        rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
+        if (rf == NULL) record("Failed to redirect stdout\n");
+        rf = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
+        if (rf == NULL) record("Failed to redirect stderr\n");
 
         record("Starting shell...\n");
         //Start shelld --  this one uses bash. the ./bashrc file should be used
