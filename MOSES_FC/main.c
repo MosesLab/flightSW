@@ -97,11 +97,6 @@ int main(void) {
             sleep(2);
             record("Flight software rebooting...\n");
             
-            /*exit virtual shell process (bash)*/
-//            kill(vshell_pid, SIGKILL);
-            
-            sleep(2);
-            
             if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
                 record("ERROR in restarting flight software!\n");
             }
@@ -165,7 +160,7 @@ void join_threads() {
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
 
-    kill(vshell_pid, SIGTERM);
+//    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
 
