@@ -98,7 +98,7 @@ int main(void) {
             /*exit virtual shell process (bash)*/
             kill(SIGHUP, vshell_pid);
             
-            if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
+            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
                 record("ERROR in restarting flight software!\n");
             }
 //        }
