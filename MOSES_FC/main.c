@@ -98,7 +98,7 @@ int main(void) {
             record("Flight software rebooting...\n");
             
             /*exit virtual shell process (bash)*/
-            kill(SIGKILL, vshell_pid);
+            kill(vshell_pid, SIGKILL);
             
             sleep(2);
             
