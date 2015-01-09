@@ -49,15 +49,13 @@ int main(int argc, char **argv) {
     /*Use signals to inform the program to quit*/
     init_quit_signal_handler();
 
+    /*start threads indicated by configuration file*/
+    start_threads();
+
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
     sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
-
-    /*start threads indicated by configuration file*/
-    start_threads();
-
-
 
     /*Upon program termiation (^c) attempt to join the threads*/
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
