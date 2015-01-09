@@ -31,7 +31,7 @@ LockingQueue lqueue[QUEUE_NUM];
  * @return 0 upon successful exit
  */
 int main(void) {
-
+    char msg[255];
 
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
@@ -51,6 +51,8 @@ int main(void) {
 
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
+    sprintf(msg, "Bash PID is: %d \n, vshell_pid");
+    record(msg);
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -83,7 +85,7 @@ int main(void) {
     record("Close DMA channel\n");
     close_fpga();
 
-    char msg[100];
+    
     sprintf(msg, "quit_sig: %d\n", quit_sig);
     record(msg);
 
