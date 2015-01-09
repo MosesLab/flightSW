@@ -17,8 +17,8 @@
 #define P_READ 0
 #define P_WRITE 1
 
-extern FILE * stdin_filep;
-extern FILE * stdout_filep;
+extern int stdin_copy;
+extern int stdout_copy;
 
 int vshell_init();
 

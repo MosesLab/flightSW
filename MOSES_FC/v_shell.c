@@ -10,8 +10,8 @@
 #include "v_shell.h"
 
 /*save file pointers for redirected std in/out*/
-FILE * stdin_filep;
-FILE * stdout_filep;
+int stdin_copy;
+int stdout_copy;
 
 /*executes bash and attaches stdin and stdout to pipes*/
 int vshell_init() {
@@ -25,6 +25,10 @@ int vshell_init() {
     /*initialize pipes*/
     mkfifo(STDIN_PIPE, 0666);
     mkfifo(STDOUT_PIPE, 0666);
+
+    /*copy stdin and stdout to save*/
+    int stdin_copy = dup(0);
+    int stdout_copy = dup(1);
 
     /*redirect standard input and output*/
     record("Redirecting stdin and stdout\n");
@@ -42,12 +46,12 @@ int vshell_init() {
     if (rc == EOF) record("Failed to close stdin\n");
 
     /*Copy stdin and stdout to named pipes*/
-    stdin_filep = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
-    if (stdin_filep == NULL) record("Failed to redirect stdin\n");
-    stdout_filep = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
-    if (stdout_filep == NULL) record("Failed to redirect stdout\n");
-    stdout_filep = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
-    if (stdout_filep == NULL) record("Failed to redirect stderr\n");
+    rf = freopen(STDIN_PIPE, "r", stdin); //Redirect standard input
+    if (rf == NULL) record("Failed to redirect stdin\n");
+    rf = freopen(STDOUT_PIPE, "w", stdout); //Redirect standard output for new process
+    if (rf == NULL) record("Failed to redirect stdout\n");
+    rf = freopen(STDOUT_PIPE, "w", stderr); //Redirect standard error for new process
+    if (rf == NULL) record("Failed to redirect stderr\n");
 
     pid_t result = fork();
 
@@ -81,6 +85,10 @@ int vshell_init() {
         /* unblock all signals */
         sigfillset(&set);
         pthread_sigmask(SIG_UNBLOCK, &set, NULL);
+
+        /*close other open file descriptors*/
+        close(stdin_copy);
+        close(stdout_copy);
 
         record("Starting shell...\n");
         //Start shelld --  this one uses bash. the ./bashrc file should be used

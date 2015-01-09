@@ -75,7 +75,7 @@ void reset_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();
-int reset_std_io ();
+void reset_std_io ();
 
 
 
