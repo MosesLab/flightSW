@@ -307,4 +307,31 @@ void read_moses_config() {
     }
 }
 
-
+//int reset_std_io() {
+//    int rc;
+//    FILE * rf;
+//
+//    /*redirect standard input and output*/
+//    record("Reopening stdin and stdout\n");
+//    rf = fopen(stdin, "r");
+//    if (rf == NULL) record("Error opening stdin\n");
+//    rf = fopen(stdout, "w");
+//    if (rf == NULL) record("Error opening stdout\n");
+//    rf = fopen(stderr, "w");
+//    if (rf == NULL) record("Error opening stderr\n");
+//
+//    /*Close stdin and stdout to make sure*/
+//    rc = fclose(STDOUT_PIPE);
+//    if (rc == EOF) record("Failed to close stdout pipe\n");
+//    fclose(STDIN_PIPE);
+//    if (rc == EOF) record("Failed to close stdin pipe\n");
+//
+//
+//    /*Copy stdin and stdout to named pipes*/
+//    rf = freopen(stdin, "r", STDIN_PIPE); //Redirect standard input
+//    if (rf == NULL) record("Failed to redirect stdin\n");
+//    rf = freopen(stdout, "w", STDOUT_PIPE); //Redirect standard output for new process
+//    if (rf == NULL) record("Failed to redirect stdout\n");
+//    rf = freopen(stderr, "w", STDOUT_PIPE); //Redirect standard error for new process
+//    if (rf == NULL) record("Failed to redirect stderr\n");
+//}
