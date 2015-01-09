@@ -50,9 +50,9 @@ int main(void) {
     init_quit_signal_handler();
 
     /*initialize virtual shell*/
-    vshell_pid = vshell_init();
-    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
-    record(msg);
+//    vshell_pid = vshell_init();
+//    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
+//    record(msg);
 
     /*start threads indicated by configuration file*/
     start_threads();
