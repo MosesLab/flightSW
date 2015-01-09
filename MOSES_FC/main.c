@@ -64,44 +64,43 @@ int main(void) {
     //    }
     //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
 
-//    while (ts_alive) {
+    //    while (ts_alive) {
 
-                pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-                sigwait(&mask, &quit_sig);
-                pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-//        wait(0);
-//    }
+    pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+    sigwait(&mask, &quit_sig);
+    pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
+    //        wait(0);
+    //    }
 
     record("exited wait\n");
-    
+
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
-    
+
     record("Release page-locked contiguous buffer\n");
     dmaClearBlock();
-    
+
     record("Close DMA channel\n");
     close_fpga();
-    
+
     char msg[100];
-    sprintf(msg,"quit_sig: %d\n", quit_sig);
+    sprintf(msg, "quit_sig: %d\n", quit_sig);
     record(msg);
-    
+
     /* if SIGHUP, a reset command was received. */
-    if(quit_sig == 1)
-    {  
+    if (quit_sig == 1) {
         pid_t rst_result = fork();
-        if(rst_result == 0) //this is child process
+        if (rst_result == 0) //this is child process
         {
-        sleep(10);
-        record("Flight software rebooting...\n");
-        if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
-        record("ERROR in restarting flight software!\n");
-        }
+            sleep(10);
+            record("Flight software rebooting...\n");
+            if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
+                record("ERROR in restarting flight software!\n");
+            }
         }
     }
-    
-    
+
+
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
@@ -153,20 +152,20 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-//    void * returns;
+    //    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
-    
+
     kill(vshell_pid, SIGTERM);
-    
+
     record("killed bash\n");
 
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-//            pthread_join(threads[i], &returns);
-                        pthread_cancel(threads[i]);
+            //            pthread_join(threads[i], &returns);
+            pthread_cancel(threads[i]);
         }
     }
 }
@@ -184,12 +183,12 @@ void init_quit_signal_handler() {
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
-//    sigaddset(&mask, SIGUSR1);
+    sigaddset(&mask, SIGUSR1);
     start_action.sa_handler = start_signal;
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR1, &start_action, NULL);
-    
+
     /*reset flight software signal handling*/
     sigaddset(&mask, SIGHUP);
 
