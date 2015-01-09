@@ -49,13 +49,13 @@ int main(int argc, char **argv) {
     /*Use signals to inform the program to quit*/
     init_quit_signal_handler();
 
-    /*start threads indicated by configuration file*/
-    start_threads();
-
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
     sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
+
+    /*start threads indicated by configuration file*/
+    start_threads();
 
     /*Upon program termiation (^c) attempt to join the threads*/
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 
         /*reset stdin and stdout*/
         reset_std_io();
-        
+
         if (execv(argv[0], argv)) {
             record("ERROR in restarting flight software!\n");
         }
@@ -312,11 +312,11 @@ void read_moses_config() {
  */
 void reset_std_io() {
     record("reopen stdin and stdout\n");
-    
+
     dup2(stdin_copy, 0);
     dup2(stdout_copy, 1);
     close(stdin_copy);
     close(stdout_copy);
-    
-   
+
+
 }

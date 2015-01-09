@@ -25,9 +25,6 @@ void * hlp_control(void * arg) {
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
 
-    /*set up global GPIO output state*/
-    gpio_out_state.val = 0x0;
-
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_REAL);

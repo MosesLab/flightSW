@@ -61,7 +61,7 @@ void * fpga_server(void * arg) {
             temp_state->bf.latch = 0;
 
             /*Poke unlatched value to FPGA*/
-            rc = poke_gpio(GPIO_OUT_REG, temp_state->val);
+            rc = poke_gpio(OUTPUT_GPIO_ADDR, temp_state->val);
             if (rc == FALSE) {
                 record("Error writing GPIO output\n");
             }
@@ -123,7 +123,7 @@ void * fpga_server(void * arg) {
                 if (gpio_out_val->val == REQ_POWER) {
 
                     /*request pin values*/
-                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out_val->val));
+                    rc = peek_gpio(OUTPUT_GPIO_ADDR, &(gpio_out_val->val));
                     if (rc == FALSE) {
                         record("Error reading GPIO request\n");
                     }
@@ -131,7 +131,7 @@ void * fpga_server(void * arg) {
                     enqueue(&lqueue[gpio_req], gpio_out_val);
                 } else {
                     /*apply output if not request*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
+                    rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
@@ -142,7 +142,7 @@ void * fpga_server(void * arg) {
                     gpio_out_val->bf.latch = 1;
 
                     /*apply latched output*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
+                    rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
@@ -175,7 +175,7 @@ void * fpga_server(void * arg) {
                 record("Trigger simulated frame\n");
                 gpio_out_state.bf.frame_trigger = 1;
                 poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
-                 gpio_out_state.bf.frame_trigger = 0;
+                gpio_out_state.bf.frame_trigger = 0;
                 poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
 
             }

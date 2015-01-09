@@ -34,9 +34,6 @@
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
 
-/*register for output gpio*/
-#define GPIO_OUT_REG 0x14
-
 /*Power macros*/
 #define NUM_SUBSYSTEM 10
 
