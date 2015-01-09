@@ -45,6 +45,7 @@ void * science_timeline(void * arg) {
             exit_activate_loop = TRUE;
 
         } else if (config_values[roe_interface] == 0) {
+            record("ROE not present, continuing timeline...\n");
             exit_activate_loop = TRUE;
         }
 
@@ -57,6 +58,7 @@ void * science_timeline(void * arg) {
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
+        record("Wait for new sequence\n");
         currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;

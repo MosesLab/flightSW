@@ -30,7 +30,7 @@ LockingQueue lqueue[QUEUE_NUM];
  * 
  * @return 0 upon successful exit
  */
-int main(void) {
+int main(int argc, char **argv) {
     char msg[255];
 
     record("*****************************************************\n");
@@ -50,9 +50,9 @@ int main(void) {
     init_quit_signal_handler();
 
     /*initialize virtual shell*/
-//    vshell_pid = vshell_init();
-//    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
-//    record(msg);
+    //    vshell_pid = vshell_init();
+    //    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
+    //    record(msg);
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -60,19 +60,9 @@ int main(void) {
 
 
     /*Upon program termiation (^c) attempt to join the threads*/
-    //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
-    //    while (ts_alive) {
-    //        sigsuspend(&oldmask); // wait here until the program is killed
-    //    }
-    //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
-
-    //    while (ts_alive) {
-
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
     sigwait(&mask, &quit_sig);
     pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-    //        wait(0);
-    //    }
 
     record("exited wait\n");
 
@@ -85,25 +75,25 @@ int main(void) {
     record("Close DMA channel\n");
     close_fpga();
 
-    
+
     sprintf(msg, "quit_sig: %d\n", quit_sig);
     record(msg);
 
-    /* if SIGHUP, a reset command was received. */
+    /* if SIGUSR2, a reset command was received. */
     if (quit_sig == 12) {
-//        pid_t rst_result = fork();
-//        if (rst_result == 0) //this is child process
-//        {
-            sleep(2);
-            record("Flight software rebooting...\n");
-            
-            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
-                record("ERROR in restarting flight software!\n");
-            }
-//        }
+
+        sleep(2);
+        record("Flight software rebooting...\n");
+
+        if (execv(argv[0], argv)) {
+            record("ERROR in restarting flight software!\n");
+        }
+
+        //            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
+        //                record("ERROR in restarting flight software!\n");
+        //            }
+
     }
-
-
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
@@ -160,7 +150,7 @@ void join_threads() {
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
 
-//    kill(vshell_pid, SIGKILL);
+    //    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
 
@@ -190,7 +180,7 @@ void init_quit_signal_handler() {
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR1, &start_action, NULL);
-    
+
     /*reset flight software signal handling*/
     sigaddset(&mask, SIGUSR2);
     start_action.sa_handler = reset_signal;
@@ -213,8 +203,8 @@ void start_signal(int sig) {
 }
 
 /*Signal flight software to reset*/
-void reset_signal(int sig){
-    
+void reset_signal(int sig) {
+
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
