@@ -71,6 +71,7 @@ void read_moses_config();
 void quit_signal(int);  //signal handler
 void init_signal(int sig);
 void start_signal(int sig);
+void reset_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();

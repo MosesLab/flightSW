@@ -16,7 +16,7 @@ pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
 int quit_sig = 0;
-struct sigaction quit_action, init_action, start_action; //action to be taken when ^C (SIGINT) is entered
+struct sigaction quit_action, init_action, start_action, reset_action; //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask; //masks for SIGINT signal
 
 int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
@@ -88,16 +88,16 @@ int main(void) {
     record(msg);
 
     /* if SIGHUP, a reset command was received. */
-    if (quit_sig == 1) {
-        pid_t rst_result = fork();
-        if (rst_result == 0) //this is child process
-        {
-            sleep(10);
+    if (quit_sig == 12) {
+//        pid_t rst_result = fork();
+//        if (rst_result == 0) //this is child process
+//        {
+            sleep(2);
             record("Flight software rebooting...\n");
             if (execlp("./dist/Debug/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
                 record("ERROR in restarting flight software!\n");
             }
-        }
+//        }
     }
 
 
@@ -183,14 +183,17 @@ void init_quit_signal_handler() {
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
-    sigaddset(&mask, SIGUSR1);
     start_action.sa_handler = start_signal;
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR1, &start_action, NULL);
-
+    
     /*reset flight software signal handling*/
-    sigaddset(&mask, SIGHUP);
+    sigaddset(&mask, SIGUSR2);
+    start_action.sa_handler = reset_signal;
+    start_action.sa_mask = oldmask;
+    start_action.sa_flags = 0;
+    sigaction(SIGUSR2, &reset_action, NULL);
 
 }
 
@@ -204,6 +207,11 @@ void quit_signal(int sig) {
 void start_signal(int sig) {
     record("Flight computer signaled Data Start\n");
     uDataStart();
+}
+
+/*Signal flight software to reset*/
+void reset_signal(int sig){
+    
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
