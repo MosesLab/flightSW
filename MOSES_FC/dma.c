@@ -40,6 +40,7 @@ int open_fpga() {
  */
 int reset_fpga() {
     record("Resetting FPGA...\n");
+    
 
     PlxPci_DeviceReset(&fpga_dev);
 
@@ -52,7 +53,7 @@ int reset_fpga() {
     /*pause program to give fpga a chance to reset completely*/
     sleep(6);
 
-
+    
 
     return TRUE;
 }
@@ -225,7 +226,6 @@ void unsort(roeimage_t * image) {
     unsigned short pred_val = 0;
     unsigned short pred_pixel;
     unsigned int count = 0;
-    unsigned int trash = FALSE;
 
 //    int beef = 0;
     int expected_size = frag * buf_size;
@@ -239,13 +239,9 @@ void unsort(roeimage_t * image) {
             
             next_pixel = virt_buf[i][j];
             
-             if(next_pixel > 0xC7FF && !trash){
-                 trash = TRUE;
-             }
-            
-            if ((next_pixel != pred_pixel) && (!trash)) {
+            if ((next_pixel != pred_pixel)) {
                 printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
-                pred_val = (rotl(next_pixel) + 1) % (2048*4);
+                pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
             }
             else {
                 pred_val = (pred_val + 1) % (2048 * 4); 

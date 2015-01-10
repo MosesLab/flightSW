@@ -102,7 +102,7 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 /*close DMA channel*/
-                dmaClose();
+//                dmaClose();
 
                 record("Sort image\n");
                 unsort(dma_image);
@@ -159,7 +159,7 @@ void * fpga_server(void * arg) {
 //                reset_fpga();
                 
                 /*open DMA channel*/
-                initializeDMA();
+//                initializeDMA();
 
                 record("Set FPGA to buffer state\n");
 
