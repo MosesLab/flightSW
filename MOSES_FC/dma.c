@@ -234,11 +234,10 @@ void unsort(roeimage_t * image) {
 
             /*roll counter to the right by two*/
             pred_pixel = rotr(i*j);
-            pred_pixel = rotr(pred_pixel);
 
             next_pixel = virt_buf[i][j];
             if (next_pixel != pred_pixel) {
-                printf("Pixel lost! Got %d but expected %d at index %d out of %d\n", next_pixel, pred_pixel, i*j, expected_size);
+                printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, i*j, expected_size);
             }
             dest_buf[i][j] = next_pixel;
 //            pred_val++;
@@ -312,5 +311,5 @@ int close_fpga() {
 }
 
 int rotr(short val) {
-    return (val << 1) | (val >> (sizeof(short)*CHAR_BIT-1));
+    return (val >> 2) | (val << (sizeof(short) - 2));
 }
