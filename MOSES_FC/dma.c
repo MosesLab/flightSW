@@ -310,7 +310,7 @@ int close_fpga() {
 
 }
 
-int rotr(short val) {
+short rotr(short val) {
     short temp = val >> 2;
     short temp2 = val << 14;
     
