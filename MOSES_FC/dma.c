@@ -311,5 +311,8 @@ int close_fpga() {
 }
 
 int rotr(short val) {
-    return (val >> 2) | (val << (sizeof(short) - 2));
+    short temp = val >> 2;
+    short temp2 = val << 14;
+    
+    return temp | temp2;
 }
