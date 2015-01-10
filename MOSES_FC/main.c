@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
         record("Flight software rebooting...\n");
 
         /*reset stdin and stdout*/
-        reset_std_io();
+//        reset_std_io();
 
 //        if (execv(argv[0], argv)) {
 //            record("ERROR in restarting flight software!\n");
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
         //                record("ERROR in restarting flight software!\n");
         //            }
 
-        sleep(10);
+        sleep(20);
     }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
@@ -151,7 +151,7 @@ void join_threads() {
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
 
-    kill(vshell_pid, SIGKILL);
+//    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
 
