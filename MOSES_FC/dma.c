@@ -223,20 +223,22 @@ void unsort(roeimage_t * image) {
 
     /*values for predicting next pixel*/
 //    unsigned short pred_val = 0;
-//    unsigned short pred_pixel;
+    unsigned short pred_pixel;
 
 //    int beef = 0;
+    int expected_size = frag * buf_size;
+    
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
 
             /*roll counter to the right by two*/
-//            pred_pixel = rotr(pred_val);
-//            pred_pixel = rotr(pred_pixel);
+            pred_pixel = rotr(i*j);
+            pred_pixel = rotr(pred_pixel);
 
             next_pixel = virt_buf[i][j];
-            if (next_pixel != 0xBEEF) {
-                printf("Pixel lost! Got %d but expected 0xBEEF at index %d\n", next_pixel, i*j);
+            if (next_pixel != pred_pixel) {
+                printf("Pixel lost! Got %d but expected %d at index %d out of %d\n", next_pixel, pred_pixel, i*j, expected_size);
             }
             dest_buf[i][j] = next_pixel;
 //            pred_val++;
