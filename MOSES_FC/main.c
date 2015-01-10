@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
         //                record("ERROR in restarting flight software!\n");
         //            }
 
-        wait(0);
+        sleep(10);
     }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
