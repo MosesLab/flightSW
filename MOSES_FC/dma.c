@@ -233,7 +233,7 @@ void unsort(roeimage_t * image) {
         for (j = 0; j < (buf_size); j++) {
 
             /*roll counter to the right by two*/
-            pred_pixel = rotr(pred_val);
+            pred_pixel = rotr(0x5);
 
             next_pixel = virt_buf[i][j];
             if (next_pixel != pred_pixel) {
