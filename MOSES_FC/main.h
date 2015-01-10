@@ -65,6 +65,7 @@ enum queues{
 extern LockingQueue lqueue[QUEUE_NUM];
 extern uint lqueue_num;
 
+int moses();
 int main(int argc, char **argv);
 void main_init();
 void read_moses_config();
@@ -75,7 +76,7 @@ void reset_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();
-void reset_std_io ();
+void cleanup();
 
 
 

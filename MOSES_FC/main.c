@@ -25,14 +25,38 @@ node_t** config_hash_table;
 LockingQueue lqueue[QUEUE_NUM];
 
 /**
- * Main program entry point. Reads configuration file to configure program.
- * Starts flight software threads based off of configs.
+ * Main program entry point. Loop to see if restart is necessary
  * 
  * @return 0 upon successful exit
  */
 int main(int argc, char **argv) {
     char msg[255];
+    int restart = TRUE;
+    
+    /*initialize virtual shell*/
+    vshell_pid = vshell_init();
+    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
+    record(msg);
+    
+    while(restart){
+        restart = moses();
+    }
+    
+    return 0;
+       
+}
 
+
+/**
+ * Call this method for program start. Allows restarting the program.
+ * Reads configuration file to configure program.
+ * Starts flight software threads based off of configs.
+ * 
+ * @return 
+ */
+int moses(){
+    char msg[255];
+    
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
@@ -47,12 +71,7 @@ int main(int argc, char **argv) {
     main_pid = getpid();
 
     /*Use signals to inform the program to quit*/
-    init_quit_signal_handler();
-
-    /*initialize virtual shell*/
-    vshell_pid = vshell_init();
-    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
-    record(msg);
+    init_quit_signal_handler();   
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -67,17 +86,14 @@ int main(int argc, char **argv) {
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
 
-    record("Release page-locked contiguous buffer\n");
-    dmaClearBlock();
-
-    record("Close DMA channel\n");
-    close_fpga();
+    /*clean up memory and open devices*/
+    cleanup();
 
     sprintf(msg, "quit_sig: %d\n", quit_sig);
     record(msg);
 
     /* if SIGUSR2, a reset command was received. */
-    if (quit_sig == 12) {
+    if (quit_sig == SIGUSR2) {
 
         sleep(2);
         record("Flight software rebooting...\n");
@@ -93,12 +109,12 @@ int main(int argc, char **argv) {
         //                record("ERROR in restarting flight software!\n");
         //            }
 
-        sleep(20);
+        return TRUE;
     }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
-    return 0;
+    return FALSE;
 }
 
 /*this method takes a function pointer and starts it as a new thread*/
@@ -230,7 +246,7 @@ void main_init() {
 
     /*initialize memory for configuration hash table*/
     if ((config_hash_table = calloc(config_size, sizeof (node_t))) == NULL) {
-        record("malloc failed to allocate hash table\n");
+        record("calloc failed to allocate hash table\n");
     }
 
     /*fill hash table with array of strings matching indices for configuration values*/
@@ -243,7 +259,7 @@ void main_init() {
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
 
-    /*fill array of function pointer for pthread call*/
+    /*fill array of function pointers for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
     tfuncs[gpio_control_thread] = gpio_control;
@@ -308,16 +324,17 @@ void read_moses_config() {
     }
 }
 
-/**
- * stdout and stdin need to be reopened before reset since they were closed for the virtual shell
- */
-void reset_std_io() {
-    record("reopen stdin and stdout\n");
+void cleanup(){
+    record("Release page-locked contiguous buffer\n");
+    dmaClearBlock();
 
-    dup2(stdin_copy, 0);
-    dup2(stdout_copy, 1);
-    close(stdin_copy);
-    close(stdout_copy);
-
-
+    record("Close DMA channel\n");
+    close_fpga();
+    
+//    /*free dynamically allocated memory*/
+//     for (i = 0; i < config_size; i++) {
+//         config_hash_table[i]
+//     }
+    free(config_hash_table);
+    
 }
