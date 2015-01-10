@@ -85,14 +85,15 @@ int main(int argc, char **argv) {
         /*reset stdin and stdout*/
         reset_std_io();
 
-        if (execv(argv[0], argv)) {
-            record("ERROR in restarting flight software!\n");
-        }
+//        if (execv(argv[0], argv)) {
+//            record("ERROR in restarting flight software!\n");
+//        }
 
         //            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
         //                record("ERROR in restarting flight software!\n");
         //            }
 
+        wait(0);
     }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
