@@ -238,10 +238,10 @@ void unsort(roeimage_t * image) {
             next_pixel = virt_buf[i][j];
             if (next_pixel != pred_pixel) {
                 printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, pred_val, expected_size);
-                pred_val = (pred_val + 2)% (2048 * 4); 
+                pred_val = (pred_val + 3) % (2048 * 4); 
             }
             else{
-                pred_val = (pred_val + 1)% (2048 * 4); 
+                pred_val = (pred_val + 1) % (2048 * 4); 
             }
             dest_buf[i][j] = next_pixel;
             
