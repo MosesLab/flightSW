@@ -52,5 +52,7 @@ void sort(roeimage_t*);
 void unsort(roeimage_t * image);
 int dmaClearBlock();
 void dmaClose();
+int rotr(short);
+
 #endif	/* DMA_H */
 

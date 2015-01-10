@@ -40,7 +40,7 @@ int open_fpga() {
  */
 int reset_fpga() {
     record("Resetting FPGA...\n");
-    
+
     PlxPci_DeviceReset(&fpga_dev);
 
     gpio_out_state.bf.fpga_reset = 0;
@@ -213,29 +213,41 @@ end_sort: // To break out of double loop
 }
 
 void unsort(roeimage_t * image) {
-    char buf[255];
-    
+//    char buf[255];
+
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short ** dest_buf = image->data;
     unsigned short next_pixel;
-    int beef = 0;
+
+    /*values for predicting next pixel*/
+    unsigned short pred_val = 0;
+    unsigned short pred_pixel;
+
+//    int beef = 0;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
+
+            /*roll counter to the right by two*/
+            pred_pixel = rotr(pred_val);
+            pred_pixel = rotr(pred_pixel);
+
             next_pixel = virt_buf[i][j];
-            if(next_pixel != 0xBEEF){
-                beef++;
+            if (next_pixel != pred_pixel) {
+                printf("Pixel lost! Got %d but expected %d at index %d\n", next_pixel, pred_pixel, pred_val);
             }
             dest_buf[i][j] = next_pixel;
+            pred_val++;
+
         }
         dest_size[i] = buf_size; //number of pixels
     }
-    if(beef){
-        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
-        record(buf);
-    }
+//    if (beef) {
+//        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
+//        record(buf);
+//    }
 }
 
 /**
@@ -295,4 +307,8 @@ int close_fpga() {
     }
     return TRUE;
 
+}
+
+int rotr(short val) {
+    return (val << 1) | (val >> (sizeof(short)*CHAR_BIT-1));
 }

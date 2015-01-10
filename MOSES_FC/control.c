@@ -113,6 +113,10 @@ void * gpio_control(void * arg) {
     while (ts_alive) {
         /*dequeue next packet from gpio input queue*/
         gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
+        
+        if(gpio_control->bf.ddr2_read_error == TRUE){
+            record("DDR2 read error encountered!\n");
+        }
 
         sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
         record(msg);
