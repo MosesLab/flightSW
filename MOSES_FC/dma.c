@@ -222,8 +222,8 @@ void unsort(roeimage_t * image) {
     unsigned short next_pixel;
 
     /*values for predicting next pixel*/
-    unsigned short pred_val = 0;
-    unsigned short pred_pixel;
+//    unsigned short pred_val = 0;
+//    unsigned short pred_pixel;
 
 //    int beef = 0;
     uint * dest_size = image->size;
@@ -231,15 +231,15 @@ void unsort(roeimage_t * image) {
         for (j = 0; j < (buf_size); j++) {
 
             /*roll counter to the right by two*/
-            pred_pixel = rotr(pred_val);
-            pred_pixel = rotr(pred_pixel);
+//            pred_pixel = rotr(pred_val);
+//            pred_pixel = rotr(pred_pixel);
 
             next_pixel = virt_buf[i][j];
-            if (next_pixel != pred_pixel) {
-                printf("Pixel lost! Got %d but expected %d at index %d\n", next_pixel, pred_pixel, pred_val);
+            if (next_pixel != 0xBEEF) {
+                printf("Pixel lost! Got %d but expected 0xBEEF at index %d\n", next_pixel, i*j);
             }
             dest_buf[i][j] = next_pixel;
-            pred_val++;
+//            pred_val++;
 
         }
         dest_size[i] = buf_size; //number of pixels
