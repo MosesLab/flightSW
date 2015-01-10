@@ -240,7 +240,7 @@ void unsort(roeimage_t * image) {
                 printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, pred_val, expected_size);
             }
             dest_buf[i][j] = next_pixel;
-            pred_val = pred_val % (2048 * 4);
+            pred_val = (pred_val + 1 )% (2048 * 4);
 
         }
         dest_size[i] = buf_size; //number of pixels
