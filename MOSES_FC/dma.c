@@ -171,7 +171,7 @@ void sort(roeimage_t * image) {
     register uint i, j;
     register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
     uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER / 2;
+    uint buf_size = SIZE_DS_BUFFER;
     unsigned short next_pixel = 0;
     unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
     uint * dest_size = image->size;
