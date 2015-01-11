@@ -131,7 +131,7 @@ int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, shor
     // Fill in DMA transfer parameters 
     dma_param->PciAddr = pci_buf->PhysicalAddr;
     dma_param->LocalAddr = FPGA_MEMORY_LOC_0;
-    dma_param->ByteCount = SIZE_DS_BUFFER / 2;
+    dma_param->ByteCount = SIZE_DS_BUFFER;
     dma_param->Direction = PLX_DMA_LOC_TO_PCI;
 
     return TRUE;
