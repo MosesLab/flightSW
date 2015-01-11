@@ -156,9 +156,8 @@ void * fpga_server(void * arg) {
             if (occupied(&lqueue[scit_image])) {
 
                 /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                reset_fpga();
-                
-                
+//                reset_fpga();
+                          
                 PlxPci_DeviceReset(&fpga_dev);
                 
                 /*open DMA channel*/
