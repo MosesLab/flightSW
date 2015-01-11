@@ -150,6 +150,8 @@ int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
 
     rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout);
 
+    
+    
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
             // Timed out waiting for DMA completion 
@@ -290,6 +292,7 @@ void beef(roeimage_t * image) {
             //            pred_val++;
 
         }
+        printf("%04x\n", next_pixel);
         dest_size[i] = buf_size; //number of pixels
 
     }
