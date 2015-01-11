@@ -132,7 +132,7 @@ void * science_timeline(void * arg) {
             gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
 
             /*convert timespec to timeval to use sem_timedwait*/
-            dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + 10; // add ten seconds to original time
+            dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + 15; // add ten seconds to original time
             dma_timeout_spec.tv_nsec = dma_timeout_val.tv_usec * 1000;
 
             /*wait on semaphore until dma is done or timeout period is reached*/

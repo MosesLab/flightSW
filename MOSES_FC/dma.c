@@ -266,6 +266,7 @@ void beef(roeimage_t * image) {
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short ** dest_buf = image->data;
     unsigned short next_pixel;
+    unsigned short notbeef = 0;
 
     /*values for predicting next pixel*/
 //    unsigned short pred_val = 0;
@@ -282,15 +283,16 @@ void beef(roeimage_t * image) {
 
             next_pixel = virt_buf[i][j];
             if (next_pixel != 0xBEEF) {
-                printf("Pixel lost! Got %d but expected 0xBEEF at index %d\n", next_pixel, i*j);
+                notbeef++;
             }
             dest_buf[i][j] = next_pixel;
 //            pred_val++;
 
         }
         dest_size[i] = buf_size; //number of pixels
+        printf("Lost pixels! %d out of %d pixels\n", notbeef, buf_size*frag);
     }
-//    if (beef) {
+//    if (beef) {11
 //        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
 //        record(buf);
 //    }
