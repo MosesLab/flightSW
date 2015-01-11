@@ -262,7 +262,7 @@ void beef(roeimage_t * image) {
 
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER / 2;
+    uint buf_size = SIZE_DS_BUFFER;
     unsigned short ** dest_buf = image->data;
     unsigned short next_pixel;
     unsigned short notbeef = 0;
