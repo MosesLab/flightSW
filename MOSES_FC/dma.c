@@ -231,7 +231,7 @@ void unsort(roeimage_t * image) {
 //    unsigned int count = 0;
 
     //    int beef = 0;
-    int expected_size = frag * buf_size;
+//    int expected_size = frag * buf_size;
 
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
