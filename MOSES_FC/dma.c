@@ -40,7 +40,7 @@ int open_fpga() {
  */
 int reset_fpga() {
     record("Resetting FPGA...\n");
-    
+
     PlxPci_DeviceReset(&fpga_dev);
 
     gpio_out_state.bf.fpga_reset = 0;
@@ -52,7 +52,7 @@ int reset_fpga() {
     /*pause program to give fpga a chance to reset completely*/
     sleep(6);
 
-    
+
 
     return TRUE;
 }
@@ -74,7 +74,7 @@ int initializeDMA() {
     DmaProp.Burst = 1; // Use burst of 4LW 
     DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
     DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
-    //    DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
+        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
 
     // Use Channel 0 
@@ -213,7 +213,7 @@ end_sort: // To break out of double loop
 }
 
 void unsort(roeimage_t * image) {
-//    char buf[255];
+    //    char buf[255];
 
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
@@ -226,40 +226,39 @@ void unsort(roeimage_t * image) {
     unsigned short pred_pixel;
     unsigned int count = 0;
 
-//    int beef = 0;
+    //    int beef = 0;
     int expected_size = frag * buf_size;
-    
+
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
-        for (j = 0; j < (buf_size); j++) {      
-            
+        for (j = 0; j < (buf_size); j++) {
+
             /*roll counter to the right by two*/
             pred_pixel = rotr(pred_val);
-            
+
             next_pixel = virt_buf[i][j];
-            
+
             if ((next_pixel != pred_pixel)) {
                 printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
                 pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
+            } else {
+                pred_val = (pred_val + 1) % (2048 * 4);
             }
-            else {
-                pred_val = (pred_val + 1) % (2048 * 4); 
-            }
-            
+
             dest_buf[i][j] = next_pixel;
             count++;
 
         }
         dest_size[i] = buf_size; //number of pixels
     }
-//    if (beef) {
-//        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
-//        record(buf);
-//    }
+    //    if (beef) {
+    //        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
+    //        record(buf);
+    //    }
 }
 
 void beef(roeimage_t * image) {
-//    char buf[255];
+    //    char buf[255];
 
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
@@ -269,33 +268,30 @@ void beef(roeimage_t * image) {
     unsigned short notbeef = 0;
 
     /*values for predicting next pixel*/
-//    unsigned short pred_val = 0;
-//    unsigned short pred_pixel;
+    //    unsigned short pred_val = 0;
+    //    unsigned short pred_pixel;
 
-//    int beef = 0;
+    //    int beef = 0;
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
 
             /*roll counter to the right by two*/
-//            pred_pixel = rotr(pred_val);
-//            pred_pixel = rotr(pred_pixel);
+            //            pred_pixel = rotr(pred_val);
+            //            pred_pixel = rotr(pred_pixel);
 
             next_pixel = virt_buf[i][j];
             if (next_pixel != 0xBEEF) {
                 notbeef++;
             }
             dest_buf[i][j] = next_pixel;
-//            pred_val++;
+            //            pred_val++;
 
         }
         dest_size[i] = buf_size; //number of pixels
-        printf("Lost pixels! %d out of %d pixels\n", notbeef, buf_size*frag);
+
     }
-//    if (beef) {11
-//        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
-//        record(buf);
-//    }
+    printf("Lost pixels! %d out of %d pixels\n", notbeef, buf_size * frag);
 }
 
 /**
@@ -360,13 +356,13 @@ int close_fpga() {
 short rotr(short val) {
     short temp = val >> 2;
     short temp2 = val << 14;
-    
+
     return temp | temp2;
 }
 
 short rotl(short val) {
     short temp = val << 2;
     short temp2 = val >> 14;
-    
+
     return temp | temp2;
 }
