@@ -71,10 +71,12 @@ int initializeDMA() {
 
     // Setup DMA configuration structure 
     DmaProp.ReadyInput = 1; // Enable READY# input 
-    DmaProp.Burst = 1; // Use burst of 4LW 
-    DmaProp.LocalBusWidth = 2; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
+//    DmaProp.Burst = 1; // Use burst of 4LW 
+        DmaProp.Burst = 0; // Single cycle mode
+
+    DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
     DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
-        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
+//        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
     
     // Use Channel 0 

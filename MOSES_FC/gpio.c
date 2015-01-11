@@ -192,7 +192,8 @@ int init_gpio() {
 
 
     /*enable GPIO pins on the FPGA*/
-    poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
+//    poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
+     poke_gpio(GPIO_I_INT_ENABLE, 0x83FFFFFF); // Disable ddr2 error signal
 
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
