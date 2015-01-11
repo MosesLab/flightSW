@@ -188,7 +188,7 @@ int init_gpio() {
     reset_fpga();
 
     /*initialize dma channel*/
-    initializeDMA();
+//    initializeDMA();
 
 
     /*enable GPIO pins on the FPGA*/
