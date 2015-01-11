@@ -158,7 +158,7 @@ void * fpga_server(void * arg) {
                 /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //                reset_fpga();
                           
-                PlxPci_DeviceReset(&fpga_dev);
+//                PlxPci_DeviceReset(&fpga_dev);
                 
                 /*open DMA channel*/
                 initializeDMA();

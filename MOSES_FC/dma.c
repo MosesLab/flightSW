@@ -41,7 +41,6 @@ int open_fpga() {
 int reset_fpga() {
     record("Resetting FPGA...\n");
     
-
     PlxPci_DeviceReset(&fpga_dev);
 
     gpio_out_state.bf.fpga_reset = 0;
