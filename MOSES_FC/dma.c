@@ -258,6 +258,44 @@ void unsort(roeimage_t * image) {
 //    }
 }
 
+void beef(roeimage_t * image) {
+//    char buf[255];
+
+    register uint i, j = 0;
+    uint frag = NUM_FRAGMENT;
+    uint buf_size = SIZE_DS_BUFFER / 2;
+    unsigned short ** dest_buf = image->data;
+    unsigned short next_pixel;
+
+    /*values for predicting next pixel*/
+//    unsigned short pred_val = 0;
+//    unsigned short pred_pixel;
+
+//    int beef = 0;
+    uint * dest_size = image->size;
+    for (i = 0; i < frag; i++) {
+        for (j = 0; j < (buf_size); j++) {
+
+            /*roll counter to the right by two*/
+//            pred_pixel = rotr(pred_val);
+//            pred_pixel = rotr(pred_pixel);
+
+            next_pixel = virt_buf[i][j];
+            if (next_pixel != 0xBEEF) {
+                printf("Pixel lost! Got %d but expected 0xBEEF at index %d\n", next_pixel, i*j);
+            }
+            dest_buf[i][j] = next_pixel;
+//            pred_val++;
+
+        }
+        dest_size[i] = buf_size; //number of pixels
+    }
+//    if (beef) {
+//        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
+//        record(buf);
+//    }
+}
+
 /**
  * Clear page-locked DMA buffer out of memory
  * 
