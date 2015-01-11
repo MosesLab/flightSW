@@ -76,7 +76,7 @@ int initializeDMA() {
     DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
         DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
-
+    
     // Use Channel 0 
     rc = PlxPci_DmaChannelOpen(&fpga_dev, dmaChannel, &DmaProp);
     if (rc != ApiSuccess) {
@@ -171,7 +171,7 @@ void sort(roeimage_t * image) {
     register uint i, j;
     register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
     uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER;
+    uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short next_pixel = 0;
     unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
     uint * dest_size = image->size;
@@ -262,7 +262,7 @@ void beef(roeimage_t * image) {
 
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER;
+    uint buf_size = SIZE_DS_BUFFER / 2; // since each pixel is a word
     unsigned short ** dest_buf = image->data;
     unsigned short next_pixel;
     unsigned short notbeef = 0;
