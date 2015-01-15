@@ -154,14 +154,18 @@ void writeToFile(roeimage_t * image) {
     fclose(outxml);
    
     /*Write Image Data*/
-    FILE *dataOut;
-    dataOut = fopen(image->filename, "w"); 
+//    FILE *dataOut;
+    int data_fd = open(image->filename, O_WRONLY, O_SYNC);
+//    dataOut = fopen(image->filename, "w"); '
+    
     
     for (i = 0; i < 4; i++) {
 //        if (image->channels & (char) (1 << i)) turn off for DMA testing --RTS 11/28/14
-            fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
+//            fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
+        int count = sizeof(short) * image->size[i];
+        write(data_fd, image->data[i], count);
     }
-    fclose(dataOut);
+//    fclose(dataOut);
     
    
 
