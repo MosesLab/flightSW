@@ -170,6 +170,7 @@ void writeToFile(roeimage_t * image) {
         }
     }
 //    fclose(dataOut);
+    close(data_fd);
     
    
 
