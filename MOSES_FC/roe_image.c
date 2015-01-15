@@ -156,7 +156,7 @@ void writeToFile(roeimage_t * image) {
    
     /*Write Image Data*/
 //    FILE *dataOut;
-    int data_fd = open(image->filename, O_CREAT|O_APPEND|O_WRONLY|O_SYNC);
+    int data_fd = open(image->filename, O_CREAT|O_APPEND|O_WRONLY|O_SYNC, S_IRUSR|S_IWUSR);
 //    dataOut = fopen(image->filename, "w"); '
     
     
