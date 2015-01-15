@@ -75,6 +75,7 @@ void createXML()
 void writeToFile(roeimage_t * image) {
  
     int i;
+    char msg[255];
     int linecount = 0;
     int newfile = 0;
     char xmlarr[10000][200];
@@ -163,7 +164,10 @@ void writeToFile(roeimage_t * image) {
 //        if (image->channels & (char) (1 << i)) turn off for DMA testing --RTS 11/28/14
 //            fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
         int count = sizeof(short) * image->size[i];
-        write(data_fd, image->data[i], count);
+        if(write(data_fd, image->data[i], count) < count){
+            sprintf(msg, "Error writing science data to disk! %s\n", strerror(errno));
+            record(msg);
+        }
     }
 //    fclose(dataOut);
     
