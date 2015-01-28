@@ -96,3 +96,24 @@ void timeval_subtract(struct timeval * result, struct timeval start, struct time
     result->tv_usec = t - result->tv_sec * 1e6;
 
 }
+
+int wait_on_sem(sem_t * sem, int timeout) {
+    char msg[255];
+    struct timeval dma_timeout_val; // need this struct to use gettimeofday()
+    struct timespec dma_timeout_spec; // need this struct to use sem_timedwait()
+    
+    gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
+
+    /*convert timespec to timeval to use sem_timedwait*/
+    dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + timeout; // add ten seconds to original time
+    dma_timeout_spec.tv_nsec = dma_timeout_val.tv_usec * 1000;
+
+    /*wait on semaphore until dma is done or timeout period is reached*/
+    if (sem_timedwait(sem, &dma_timeout_spec)) {
+        sprintf(msg, "*ERROR* %s\n", strerror(errno));
+        record(msg);
+        return FALSE;
+    }
+    
+    return TRUE;
+}

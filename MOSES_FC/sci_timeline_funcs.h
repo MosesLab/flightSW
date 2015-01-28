@@ -19,7 +19,7 @@ int wait_exposure(int);
 int takeExposure(double duration,int sig);
 
 void timeval_subtract(struct timeval*, struct timeval, struct timeval);
-
+int wait_on_sem(sem_t*, int);
 
 #endif	/* SCI_TIMELINE_FUNCS_H */
 

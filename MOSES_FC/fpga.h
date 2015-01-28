@@ -26,7 +26,7 @@ int interrupt_wait(U32*);
 roeimage_t * dma_image;
 
 /*variables to synchronize science timeline and fpga sever*/
-extern sem_t dma_done_sem;
+extern sem_t dma_control_sem;
 
 #endif	/* FPGA_H */
 

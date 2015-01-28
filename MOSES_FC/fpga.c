@@ -11,7 +11,7 @@
  */
 
 /*replace conditional variable with semaphore since pthread_cond_timedwait() is broken */
-sem_t dma_done_sem;
+sem_t dma_control_sem;
 
 void * fpga_server(void * arg) {
     int rc;
@@ -22,7 +22,7 @@ void * fpga_server(void * arg) {
     record("-->FPGA Server thread started....\n");
 
     /*initialize semaphore*/
-    sem_init(&dma_done_sem, 0, 0); //initialize semaphore to zero
+    sem_init(&dma_control_sem, 0, 0); //initialize semaphore to zero
 
     /*open fpga device*/
     open_fpga();
@@ -41,8 +41,6 @@ void * fpga_server(void * arg) {
 
     /*initialize DMA pipeline*/
     initializeDMA();
-
-    set_buffer_mode();
 
     /*FPGA server main control loop*/
     while (ts_alive) {
@@ -95,7 +93,7 @@ void * fpga_server(void * arg) {
                 }
 
                 /*Wake up science timeline waiting for DMA completion*/
-                sem_post(&dma_done_sem);
+                sem_post(&dma_control_sem);
 
                 // Return to IDLE state
                 record("DMA Complete, Returning to IDLE state\n");
@@ -110,13 +108,12 @@ void * fpga_server(void * arg) {
                 //                dmaClose();
 
                 record("Sort image\n");
-                unsort(dma_image);
+                sort(dma_image);
 
 
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
 
-                set_buffer_mode();
             }
 
 
@@ -176,15 +173,26 @@ void * fpga_server(void * arg) {
                 //                output_ddr2_ctrl |= (0x01 << 24);
                 //                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
+                /*set FPGA into buffer mode to capture image from ROE*/
+                set_buffer_mode();
+
+                /*Wake up science timeline waiting to Readout from ROE*/
+                sem_post(&dma_control_sem);
+
                 record("Dequeue new image\n");
                 dma_image = dequeue(&lqueue[scit_image]);
 
-                //Trigger a frame
-                record("Trigger simulated frame\n");
-                gpio_out_state.bf.frame_trigger = 1;
-                poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
-                gpio_out_state.bf.frame_trigger = 0;
-                poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+                /*If we're simulating an image, we have to trigger a frame from the VDX*/
+                if (config_values[image_sim_interface]) {
+                    //Trigger a frame
+                    record("Trigger simulated frame\n");
+                    gpio_out_state.bf.frame_trigger = 1;
+                    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+                    gpio_out_state.bf.frame_trigger = 0;
+                    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+                }
+
+
 
             }
 

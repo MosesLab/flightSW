@@ -242,6 +242,7 @@ void main_init() {
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
+    config_strings[image_sim_interface] = IMAGE_SIM_CONF;
     config_strings[synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/

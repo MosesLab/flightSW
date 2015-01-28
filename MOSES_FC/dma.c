@@ -87,6 +87,8 @@ int initializeDMA() {
         return (FALSE);
     }
 
+
+
     return TRUE;
 }
 
@@ -364,7 +366,7 @@ int set_buffer_mode() {
     output_ddr2_ctrl &= 0x00FFFFFF;
     output_ddr2_ctrl |= (0x01 << 24);
     int rc = WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
-    if(rc == ApiSuccess){
+    if (rc == ApiSuccess) {
         return TRUE;
     } else {
         PlxSdkErrorDisplay(rc);

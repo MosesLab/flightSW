@@ -12,11 +12,11 @@
 #include "sequence.h"
 #include "system.h"
 #include "lockingQueue.h"
+#include "fpga.h"
 #include "sci_timeline_funcs.h"
 #include "defs.h"
 #include "hlp.h" 
 #include "packet.h"
-#include "fpga.h"
 #include "roe.h"
 
 #define PULSE 50000     //50 ms result of 150ms open time and 50 ms closing time-->75ms - 25ms = 50ms

@@ -11,11 +11,11 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    int rc;
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
     char sframe[10];
-    struct timeval dma_timeout_val; // need this struct to use gettimeofday()
-    struct timespec dma_timeout_spec; // need this struct to use sem_timedwait()
+    
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
@@ -120,6 +120,13 @@ void * science_timeline(void * arg) {
             record("Queue image buffer for DMA transfer.\n");
             enqueue(&lqueue[scit_image], image);
 
+            /*Wait until FPGA has entered buffer mode*/
+            rc = wait_on_sem(&dma_control_sem, 2);
+            if(rc != TRUE){
+                record("Failed to set FPGA to buffer mode, trying exposure again");
+                continue;
+            }
+            
             /* Command ROE to Readout*/
             if (roe_struct.active) {
                 readOut(ops.read_block, 100000);
@@ -127,19 +134,9 @@ void * science_timeline(void * arg) {
                 enqueue(&lqueue[hkdown], a);
             }
 
+            /*Wait until DMA is complete before proceeding*/
+            wait_on_sem(&dma_control_sem, 15);
 
-            //wait 10 seconds for signal for DMA completion from FPGA server, if not report timeout
-            gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
-
-            /*convert timespec to timeval to use sem_timedwait*/
-            dma_timeout_spec.tv_sec = dma_timeout_val.tv_sec + 15; // add ten seconds to original time
-            dma_timeout_spec.tv_nsec = dma_timeout_val.tv_usec * 1000;
-
-            /*wait on semaphore until dma is done or timeout period is reached*/
-            if (sem_timedwait(&dma_done_sem, &dma_timeout_spec)) {
-                sprintf(msg, "*ERROR* %s\n", strerror(errno));
-                record(msg);
-            }
 
             /* push packet w/info about end read out */
             a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);

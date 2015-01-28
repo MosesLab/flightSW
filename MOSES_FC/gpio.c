@@ -185,15 +185,15 @@ int init_gpio() {
     }
 
     /*reset FPGA so interrupts are delivered appropriately*/
-    reset_fpga();    
+    reset_fpga();
 
     /*initialize dma channel*/
-//    initializeDMA();  This is moved to the beginning of fpga.c
+    //    initializeDMA();  This is moved to the beginning of fpga.c
 
 
     /*enable GPIO pins on the FPGA*/
-//    poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
-     poke_gpio(GPIO_I_INT_ENABLE, 0x83FFFFFF); // Disable ddr2 error signal
+    //    poke_gpio(GPIO_I_INT_ENABLE, 0x87FFFFFF); // Enable all input gpio interrupts
+    poke_gpio(GPIO_I_INT_ENABLE, 0x83FFFFFF); // Disable ddr2 error signal
 
     /*initialize acknowledge register*/
     poke_gpio(GPIO_I_INT_ACK, 0xFFFFFFFF);
@@ -212,6 +212,16 @@ int init_gpio() {
     output_ddr2_ctrl = 0x00000000;
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl); // Set the Data Manager control signal to zero
 
+    /*set camera interface to simulated or real*/
+    if (config_values[image_sim_interface]) {
+        gpio_out_state.bf.camer_mux_sel = 0; // Simulated camera interface
+    } else {
+        gpio_out_state.bf.camer_mux_sel = 1; // actual ROE camera interface
+    }
+    rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+    if (rc == FALSE) {
+        record("Error writing GPIO output\n");
+    }
 
     return TRUE;
 
