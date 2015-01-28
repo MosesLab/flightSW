@@ -71,14 +71,14 @@ int initializeDMA() {
 
     // Setup DMA configuration structure 
     DmaProp.ReadyInput = 1; // Enable READY# input 
-//    DmaProp.Burst = 1; // Use burst of 4LW 
-        DmaProp.Burst = 0; // Single cycle mode
+    //    DmaProp.Burst = 1; // Use burst of 4LW 
+    DmaProp.Burst = 0; // Single cycle mode
 
     DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
     DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
-//        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
+    //        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
-    
+
     // Use Channel 0 
     rc = PlxPci_DmaChannelOpen(&fpga_dev, dmaChannel, &DmaProp);
     if (rc != ApiSuccess) {
@@ -150,8 +150,8 @@ int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
 
     rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout);
 
-    
-    
+
+
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
             // Timed out waiting for DMA completion 
@@ -226,31 +226,31 @@ void unsort(roeimage_t * image) {
     unsigned short next_pixel;
 
     /*values for predicting next pixel*/
-//    unsigned short pred_val = 0;
-//    unsigned short pred_pixel;
-//    unsigned int count = 0;
+    //    unsigned short pred_val = 0;
+    //    unsigned short pred_pixel;
+    //    unsigned int count = 0;
 
     //    int beef = 0;
-//    int expected_size = frag * buf_size;
+    //    int expected_size = frag * buf_size;
 
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
 
             /*roll counter to the right by two*/
-//            pred_pixel = rotr(pred_val);
+            //            pred_pixel = rotr(pred_val);
 
             next_pixel = virt_buf[i][j];
 
-//            if ((next_pixel != pred_pixel)) {
-//                printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
-//                pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
-//            } else {
-//                pred_val = (pred_val + 1) % (2048 * 4);
-//            }
+            //            if ((next_pixel != pred_pixel)) {
+            //                printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
+            //                pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
+            //            } else {
+            //                pred_val = (pred_val + 1) % (2048 * 4);
+            //            }
 
             dest_buf[i][j] = next_pixel;
-//            count++;
+            //            count++;
 
         }
         dest_size[i] = buf_size; //number of pixels
@@ -356,6 +356,20 @@ int close_fpga() {
     }
     return TRUE;
 
+}
+
+int set_buffer_mode() {
+    record("Set FPGA to buffer state\n");
+    // Set Data Manager State to BUFFER
+    output_ddr2_ctrl &= 0x00FFFFFF;
+    output_ddr2_ctrl |= (0x01 << 24);
+    int rc = WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+    if(rc == ApiSuccess){
+        return TRUE;
+    } else {
+        PlxSdkErrorDisplay(rc);
+        return FALSE;
+    }
 }
 
 short rotr(short val) {

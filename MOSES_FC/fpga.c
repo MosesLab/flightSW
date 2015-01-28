@@ -42,6 +42,8 @@ void * fpga_server(void * arg) {
     /*initialize DMA pipeline*/
     initializeDMA();
 
+    set_buffer_mode();
+
     /*FPGA server main control loop*/
     while (ts_alive) {
         U32 interrupt = 0;
@@ -114,11 +116,7 @@ void * fpga_server(void * arg) {
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
 
-                record("Set FPGA to buffer state\n");
-                // Set Data Manager State to BUFFER
-                output_ddr2_ctrl &= 0x00FFFFFF;
-                output_ddr2_ctrl |= (0x01 << 24);
-                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+                set_buffer_mode();
             }
 
 

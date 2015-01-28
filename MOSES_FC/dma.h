@@ -53,6 +53,7 @@ void unsort(roeimage_t * image);
 void beef(roeimage_t * image);
 int dmaClearBlock();
 void dmaClose();
+int set_buffer_mode();
 short rotr(short);
 short rotl(short val);
 
