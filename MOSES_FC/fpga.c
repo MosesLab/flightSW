@@ -26,6 +26,7 @@ void * fpga_server(void * arg) {
 
     /*initialize DMA pipeline*/
     open_fpga();
+    reset_fpga();
     initializeDMA();
 
     /*Allocate buffer for image fragments*/
