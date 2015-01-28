@@ -177,10 +177,11 @@ void writeToFile(roeimage_t * image) {
             }
             
             /*sync buffer*/
-            rc = fsync(fileno(dataOut));
-            if(rc < 0){
-                record("Error syncing science data buffer to disk!");
-            }
+//            rc = fsync(fileno(dataOut));
+//            if(rc < 0){
+//                record("Error syncing science data buffer to disk!");
+//            }
+            // commented out 
             
       }
             
