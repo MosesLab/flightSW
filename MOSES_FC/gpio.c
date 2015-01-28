@@ -185,10 +185,10 @@ int init_gpio() {
     }
 
     /*reset FPGA so interrupts are delivered appropriately*/
-    reset_fpga();
+//    reset_fpga();     This is moved to the beginning of fpga.c
 
     /*initialize dma channel*/
-//    initializeDMA();
+//    initializeDMA();  This is moved to the beginning of fpga.c
 
 
     /*enable GPIO pins on the FPGA*/
