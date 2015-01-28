@@ -22,10 +22,10 @@ void * fpga_server(void * arg) {
     record("-->FPGA Server thread started....\n");
 
     /*initialize semaphore*/
-    sem_init(&dma_done_sem, 0, 0);      //initialize semaphore to zero
+    sem_init(&dma_done_sem, 0, 0); //initialize semaphore to zero
 
-   /*open fpga device*/
-    open_fpga();    
+    /*open fpga device*/
+    open_fpga();
 
     /*Allocate buffer for image fragments*/
     uint i;
@@ -38,7 +38,7 @@ void * fpga_server(void * arg) {
     if (rc == FALSE) {
         record("Error initializing GPIO pins\n");
     }
-     
+
     /*initialize DMA pipeline*/
     initializeDMA();
 
@@ -91,7 +91,7 @@ void * fpga_server(void * arg) {
                 for (i = 0; i < NUM_FRAGMENT; i++) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
                 }
-                
+
                 /*Wake up science timeline waiting for DMA completion*/
                 sem_post(&dma_done_sem);
 
@@ -105,7 +105,7 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 /*close DMA channel*/
-//                dmaClose();
+                //                dmaClose();
 
                 record("Sort image\n");
                 unsort(dma_image);
@@ -113,6 +113,12 @@ void * fpga_server(void * arg) {
 
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
+
+                record("Set FPGA to buffer state\n");
+                // Set Data Manager State to BUFFER
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x01 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
             }
 
 
@@ -159,19 +165,18 @@ void * fpga_server(void * arg) {
             if (occupied(&lqueue[scit_image])) {
 
                 /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//                reset_fpga();
-                          
-//                PlxPci_DeviceReset(&fpga_dev);
-                
+                //                reset_fpga();
+
+                //                PlxPci_DeviceReset(&fpga_dev);
+
                 /*open DMA channel*/
-//                initializeDMA();
+                //                initializeDMA();
 
-                record("Set FPGA to buffer state\n");
-
-                // Set Data Manager State to BUFFER
-                output_ddr2_ctrl &= 0x00FFFFFF;
-                output_ddr2_ctrl |= (0x01 << 24);
-                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+                //                record("Set FPGA to buffer state\n");
+                //                // Set Data Manager State to BUFFER
+                //                output_ddr2_ctrl &= 0x00FFFFFF;
+                //                output_ddr2_ctrl |= (0x01 << 24);
+                //                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 record("Dequeue new image\n");
                 dma_image = dequeue(&lqueue[scit_image]);
