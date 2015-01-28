@@ -220,6 +220,7 @@ int init_gpio() {
         gpio_out_state.bf.camer_mux_sel = 1; // actual ROE camera interface
     }
     sprintf(msg, "Camera mux is: %d\n", gpio_out_state.val);
+    record(msg);
     rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
     if (rc == FALSE) {
         record("Error writing GPIO output\n");
