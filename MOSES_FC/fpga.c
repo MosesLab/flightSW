@@ -156,22 +156,7 @@ void * fpga_server(void * arg) {
             }
 
             /*check if image input is available*/
-            /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
-
-                /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                //                reset_fpga();
-
-                //                PlxPci_DeviceReset(&fpga_dev);
-
-                /*open DMA channel*/
-                //                initializeDMA();
-
-                //                record("Set FPGA to buffer state\n");
-                //                // Set Data Manager State to BUFFER
-                //                output_ddr2_ctrl &= 0x00FFFFFF;
-                //                output_ddr2_ctrl |= (0x01 << 24);
-                //                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 /*set FPGA into buffer mode to capture image from ROE*/
                 set_buffer_mode();
@@ -191,8 +176,6 @@ void * fpga_server(void * arg) {
                     gpio_out_state.bf.frame_trigger = 0;
                     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
                 }
-
-
 
             }
 

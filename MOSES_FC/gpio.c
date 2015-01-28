@@ -153,7 +153,8 @@ void close_shutter() {
 /*sets up the memory used in powering the instrument*/
 int init_gpio() {
     int rc;
-
+    char msg[255];
+    
     gpio_out_state.val = 0;
 
     U32 mask = 0x00000001;
@@ -218,6 +219,7 @@ int init_gpio() {
     } else {
         gpio_out_state.bf.camer_mux_sel = 1; // actual ROE camera interface
     }
+    sprintf(msg, "Camera mux is: %d\n", gpio_out_state.val);
     rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
     if (rc == FALSE) {
         record("Error writing GPIO output\n");
