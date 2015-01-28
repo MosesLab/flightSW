@@ -329,6 +329,7 @@ void cleanup(){
     dmaClearBlock();
 
     record("Close DMA channel\n");
+    dmaClose();
     close_fpga();
     
 //    /*free dynamically allocated memory*/

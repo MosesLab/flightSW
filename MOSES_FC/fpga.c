@@ -26,6 +26,7 @@ void * fpga_server(void * arg) {
 
     /*initialize DMA pipeline*/
     open_fpga();
+    initializeDMA();
 
     /*Allocate buffer for image fragments*/
     uint i;
@@ -102,7 +103,7 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
 
                 /*close DMA channel*/
-                dmaClose();
+//                dmaClose();
 
                 record("Sort image\n");
                 unsort(dma_image);
@@ -161,7 +162,7 @@ void * fpga_server(void * arg) {
 //                PlxPci_DeviceReset(&fpga_dev);
                 
                 /*open DMA channel*/
-                initializeDMA();
+//                initializeDMA();
 
                 record("Set FPGA to buffer state\n");
 
