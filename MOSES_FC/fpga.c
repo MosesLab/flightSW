@@ -24,10 +24,8 @@ void * fpga_server(void * arg) {
     /*initialize semaphore*/
     sem_init(&dma_done_sem, 0, 0);      //initialize semaphore to zero
 
-    /*initialize DMA pipeline*/
-    open_fpga();
-    reset_fpga();
-    initializeDMA();
+   /*open fpga device*/
+    open_fpga();    
 
     /*Allocate buffer for image fragments*/
     uint i;
@@ -40,6 +38,9 @@ void * fpga_server(void * arg) {
     if (rc == FALSE) {
         record("Error initializing GPIO pins\n");
     }
+     
+    /*initialize DMA pipeline*/
+    initializeDMA();
 
     /*FPGA server main control loop*/
     while (ts_alive) {
