@@ -162,7 +162,7 @@ void writeToFile(roeimage_t * image) {
     
 
     for (i = 0; i < 4; i++) {
-      if (image->channels & (char) (1 << i)) {
+//      if (image->channels & (char) (1 << i)) {
           
           /*write image to library buffer*/
             rc = fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
@@ -190,7 +190,7 @@ void writeToFile(roeimage_t * image) {
 //            sprintf(msg, "Error writing science data to disk! %s\n", strerror(errno));
 //            record(msg);
 //        }
-    }
+//    }
     fclose(dataOut);
 //    close(data_fd);
     
