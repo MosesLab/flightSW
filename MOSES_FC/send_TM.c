@@ -123,7 +123,7 @@ int synclink_init(int killSwitch) {
         record(msg);
 
         /* open serial device with O_NONBLOCK to ignore DCD input */
-        fd = open(devname, O_TRUNC, 0);                 // Why are we opening like this instead of "open(devname, O_RDWR | O_NONBLOCK, 0)"?
+        fd = open(devname, O_TRUNC, 0);    // Why are we opening like this instead of "open(devname, O_RDWR | O_NONBLOCK, 0)"?
         if (fd < 0) {
             sprintf(msg,"open error=%d %s\n", errno, strerror(errno));
             record(msg);
@@ -316,18 +316,17 @@ int send_image(roeimage_t * image, int xmlTrigger, int fd) {
                         /* block until all data sent */
                         rc = tcdrain(fd);
                         
-                        rc = write(fd, image->name, 16);        //Ending characters "YYMMDDHHmmss.roe"
-                        if (rc < 0) {
-                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                                record(msg);
-                        }
-
-                        /*block until all data sent*/
-                        rc = tcdrain(fd);
-                        
                 }
                 if (rc < 0) return rc; //Finishes the write error handling after the break
                 //imagename = image->filePath;
+                rc = write(fd, image->name, 16);        //Ending characters "YYMMDDHHmmss.roe"
+                if (rc < 0) {
+                        sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                        record(msg);
+                }
+
+                /*block until all data sent*/
+                rc = tcdrain(fd);
             }            
             
             
