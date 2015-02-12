@@ -11,9 +11,11 @@
 #include "science_timeline.h"
 
 void * science_timeline(void * arg) {
+    int rc;
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
     char sframe[10];
+    
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
@@ -23,38 +25,48 @@ void * science_timeline(void * arg) {
     record("-->Science Timeline thread started....\n");
 
 
-//        void init_shutter();      //Would still like to do this -- causes segfault
+    //        void init_shutter();      //Would still like to do this -- causes segfault
 
 
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
-    //while(!roe_struct.active)
-    //    usleep(20000);
-    //record("ROE Active\n");
 
-    /* if ROE active, set to known state (exit default, reset, exit default) */
-    //exitDefault();
-    //reset();
-    //exitDefault();
+    int exit_activate_loop = FALSE;
+    while (exit_activate_loop == FALSE) {
+
+        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+            activateROE();
+
+            /* if ROE active, set to known state (exit default, reset, exit default) */
+            exitDefault();
+            reset();
+            exitDefault();
+            record("ROE Active\n");
+            exit_activate_loop = TRUE;
+
+        } else if (config_values[roe_interface] == 0) {
+            record("ROE not present, continuing timeline...\n");
+            exit_activate_loop = TRUE;
+        }
+
+        usleep(20000);
+
+
+
+    }
 
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
-        sequence_t * currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
+        record("Wait for new sequence\n");
+        currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
         ops.seq_run = TRUE;
-        
+
         sprintf(msg, "Current sequence: %s, Sequence number:%d\n", currentSequence->sequenceName, ops.sequence);
         record(msg);
 
-            record("SIGUSR1 received, starting sequence\n");
-        
-
-        /* if ROE active, set to known state (exit default, reset, exit default) */
-        //exitDefault();
-        //reset();
-        //exitDefault();
-
+        record("New sequence received, starting sequence\n");
 
         /* push packets w/info about current sequence */
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_SEQ, (char *) NULL);
@@ -67,10 +79,8 @@ void * science_timeline(void * arg) {
         for (i = 0; i < currentSequence->numFrames; i++) {
             sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
             record(msg);
-             a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
-            /* check for running, roe active.... */
-
-            //If ROE not active?
+            a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
+            enqueue(&lqueue[hkdown], a);
 
             if (ops.seq_run == FALSE) {
                 sprintf(msg, "Sequence not running, breaking out of sequence.\n");
@@ -79,8 +89,8 @@ void * science_timeline(void * arg) {
             }
 
             /*construct new image to read data into*/
-            roeimage_t * image = malloc(sizeof(roeimage_t));
-            int index[4] = {0, 0, 0, 0};        //incremented when the data is sorted
+            roeimage_t * image = malloc(sizeof (roeimage_t));
+            int index[4] = {0, 0, 0, 0}; //incremented when the data is sorted
             char channels = ops.channels;
             constructImage(image, index, channels, 16);
 
@@ -90,7 +100,7 @@ void * science_timeline(void * arg) {
 
             image->duration = duration;
             image->seq_name = currentSequence->sequenceName;
-            image->num_exp = i+1;       //Index of exposure in sequence
+            image->num_exp = i + 1; //Index of exposure in sequence
             image->num_frames = currentSequence->numFrames; //Number of exposures this sequence
 
             /*push packets with information about frame(index and exposure length) */
@@ -106,21 +116,35 @@ void * science_timeline(void * arg) {
 
             record("Done with exposure. Wait for readout...\n");
 
-            /* Command ROE to Readout*/
-            //readOut(ops.read_block,100000);
+            /*Enqueue image buffer to fpga server thread for DMA transfer*/
+            record("Queue image buffer for DMA transfer.\n");
+            enqueue(&lqueue[scit_image], image);
 
-            //wait 4 seconds for response from ROE that readout is complete
-            sleep(4);
+            /*Wait until FPGA has entered buffer mode*/
+            rc = wait_on_sem(&dma_control_sem, 2);
+            if(rc != TRUE){
+                record("Failed to set FPGA to buffer mode, trying exposure again");
+                continue;
+            }
+            
+            /* Command ROE to Readout*/
+            if (roe_struct.active) {
+                readOut(ops.read_block, 100000);
+                a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
+                enqueue(&lqueue[hkdown], a);
+            }
+
+            /*Wait until DMA is complete before proceeding*/
+            wait_on_sem(&dma_control_sem, 15);
+
 
             /* push packet w/info about end read out */
-            a = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
+            a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);
+            b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_FRMI, sindex);
             enqueue(&lqueue[hkdown], a);
+            enqueue(&lqueue[hkdown], b);
 
-            /*Enqueue image to image writer thread*/
-            record("Queue image for writing.\n");
-            enqueue(&lqueue[scit_image], image);
-            
-            a = (packet_t*) constructPacket(MDAQ_RSP, END_EXP, (char *) NULL);
+
             sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
             record(msg);
         }/* end for each exposure */
@@ -137,13 +161,13 @@ void * science_timeline(void * arg) {
     }//end while ts_alive
 
     record("Done with scienceTimeline\n");
+
     return NULL;
 }
 
 /* write_data will be part of a new thread that will be in
  * waiting mode until it is called to write an image to a file. 
-   A signal, SIGUSR2, will be sent when DMA is ready to transfer
-   data to memory and will initialize the writing to disk*/
+ */
 void * write_data(void * arg) {
     char msg[100];
 
@@ -154,12 +178,12 @@ void * write_data(void * arg) {
 
     while (ts_alive) {
 
-//        short *BUFFER[4];
-//        /*create pixel buffers */
-//        int i;
-//        for (i = 0; i < 4; i++) {
-//            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-//        }
+        //        short *BUFFER[4];
+        //        /*create pixel buffers */
+        //        int i;
+        //        for (i = 0; i < 4; i++) {
+        //            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
+        //        }
 
 
         char filename[80];
@@ -167,13 +191,13 @@ void * write_data(void * arg) {
         char dtime[100];
         char ddate[100];
 
-        
+
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
         record("Dequeued new image\n");
-        
+
         /* Get data for image details*/
         time_t curTime = time(NULL);
         struct tm *broken = localtime(&curTime);
@@ -191,7 +215,7 @@ void * write_data(void * arg) {
         //image.duration = duration;
         image->width = 2048;
         image->height = 1024;
-        
+
 
         record("Image Opened\n");
 
@@ -203,11 +227,12 @@ void * write_data(void * arg) {
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
-            //imgPtr_t newPtr;
-            //newPtr.filePath = filename;
-            //newPtr.next = NULL;
-            enqueue(&lqueue[telem_image], &image); //enqueues the path for telem
-            record("Image pushed to telemetry queue\n");
+
+            imgPtr_t newPtr;
+            newPtr.filePath = filename;
+            newPtr.next = NULL;
+            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
+            record("Filename pushed to telemetry queue\n");
         }
 
 
@@ -277,3 +302,21 @@ void * telem(void * arg) {
     }
     return NULL;
 }
+
+///*this function sets up the signal handler to run
+//  runsig when a signal is received from the experiment manager*/
+//void init_signal_handler_stl() {
+//
+//    sigfillset(&oldmaskstl); //save the old mask
+//    sigemptyset(&maskstl); //create a blank new mask
+//    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
+//
+//    /*no signal dispositions for signals between threads*/
+//        run_action.sa_handler = runsig;
+//        run_action.sa_mask = oldmaskstl;
+//        run_action.sa_flags = 0;
+//    
+//        sigaction(SIGUSR1, &run_action, NULL);
+//    record("Signal handler initiated.\n");
+//
+//}

@@ -104,6 +104,8 @@
 #define RESET_MDAQ  "RST" //Not Implemented
 #define BEGIN_EXP   "EST"
 #define END_EXP     "ESP"
+#define ROE_GACK    "RCK"
+#define ROE_BACK    "BCK"
 //#define FIRESIG     "COM"
 //#define STOP_EXP    "EXP"
 //#define SHUTTER_OPN "SHO"

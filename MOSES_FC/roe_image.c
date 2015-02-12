@@ -75,6 +75,8 @@ void createXML()
 void writeToFile(roeimage_t * image) {
  
     int i;
+    int rc;
+//    char msg[255];
     int linecount = 0;
     int newfile = 0;
     char xmlarr[10000][200];
@@ -155,13 +157,42 @@ void writeToFile(roeimage_t * image) {
    
     /*Write Image Data*/
     FILE *dataOut;
+//    int data_fd = open(image->filename, O_CREAT|O_APPEND|O_WRONLY|O_SYNC, S_IRUSR|S_IWUSR);
     dataOut = fopen(image->filename, "w"); 
     
+
     for (i = 0; i < 4; i++) {
-        if (image->channels & (char) (1 << i))
-            fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
+      if (image->channels & (char) (1 << i)) {
+          
+          /*write image to library buffer*/
+            rc = fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
+            if(rc < image->size[i]){
+                record(strerror(ferror(dataOut)));
+            }
+            
+            /*flush library buffer*/
+            rc = fflush(dataOut);
+            if(rc != 0){
+                record("Error flushing science data buffer!");
+            }
+            
+            /*sync buffer*/
+//            rc = fsync(fileno(dataOut));
+//            if(rc < 0){
+//                record("Error syncing science data buffer to disk!");
+//            }
+            // commented out 
+            
+      }
+            
+//        int count = sizeof(short) * image->size[i];
+//        if(write(data_fd, image->data[i], count) < count){
+//            sprintf(msg, "Error writing science data to disk! %s\n", strerror(errno));
+//            record(msg);
+//        }
     }
     fclose(dataOut);
+//    close(data_fd);
     
    
 

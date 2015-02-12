@@ -16,7 +16,7 @@ pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
 int quit_sig = 0;
-struct sigaction quit_action, init_action, start_action; //action to be taken when ^C (SIGINT) is entered
+struct sigaction quit_action, init_action, start_action, reset_action; //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask; //masks for SIGINT signal
 
 int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
@@ -25,14 +25,38 @@ node_t** config_hash_table;
 LockingQueue lqueue[QUEUE_NUM];
 
 /**
- * Main program entry point. Reads configuration file to configure program.
- * Starts flight software threads based off of configs.
+ * Main program entry point. Loop to see if restart is necessary
  * 
  * @return 0 upon successful exit
  */
-int main(void) {
+int main(int argc, char **argv) {
+    char msg[255];
+    int restart = TRUE;
+    
+    /*initialize virtual shell*/
+    vshell_pid = vshell_init();
+    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
+    record(msg);
+    
+    while(restart){
+        restart = moses();
+    }
+    
+    return 0;
+       
+}
 
 
+/**
+ * Call this method for program start. Allows restarting the program.
+ * Reads configuration file to configure program.
+ * Starts flight software threads based off of configs.
+ * 
+ * @return 
+ */
+int moses(){
+    char msg[255];
+    
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
@@ -47,39 +71,50 @@ int main(void) {
     main_pid = getpid();
 
     /*Use signals to inform the program to quit*/
-    init_quit_signal_handler();
-
-    /*initialize virtual shell*/
-    vshell_pid = vshell_init();
+    init_quit_signal_handler();   
 
     /*start threads indicated by configuration file*/
     start_threads();
 
-
-
     /*Upon program termiation (^c) attempt to join the threads*/
-    //    sigprocmask(SIG_BLOCK, &mask, &oldmask);
-    //    while (ts_alive) {
-    //        sigsuspend(&oldmask); // wait here until the program is killed
-    //    }
-    //    sigprocmask(SIG_UNBLOCK, &mask, &oldmask);
-
-//    while (ts_alive) {
-
-                pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
-                sigwait(&mask, &quit_sig);
-                pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
-//        wait(0);
-//    }
+    pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
+    sigwait(&mask, &quit_sig);
+    pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
 
     record("exited wait\n");
-    
-    /*SIGINT caught, ending program*/
+
+    /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
+
+    /*clean up memory and open devices*/
+    cleanup();
+
+    sprintf(msg, "quit_sig: %d\n", quit_sig);
+    record(msg);
+
+    /* if SIGUSR2, a reset command was received. */
+    if (quit_sig == SIGUSR2) {
+
+        sleep(2);
+        record("Flight software rebooting...\n");
+
+        /*reset stdin and stdout*/
+//        reset_std_io();
+
+//        if (execv(argv[0], argv)) {
+//            record("ERROR in restarting flight software!\n");
+//        }
+
+        //            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
+        //                record("ERROR in restarting flight software!\n");
+        //            }
+
+        return TRUE;
+    }
 
     record("FLIGHT SOFTWARE EXITED\n\n\n");
 
-    return 0;
+    return FALSE;
 }
 
 /*this method takes a function pointer and starts it as a new thread*/
@@ -127,20 +162,20 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-//    void * returns;
+    //    void * returns;
 
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
-    
-    kill(vshell_pid, SIGTERM);
-    
+
+//    kill(vshell_pid, SIGKILL);
+
     record("killed bash\n");
 
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-//            pthread_join(threads[i], &returns);
-                        pthread_cancel(threads[i]);
+            //            pthread_join(threads[i], &returns);
+            pthread_cancel(threads[i]);
         }
     }
 }
@@ -158,11 +193,17 @@ void init_quit_signal_handler() {
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
-//    sigaddset(&mask, SIGUSR1);
     start_action.sa_handler = start_signal;
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR1, &start_action, NULL);
+
+    /*reset flight software signal handling*/
+    sigaddset(&mask, SIGUSR2);
+    start_action.sa_handler = reset_signal;
+    start_action.sa_mask = oldmask;
+    start_action.sa_flags = 0;
+    sigaction(SIGUSR2, &reset_action, NULL);
 
 }
 
@@ -176,6 +217,11 @@ void quit_signal(int sig) {
 void start_signal(int sig) {
     record("Flight computer signaled Data Start\n");
     uDataStart();
+}
+
+/*Signal flight software to reset*/
+void reset_signal(int sig) {
+
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/
@@ -196,11 +242,12 @@ void main_init() {
     config_strings[hlp_up_interface] = HKUP_CONF;
     config_strings[hlp_down_interface] = HKDOWN_CONF;
     config_strings[roe_interface] = ROE_CONF;
+    config_strings[image_sim_interface] = IMAGE_SIM_CONF;
     config_strings[synclink_interface] = SYNCLINK_CONF;
 
     /*initialize memory for configuration hash table*/
     if ((config_hash_table = calloc(config_size, sizeof (node_t))) == NULL) {
-        record("malloc failed to allocate hash table\n");
+        record("calloc failed to allocate hash table\n");
     }
 
     /*fill hash table with array of strings matching indices for configuration values*/
@@ -213,7 +260,7 @@ void main_init() {
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
 
-    /*fill array of function pointer for pthread call*/
+    /*fill array of function pointers for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
     tfuncs[gpio_control_thread] = gpio_control;
@@ -278,4 +325,18 @@ void read_moses_config() {
     }
 }
 
+void cleanup(){
+    record("Release page-locked contiguous buffer\n");
+    dmaClearBlock();
 
+    record("Close DMA channel\n");
+    dmaClose();
+    close_fpga();
+    
+//    /*free dynamically allocated memory*/
+//     for (i = 0; i < config_size; i++) {
+//         config_hash_table[i]
+//     }
+    free(config_hash_table);
+    
+}

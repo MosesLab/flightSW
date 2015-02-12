@@ -1,9 +1,9 @@
 #include "control.h"
-#include "roe_image.h"
+
 
 /*global variable delcaration*/
 moses_ops_t ops;
-gpio_out_uni gpio_power_state;
+
 pid_t vshell_pid;
 
 /* hlp_control is a thread that reads packets from the housekeeping uplink and 
@@ -24,9 +24,6 @@ void * hlp_control(void * arg) {
 
     /*initialize hash table to match packet strings to control functions*/
     hlpHashInit();
-
-    /*set up global GPIO output state*/
-    gpio_power_state.val = 0x0;
 
     /*Open housekeeping downlink using configuration file*/
     if (*(int*) arg == 1) { //Open real housekeeping downlink
@@ -117,6 +114,10 @@ void * gpio_control(void * arg) {
     while (ts_alive) {
         /*dequeue next packet from gpio input queue*/
         gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
+        
+        if(gpio_control->bf.ddr2_read_error == TRUE){
+            record("DDR2 read error encountered!\n");
+        }
 
         sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
         record(msg);

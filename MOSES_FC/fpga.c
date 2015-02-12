@@ -9,6 +9,10 @@
  * @param arg (not used)
  * @return  (not used)
  */
+
+/*replace conditional variable with semaphore since pthread_cond_timedwait() is broken */
+sem_t dma_control_sem;
+
 void * fpga_server(void * arg) {
     int rc;
     gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
@@ -17,8 +21,11 @@ void * fpga_server(void * arg) {
 
     record("-->FPGA Server thread started....\n");
 
-    /*initialize DMA pipeline*/
-    initializeDMA();
+    /*initialize semaphore*/
+    sem_init(&dma_control_sem, 0, 0); //initialize semaphore to zero
+
+    /*open fpga device*/
+    open_fpga();
 
     /*Allocate buffer for image fragments*/
     uint i;
@@ -32,14 +39,10 @@ void * fpga_server(void * arg) {
         record("Error initializing GPIO pins\n");
     }
 
-    /*insert simulated byte to be read by dma*/
-    /*ONLY FOR TESTING!!!!!! DONT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-    rc = poke_gpio(FPGA_MEMORY_LOC_0, 0xFAFAFAFA);\
-    if (rc == FALSE) {
-        record("Error initializing DMA data\n");
-    }
+    /*initialize DMA pipeline*/
+    initializeDMA();
 
-    /*main server control loop*/
+    /*FPGA server main control loop*/
     while (ts_alive) {
         U32 interrupt = 0;
 
@@ -61,26 +64,59 @@ void * fpga_server(void * arg) {
             temp_state->bf.latch = 0;
 
             /*Poke unlatched value to FPGA*/
-            rc = poke_gpio(GPIO_OUT_REG, temp_state->val);
+            rc = poke_gpio(OUTPUT_GPIO_ADDR, temp_state->val);
             if (rc == FALSE) {
                 record("Error writing GPIO output\n");
             }
 
             /*free gpio value*/
-            free(temp_state);   //Free GPIO output struct from assert
+            free(temp_state); //Free GPIO output struct from assert
             temp_state = NULL;
         }
 
         /*take action based off what type of interrupt*/
         if (interrupt == INP_INT) {
 
-            // need to check if DMA or GPIO input here by peeking at fpga register
+            /*Call function to handle input interrupt from FPGA*/
+            record("Interrupt received\n");
 
-            /*send input gpio to control thread*/
-            rc = handle_gpio_in();
+            rc = handle_fpga_input();
             if (rc == FALSE) {
-                record("Error handling GPIO\n");
+                record("Error handling FPGA input\n");
+            } else if (rc == DMA_AVAILABLE) { // DMA available in buffer, begin transfer
+
+
+                record("Perform DMA transfer from FPGA\n");
+
+                for (i = 0; i < NUM_FRAGMENT; i++) {
+                    dmaRead(dma_params[i], DMA_TIMEOUT);
+                }
+
+                /*Wake up science timeline waiting for DMA completion*/
+                sem_post(&dma_control_sem);
+
+                // Return to IDLE state
+                record("DMA Complete, Returning to IDLE state\n");
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x02 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+                output_ddr2_ctrl &= 0x00FFFFFF;
+                output_ddr2_ctrl |= (0x00000000 << 24);
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+
+                /*close DMA channel*/
+                //                dmaClose();
+
+                record("Sort image\n");
+                sort(dma_image);
+
+
+                record("Enqueue image to writer\n");
+                enqueue(&lqueue[fpga_image], dma_image);
+
             }
+
+
         } else if (interrupt == TIMEOUT_INT) {
 
             /*check if new GPIO output is available*/
@@ -89,55 +125,74 @@ void * fpga_server(void * arg) {
 
                 /*Check if request or assert*/
                 if (gpio_out_val->val == REQ_POWER) {
+
                     /*request pin values*/
-                    rc = peek_gpio(GPIO_OUT_REG, &(gpio_out_val->val));
+                    rc = peek_gpio(OUTPUT_GPIO_ADDR, &(gpio_out_val->val));
                     if (rc == FALSE) {
                         record("Error reading GPIO request\n");
                     }
+
                     enqueue(&lqueue[gpio_req], gpio_out_val);
                 } else {
                     /*apply output if not request*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
+                    rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
-                    
-                    usleep(1000);       //sleep for 1ms before applying latch
-                    
+
+                    usleep(1000); //sleep for 1ms before applying latch
+
                     /*apply latch*/
                     gpio_out_val->bf.latch = 1;
-                                        
+
                     /*apply latched output*/
-                    rc = poke_gpio(GPIO_OUT_REG, gpio_out_val->val);
+                    rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                     if (rc == FALSE) {
                         record("Error writing GPIO output\n");
                     }
-                                      
-                    temp_state = gpio_out_val;  //write to this variable so we know to delatch next timeout
+
+                    temp_state = gpio_out_val; //write to this variable so we know to delatch next timeout
                 }
             }
 
             /*check if image input is available*/
             /*TESTING!!!!!!! Do not use in real life!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11*/
             if (occupied(&lqueue[scit_image])) {
-                
-                record("Dequeue new image\n");
-                
-                roeimage_t * dma_image = dequeue(&lqueue[scit_image]);
 
-                record("Perform DMA transfer from FPGA\n");
-                
-                for (i = 0; i < NUM_FRAGMENT; i++) {
-                    dmaRead(dma_params[i], DMA_TIMEOUT);
+                /*try resetting to prevent buffer overflow, DONT USE IN REAL LIFE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+                //                reset_fpga();
+
+                //                PlxPci_DeviceReset(&fpga_dev);
+
+                /*open DMA channel*/
+                //                initializeDMA();
+
+                //                record("Set FPGA to buffer state\n");
+                //                // Set Data Manager State to BUFFER
+                //                output_ddr2_ctrl &= 0x00FFFFFF;
+                //                output_ddr2_ctrl |= (0x01 << 24);
+                //                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+
+                /*set FPGA into buffer mode to capture image from ROE*/
+                set_buffer_mode();
+
+                /*Wake up science timeline waiting to Readout from ROE*/
+                sem_post(&dma_control_sem);
+
+                record("Dequeue new image\n");
+                dma_image = dequeue(&lqueue[scit_image]);
+
+                /*If we're simulating an image, we have to trigger a frame from the VDX*/
+                if (config_values[image_sim_interface]) {
+                    //Trigger a frame
+                    record("Trigger simulated frame\n");
+                    gpio_out_state.bf.frame_trigger = 1;
+                    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+                    gpio_out_state.bf.frame_trigger = 0;
+                    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
                 }
 
-                record("Sort image\n");                       
-                
-                sort(dma_image);
-                
-                record("Enqueue image to writer\n");
 
-                enqueue(&lqueue[fpga_image], dma_image);
 
             }
 
@@ -193,5 +248,6 @@ int interrupt_wait(U32 * interrupt) {
         record("Wait returned an unknown value\n");
         return FALSE;
     }
+
 
 }

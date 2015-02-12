@@ -12,9 +12,10 @@
 #include "sequence.h"
 #include "system.h"
 #include "lockingQueue.h"
+#include "fpga.h"
 #include "sci_timeline_funcs.h"
 #include "defs.h"
-#include "hlp.h"
+#include "hlp.h" 
 #include "packet.h"
 #include "roe.h"
 
@@ -23,12 +24,17 @@
 extern volatile sig_atomic_t ts_alive;
 
 extern moses_ops_t ops; //struct storing operational state
+sequence_t * currentSequence;
 
 
 void * science_timeline(void *);
 void * write_data(void *);
 void * telem(void *);
 
+/*signal handling variables*/
+sigset_t maskstl, oldmaskstl;
+//int caught_signal;
+struct sigaction run_action;   //action to be taken when ^C is entered
 
 
 #endif	/* SCIENCETIMELINE_H */

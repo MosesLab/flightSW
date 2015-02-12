@@ -18,41 +18,49 @@
 #include "main.h"
 #include "logger.h"
 
+struct ReadOutElectronics roe_struct;
+
 int activateROE() {
-    //char msg[100];
+   
     int fd = 0;
+    char msg[255];
+    
     pthread_mutex_lock(&roe_struct.mx);
     if (roe_struct.active == FALSE) {
         //Open Serial Device
         fd = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY);
         if (fd < 0) {
-            printf("%s\n", strerror(errno));
+            sprintf(msg, "%s\n", strerror(errno));
+            record(msg);
             record("Couldnt connect\n");
             pthread_mutex_unlock(&roe_struct.mx);
             exit(-1);
         }
-       	fcntl(fd,F_SETFL,FNDELAY);
-	struct termios options;
-	tcgetattr(fd,&options);
-	cfsetispeed(&options,B9600);
-	cfsetospeed(&options,B9600);
-	options.c_cflag |= (CLOCAL|CREAD);
-	options.c_cflag &= ~PARENB;
-	options.c_cflag &= ~CSTOPB;
-	options.c_cflag &= ~CSIZE;
-	options.c_cflag |= CS8;
-	options.c_oflag &= ~OPOST;
-	options.c_lflag &= ~(ICANON|ECHO|ECHOE|ISIG);
-	tcsetattr(fd,TCSANOW,&options);
-        
+        fcntl(fd, F_SETFL, FNDELAY);
+        struct termios options;
+        tcgetattr(fd, &options);
+        cfsetispeed(&options, B9600);
+        cfsetospeed(&options, B9600);
+        options.c_cflag |= (CLOCAL | CREAD);
+        options.c_cflag &= ~PARENB;
+        options.c_cflag &= ~CSTOPB;
+        options.c_cflag &= ~CSIZE;
+        options.c_cflag |= CS8;
+        options.c_oflag &= ~OPOST;
+        options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        tcsetattr(fd, TCSANOW, &options);
+
         record("Connection established. DEFAULT MODE\n");
         roe_struct.roeLink = fd;
         roe_struct.active = TRUE;
-}
-        pthread_mutex_unlock(&roe_struct.mx);
-        record("ROE Active\n");
-        return fd;
-    
+    }
+    else{
+        record("ROE not active!\n");
+    }
+    pthread_mutex_unlock(&roe_struct.mx);
+    record("ROE Active\n");
+    return fd;
+
 }
 
 int deactivate() {
@@ -72,8 +80,8 @@ int deactivate() {
 //Exit Roe default mode and enter manual mode
 
 int exitDefault() {
-    //char msg[100];
-    printf("Attempting to exit default mode.\n");
+     char msg[255];
+    //printf("Attempting to exit default mode.\n");
     record("Attempting to exit default mode.\n");
     //record(msg);
 
@@ -125,15 +133,14 @@ int exitDefault() {
 
     char command = EXIT_DEFAULT;
     int val;
-    val = write(roe_struct.roeLink, (char *)&command, 1); //Write Command to ROE Link
-    printf("write: %d\n", val);
-    if(val != 1)
-    {
+    val = write(roe_struct.roeLink, (char *) &command, 1); //Write Command to ROE Link
+    //printf("write: %d\n", val);
+    if (val != 1) {
         record("Exit Default Error, write\n");
         pthread_mutex_unlock(&roe_struct.mx);
         return -1;
     }
-    
+
     usleep(5000000); //Wait for command to finish
     char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
@@ -144,7 +151,7 @@ int exitDefault() {
     printf("received ack, reading the status\n");
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
-        
+
         record("Exit Default Error, status\n");
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Status of Command Execution
@@ -159,64 +166,43 @@ int exitDefault() {
         if (status != -1) {
             int i;
             for (i = 0; i < blockSize; i++)
-                rc = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
+                if(write(roe_struct.roeLink, &block1[i], sizeof (block1[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                rc = write(roe_struct.roeLink, &block2[i], sizeof (block2[i]));
+                if(write(roe_struct.roeLink, &block2[i], sizeof (block2[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                rc = write(roe_struct.roeLink, &block3[i], sizeof (block3[i]));
+                if(write(roe_struct.roeLink, &block3[i], sizeof (block3[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
             for (i = 0; i < blockSize; i++)
-                rc = write(roe_struct.roeLink, &block4[i], sizeof (block4[i]));
-            
-            if (rc == 0){
-                record("ROE write failed\n");
-            }
-            
+                if(write(roe_struct.roeLink, &block4[i], sizeof (block4[i])) == -1){
+                    sprintf(msg, "*ERROR* %s\n", strerror(errno));
+                    record(msg);
+                }
+
             record("Exiting Default Mode\n");
         } else {
             record("Status = -1, not entering default mode\n");
         }
     }
-        pthread_mutex_unlock(&roe_struct.mx);
-        return 0;
-    }
-
-
-/*For testing serial connection only*/
-int sendDummyData() {
-    pthread_mutex_lock(&roe_struct.mx);
-    
-    int blockSize = 67;
-    int block1[] = {0x46, 0x08, 0x00, 0x09, 0x12, 0x18, 0x25, 0x28,
-        0x30, 0xF8, 0x34, 0xF8, 0x34, 0xF8, 0xF8, 0x80,
-        0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xC0, 0xF8, 0x94,
-        0x34, 0xF8, 0x30, 0xF8, 0xF8, 0x34, 0xF8, 0x30,
-        0xF8, 0x34, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8,
-        0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8, 0x30, 0xF8,
-        0xF8, 0xF8, 0x80, 0xF8, 0xF8, 0xF8, 0xF8, 0xF8,
-        0xC0, 0x34, 0xFA, 0x30, 0xFC, 0xFC, 0xFC, 0xFC,
-        0xFC, 0xFC, 0xFC};
-
-    int i;
-while(1)
-{
-    int val;
-    for (i = 0; i < blockSize; i++){
-        val = write(roe_struct.roeLink, &block1[i], sizeof (block1[i]));
-	printf("%d\n", val);
-	}
-    sleep(1);
- }   
     pthread_mutex_unlock(&roe_struct.mx);
-    
     return 0;
 }
+
+
+
 
 //Request House Keeping data from roe;
 
 char* getHK(char hkparam) {
-    
-    if(!roe_struct.active)
-    {
+    char * value_char = malloc(sizeof (char) * 6);
+    if (!roe_struct.active) {
         record("ROE not active in getHK\n");
     }
     pthread_mutex_lock(&roe_struct.mx);
@@ -226,26 +212,32 @@ char* getHK(char hkparam) {
         if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("getHK error, write\n");
-            return "FF";
+            sprintf(value_char, "FF");
+            pthread_mutex_unlock(&roe_struct.mx);
+            return value_char; //Get Ack
         }
     char ack;
     if (receiveAck(roe_struct.roeLink, (char *) &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
-        return "FF"; //Get Ack
+        sprintf(value_char, "FF");
+        pthread_mutex_unlock(&roe_struct.mx);
+        return value_char; //Get Ack
+
     }
     char value;
     if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
-        return "FF"; //Read HK Value	mx.unlock();
+        sprintf(value_char, "FF");
+        pthread_mutex_unlock(&roe_struct.mx);
+        return value_char; //Get Ack
     }
     /*This value will be sent over telemetry as a string,
       convert this value(byte) to a char array */
-    char* value_char;
-    value_char = (char *) calloc(3, sizeof (char*));
-    sprintf(value_char,"%c",value);
-   
+
+    sprintf(value_char, "%c", value);
+
     pthread_mutex_unlock(&roe_struct.mx);
     return value_char; //Return the HK Value
 
@@ -279,8 +271,7 @@ int selftestMode() {
     char selftst[9] = {0x45, 0x99, 0x99, 0x77, 0x4F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &selftst[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("selfTest error, write\n");
             return -1;
@@ -299,7 +290,7 @@ int selftestMode() {
         record("selfTest error, read\n");
         return -1; //Get Status of Command Execution
     }
-    
+
 
     pthread_mutex_unlock(&roe_struct.mx);
     record("Entering Self Test Mode\n");
@@ -315,8 +306,7 @@ int stimOn() {
     char stimon[9] = {0x45, 0x99, 0x99, 0x77, 0x3F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &stimon[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("stimOn error, write\n");
             return -1;
@@ -350,8 +340,7 @@ int stimOff() {
     char stimoff[9] = {0x45, 0x99, 0x99, 0x77, 0x2F, 0x0F, 0x00, 0x00, 0x00};
     int i;
     for (i = 0; i < 9; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &stimoff[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("stimOff error, write\n");
             return -1;
@@ -389,8 +378,7 @@ int readOut(int block, int delay) {
 
     int i;
     for (i = 0; i < 2; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char*) &command[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char*) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("Readout Error, write\n");
             return -1;
@@ -423,8 +411,7 @@ int flush() {
     char command[2] = {START_CSG, 0x00};
 
     for (i = 0; i < 2; i++) //Write the command to the serial link
-        if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1)
-        {
+        if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("Flush Error, write\n");
             return -1;
@@ -442,7 +429,7 @@ int flush() {
     }
     readRoe(roe_struct.roeLink, &status, 1); //Get the status of command execution
     printf("Flush status: %c\n", status);
-    
+
     pthread_mutex_unlock(&roe_struct.mx);
     record("Flushing CCD's\n");
     return 0;
@@ -505,11 +492,11 @@ int readRoe(int fd, char *data, int size) {
     input = input_timeout_roe(fd, 1);
     if (input > 0) {
         if (read(fd, data, size) != -1) {
-            printf("data read, exiting readRoe %c<---data\n", *data);
+            //printf("data read, exiting readRoe %c<---data\n", *data);
             return 0;
         }
     }
-    printf("readRoe Error\n");
+    //printf("readRoe Error\n");
     return -1;
 }
 
@@ -517,22 +504,22 @@ int readRoe(int fd, char *data, int size) {
 
 int receiveAck(int fd, char *data, int size, char target) {
     int timeout;
-	char msg[100];
+    char msg[100];
     record("Inside receiveAck\n");
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds
     {
         if (readRoe(fd, data, size) != -1) { //Return only if read data is an acknowledgement
-      sprintf(msg,"Data:%c, target:%c\n", *data, target);
-      record(msg);
-      if (*data == target) {
+            sprintf(msg, "Data:%c, target:%c\n", *data, target);
+            record(msg);
+            if (*data == target) {
                 record("Acknowledgment successful\n");
                 return 0;
             }
         }
     }
-    sprintf(msg,"Aknowledgment timeout %c<--data\n", *data);
-	record(msg);
+    sprintf(msg, "Acknowledgment timeout %c <--data \n", *data);
+    record(msg);
     return -1;
 }
 

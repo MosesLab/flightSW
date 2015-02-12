@@ -13,13 +13,20 @@
 #ifndef FPGA_H
 #define	FPGA_H
 
+#include <semaphore.h> 
 #include "system.h"
 #include "gpio.h"
 #include "dma.h"
 
+
 void * fpga_server(void *);
 
 int interrupt_wait(U32*);
+
+roeimage_t * dma_image;
+
+/*variables to synchronize science timeline and fpga sever*/
+extern sem_t dma_control_sem;
 
 #endif	/* FPGA_H */
 

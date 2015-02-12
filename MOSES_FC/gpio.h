@@ -26,12 +26,13 @@
 #define GPIO_I_INT_ENABLE 0x00000004
 #define GPIO_I_INT_ACK 0x00000008
 #define GPIO_I_INT_REG 0x0000000C
+#define OUTPUT_GPIO_ADDR		0x14
+#define	OUTPUT_DDR2_ADDRESS_ADDR	0x18
+#define OUTPUT_DDR2_CTRL_ADDR		0x1C
+
 
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
-
-/*register for output gpio*/
-#define GPIO_OUT_REG 0x14
 
 /*Power macros*/
 #define NUM_SUBSYSTEM 10
@@ -41,7 +42,7 @@
 #define SHUTTER_OFFSET  0x78
 #define SHUTTER_OPEN    0x20
 #define SHUTTER_CLOSE   0x40
-#define SHUTTER_PULSE 200000 //usecg
+#define SHUTTER_PULSE 200000 //usec
 
 /*Power is controlled by FPGA GPIO pins*/
 //#define SHUTTER_SIM     0x00000001
@@ -70,11 +71,19 @@ extern U32 bar_sz_buffer;
 extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
 extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
+extern U32 output_ddr2_ctrl;
+extern U32 output_ddr2_addr;
+extern U32 input_gpio_int_ack;
+
+
+/*Current state of powered subsystems*/
+extern gpio_out_uni gpio_out_state;
+
 /*poke gpio pins*/
 int poke_gpio(U32, U32);
 int peek_gpio(U32, U32*);
 
-int handle_gpio_in();
+int handle_fpga_input();
 
 /*use write gpio to open/close shutter*/
 void open_shutter();

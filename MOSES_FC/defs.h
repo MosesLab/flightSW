@@ -16,6 +16,8 @@
 #define FALSE 0
 #define TRUE 1
 
+#define SEQ_MAP_SIZE 5
+
 #define STARTBYTE '%'
 #define ENDBYTE '^'
 
@@ -71,25 +73,31 @@ typedef int(*hlpControl)();
 /*Node structure for hash table*/
 
 /* This struct will contain the variables that represent the status of the system*/
-typedef struct {    
+typedef struct {
     unsigned int sequence;
     unsigned int seq_run;
-    unsigned int roe_power;
+    unsigned int roe;
     unsigned int roe_custom_read;
     unsigned int dma_write;
     unsigned int tm_write;
-    char channels;
     unsigned int read_block;
+    unsigned int unique_stub;
+    char channels;
+    
     
 }moses_ops_t;
 
 /*structure to store attributes of a sequence*/
 typedef struct {
     unsigned int numFrames;
+    unsigned int num;
     double exposureTimes[10]; //need to figure out how to assign size based on sequence file
     unsigned int currentFrame;
     char* sequenceName;
+    char* filename;
     unsigned int seq_type; //1 will be data
+    pthread_mutex_t mx;
+    unsigned int corrupt;
 } sequence_t;
 
 typedef struct {
@@ -106,7 +114,7 @@ typedef struct {
     char* object; // the object in the image
     unsigned int duration; // the duration of the image exposure
     unsigned int size[4];
-    short* data[4]; // the image data
+    unsigned short* data[4]; // the image data
     char channels; //channels included in the image;
     char* seq_name; //sequence that initiated the image
     unsigned int num_exp;
@@ -138,7 +146,13 @@ typedef struct {
 
     unsigned int shutter_sig : 1;
 
-    unsigned int unused_in : 17; //structure needs to be 32 bits
+    unsigned int unused_in : 11; //structure needs to be 32 bits
+    
+    unsigned int ddr2_read_error : 1;
+    
+    unsigned int unused_in2 : 4;
+    
+    unsigned int dma_ready : 1;
 } gpio_in_bf;
 
 /*union to allow gpio in bit fields to be taken as ints*/
@@ -149,19 +163,32 @@ typedef union gpio_in_uni {
 
 /*bit field for passing gpio outputs*/
 typedef struct {
-    unsigned int shutter : 1;
-    unsigned int roe : 1;
-    unsigned int premod : 1;
-    unsigned int tcs0 : 1;
-    unsigned int tcs1 : 1;
-    unsigned int tcs2 : 1;
-    unsigned int tcs3 : 1;
+    unsigned int latch : 1;
     unsigned int reg_5V : 1;
     unsigned int reg_12V : 1;
+    unsigned int tcs4 : 1;
+    unsigned int tcs2 : 1;
+    unsigned int tcs3 : 1;
+    unsigned int premod : 1;
+    unsigned int tcs1 : 1;
+    unsigned int shutter : 1;
+    unsigned int roe : 1;
     unsigned int h_alpha : 1;
-    unsigned int latch : 1;
+    unsigned int cc_pwr : 1;
+    unsigned int led_0 : 1;
+    unsigned int led_1 : 1;
 
-    unsigned int unused_out : 19;
+    unsigned int unused_out_1 : 12;
+    
+    unsigned int fpga_reset : 1;        //0 is reset state, 1 is normal operation
+    unsigned int frame_trigger : 1;
+    unsigned int sw_shutdown : 1;
+    
+    unsigned int unused_out_2 : 1;
+    
+    unsigned int camer_mux_sel : 1;
+    
+    unsigned int unused_out_3 : 1;
 
 } gpio_out_bf;
 

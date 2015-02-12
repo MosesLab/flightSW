@@ -21,6 +21,9 @@
 #include "sequence.h"
 #include "defs.h"
 #include "control.h"
+#include "roe.h"
+#include "roehk.h"
+
 
 //extern LockingQueue hkdownQueue;
 //extern LockingQueue sequence_queue;
@@ -30,6 +33,10 @@ extern pid_t main_pid;
 
 /*Power GPIO output state*/
 extern gpio_out_uni gpio_power_state;
+
+/* The Current Sequence*/
+extern sequence_t * currentSequence;
+
 
 /*initialize hash table to find functions based on packet string*/
 int funcNumber; // number of control functions  
@@ -66,53 +73,53 @@ int tSleep();
 int hlp_shell(int, packet_t *);
 
 /*HLP MDAQ control functions*/
-int setSequence(packet_t*);       //Set Sequence command
-int setOutputName(packet_t*);     //Set output filename command
-int getSeqName(packet_t*);       //Get sequence name command
-int getSeqInfo(packet_t*);   //Get Sequence info command
-//int getCurSeqNum(Packet*);      //Get current sequence number
-int getCurSeqName(packet_t*);     //Get current sequence name
-int getCurFrameLen(packet_t*);    //Get current frame length
-int getCurFrameIndex(packet_t*);  //Get current frame index
-int getOutputName(packet_t*);     //Get current output filename
-int getSelftestStatus(packet_t*);       //Get current selftest Mode status
-int getStimsStatus(packet_t*);    //Get STIMS mode status
-int getTelemStatus(packet_t*);    //Get telemetry mode status
-int getCh0Status(packet_t*);    //Get channel zero status
-int getPosOnlyStatus(packet_t*);      //Get positive channel only status
-int scaleSequence(packet_t*);     //Scale sequence command
-int translateSeq(packet_t*);      //Translate sequence command
-int findAndJump(packet_t*);       //Find and jump command
-int jumpToExp(packet_t*);              //Jump command
-int saveSequence(packet_t*);      //Save sequence command
-//int saveCurSequence(Packet*);   //Save current sequence command
-//int saveCurSeqAs(Packet*);      //Save current sequence as command
-//int loadSequence(Packet*);      //Load sequence
-//int unloadSequence(Packet*);  //Unload sequence
-int findAndReplace(packet_t*);    //Find and replace command
-int beginSequence(packet_t*);     //Begin Sequence command
-int endSequence(packet_t*);       //End Sequence command
-int exitSW(packet_t*);            //Exit flight software command
-int telemEnable(packet_t*);       //Enable telemetry command
-int telemDisable(packet_t*);      //Disable telemetry command
-int ch0Enable(packet_t*);         //Enable channel zero command
-int ch0Disable(packet_t*);        //Disable channel zero command
-int posOnlyEnable(packet_t*);     //Enable positive channel only
-int posOnlyDisable(packet_t*);    //Disable positive channel only
-int stimsEnable(packet_t*);       //Enable STIMS mode command
+int setSequence(packet_t*);        //Set Sequence command
+int setOutputName(packet_t*);      //Set output filename command
+int getSeqName(packet_t*);         //Get sequence name command
+int getSeqInfo(packet_t*);         //Get Sequence info command
+//int getCurSeqNum(Packet*);       //Get current sequence number
+int getCurSeqName(packet_t*);      //Get current sequence name
+int getCurFrameLen(packet_t*);     //Get current frame length
+int getCurFrameIndex(packet_t*);   //Get current frame index
+int getOutputName(packet_t*);      //Get current output filename
+int getSelftestStatus(packet_t*);  //Get current selftest Mode status
+int getStimsStatus(packet_t*);     //Get STIMS mode status
+int getTelemStatus(packet_t*);     //Get telemetry mode status
+int getCh0Status(packet_t*);       //Get channel zero status
+int getPosOnlyStatus(packet_t*);   //Get positive channel only status
+int scaleSequence(packet_t*);      //Scale sequence command
+int translateSeq(packet_t*);       //Translate sequence command
+int findAndJump(packet_t*);        //Find and jump command
+int jumpToExp(packet_t*);          //Jump command
+int saveSequence(packet_t*);       //Save sequence command
+//int saveCurSequence(Packet*);    //Save current sequence command
+//int saveCurSeqAs(Packet*);       //Save current sequence as command
+//int loadSequence(Packet*);       //Load sequence
+//int unloadSequence(Packet*);     //Unload sequence
+int findAndReplace(packet_t*);     //Find and replace command
+int beginSequence(packet_t*);      //Begin Sequence command
+int endSequence(packet_t*);        //End Sequence command
+int exitSW(packet_t*);             //Exit flight software command
+int telemEnable(packet_t*);        //Enable telemetry command
+int telemDisable(packet_t*);       //Disable telemetry command
+int ch0Enable(packet_t*);          //Enable channel zero command
+int ch0Disable(packet_t*);         //Disable channel zero command
+int posOnlyEnable(packet_t*);      //Enable positive channel only
+int posOnlyDisable(packet_t*);     //Disable positive channel only
+int stimsEnable(packet_t*);        //Enable STIMS mode command
 int stimsDisable(packet_t*);       //Disable STIMS mode command
-int resetROE(packet_t*);          //ROE reset command
-int disableDefaultROE(packet_t*);    //ROE exit default mode command
-int enableSelftestROE(packet_t*); //ROE enter selftest mode command
-//int readoutCCD(Packet*);      //readout ccd command
-int resetSW(packet_t*);           //Reset MDAQ and flight software
-//int fireSignal(Packet*);        //Fire internal signal command
-//int stopExposure(Packet*);      //Stops the current exposure
-//int openShutter(Packet*);       //Open the shutter
-//int closeShutter(Packet*);      //Close the shutter
-//int getAEParams(Packet*);     //Get analogue electronics parameters
-//int setAEParams(Packet*);     //Set analogue electronics parameters
-//int getShutter(Packet*);      //Get the last shutter signal
+int resetROE(packet_t*);           //ROE reset command
+int disableDefaultROE(packet_t*);  //ROE exit default mode command
+int enableSelftestROE(packet_t*);  //ROE enter selftest mode command
+//int readoutCCD(Packet*);         //readout ccd command
+int resetSW(packet_t*);            //Reset MDAQ and flight software
+//int fireSignal(Packet*);         //Fire internal signal command
+//int stopExposure(Packet*);       //Stops the current exposure
+//int openShutter(Packet*);        //Open the shutter
+//int closeShutter(Packet*);       //Close the shutter
+//int getAEParams(Packet*);        //Get analogue electronics parameters
+//int setAEParams(Packet*);        //Set analogue electronics parameters
+//int getShutter(Packet*);         //Get the last shutter signal
 
 /*HLP power control functions*/
 int enablePower(packet_t*);       //Turn power On for specified subsystems

@@ -21,6 +21,42 @@ PLX_DMA_PARAMS dma_params[NUM_FRAGMENT];
 PLX_PHYSICAL_MEM pci_buffer[NUM_FRAGMENT];
 short* virt_buf[NUM_FRAGMENT];
 
+int open_fpga() {
+    int rc;
+
+    rc = GetAndOpenDevice(&fpga_dev, 0x9056);
+    if (rc != ApiSuccess) {
+        //printf("*ERROR* - API failed, unable to open PLX Device\n");
+        PlxSdkErrorDisplay(rc);
+        exit(-1);
+    }
+    return TRUE;
+
+}
+
+/**
+ * pulls reset register low and then high to put fpga back into original state
+ * @return 
+ */
+int reset_fpga() {
+    record("Resetting FPGA...\n");
+
+    PlxPci_DeviceReset(&fpga_dev);
+
+    gpio_out_state.bf.fpga_reset = 0;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+
+    gpio_out_state.bf.fpga_reset = 1;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+
+    /*pause program to give fpga a chance to reset completely*/
+    sleep(6);
+
+
+
+    return TRUE;
+}
+
 /**
  * Opens PLX PCI device and starts the dma engine
  * @return 1 if success, 0 if failure
@@ -28,33 +64,19 @@ short* virt_buf[NUM_FRAGMENT];
 int initializeDMA() {
     int rc;
 
-    /*Lock PLX mutex*/
-    rc = GetAndOpenDevice(&fpga_dev, 0x9056);
+    record("Open DMA channel\n");
 
-    if (rc != ApiSuccess) {
-        //printf("*ERROR* - API failed, unable to open PLX Device\n");
-        PlxSdkErrorDisplay(rc);
-        exit(-1);
-    }
-    if (rc != ApiSuccess) {
-        //printf("*ERROR* - API failed, unable to open PLX Device\n");
-        PlxSdkErrorDisplay(rc);
-        exit(-1);
-    }
-    
-    /*reset device dma transfer*/
-    rc = PlxPci_DeviceReset(&fpga_dev);
-
-    
     // Clear DMA properties 
     memset(&DmaProp, 0, sizeof (PLX_DMA_PROP));
 
     // Setup DMA configuration structure 
     DmaProp.ReadyInput = 1; // Enable READY# input 
-    DmaProp.Burst = 1; // Use burst of 4LW 
-    DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
-    DmaProp.ConstAddrLocal = 1; //set to only transfer one dword ONLY FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //    DmaProp.Burst = 1; // Use burst of 4LW 
+    DmaProp.Burst = 0; // Single cycle mode
 
+    DmaProp.LocalBusWidth = 3; // 2 is indicates 32 bit in API pdf, but is 3 in sample code?
+    DmaProp.ConstAddrLocal = 1; //Don't increment address, FPGA does this for us.
+    //        DmaProp.DoneInterrupt = 1;  //TEST DONE INTERRUPT. NOT IN SAMPLE!!!
     dmaChannel = DMA_CHAN;
 
     // Use Channel 0 
@@ -64,6 +86,8 @@ int initializeDMA() {
         PlxSdkErrorDisplay(rc);
         return (FALSE);
     }
+
+
 
     return TRUE;
 }
@@ -126,7 +150,9 @@ int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, shor
 int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     int rc;
 
-    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout); 
+    rc = PlxPci_DmaTransferBlock(&fpga_dev, dmaChannel, &dma_param, timeout);
+
+
 
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
@@ -148,21 +174,132 @@ void finish() {
 }
 
 void sort(roeimage_t * image) {
-    register uint i, j, k = 0;
+    register uint i, j;
+    register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
-    short ** dest_buf = image->data;
+    unsigned short next_pixel = 0;
+    unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
+    uint * dest_size = image->size;
+
+
+    for (i = 0; i < frag; i++) {
+        for (j = 0; j < (buf_size); j++) {
+            next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
+
+            if (next_pixel >= 0xC000) { // Channel 3
+                dest_buf[3][i3] = next_pixel;
+                i3++;
+            } else if (next_pixel >= 0x8000) { // Channel 2
+                dest_buf[2][i2] = next_pixel;
+                i2++;
+            } else if (next_pixel >= 0x4000) { // Channel 1
+                dest_buf[1][i1] = next_pixel;
+                i1++;
+            } else { // Channel 0
+                dest_buf[0][i0] = next_pixel;
+                i0++;
+            }
+
+            /*make sure the indices aren't too big*/
+            if (i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size) {
+                record("SCIENCE DATA BUFFER OVERFLOW!\n");
+                goto end_sort; // Don't freak out, breaking out of double loop 
+            }
+        }
+    }
+end_sort: // To break out of double loop
+
+    /*assign sizes for imageindex.xml*/
+    dest_size[0] = i0;
+    dest_size[1] = i1;
+    dest_size[2] = i2;
+    dest_size[3] = i3;
+
+}
+
+void unsort(roeimage_t * image) {
+    //    char buf[255];
+
+    register uint i, j = 0;
+    uint frag = NUM_FRAGMENT;
+    uint buf_size = SIZE_DS_BUFFER / 2;
+    unsigned short ** dest_buf = image->data;
+    unsigned short next_pixel;
+
+    /*values for predicting next pixel*/
+    //    unsigned short pred_val = 0;
+    //    unsigned short pred_pixel;
+    //    unsigned int count = 0;
+
+    //    int beef = 0;
+    //    int expected_size = frag * buf_size;
+
     uint * dest_size = image->size;
     for (i = 0; i < frag; i++) {
         for (j = 0; j < (buf_size); j++) {
-               dest_buf[k][(j * i) /4] = virt_buf[i][j];
-               k = (k + 1) % 4;
+
+            /*roll counter to the right by two*/
+            //            pred_pixel = rotr(pred_val);
+
+            next_pixel = virt_buf[i][j];
+
+            //            if ((next_pixel != pred_pixel)) {
+            //                printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
+            //                pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
+            //            } else {
+            //                pred_val = (pred_val + 1) % (2048 * 4);
+            //            }
+
+            dest_buf[i][j] = next_pixel;
+            //            count++;
+
         }
-       dest_size[i] = buf_size;    //number of pixels
+        dest_size[i] = buf_size; //number of pixels
     }
+    //    if (beef) {
+    //        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
+    //        record(buf);
+    //    }
 }
 
+void beef(roeimage_t * image) {
+    //    char buf[255];
 
+    register uint i, j = 0;
+    uint frag = NUM_FRAGMENT;
+    uint buf_size = SIZE_DS_BUFFER / 2; // since each pixel is a word
+    unsigned short ** dest_buf = image->data;
+    unsigned short next_pixel;
+    unsigned short notbeef = 0;
+
+    /*values for predicting next pixel*/
+    //    unsigned short pred_val = 0;
+    //    unsigned short pred_pixel;
+
+    //    int beef = 0;
+    uint * dest_size = image->size;
+    for (i = 0; i < frag; i++) {
+        for (j = 0; j < (buf_size); j++) {
+
+            /*roll counter to the right by two*/
+            //            pred_pixel = rotr(pred_val);
+            //            pred_pixel = rotr(pred_pixel);
+
+            next_pixel = virt_buf[i][j];
+            if (next_pixel != 0xBEEF) {
+                notbeef++;
+            }
+            dest_buf[i][j] = next_pixel;
+            //            pred_val++;
+
+        }
+        printf("%04x\n", next_pixel);
+        dest_size[i] = buf_size; //number of pixels
+
+    }
+    printf("Lost pixels! %d out of %d pixels\n", notbeef, buf_size * frag);
+}
 
 /**
  * Clear page-locked DMA buffer out of memory
@@ -183,7 +320,7 @@ int dmaClearBlock() {
         }
     }
 
-    printf("DMA Block Cleared\n");
+    record("DMA Block Cleared\n");
     return (TRUE);
 }
 
@@ -193,7 +330,7 @@ int dmaClearBlock() {
 void dmaClose() {
     int rc;
 
-    printf("Closing DMA Channel: \n");
+    record("Closing DMA Channel: \n");
     rc = PlxPci_DmaChannelClose(&fpga_dev, dmaChannel);
 
     if (rc != ApiSuccess) {
@@ -206,8 +343,47 @@ void dmaClose() {
             // Attempt to close again 
             PlxPci_DmaChannelClose(&fpga_dev, 0);
 
-            //printf("%d", bPass);
         }
     }
-    PlxPci_DeviceClose(&fpga_dev);
+}
+
+int close_fpga() {
+    int rc;
+
+    rc = PlxPci_DeviceClose(&fpga_dev);
+    if (rc != ApiSuccess) {
+        //printf("*ERROR* - API failed, unable to open PLX Device\n");
+        PlxSdkErrorDisplay(rc);
+        exit(-1);
+    }
+    return TRUE;
+
+}
+
+int set_buffer_mode() {
+    record("Set FPGA to buffer state\n");
+    // Set Data Manager State to BUFFER
+    output_ddr2_ctrl &= 0x00FFFFFF;
+    output_ddr2_ctrl |= (0x01 << 24);
+    int rc = WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
+    if (rc == ApiSuccess) {
+        return TRUE;
+    } else {
+        PlxSdkErrorDisplay(rc);
+        return FALSE;
+    }
+}
+
+short rotr(short val) {
+    short temp = val >> 2;
+    short temp2 = val << 14;
+
+    return temp | temp2;
+}
+
+short rotl(short val) {
+    short temp = val << 2;
+    short temp2 = val >> 14;
+
+    return temp | temp2;
 }

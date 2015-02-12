@@ -41,6 +41,7 @@ enum thread_config {
     hlp_up_interface,
     hlp_down_interface,
     roe_interface,
+    image_sim_interface,
     synclink_interface,
 };
 

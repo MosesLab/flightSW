@@ -19,19 +19,22 @@
 #include "fpga.h"
 
 /*IO constants*/
-#define NUM_IO 4
 #define HLP_CONTROL_CONF "HLP_CONTROL_THREAD"
 #define DOWN_CONF "HLP_DOWN_THREAD"
 #define GPIO_CONTROL_CONF "GPIO_CONTROL_THREAD"
 #define SCIENCE_CONF "SCIENCE_THREAD"
 #define TELEM_CONF "TELEM_THREAD"
 #define SHELL_CONF "HLP_SHELL_THREAD"
+#define IMAGE_WRITER_CONF "IMAGE_THREAD"
+#define FPGA_SERVER_CONF "FPGA_SERVER_THREAD"
+
+#define NUM_IO 5
 #define HKUP_CONF "HLP_UP"
 #define HKDOWN_CONF "HLP_DOWN"
 #define ROE_CONF "ROE"
+#define IMAGE_SIM_CONF "IMAGE_SIM"
 #define SYNCLINK_CONF "SYNCLINK_TM"
-#define IMAGE_WRITER_CONF "IMAGE_THREAD"
-#define FPGA_SERVER_CONF "FPGA_SERVER_THREAD"
+
 
 
 
@@ -65,15 +68,18 @@ enum queues{
 extern LockingQueue lqueue[QUEUE_NUM];
 extern uint lqueue_num;
 
+int moses();
+int main(int argc, char **argv);
 void main_init();
 void read_moses_config();
-
 void quit_signal(int);  //signal handler
 void init_signal(int sig);
 void start_signal(int sig);
+void reset_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();
+void cleanup();
 
 
 
