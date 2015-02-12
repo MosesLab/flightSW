@@ -250,55 +250,78 @@ void * write_data(void * arg) {
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
-    record("-->High-speed Telemetry thread started....\n");
+    record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 0;
+    int rc;
+    unsigned int * databuf;    
+    const char * xml_path = "/mdata/";
+    char msg[100];
+    FILE * xml_fp;
+    size_t xml_size;
+    xml_t * new_xml = NULL;
+    roeimage_t * new_image = NULL;
 
+
+    /*Load the xml into a buffered stream once for reading from memory when needed*/
+    xml_fp = fopen(xml_path, "r+");
+    if (xml_fp == NULL) {
+        sprintf(msg, "fopen(%s) error=%d %s\n", xml_path, errno, strerror(errno));
+        record(msg);
+    }
+        
+    
     while (ts_alive) {
-        //        if (roeQueue.count != 0) {
-        //dequeue imgPtr_t here
+        
+        if (xmlTrigger == 0){
+            new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);
+            
+            record("Dequeued new image\n");
+            new_xml = NULL;            
+        }
+        else if (xmlTrigger == 1) {
+            /*First find the size of the current xml*/
+            /*Try using g_file_get_contents()? -- will also return size/contents of file -- #include <glib.h>;*/
+            struct stat st; 
+            if (stat(xml_path, &st) == 0) 
+                xml_size = (size_t)st.st_size;    
+            databuf = malloc(xml_size);           
+            sprintf(msg, "updating xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
+            record(msg);    
+            rc = fread(databuf, sizeof (int), xml_size, xml_fp);                //sizeof (char) or (int)??
+            if (rc < 0) {
+                sprintf(msg, "Error reading from xml path...\n");
+                record(msg);
+            }
+            
+            /*Assign new_xml struct mumbers here (or call a new function)*/            
+            /*TODO: CREATE XML PSEUDO-QUEUE INSTEAD?            new_xml = (xml_t *) dequeue(&lqueue[telem_image]);*/
+            
+            record("Dequeued new xml file\n");
+            new_image = NULL;            
+        }
 
-        //imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
-        roeimage_t * new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);          //Which queue do we pull from?
-        //char * curr_path = curr_image->filePath;
-        record("Dequeued new image\n");
+        int check = send_image(new_image, new_xml, synclink_fd);                //Send actual Image
 
-        //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
-//        fp = fopen(curr_path, "r");
-//
-//        if (fp == NULL) { //Error opening file
-//            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-//            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
-//        } 
-        //else fclose(fp); why is this here? RTS
-        //if ((&lqueue[telem_image])->first != NULL) { Commented out RTS, pretty sure we don't need this anymore
-
-//            fseek(fp, 0, SEEK_END); // seek to end of file; necessary?
-//            fseek(fp, 0, SEEK_SET);
-
-            int check = send_image(new_image, xmlTrigger, synclink_fd); //Send actual Image
-
-            if (check == 1) {
-                if (xmlTrigger == 1) {
-                        xmlTrigger = 0;
-                } else if (xmlTrigger == 0) {
-                        xmlTrigger = 1;
-                }
+        if (check == 1) {
+            if (xmlTrigger == 1) {
+                    xmlTrigger = 0;
+            } else if (xmlTrigger == 0) {
+                    xmlTrigger = 1;
+            }
                 
-                /*need to free allocated image to prevent memory leak --RTS*/
-                free(new_image->data[0]);
-                free(new_image->data[1]);
-                free(new_image->data[2]);
-                free(new_image->data[3]);
-                free(new_image);
-            }
-            
-            
-
-            if (check == 2) {
+            /*need to free allocated image to prevent memory leak --RTS*/
+            free(new_image->data[0]);
+            free(new_image->data[1]);
+            free(new_image->data[2]);
+            free(new_image->data[3]);
+            free(new_image);
+            free(new_xml);
+        }
+        
+        else if (check == 2) {
                 record("'ts_alive' not set; data not sent.\n");
-            }
-        //}
+        }
     }
     return NULL;
 }

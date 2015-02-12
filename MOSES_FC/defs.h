@@ -49,6 +49,7 @@ typedef struct {
 
 } packet_t;
 
+/*Node structure for hash table*/
 typedef struct node_t {
     struct node_t * next; //next chained entry in hash table
     char* name; //defined name
@@ -69,8 +70,6 @@ typedef struct {
 
 /*typedef for array of function pointers for HLP packets*/
 typedef int(*hlpControl)();
-
-/*Node structure for hash table*/
 
 /* This struct will contain the variables that represent the status of the system*/
 typedef struct {
@@ -113,7 +112,7 @@ typedef struct {
     char* observer; // observer of the image
     char* object; // the object in the image
     unsigned int duration; // the duration of the image exposure
-    unsigned int size[4];
+    unsigned int size[4]; //*** Does size[i] correspond to the size of data[i]? (in bytes or # of chars) 
     unsigned short* data[4]; // the image data
     char channels; //channels included in the image;
     char* seq_name; //sequence that initiated the image
@@ -121,7 +120,16 @@ typedef struct {
     unsigned int num_frames;
 } roeimage_t;
 
-typedef struct imgPtr { //Create image path node
+typedef struct {
+    char* filename;
+    char* name;
+    unsigned int total_lines;
+    char* first_line;
+    char* last_line;
+} xml_t;
+
+/*Create image path node*/
+typedef struct imgPtr { 
     char* filePath;
     struct imgPtr * next;
 } imgPtr_t;
