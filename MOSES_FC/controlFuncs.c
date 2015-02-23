@@ -324,7 +324,47 @@ int uDark4() {
 
 int uSleep() {
     record("Received shutdown Uplink\n");
+    char msg[255];
+   
+    /*According to EGSE software
+     * Shutter - 1
+     * ROE     - 2
+     * PMF     - 3
+     * TCS1    - 4
+     * TCS3    - 5
+     * TCS2    - 6
+     * TCS     - 7
+     * 5V Reg  - 8
+     * 12V Reg - 9
+     * HALPHA  - 10
+     * 
+     */
     /* Shut down Power.....*/
+    
+    /*Turn off Tcs1*/
+    set_power(0x04, OFF);
+    /*Turn off Tcs2*/
+    set_power(0x05, OFF);
+    /*Turn off Tcs3*/
+    set_power(0x06, OFF);
+    /*Turn off Shutter*/
+    set_power(0x01, OFF);
+    /*Turn off Roe*/
+    set_power(0x02, OFF);
+        /*Turn off Tcs1*/
+    set_power(0x04, OFF);
+    /*Turn off HAlpha*/
+    set_power(0x0A, OFF);
+    /*Turn off Premod*/
+    set_power(0x03, OFF);
+    /*Turn off Ps5V*/
+    set_power(0x08, OFF);
+    /*Turn off PsDual12V*/
+    set_power(0x09, OFF);  
+    
+    sprintf(msg, "All Subsystems turned off\n");
+    record(msg);
+    
 
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
