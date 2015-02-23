@@ -324,7 +324,6 @@ int uDark4() {
 
 int uSleep() {
     record("Received shutdown Uplink\n");
-    char msg[255];
    
     /*According to EGSE software
      * Shutter - 1
@@ -871,7 +870,7 @@ int resetSW(packet_t* p) {
     
     record("Command to reset flight software received\n");
     
-    kill(main_pid, SIGHUP);
+    kill(main_pid, SIGUSR2); // used to be SIGHUP
     
     return GOOD_PACKET;
 }

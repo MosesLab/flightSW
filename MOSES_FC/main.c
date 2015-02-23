@@ -97,6 +97,9 @@ int moses(){
 
         sleep(2);
         record("Flight software rebooting...\n");
+        
+        
+        
 
         /*reset stdin and stdout*/
 //        reset_std_io();

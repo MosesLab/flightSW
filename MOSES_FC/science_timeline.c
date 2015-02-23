@@ -155,7 +155,7 @@ void * science_timeline(void * arg) {
 
         a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
-        record("Done witps.seq_run = FAh sequences\n");
+        //record("Done with allsequences\n");
         ops.seq_run = FALSE;
 
     }//end while ts_alive
