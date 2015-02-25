@@ -100,6 +100,7 @@ int moses(){
         
         
         
+        
 
         /*reset stdin and stdout*/
 //        reset_std_io();

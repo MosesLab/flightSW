@@ -322,9 +322,10 @@ int uDark4() {
     return GOOD_PACKET;
 }
 
+/* DJK 2/24/15 - This function still needs to be tested*/
 int uSleep() {
     record("Received shutdown Uplink\n");
-   
+    char msg[255];
     /*According to EGSE software
      * Shutter - 1
      * ROE     - 2
@@ -339,6 +340,8 @@ int uSleep() {
      * 
      */
     /* Shut down Power.....*/
+    
+    
     
     /*Turn off Tcs1*/
     set_power(0x04, OFF);
@@ -362,12 +365,18 @@ int uSleep() {
     set_power(0x09, OFF);  
     
     sprintf(msg, "All Subsystems turned off\n");
-    record(msg);
-    
+    record(msg);    
 
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
+    
+    sleep(1);
+    if(fork() == 0)
+    {
+            execlp("shutdown","shutdown",
+                    "-t1","-h","now",(char *)0);
+    }
 }
 
 int uWake() {
