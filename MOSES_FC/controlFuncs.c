@@ -369,7 +369,7 @@ int uSleep() {
 
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
-    return GOOD_PACKET;
+    
     
     sleep(1);
     if(fork() == 0)
@@ -377,6 +377,8 @@ int uSleep() {
             execlp("shutdown","shutdown",
                     "-t1","-h","now",(char *)0);
     }
+    
+    return GOOD_PACKET;
 }
 
 int uWake() {
