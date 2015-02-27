@@ -258,7 +258,7 @@ void * telem(void * arg) {
     const char * xml_path = "/mdata/";
     char msg[100];
     FILE * xml_fp;
-    size_t xml_size;
+    size_t xml_size = 0;
     xml_t * new_xml = NULL;
     roeimage_t * new_image = NULL;
 
