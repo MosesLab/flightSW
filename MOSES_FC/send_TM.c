@@ -278,7 +278,7 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
 
         } else if (image != NULL && xml_buf == NULL) { //If we are on an even loop send an image
             record("ROE File...\n");
-            imagename = image->name;
+            imagename = image->filename;
 
             /*Write image frames here*/
             for (i = 1; i < 3; i++) {
@@ -298,7 +298,7 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
             /*write terminating characters*/
             sprintf(msg, "Sending image file %s \n", imagename);
             record(msg);
-            rc = write(fd, image->name, strlen(image->name)); //Ending characters "YYMMDDHHmmss.roe"
+            rc = write(fd, imagename, strlen(imagename)); //Ending characters "YYMMDDHHmmss.roe"
             if (rc < 0) {
                 sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
                 record(msg);
