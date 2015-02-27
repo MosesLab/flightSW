@@ -15,7 +15,7 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
     char sframe[10];
-    
+
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
@@ -122,11 +122,11 @@ void * science_timeline(void * arg) {
 
             /*Wait until FPGA has entered buffer mode*/
             rc = wait_on_sem(&dma_control_sem, 2);
-            if(rc != TRUE){
+            if (rc != TRUE) {
                 record("Failed to set FPGA to buffer mode, trying exposure again");
                 continue;
             }
-            
+
             /* Command ROE to Readout*/
             if (roe_struct.active) {
                 readOut(ops.read_block, 100000);
@@ -254,69 +254,74 @@ void * telem(void * arg) {
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 0;
     int rc;
-//    char * xml_databuf;    
-    const char * xml_path = "/mdata/";
+    //    char * xml_databuf;    
+    const char * xml_path = "/mdata/imageindex.xml";
     char msg[100];
     FILE * xml_fp;
     size_t xml_size = 0;
     xml_t * new_xml = NULL;
     roeimage_t * new_image = NULL;
 
-
-    /*Load the xml into a buffered stream once for reading from memory when needed*/
-    xml_fp = fopen(xml_path, "r+");
-    if (xml_fp == NULL) {
-        sprintf(msg, "fopen(%s) error=%d %s\n", xml_path, errno, strerror(errno));
-        record(msg);
-    }
-        
-    
+    /*Main telemetry loop*/
     while (ts_alive) {
-        
-        if (xmlTrigger == 0){
+
+        if (xmlTrigger == 0) {
             new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);
-            
+
             record("Dequeued new image\n");
-            new_xml = NULL;            
-        }
-        else if (xmlTrigger == 1) {
+            new_xml = NULL;
+        } else if (xmlTrigger == 1) {
             /*allocate space for new xml file struct*/
-            new_xml = malloc(sizeof(xml_t));
-            
+            new_xml = malloc(sizeof (xml_t));
+
             /*First find the size of the current xml*/
-            struct stat st; 
+            struct stat st;
             if (stat(xml_path, &st) == 0) {
-                 xml_size = (size_t)st.st_size; 
-            }           
-            
+                xml_size = (size_t) st.st_size;
+            }
+
             /*assign buffer and size to struct members*/
-            new_xml->data_buf = malloc(xml_size);  
+            new_xml->data_buf = malloc(xml_size);
             new_xml->size = xml_size;
-            
-            sprintf(msg, "updating xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
-            record(msg);    
-            rc = fread(new_xml->data_buf, sizeof (char), xml_size, xml_fp);                //sizeof (char) or (int)??
+
+            sprintf(msg, "Reading xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
+            record(msg);
+
+            /*Load the xml into a buffered stream once for reading from memory when needed*/
+            xml_fp = fopen(xml_path, "r+");
+            if (xml_fp == NULL) {
+                sprintf(msg, "fopen(%s) error=%d %s\n", xml_path, errno, strerror(errno));
+                record(msg);
+            }
+
+            rc = fread(new_xml->data_buf, sizeof (char), xml_size, xml_fp); //sizeof (char) or (int)??
             if (rc < 0) {
                 sprintf(msg, "Error reading from xml path...\n");
                 record(msg);
             }
-            
-            /*Assign new_xml struct mumbers here (or call a new function)*/            
+
+            rc = fclose(xml_fp);
+            if (rc < 0) {
+                record("Error closing xml file\n");
+            }
+
+
+            /*Assign new_xml struct mumbers here (or call a new function)*/
             /*TODO: CREATE XML PSEUDO-QUEUE INSTEAD?            new_xml = (xml_t *) dequeue(&lqueue[telem_image]);*/
-            
+
             record("Dequeued new xml file\n");
-            new_image = NULL;            
+            new_image = NULL;
         }
 
-        int check = send_image(new_image, new_xml, synclink_fd);                //Send actual Image
+        int check = send_image(new_image, new_xml, synclink_fd); //Send actual Image
 
         if (check == 1) {
             if (xmlTrigger == 1) {
-                    xmlTrigger = 0;
+                xmlTrigger = 0;
             } else if (xmlTrigger == 0) {
-                    xmlTrigger = 1;
+                xmlTrigger = 1;
             }
-                
+
             /*need to free allocated image to prevent memory leak --RTS*/
             free(new_image->data[0]);
             free(new_image->data[1]);
@@ -324,10 +329,8 @@ void * telem(void * arg) {
             free(new_image->data[3]);
             free(new_image);
             free(new_xml);
-        }
-        
-        else if (check == 2) {
-                record("'ts_alive' not set; data not sent.\n");
+        } else if (check == 2) {
+            record("'ts_alive' not set; data not sent.\n");
         }
     }
     return NULL;
