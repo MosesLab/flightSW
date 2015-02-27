@@ -227,7 +227,7 @@ void * write_data(void * arg) {
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
-            enqueue(&lqueue[telem_image], &image); //enqueues the path for telem
+            enqueue(&lqueue[telem_image], image); //enqueues the path for telem
             record("Filename pushed to telemetry queue\n");
         } else {
             /*need to free allocated image to prevent memory leak --RTS*/
