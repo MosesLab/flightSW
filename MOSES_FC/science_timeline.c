@@ -233,15 +233,15 @@ void * write_data(void * arg) {
             newPtr.next = NULL;
             enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
             record("Filename pushed to telemetry queue\n");
+        } else {
+            /*need to free allocated image to prevent memory leak --RTS*/
+            free(image->data[0]);
+            free(image->data[1]);
+            free(image->data[2]);
+            free(image->data[3]);
+            free(image);
         }
 
-
-        /*need to free allocated image to prevent memory leak --RTS*/
-        free(image->data[0]);
-        free(image->data[1]);
-        free(image->data[2]);
-        free(image->data[3]);
-        free(image);
     }//end while ts_alive
 
     return 0;
