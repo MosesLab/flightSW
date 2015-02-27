@@ -266,7 +266,7 @@ void * telem(void * arg) {
     while (ts_alive) {
 
         if (xmlTrigger == 0) {
-            new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);
+            new_image = dequeue(&lqueue[telem_image]);
 
             record("Dequeued new image\n");
 
@@ -322,10 +322,13 @@ void * telem(void * arg) {
                 free(new_image->data[2]);
                 free(new_image->data[3]);
                 free(new_image);
-
+                new_image = NULL;
+                
                 xmlTrigger = 0;
             } else if (xmlTrigger == 0) { // we just sent an image
                 free(new_xml);
+                new_xml = NULL;
+                
                 xmlTrigger = 1;
             }
 
