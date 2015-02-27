@@ -97,40 +97,39 @@ int synclink_init(int killSwitch) {
     int sigs, idle;
     char *devname = "/dev/ttyUSB0";
     char msg[255];
-    
+
 
     if (killSwitch == 0) {
 
-        
+
         int ldisc = N_HDLC, child_status;
         MGSL_PARAMS params;
 
         pid_t pid = fork();
-        if (pid == -1) {                                                        //Check Fork
+        if (pid == -1) { //Check Fork
             perror("Fork failure");
             exit(EXIT_FAILURE);
         }
 
         if (pid == 0) {
-            execlp("fsynth", "fsynth", devname, (char *) NULL);                 //fsynth was compiled with 20MHz
-            perror("execlp");                                                   //selected in code
-            _exit(EXIT_FAILURE);                                                //Child should die after exec call. If it gets
-                                                                                //here then the exec failed
+            execlp("fsynth", "fsynth", devname, (char *) NULL); //fsynth was compiled with 20MHz
+            perror("execlp"); //selected in code
+            _exit(EXIT_FAILURE); //Child should die after exec call. If it gets
+            //here then the exec failed
         } else if (pid > 0) {
-            wait(&child_status);                                                //Wait for child to finish
+            wait(&child_status); //Wait for child to finish
         }
 
-        sprintf(msg,"send HDLC data on %s\n", devname);
+        sprintf(msg, "send HDLC data on %s\n", devname);
         record(msg);
 
         /* open serial device with O_NONBLOCK to ignore DCD input */
-        fd = open(devname, O_RDWR | O_NONBLOCK, 0);                             // Changed from 'O_TRUNC' to 'O_RDWR | O_NONBLOCK'
+        fd = open(devname, O_RDWR | O_NONBLOCK, 0); // Changed from 'O_TRUNC' to 'O_RDWR | O_NONBLOCK'
         if (fd < 0) {
-            sprintf(msg,"open error=%d %s\n", errno, strerror(errno));
+            sprintf(msg, "open error=%d %s\n", errno, strerror(errno));
             record(msg);
             return fd;
-        }
-        else {
+        } else {
             sprintf(msg, "device opened on %s\n", devname);
             record(msg);
         }
@@ -144,7 +143,7 @@ int synclink_init(int killSwitch) {
          */
         rc = ioctl(fd, TIOCSETD, &ldisc);
         if (rc < 0) {
-            sprintf(msg,"set line discipline error=%d %s\n",
+            sprintf(msg, "set line discipline error=%d %s\n",
                     errno, strerror(errno));
             record(msg);
             return rc;
@@ -153,7 +152,7 @@ int synclink_init(int killSwitch) {
         /* get current device parameters */
         rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
         if (rc < 0) {
-            sprintf(msg,"ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
                     errno, strerror(errno));
             record(msg);
             return rc;
@@ -180,7 +179,7 @@ int synclink_init(int killSwitch) {
         /* set current device parameters */
         rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
         if (rc < 0) {
-            sprintf(msg,"ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
                     errno, strerror(errno));
             record(msg);
             return rc;
@@ -190,7 +189,7 @@ int synclink_init(int killSwitch) {
         idle = HDLC_TXIDLE_FLAGS;
         rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
         if (rc < 0) {
-            sprintf(msg,"ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
                     errno, strerror(errno));
             record(msg);
             return rc;
@@ -203,40 +202,39 @@ int synclink_init(int killSwitch) {
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIS, &sigs);
         if (rc < 0) {
-            sprintf(msg,"assert DTR/RTS error=%d %s\n",
+            sprintf(msg, "assert DTR/RTS error=%d %s\n",
                     errno, strerror(errno));
             record(msg);
             return rc;
         }
 
-        /*enable transmitter; should this appear before "return"?*/               
+        /*enable transmitter; should this appear before "return"?*/
         int enable = 1;
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
-    }
-    else if (killSwitch == 1) {                                                 //Turns off synclink
+    } else if (killSwitch == 1) { //Turns off synclink
         record("synclink killSwitch: Turn off RTS and DTR\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIC, &sigs);
         if (rc < 0) {
-            sprintf(msg,"negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            sprintf(msg, "negate DTR/RTS error=%d %s\n", errno, strerror(errno));
             record(msg);
             return rc;
         }
-    
+
         /* Close the device*/
         close(fd);
-    
+
     }
 
     return fd;
 }
 
-int send_image(roeimage_t * image, xml_t * xml, int fd) {
+int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
 
-    int rc;
+    int rc = 0;
     int i;
     int totalSize = 0;
-    char *imagename = NULL;                                                     //Number to determine how much data is sent
+    char *imagename = NULL; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
     char msg[255];
@@ -245,84 +243,81 @@ int send_image(roeimage_t * image, xml_t * xml, int fd) {
      * Write file to TM. This requires input from memory in the form of roeimage_t OR xml_t struct, 
      * then sending the data buffer to the device via a write call.
      */
-    
-    if (ts_alive) {
-//        if (roeQueue->count != 0)
 
-            record("Sending data: \n");
-            gettimeofday(&time_begin, NULL);                                    //Determine elapsed time for file write to TM
-            
-            if (image==NULL && xml!=NULL) {                                                //If we are on an odd loop send an xml file
-                record("XML File...\n");
-                imagename = xml->name;
-                
-                /*write xml lines*/
-                for (i=1;i<(xml->total_lines);i++) {
-                    rc = write(fd, xml->first_line, strlen(xml->first_line));
-                    if (rc < 0) {
-                        sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                        record(msg);
-                        break;
-                    }
-                    /* block until all data sent */
-                    totalSize += rc;
-                    rc = tcdrain(fd);
-                }
-                if (rc < 0) return rc;                                          //Finishes the write error handling after the break
-                
-                /*write terminating characters*/
-                rc = write(fd, xml->name, strlen(xml->name));
+    if (ts_alive) {
+        //        if (roeQueue->count != 0)
+
+        record("Sending data: \n");
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+
+        if (image == NULL && xml_buf != NULL) { //If we are on an odd loop send an xml file
+            record("XML File...\n");
+            imagename = "imageindex.xml";
+
+            /*write xml lines*/
+            rc = write(fd, xml_buf->data_buf, xml_buf->size);
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+            }
+            /* block until all data sent */
+            totalSize += rc;
+            rc = tcdrain(fd);
+
+            if (rc < 0) return rc; //Finishes the write error handling after the break
+
+            /*write terminating characters*/
+            rc = write(fd, imagename, strlen(imagename));
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+                return rc;
+            }
+            /*block until all data sent*/
+            rc = tcdrain(fd);
+
+        } else if (image != NULL && xml_buf == NULL) { //If we are on an even loop send an image
+            record("ROE File...\n");
+            imagename = image->name;
+
+            /*Write image frames here*/
+            for (i = 1; i < 3; i++) {
+                rc = write(fd, image->data[i], image->size[i]);
                 if (rc < 0) {
-                    sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
+                    sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
                     record(msg);
-                    return rc;
+                    break;
                 }
-                /*block until all data sent*/
+                /* block until all data sent */
+                totalSize += rc;
                 rc = tcdrain(fd);
-                
-            } else if (image!=NULL && xml==NULL) {                                       //If we are on an even loop send an image
-                record("ROE File...\n");
-                imagename = image->name;
-                
-                /*Write image frames here*/
-                for (i=1;i<3;i++){
-                        rc = write(fd, image->data[i], image->size[i]);
-                        if (rc < 0) {
-                                sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                                record(msg);
-                                break;
-                        }
-                        /* block until all data sent */
-                        totalSize += rc;
-                        rc = tcdrain(fd);
-                        
-                }
-                if (rc < 0) return rc;                                          //Finishes the write error handling after the break
-                
-                /*write terminating characters*/
-                rc = write(fd, image->name, strlen(image->name));               //Ending characters "YYMMDDHHmmss.roe"
-                if (rc < 0) {
-                        sprintf(msg,"write error=%d %s\n", errno, strerror(errno));
-                        record(msg);
-                        return rc;
-                }
-                /*block until all data sent*/
-                rc = tcdrain(fd);
-            }            
-            
-            gettimeofday(&time_end, NULL);                                      //Timing
-            record("all data sent\n");
-            sprintf(msg,"Sent %d bytes of data from file %s.\n", totalSize, imagename);
-            record(msg);
-            time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
-                    + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
-            sprintf(msg,"Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
-            record(msg);
-            
-            return 1;
+
+            }
+            if (rc < 0) return rc; //Finishes the write error handling after the break
+
+            /*write terminating characters*/
+            rc = write(fd, image->name, strlen(image->name)); //Ending characters "YYMMDDHHmmss.roe"
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+                return rc;
+            }
+            /*block until all data sent*/
+            rc = tcdrain(fd);
+        }
+
+        gettimeofday(&time_end, NULL); //Timing
+        record("all data sent\n");
+        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
+        record(msg);
+        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
+                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
+        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+        record(msg);
+
+        return 1;
 
     }
-    
     else return 2;
 
 }

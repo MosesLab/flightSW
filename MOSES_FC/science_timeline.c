@@ -254,7 +254,7 @@ void * telem(void * arg) {
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 0;
     int rc;
-    unsigned int * databuf;    
+//    char * xml_databuf;    
     const char * xml_path = "/mdata/";
     char msg[100];
     FILE * xml_fp;
@@ -280,15 +280,22 @@ void * telem(void * arg) {
             new_xml = NULL;            
         }
         else if (xmlTrigger == 1) {
+            /*allocate space for new xml file struct*/
+            new_xml = malloc(sizeof(xml_t));
+            
             /*First find the size of the current xml*/
-            /*Try using g_file_get_contents()? -- will also return size/contents of file -- #include <glib.h>;*/
             struct stat st; 
-            if (stat(xml_path, &st) == 0) 
-                xml_size = (size_t)st.st_size;    
-            databuf = malloc(xml_size);           
+            if (stat(xml_path, &st) == 0) {
+                 xml_size = (size_t)st.st_size; 
+            }           
+            
+            /*assign buffer and size to struct members*/
+            new_xml->data_buf = malloc(xml_size);  
+            new_xml->size = xml_size;
+            
             sprintf(msg, "updating xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
             record(msg);    
-            rc = fread(databuf, sizeof (int), xml_size, xml_fp);                //sizeof (char) or (int)??
+            rc = fread(new_xml->data_buf, sizeof (char), xml_size, xml_fp);                //sizeof (char) or (int)??
             if (rc < 0) {
                 sprintf(msg, "Error reading from xml path...\n");
                 record(msg);

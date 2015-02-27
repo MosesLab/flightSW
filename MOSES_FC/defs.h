@@ -121,11 +121,8 @@ typedef struct {
 } roeimage_t;
 
 typedef struct {
-    char* filename;
-    char* name;
-    unsigned int total_lines;
-    char* first_line;
-    char* last_line;
+    char * data_buf;
+    unsigned int size;  // in bytes
 } xml_t;
 
 /*Create image path node*/
