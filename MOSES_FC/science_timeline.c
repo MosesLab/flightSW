@@ -313,17 +313,17 @@ void * telem(void * arg) {
 
         if (check == 1) {
             if (xmlTrigger == 1) { // we just sent an xml file
+                free(new_xml);
+                new_xml = NULL;
+                
+                xmlTrigger = 0;
+            } else if (xmlTrigger == 0) { // we just sent an image              
                 free(new_image->data[0]);
                 free(new_image->data[1]);
                 free(new_image->data[2]);
                 free(new_image->data[3]);
                 free(new_image);
                 new_image = NULL;
-                
-                xmlTrigger = 0;
-            } else if (xmlTrigger == 0) { // we just sent an image
-                free(new_xml);
-                new_xml = NULL;
                 
                 xmlTrigger = 1;
             }
