@@ -296,7 +296,8 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
             if (rc < 0) return rc; //Finishes the write error handling after the break
 
             /*write terminating characters*/
-            sprintf("Sending image file %s \n", imagename)
+            sprintf(msg, "Sending image file %s \n", imagename);
+            record(msg);
             rc = write(fd, image->name, strlen(image->name)); //Ending characters "YYMMDDHHmmss.roe"
             if (rc < 0) {
                 sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
