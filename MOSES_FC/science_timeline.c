@@ -269,7 +269,7 @@ void * telem(void * arg) {
             new_image = (roeimage_t *) dequeue(&lqueue[telem_image]);
 
             record("Dequeued new image\n");
-            new_xml = NULL;
+
         } else if (xmlTrigger == 1) {
             /*allocate space for new xml file struct*/
             new_xml = malloc(sizeof (xml_t));
@@ -310,25 +310,28 @@ void * telem(void * arg) {
             /*TODO: CREATE XML PSEUDO-QUEUE INSTEAD?            new_xml = (xml_t *) dequeue(&lqueue[telem_image]);*/
 
             record("Dequeued new xml file\n");
-            new_image = NULL;
+
         }
 
         int check = send_image(new_image, new_xml, synclink_fd); //Send actual Image
 
         if (check == 1) {
-            if (xmlTrigger == 1) {
+            if (xmlTrigger == 1) { // we just sent an xml file
+                free(new_image->data[0]);
+                free(new_image->data[1]);
+                free(new_image->data[2]);
+                free(new_image->data[3]);
+                free(new_image);
+
                 xmlTrigger = 0;
-            } else if (xmlTrigger == 0) {
+            } else if (xmlTrigger == 0) { // we just sent an image
+                free(new_xml);
                 xmlTrigger = 1;
             }
 
             /*need to free allocated image to prevent memory leak --RTS*/
-            free(new_image->data[0]);
-            free(new_image->data[1]);
-            free(new_image->data[2]);
-            free(new_image->data[3]);
-            free(new_image);
-            free(new_xml);
+
+
         } else if (check == 2) {
             record("'ts_alive' not set; data not sent.\n");
         }
