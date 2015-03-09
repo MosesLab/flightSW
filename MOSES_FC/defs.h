@@ -118,6 +118,8 @@ typedef struct {
     char* seq_name; //sequence that initiated the image
     unsigned int num_exp;
     unsigned int num_frames;
+    char * xml_buf;     // buffer to store xml data for updating imageindex.cml
+    unsigned int xml_buf_sz;  // number of bytes in the xml buffer
 } roeimage_t;
 
 typedef struct {
