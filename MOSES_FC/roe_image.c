@@ -138,24 +138,24 @@ void writeToFile(roeimage_t * image) {
     char * xmlbuf = malloc(650 * sizeof(char));        // Each xml snippet is approximately 597 bytes
     
     /*write xml data to buffer*/
-    xml_sz += sprintf(xmlbuf, "<ROEIMAGE>\n");
-    xml_sz += sprintf(xmlbuf, "\t<FILENAME>%s</FILENAME>\n", image->filename);
-    xml_sz += sprintf(xmlbuf, "\t<NAME>%s</NAME>\n", image->name);
-    xml_sz += sprintf(xmlbuf, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
-    xml_sz += sprintf(xmlbuf, "\t<WIDTH>%d</WIDTH>\n", image->width);
-    xml_sz += sprintf(xmlbuf, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
-    xml_sz += sprintf(xmlbuf, "\t<DATE>%s</DATE>\n", image->date);
-    xml_sz += sprintf(xmlbuf, "\t<TIME>%s</TIME>\n", image->time);
-    xml_sz += sprintf(xmlbuf, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
-    xml_sz += sprintf(xmlbuf, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
-    xml_sz += sprintf(xmlbuf, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
-    xml_sz += sprintf(xmlbuf, "\t<OBJECT>%s</OBJECT>\n", image->object);
-    xml_sz += sprintf(xmlbuf, "\t<DURATION>%d</DURATION>\n", image->duration);
+    xml_sz += sprintf(xmlbuf + xml_sz, "<ROEIMAGE>\n");
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<FILENAME>%s</FILENAME>\n", image->filename);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<NAME>%s</NAME>\n", image->name);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<WIDTH>%d</WIDTH>\n", image->width);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<DATE>%s</DATE>\n", image->date);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<TIME>%s</TIME>\n", image->time);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<OBJECT>%s</OBJECT>\n", image->object);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
     xml_sz += sprintf(xmlbuf, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        xml_sz += sprintf(xmlbuf, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
-    xml_sz += sprintf(xmlbuf, "</ROEIMAGE>\n");
+    xml_sz += sprintf(xmlbuf + xml_sz, "</ROEIMAGE>\n");
     
     /*save xml snippet buffer in roeimage struct to pass to telem*/
     image->xml_buf = xmlbuf;
