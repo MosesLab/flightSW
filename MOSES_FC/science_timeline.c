@@ -222,7 +222,7 @@ void * write_data(void * arg) {
         /*write the image and metadata to disk*/
         writeToFile(image);
 
-        sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
+        sprintf(msg, "File %s %p successfully written to disk. (%d out of %d)\n", filename, image, image->num_exp, image->num_frames);
         record(msg);
 
         /*push the filename onto the telemetry queue*/
@@ -265,7 +265,7 @@ void * telem(void * arg) {
         //        if (xmlTrigger == 0) {
         new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
 
-        sprintf(msg, "Dequeued new image %s\n", new_image->filename);
+        sprintf(msg, "Dequeued new image %s %p\n", new_image->filename, new_image);
         record(msg);
 
         //        } else if (xmlTrigger == 1) {
