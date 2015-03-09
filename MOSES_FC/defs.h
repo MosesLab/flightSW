@@ -112,7 +112,7 @@ typedef struct {
     char* observer; // observer of the image
     char* object; // the object in the image
     unsigned int duration; // the duration of the image exposure
-    unsigned int size[4]; //*** Does size[i] correspond to the size of data[i]? (in bytes or # of chars) 
+    unsigned int size[4]; // size corresponds to number of pixels in image so, # of bytes = size *2 
     unsigned short* data[4]; // the image data
     char channels; //channels included in the image;
     char* seq_name; //sequence that initiated the image

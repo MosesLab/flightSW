@@ -282,7 +282,7 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
 
             /*Write image frames here*/
             for (i = 1; i < 4; i++) {
-                rc = write(fd, image->data[i], image->size[i]);
+                rc = write(fd, image->data[i], image->size[i] * 2);      // size corresponds to num pixels, so multiply by 2 to get bytes
                 if (rc < 0) {
                     sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
                     record(msg);
