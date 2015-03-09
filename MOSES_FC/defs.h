@@ -122,10 +122,10 @@ typedef struct {
     unsigned int xml_buf_sz;  // number of bytes in the xml buffer
 } roeimage_t;
 
-typedef struct {
-    char * data_buf;
-    unsigned int size;  // in bytes
-} xml_t;
+//typedef struct {
+//    char * data_buf;
+//    unsigned int size;  // in bytes
+//} xml_t;
 
 /*Create image path node*/
 typedef struct imgPtr { 

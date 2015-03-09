@@ -25,7 +25,7 @@
 #include "lockingQueue.h"
 #include "roe_image.h"
 
-int send_image(roeimage_t*, xml_t*, int);
+int send_image(roeimage_t*, int);
 void display_usage(void);
 int synclink_init(int);
 

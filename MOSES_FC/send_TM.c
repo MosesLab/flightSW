@@ -229,7 +229,7 @@ int synclink_init(int killSwitch) {
     return fd;
 }
 
-int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
+int send_image(roeimage_t * image, int fd) {
 
     int rc = 0;
     int i;
@@ -245,68 +245,77 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
      */
 
     if (ts_alive) {
-        //        if (roeQueue->count != 0)
 
         record("Sending data: \n");
         gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
 
-        if (image == NULL && xml_buf != NULL) { //If we are on an odd loop send an xml file
-            record("XML File...\n");
-            imagename = "imageindex.xml";
+        /*start sending imageindex.xml snippet*/
+        record("XML File...\n");
+        imagename = "imageindex.xml";
 
-            /*write xml lines*/
-            rc = write(fd, xml_buf->data_buf, xml_buf->size);
+        /*write xml lines*/
+        rc = write(fd, image->xml_buf, image->xml_buf_sz);
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+        }
+        /* block until all data sent */
+        totalSize += rc;
+        rc = tcdrain(fd);
+
+        if (rc < 0) return rc; //Finishes the write error handling after the break
+
+        /*write terminating characters*/
+        rc = write(fd, imagename, strlen(imagename));
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return rc;
+        }
+        /*block until all data sent*/
+        rc = tcdrain(fd);
+
+        /*report time taken for XML file*/
+        gettimeofday(&time_end, NULL); //Timing
+        record("all data sent\n");
+        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
+        record(msg);
+        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
+                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
+        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+        record(msg);
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+
+        /*start sending science data*/
+        record("ROE File...\n");
+        imagename = image->filename;
+
+        /*Write image frames here*/
+        for (i = 1; i < 4; i++) {
+            rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
             if (rc < 0) {
                 sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
                 record(msg);
+                break;
             }
             /* block until all data sent */
             totalSize += rc;
             rc = tcdrain(fd);
 
-            if (rc < 0) return rc; //Finishes the write error handling after the break
-
-            /*write terminating characters*/
-            rc = write(fd, imagename, strlen(imagename));
-            if (rc < 0) {
-                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-                record(msg);
-                return rc;
-            }
-            /*block until all data sent*/
-            rc = tcdrain(fd);
-
-        } else if (image != NULL && xml_buf == NULL) { //If we are on an even loop send an image
-            record("ROE File...\n");
-            imagename = image->filename;
-
-            /*Write image frames here*/
-            for (i = 1; i < 4; i++) {
-                rc = write(fd, image->data[i], image->size[i] * 2);      // size corresponds to num pixels, so multiply by 2 to get bytes
-                if (rc < 0) {
-                    sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-                    record(msg);
-                    break;
-                }
-                /* block until all data sent */
-                totalSize += rc;
-                rc = tcdrain(fd);
-
-            }
-            if (rc < 0) return rc; //Finishes the write error handling after the break
-
-            /*write terminating characters*/
-            sprintf(msg, "Sending image file %s \n", imagename);
-            record(msg);
-            rc = write(fd, imagename + 7, strlen(imagename) - 7); //Ending characters "YYMMDDHHmmss.roe"
-            if (rc < 0) {
-                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-                record(msg);
-                return rc;
-            }
-            /*block until all data sent*/
-            rc = tcdrain(fd);
         }
+        if (rc < 0) return rc; //Finishes the write error handling after the break
+
+        /*write terminating characters*/
+        sprintf(msg, "Sending image file %s \n", imagename);
+        record(msg);
+        rc = write(fd, imagename + 7, strlen(imagename) - 7); //Ending characters "YYMMDDHHmmss.roe"
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return rc;
+        }
+        /*block until all data sent*/
+        rc = tcdrain(fd);
 
         gettimeofday(&time_end, NULL); //Timing
         record("all data sent\n");
@@ -316,10 +325,11 @@ int send_image(roeimage_t * image, xml_t * xml_buf, int fd) {
                 + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
         sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
         record(msg);
-
-        return 1;
-
     }
-    else return 2;
+
+
+
+    return 1;
+
 
 }

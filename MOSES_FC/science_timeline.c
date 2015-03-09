@@ -235,6 +235,7 @@ void * write_data(void * arg) {
             free(image->data[1]);
             free(image->data[2]);
             free(image->data[3]);
+            free(image->xml_buf);
             free(image);
         }
 
@@ -248,92 +249,95 @@ void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
     record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
-    int xmlTrigger = 0;
+    //    int xmlTrigger = 0;
     int rc;
     //    char * xml_databuf;    
-    const char * xml_path = "/mdata/imageindex.xml";
-    char msg[100];
-    FILE * xml_fp;
-    size_t xml_size = 0;
-    xml_t * new_xml = NULL;
+    //    const char * xml_path = "/mdata/imageindex.xml";
+//    char msg[100];
+    //    FILE * xml_fp;
+    //    size_t xml_size = 0;
     roeimage_t * new_image = NULL;
 
     /*Main telemetry loop*/
     while (ts_alive) {
 
-        if (xmlTrigger == 0) {
-            new_image = dequeue(&lqueue[telem_image]);
+        //        if (xmlTrigger == 0) {
+        new_image = dequeue(&lqueue[telem_image]);
 
-            record("Dequeued new image\n");
+        record("Dequeued new image\n");
 
-        } else if (xmlTrigger == 1) {
-            /*allocate space for new xml file struct*/
-            new_xml = malloc(sizeof (xml_t));
+        //        } else if (xmlTrigger == 1) {
+        //            /*allocate space for new xml file struct*/
+        //            new_xml = malloc(sizeof (xml_t));
+        //
+        //            /*First find the size of the current xml*/
+        //            struct stat st;
+        //            if (stat(xml_path, &st) == 0) {
+        //                xml_size = (size_t) st.st_size;
+        //            }
+        //
+        //            /*assign buffer and size to struct members*/
+        //            new_xml->data_buf = malloc(xml_size);
+        //            new_xml->size = xml_size;
+        //
+        //            sprintf(msg, "Reading xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
+        //            record(msg);
+        //
+        //            /*Load the xml into a buffered stream once for reading from memory when needed*/
+        //            xml_fp = fopen(xml_path, "r+");
+        //            if (xml_fp == NULL) {
+        //                sprintf(msg, "fopen(%s) error=%d %s\n", xml_path, errno, strerror(errno));
+        //                record(msg);
+        //            }
+        //
+        //            rc = fread(new_xml->data_buf, sizeof (char), xml_size, xml_fp); //sizeof (char) or (int)??
+        //            if (rc < 0) {
+        //                sprintf(msg, "Error reading from xml path...\n");
+        //                record(msg);
+        //            }
+        //
+        //            rc = fclose(xml_fp);
+        //            if (rc < 0) {
+        //                record("Error closing xml file\n");
+        //            }
+        //
+        //
+        //            /*Assign new_xml struct mumbers here (or call a new function)*/
+        //            /*TODO: CREATE XML PSEUDO-QUEUE INSTEAD?            new_xml = (xml_t *) dequeue(&lqueue[telem_image]);*/
+        //
+        //            record("Dequeued new xml file\n");
+        //
+        //        }
 
-            /*First find the size of the current xml*/
-            struct stat st;
-            if (stat(xml_path, &st) == 0) {
-                xml_size = (size_t) st.st_size;
-            }
-
-            /*assign buffer and size to struct members*/
-            new_xml->data_buf = malloc(xml_size);
-            new_xml->size = xml_size;
-
-            sprintf(msg, "Reading xml file: %s to size: %d Bytes\n", xml_path, (int) xml_size);
-            record(msg);
-
-            /*Load the xml into a buffered stream once for reading from memory when needed*/
-            xml_fp = fopen(xml_path, "r+");
-            if (xml_fp == NULL) {
-                sprintf(msg, "fopen(%s) error=%d %s\n", xml_path, errno, strerror(errno));
-                record(msg);
-            }
-
-            rc = fread(new_xml->data_buf, sizeof (char), xml_size, xml_fp); //sizeof (char) or (int)??
-            if (rc < 0) {
-                sprintf(msg, "Error reading from xml path...\n");
-                record(msg);
-            }
-
-            rc = fclose(xml_fp);
-            if (rc < 0) {
-                record("Error closing xml file\n");
-            }
-
-
-            /*Assign new_xml struct mumbers here (or call a new function)*/
-            /*TODO: CREATE XML PSEUDO-QUEUE INSTEAD?            new_xml = (xml_t *) dequeue(&lqueue[telem_image]);*/
-
-            record("Dequeued new xml file\n");
-
+        rc = send_image(new_image, synclink_fd); //Send actual Image
+        if(rc < 0){
+            record("Failed to send image over telemetry!");
         }
 
-        int check = send_image(new_image, new_xml, synclink_fd); //Send actual Image
+        //        if (check == 1) {
+        //            if (xmlTrigger == 1) { // we just sent an xml file
+        //                free(new_xml);
+        //                new_xml = NULL;
+        //                
+        //                xmlTrigger = 0;
+        //            } else if (xmlTrigger == 0) { // we just sent an image              
+        free(new_image->data[0]);
+        free(new_image->data[1]);
+        free(new_image->data[2]);
+        free(new_image->data[3]);
+        free(new_image->xml_buf);
+        free(new_image);
+        //                new_image = NULL;
 
-        if (check == 1) {
-            if (xmlTrigger == 1) { // we just sent an xml file
-                free(new_xml);
-                new_xml = NULL;
-                
-                xmlTrigger = 0;
-            } else if (xmlTrigger == 0) { // we just sent an image              
-                free(new_image->data[0]);
-                free(new_image->data[1]);
-                free(new_image->data[2]);
-                free(new_image->data[3]);
-                free(new_image);
-                new_image = NULL;
-                
-                xmlTrigger = 1;
-            }
+        //                xmlTrigger = 1;
+        //            }
 
-            /*need to free allocated image to prevent memory leak --RTS*/
+        /*need to free allocated image to prevent memory leak --RTS*/
 
 
-        } else if (check == 2) {
-            record("'ts_alive' not set; data not sent.\n");
-        }
+        //        } else if (check == 2) {
+        //            record("'ts_alive' not set; data not sent.\n");
+        //        }
     }
     return NULL;
 }
