@@ -256,6 +256,7 @@ void * telem(void * arg) {
 //    char msg[100];
     //    FILE * xml_fp;
     //    size_t xml_size = 0;
+    char msg[255];
     roeimage_t * new_image = NULL;
 
     /*Main telemetry loop*/
@@ -264,7 +265,8 @@ void * telem(void * arg) {
         //        if (xmlTrigger == 0) {
         new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
 
-        record("Dequeued new image\n");
+        sprintf(msg, "Dequeued new image %s\n", new_image->filename);
+        record(msg);
 
         //        } else if (xmlTrigger == 1) {
         //            /*allocate space for new xml file struct*/
@@ -341,6 +343,7 @@ void * telem(void * arg) {
         //            record("'ts_alive' not set; data not sent.\n");
         //        }
     }
+    
     return NULL;
 }
 
