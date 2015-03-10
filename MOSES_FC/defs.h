@@ -101,7 +101,7 @@ typedef struct {
 
 typedef struct {
     char* filename; //filename associated with image
-    char* name; //image name
+    char* name; //name of sequence that initiated image
     unsigned int bitpix; //set the number of bits per pixel
     unsigned int width; // the width of each channel
     unsigned int height; // the height of each channel
@@ -115,9 +115,9 @@ typedef struct {
     unsigned int size[4]; // size corresponds to number of pixels in image so, # of bytes = size *2 
     unsigned short* data[4]; // the image data
     char channels; //channels included in the image;
-    char* seq_name; //sequence that initiated the image
-    unsigned int num_exp;
-    unsigned int num_frames;
+//    char* seq_name; //sequence that initiated the image  DEPRECATED --RTS
+    unsigned int num_exp;       // index of this image in the sequence
+    unsigned int num_frames;    // total number of images for this sequence
     char * xml_buf;     // buffer to store xml data for updating imageindex.cml
     unsigned int xml_buf_sz;  // number of bytes in the xml buffer
 } roeimage_t;

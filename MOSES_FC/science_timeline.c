@@ -98,8 +98,13 @@ void * science_timeline(void * arg) {
             record(msg);
             int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
 
+            /*copy name of sequence to the image struct*/
+            unsigned int name_size = strlen(currentSequence->sequenceName) + 1;
+            image->name = malloc(sizeof (char) * name_size); // add one for null terminated character
+            memcpy(image->name, currentSequence->sequenceName, name_size);
+
+            /*copy the rest of the values necessary for this image struct*/
             image->duration = duration;
-            image->seq_name = currentSequence->sequenceName;
             image->num_exp = i + 1; //Index of exposure in sequence
             image->num_frames = currentSequence->numFrames; //Number of exposures this sequence
 
@@ -178,20 +183,11 @@ void * write_data(void * arg) {
 
     while (ts_alive) {
 
-        //        short *BUFFER[4];
-        //        /*create pixel buffers */
-        //        int i;
-        //        for (i = 0; i < 4; i++) {
-        //            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-        //        }
-
-
-        char filename[80];
+        /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
         char ftimedate[80];
-        char dtime[100];
-        char ddate[100];
-
-
+        char * filename = malloc(sizeof (char) * 80);
+        char * dtime = malloc(sizeof (char) * 100);
+        char * ddate = malloc(sizeof (char) * 100);
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
@@ -209,7 +205,7 @@ void * write_data(void * arg) {
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
         image->filename = filename;
-        image->name = image->seq_name; //Add the information to the image
+        //        image->name = image->seq_name; //Add the information to the image
         image->date = ddate;
         image->time = dtime;
         //image.duration = duration;
@@ -231,6 +227,10 @@ void * write_data(void * arg) {
             record("Filename pushed to telemetry queue\n");
         } else {
             /*need to free allocated image to prevent memory leak --RTS*/
+            free(image->name);
+            free(image->filename);
+            free(image->date);
+            free(image->time);
             free(image->data[0]);
             free(image->data[1]);
             free(image->data[2]);
@@ -253,7 +253,7 @@ void * telem(void * arg) {
     int rc;
     //    char * xml_databuf;    
     //    const char * xml_path = "/mdata/imageindex.xml";
-//    char msg[100];
+    //    char msg[100];
     //    FILE * xml_fp;
     //    size_t xml_size = 0;
     char msg[255];
@@ -312,7 +312,7 @@ void * telem(void * arg) {
         //        }
 
         rc = send_image(new_image, synclink_fd); //Send actual Image
-        if(rc < 0){
+        if (rc < 0) {
             record("Failed to send image over telemetry!");
         }
 
@@ -322,14 +322,18 @@ void * telem(void * arg) {
         //                new_xml = NULL;
         //                
         //                xmlTrigger = 0;
-        //            } else if (xmlTrigger == 0) { // we just sent an image              
+        //            } else if (xmlTrigger == 0) { // we just sent an image 
+        free(new_image->name);
+        free(new_image->filename);
+        free(new_image->date);
+        free(new_image->time);
         free(new_image->data[0]);
         free(new_image->data[1]);
         free(new_image->data[2]);
         free(new_image->data[3]);
         free(new_image->xml_buf);
         free(new_image);
-        
+
         new_image = NULL;
         //                new_image = NULL;
 
@@ -343,7 +347,7 @@ void * telem(void * arg) {
         //            record("'ts_alive' not set; data not sent.\n");
         //        }
     }
-    
+
     return NULL;
 }
 
