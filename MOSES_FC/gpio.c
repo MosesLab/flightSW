@@ -214,7 +214,7 @@ int init_gpio() {
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl); // Set the Data Manager control signal to zero
 
     /*set camera interface to simulated or real*/
-    if (config_values[image_sim_interface]) {
+    if (config_values[image_sim_interface] == 0) {
         gpio_out_state.bf.camer_mux_sel = 0; // Simulated camera interface
     } else {
         gpio_out_state.bf.camer_mux_sel = 1; // actual ROE camera interface
