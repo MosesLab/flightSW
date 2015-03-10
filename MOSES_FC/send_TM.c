@@ -247,11 +247,11 @@ int send_image(roeimage_t * image, int fd) {
     if (ts_alive) {
 
         record("Sending data: \n");
-        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
-
-        /*start sending imageindex.xml snippet*/
+        
+        /*start sending imageindex.xml snippets*/
         record("XML File...\n");
         imagename = "imageindex.xml";
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for xml file write to TM
 
         /*write xml lines*/
         for (i = 0; i < (image->xml_cur_index + 1); i++) {
@@ -286,12 +286,16 @@ int send_image(roeimage_t * image, int fd) {
                 + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
         sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
         record(msg);
-        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+        
+        
+        
 
         /*start sending science data*/
         record("ROE File...\n");
+        totalSize = 0;  // reset variable that keeps track of bytes sent
         imagename = image->filename;
-
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+        
         /*Write image frames here*/
         for (i = 1; i < 4; i++) {
             rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
