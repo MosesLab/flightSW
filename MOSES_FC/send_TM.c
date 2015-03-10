@@ -254,7 +254,7 @@ int send_image(roeimage_t * image, int fd) {
         imagename = "imageindex.xml";
 
         /*write xml lines*/
-        for (i = 0; i < image->xml_cur_index; i++) {
+        for (i = 0; i < (image->xml_cur_index + 1); i++) {
             rc = write(fd, xml_snips[i], xml_snips_sz[i]);
             if (rc < 0) {
                 sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
