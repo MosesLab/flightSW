@@ -8,7 +8,7 @@
 #include "lockingQueue.h"
 
 void lockingQueue_init(LockingQueue * queue) {
-    queue->first = NULL;        //Initialize queue
+    queue->first = NULL; //Initialize queue
     queue->last = NULL;
     pthread_mutex_init(&queue->lock, NULL); //initialize mutex
 
@@ -16,22 +16,22 @@ void lockingQueue_init(LockingQueue * queue) {
     pthread_condattr_init(&queue->cattr);
     pthread_cond_init(&queue->cond, &queue->cattr);
 
-    queue->count = 0;   //amount of objects in the queue
+    queue->count = 0; //amount of objects in the queue
 }
 
-node_t * construct_queue_node(void * content){
+node_t * construct_queue_node(void * content) {
     node_t* n;
-    if((n = (node_t *)malloc(sizeof(node_t))) == NULL){
+    if ((n = (node_t *) malloc(sizeof (node_t))) == NULL) {
         record("malloc failed to allocate node");
     }
     n->def = content;
-    n->next = NULL;     //initialize next node to null
+    n->next = NULL; //initialize next node to null
     return n;
 }
 
 void enqueue(LockingQueue * queue, void * content) {
     pthread_mutex_lock(&queue->lock);
-    
+
     node_t * n = construct_queue_node(content);
 
     if (queue->first == NULL) {
@@ -43,25 +43,25 @@ void enqueue(LockingQueue * queue, void * content) {
         queue->last = n;
     }
     queue->count++;
-   
+
     pthread_cond_broadcast(&queue->cond); // Wake up consumer waiting for input
     pthread_mutex_unlock(&queue->lock);
 
 }
 
 void * dequeue(LockingQueue * queue) {
-//    struct timespec timeToWait;
-//    struct timeval now;
+    //    struct timespec timeToWait;
+    //    struct timeval now;
     node_t * n = NULL;
 
-//    gettimeofday(&now, NULL);
-//    timeToWait.tv_sec = now.tv_sec + 1;
-//    timeToWait.tv_nsec = 0;
+    //    gettimeofday(&now, NULL);
+    //    timeToWait.tv_sec = now.tv_sec + 1;
+    //    timeToWait.tv_nsec = 0;
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
     pthread_mutex_lock(&queue->lock);
     while ((queue->count == 0) && ts_alive) {
-//        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
+        //        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
         pthread_cond_wait(&queue->cond, &queue->lock);
     }
 
@@ -79,7 +79,7 @@ void * dequeue(LockingQueue * queue) {
     return ptr;
 }
 
-int occupied(LockingQueue * queue){
+int occupied(LockingQueue * queue) {
     return queue->count;
 }
 

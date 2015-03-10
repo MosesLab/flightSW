@@ -85,6 +85,8 @@ int exitDefault() {
     record("Attempting to exit default mode.\n");
     //record(msg);
 
+    //int rc = 0;
+    
     pthread_mutex_lock(&roe_struct.mx);
 
     //New Roe Program

@@ -15,7 +15,7 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
     char sframe[10];
-    
+
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
@@ -98,8 +98,13 @@ void * science_timeline(void * arg) {
             record(msg);
             int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
 
+            /*copy name of sequence to the image struct*/
+            unsigned int name_size = strlen(currentSequence->sequenceName) + 1;
+            image->name = malloc(sizeof (char) * name_size); // add one for null terminated character
+            memcpy(image->name, currentSequence->sequenceName, name_size);
+
+            /*copy the rest of the values necessary for this image struct*/
             image->duration = duration;
-            image->seq_name = currentSequence->sequenceName;
             image->num_exp = i + 1; //Index of exposure in sequence
             image->num_frames = currentSequence->numFrames; //Number of exposures this sequence
 
@@ -122,11 +127,11 @@ void * science_timeline(void * arg) {
 
             /*Wait until FPGA has entered buffer mode*/
             rc = wait_on_sem(&dma_control_sem, 2);
-            if(rc != TRUE){
+            if (rc != TRUE) {
                 record("Failed to set FPGA to buffer mode, trying exposure again");
                 continue;
             }
-            
+
             /* Command ROE to Readout*/
             if (roe_struct.active) {
                 readOut(ops.read_block, 100000);
@@ -178,20 +183,11 @@ void * write_data(void * arg) {
 
     while (ts_alive) {
 
-        //        short *BUFFER[4];
-        //        /*create pixel buffers */
-        //        int i;
-        //        for (i = 0; i < 4; i++) {
-        //            BUFFER[i] = (short *) calloc(2200000, sizeof (short));
-        //        }
-
-
-        char filename[80];
+        /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
         char ftimedate[80];
-        char dtime[100];
-        char ddate[100];
-
-
+        char * filename = malloc(sizeof (char) * 80);
+        char * dtime = malloc(sizeof (char) * 100);
+        char * ddate = malloc(sizeof (char) * 100);
 
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
@@ -209,12 +205,12 @@ void * write_data(void * arg) {
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
         image->filename = filename;
-        image->name = image->seq_name; //Add the information to the image
         image->date = ddate;
         image->time = dtime;
-        //image.duration = duration;
         image->width = 2048;
         image->height = 1024;
+        
+        image->xml_cur_index = xml_index;   // update current index of xml snippet array
 
 
         record("Image Opened\n");
@@ -222,26 +218,26 @@ void * write_data(void * arg) {
         /*write the image and metadata to disk*/
         writeToFile(image);
 
-        sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
+        sprintf(msg, "File %s %p successfully written to disk. (%d out of %d)\n", filename, image, image->num_exp, image->num_frames);
         record(msg);
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {
-
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
+            enqueue(&lqueue[telem_image], image); //enqueues the path for telem
             record("Filename pushed to telemetry queue\n");
+        } else {
+            /*need to free allocated image to prevent memory leak --RTS*/
+            free(image->name);
+            free(image->filename);
+            free(image->date);
+            free(image->time);
+            free(image->data[0]);
+            free(image->data[1]);
+            free(image->data[2]);
+            free(image->data[3]);
+            free(image);
         }
 
-
-        /*need to free allocated image to prevent memory leak --RTS*/
-        free(image->data[0]);
-        free(image->data[1]);
-        free(image->data[2]);
-        free(image->data[3]);
-        free(image);
     }//end while ts_alive
 
     return 0;
@@ -250,72 +246,40 @@ void * write_data(void * arg) {
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
     prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
-    record("-->High-speed Telemetry thread started....\n");
-    FILE *fp;
+    record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
-    int xmlTrigger = 1;
+    int rc;
+    char msg[255];
+    roeimage_t * new_image = NULL;
 
-    lockingQueue_init(&lqueue[telem_image]);
-
+    /*Main telemetry loop*/
     while (ts_alive) {
-        //        if (roeQueue.count != 0) {
-        //dequeue imgPtr_t here
 
-        imgPtr_t * curr_image = (imgPtr_t *) dequeue(&lqueue[telem_image]); //RTS
-        char * curr_path = curr_image->filePath;
+        /*dequeue new image from image writer thread*/
+        new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
+        sprintf(msg, "Dequeued new image %s %p\n", new_image->filename, new_image);
+        record(msg);
 
-        //            fp = fopen(roeQueue.first->filePath, "r");  //Open file
-        fp = fopen(curr_path, "r");
-
-        if (fp == NULL) { //Error opening file
-            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
-        } else fclose(fp);
-        if ((&lqueue[telem_image])->first != NULL) {
-
-            fseek(fp, 0, SEEK_END); // seek to end of file
-            fseek(fp, 0, SEEK_SET);
-
-            int check = send_image(curr_image, xmlTrigger, synclink_fd); //Send actual Image
-
-            if (xmlTrigger == 1) {
-                xmlTrigger = 0;
-            } else if (xmlTrigger == 0) {
-                xmlTrigger = 1;
-            }
-
-            if (check == 0) {
-                //                    tm_dequeue(&roeQueue);                  //dequeue the next packet once it becomes available
-            }
+       
+        rc = send_image(new_image, synclink_fd); //Send actual Image
+        if (rc < 0) {
+            record("Failed to send image over telemetry!");
         }
-        //        }
-        //        else {
-        //            struct timespec timeToWait;
-        //            struct timeval now;
-        //
-        //            gettimeofday(&now, NULL);
-        //            timeToWait.tv_sec = now.tv_sec + 1;
-        //            timeToWait.tv_nsec = 0;
-        //
-        //        }
+
+        /*free all dynamically allocated memory associated with image*/
+        free(new_image->name);
+        free(new_image->filename);
+        free(new_image->date);
+        free(new_image->time);
+        free(new_image->data[0]);
+        free(new_image->data[1]);
+        free(new_image->data[2]);
+        free(new_image->data[3]);
+        free(new_image);
+
+        new_image = NULL;
     }
+
     return NULL;
 }
 
-///*this function sets up the signal handler to run
-//  runsig when a signal is received from the experiment manager*/
-//void init_signal_handler_stl() {
-//
-//    sigfillset(&oldmaskstl); //save the old mask
-//    sigemptyset(&maskstl); //create a blank new mask
-//    sigaddset(&maskstl, SIGUSR1); //add SIGUSR1 to mask
-//
-//    /*no signal dispositions for signals between threads*/
-//        run_action.sa_handler = runsig;
-//        run_action.sa_mask = oldmaskstl;
-//        run_action.sa_flags = 0;
-//    
-//        sigaction(SIGUSR1, &run_action, NULL);
-//    record("Signal handler initiated.\n");
-//
-//}

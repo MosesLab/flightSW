@@ -75,37 +75,33 @@
 #endif
 
 #ifndef BUFSIZ
-#define BUFSIZ 1024
+#define BUFSIZ 4096
 #endif
 
 /*Function to demonstrate correct command line input*/
 void display_usage(void) {
-    printf("Usage: sendTM <devname> \n"
+    record("Usage: sendTM <devname> \n"
             "devname = device name (optional) (e.g. /dev/ttyUSB0 etc. "
             "Default is /dev/ttyUSB0)\n");
 }
 
 int synclink_init(int killSwitch) {
-    /* Fork and exec the fsynth program to set the clock source on the SyncLink
+    /* 
+     * Fork and exec the fsynth program to set the clock source on the SyncLink
      * to use the synthesized 20 MHz clock from the onboard frequency synthesizer
      * chip, for accurate generation of a 10 Mbps datastream. fsynth needs to be
      * in the PATH. 
      */
 
-    int fd, rc;
+    int rc, fd = 0;
     int sigs, idle;
     char *devname = "/dev/ttyUSB0";
-    
-    /* open serial device with O_NONBLOCK to ignore DCD input */
-    fd = open(devname, O_TRUNC, 0);
-    if (fd < 0) {
-        printf("open error=%d %s\n", errno, strerror(errno));
-        return fd;
-    }
+    char msg[255];
+
 
     if (killSwitch == 0) {
 
-        
+
         int ldisc = N_HDLC, child_status;
         MGSL_PARAMS params;
 
@@ -124,9 +120,19 @@ int synclink_init(int killSwitch) {
             wait(&child_status); //Wait for child to finish
         }
 
-        printf("send HDLC data on %s\n", devname);
+        sprintf(msg, "send HDLC data on %s\n", devname);
+        record(msg);
 
-
+        /* open serial device with O_NONBLOCK to ignore DCD input */
+        fd = open(devname, O_RDWR | O_NONBLOCK, 0); // Changed from 'O_TRUNC' to 'O_RDWR | O_NONBLOCK'
+        if (fd < 0) {
+            sprintf(msg, "open error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return fd;
+        } else {
+            sprintf(msg, "device opened on %s\n", devname);
+            record(msg);
+        }
 
         /*
          * set N_HDLC line discipline
@@ -137,16 +143,18 @@ int synclink_init(int killSwitch) {
          */
         rc = ioctl(fd, TIOCSETD, &ldisc);
         if (rc < 0) {
-            printf("set line discipline error=%d %s\n",
+            sprintf(msg, "set line discipline error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
         /* get current device parameters */
         rc = ioctl(fd, MGSL_IOCGPARAMS, &params);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCGPARAMS) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
@@ -171,166 +179,164 @@ int synclink_init(int killSwitch) {
         /* set current device parameters */
         rc = ioctl(fd, MGSL_IOCSPARAMS, &params);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCSPARAMS) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
-        /* set transmit idle pattern (sent between frames) */
-        idle = HDLC_TXIDLE_ALT_ZEROS_ONES;
+        /* set transmit idle pattern to all flags between frames ("idle = HDLC_TXIDLE_FLAGS;") */
+        idle = HDLC_TXIDLE_FLAGS;
         rc = ioctl(fd, MGSL_IOCSTXIDLE, idle);
         if (rc < 0) {
-            printf("ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
+            sprintf(msg, "ioctl(MGSL_IOCSTXIDLE) error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
-
-
 
         /* set device to blocking mode for reads and writes */
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
 
-        printf("Turn on RTS and DTR serial outputs\n");
+        record("Turn on RTS and DTR serial outputs\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIS, &sigs);
         if (rc < 0) {
-            printf("assert DTR/RTS error=%d %s\n",
+            sprintf(msg, "assert DTR/RTS error=%d %s\n",
                     errno, strerror(errno));
+            record(msg);
             return rc;
         }
 
-        /*enable transmitter*/
+        /*enable transmitter; should this appear before "return"?*/
         int enable = 1;
         rc = ioctl(fd, MGSL_IOCTXENABLE, enable);
-    }
-    else if (killSwitch == 1) { //Turns off synclink
-        printf("synclink killSwitch: Turn off RTS and DTR\n");
+    } else if (killSwitch == 1) { //Turns off synclink
+        record("synclink killSwitch: Turn off RTS and DTR\n");
         sigs = TIOCM_RTS + TIOCM_DTR;
         rc = ioctl(fd, TIOCMBIC, &sigs);
         if (rc < 0) {
-            printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            sprintf(msg, "negate DTR/RTS error=%d %s\n", errno, strerror(errno));
+            record(msg);
             return rc;
         }
+
+        /* Close the device*/
+        close(fd);
+
     }
-
-
 
     return fd;
 }
 
-int send_image(imgPtr_t * image, int xmlTrigger, int fd) {
+int send_image(roeimage_t * image, int fd) {
 
-    int rc;
-//    int killTrigger = 0;
-    int size = 1024;
-    unsigned char databuf[1024];
-    unsigned char temp[1024];
-    unsigned char endbuf[] = "smart"; //Used this string as end-frame to terminate seperate files
-
-    char *imagename = NULL;
-    FILE *fp = NULL;
-    int frame_count = 0; //Number to determine how much data is sent
+    int rc = 0;
+    int i;
+    int totalSize = 0;
+    char *imagename = NULL; //Number to determine how much data is sent
     struct timeval time_begin, time_end;
     int time_elapsed;
+    char msg[255];
 
-    char* xmlfile = "/mdata/imageindex.xml";
-
-    /* Write imagefile to TM. This requires reading a set number of bytes (1024 currently)
-     * from the file into the data buffer, then sending the data buffer to the device 
-     * via a write call.
+    /* 
+     * Write file to TM. This requires input from memory in the form of roeimage_t OR xml_t struct, 
+     * then sending the data buffer to the device via a write call.
      */
+
     if (ts_alive) {
-//        if (roeQueue->count != 0) {
-            frame_count = 0;
-            if (xmlTrigger == 1) { //If we are on an odd loop send an xml file
-                imagename = xmlfile;
-            } else if (xmlTrigger == 0) { //If we are on an even loop send an image
-                imagename = image->filePath;
-            }
 
-            /*Open image file for reading into a buffered stream*/
-            fp = fopen(imagename, "r");
-            if (fp == NULL) {
-                printf("fopen(%s) error=%d %s\n", imagename, errno, strerror(errno));
-                return 1;
-            }
-            /*Buffer the stream using the standard system bufsiz*/
-            rc = setvbuf(fp, NULL, _IOFBF, BUFSIZ);
-            if (rc != 0) {
-                printf("setvbuf error=%d %s\n", errno, strerror(errno));
-                return rc;
-            }
+        record("Sending data: \n");
+        
+        /*start sending imageindex.xml snippets*/
+        record("XML File...\n");
+        totalSize = 0;
+        imagename = "imageindex.xml";
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for xml file write to TM
 
-            printf("Sending data...\n");
-            gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
-            int totalSize = 0;
-            unsigned int rd = fread(databuf, 1, size, fp);
-            while (rd > 0) { //RTS changed buffer reading function from fgets to fread to allow for binary data
-                if (frame_count == 10) memcpy(temp, databuf, size); //Store the contents of databuf
-                //into the temp buffer
-                rc = write(fd, databuf, rd);
-                if (rc < 0) {
-                    printf("write error=%d %s\n", errno, strerror(errno));
-                    break;
-                }
-                /* block until all data sent */
-                rc = tcdrain(fd);
-                frame_count++;
-                totalSize += rd;
-                rd = fread(databuf, 1, size, fp);
-            }
-            if (rc < 0) return rc; //Finishes the write error handling after the break
-            rc = write(fd, endbuf, 5);
+        /*write xml lines*/
+        for (i = 0; i < (image->xml_cur_index + 1); i++) {
+            rc = write(fd, xml_snips[i], xml_snips_sz[i]);
             if (rc < 0) {
-                printf("write error=%d %s\n", errno, strerror(errno));
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
             }
+            /* block until all data sent */
+            totalSize += rc;
+            rc = tcdrain(fd);
+        }
 
-            /*block until all data sent*/
+        if (rc < 0) return rc; //Finishes the write error handling after the break
+
+        /*write terminating characters*/
+        rc = write(fd, imagename, strlen(imagename));
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return rc;
+        }
+        /*block until all data sent*/
+        rc = tcdrain(fd);
+
+        /*report time taken for XML file*/
+        gettimeofday(&time_end, NULL); //Timing
+        record("all data sent\n");
+        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
+        record(msg);
+        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
+                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
+        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+        record(msg);
+        
+        
+        
+
+        /*start sending science data*/
+        record("ROE File...\n");
+        totalSize = 0;  // reset variable that keeps track of bytes sent
+        imagename = image->filename;
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+        
+        /*Write image frames here*/
+        for (i = 1; i < 4; i++) {
+            rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+                break;
+            }
+            /* block until all data sent */
+            totalSize += rc;
             rc = tcdrain(fd);
 
-            /*clear the data buffer*/
-            fflush(fp);
+        }
+        if (rc < 0) return rc; //Finishes the write error handling after the break
 
+        /*write terminating characters*/
+        sprintf(msg, "Sending image file %s \n", imagename);
+        record(msg);
+        rc = write(fd, imagename + 7, strlen(imagename) - 7); //Ending characters "YYMMDDHHmmss.roe"
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return rc;
+        }
+        /*block until all data sent*/
+        rc = tcdrain(fd);
 
-            gettimeofday(&time_end, NULL); //Timing
-            printf("all data sent\n");
-            printf("Sent %d bytes of data from file %s.\n", totalSize, imagename);
-            time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
-                    + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
-            printf("Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
-            
-            
-/*jackson this is not correct, xmltrigger will automatically be reset when 
- send_image(3) is placed on the stack. Correct implementation would use a loop that
- * runs twice, once for the image, once for the xml file */
-//        } else {
-//
-//            if (killTrigger == 1) { //If everything is done
-//                return 0;
-//            }
-//
-//            sleep(2);
-//
-//        }
+        gettimeofday(&time_end, NULL); //Timing
+        record("all data sent\n");
+        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
+        record(msg);
+        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
+                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
+        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+        record(msg);
     }
 
-    printf("Turn off RTS and DTR\n");
-    int sigs = TIOCM_RTS + TIOCM_DTR;
-    rc = ioctl(fd, TIOCMBIC, &sigs);
-    if (rc < 0) {
-        printf("negate DTR/RTS error=%d %s\n", errno, strerror(errno));
-        return rc;
-    }
-
-    /* Close the device and the image file*/
-    close(fd);
-    fclose(fp);
 
 
-    if (xmlTrigger == 1) {
-        return 1;
-    } else return 0; //return send status
-
+    return 1;
 
 
 }

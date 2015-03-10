@@ -12,6 +12,11 @@
  **************************************************/
 #include "roe_image.h"
 
+/*the xml file is incrementally stored in RAM using these variables. An xml snippet is the part of the xml file that is associated with one image*/
+int xml_index = 0;      // index for storing how many xml entries have been saved
+char * xml_snips[1000]; // array for storing xml snippets, room for 1000 images per program run.
+int xml_snips_sz[1000]; // array for storing the amount of bytes in each xml snippet
+
 void constructEmpty() {
 
 }
@@ -50,14 +55,7 @@ void setData(roeimage_t * image, int *psize, char pchannels) {
     image->channels = pchannels; // set the channel information
 
     for (i = 0; i < 4; i++) {
-
-//        if (psize[i] != 0) {
             image->data[i] = malloc(SIZE_DS_BUFFER);
-            /*Copy the data*/
-//            memcpy((char *) image->data[i], (char *) pdata[i], image->size[i]); //copy data
-//        }
-
-
     }
 }
 
@@ -133,24 +131,59 @@ void writeToFile(roeimage_t * image) {
         fprintf(outxml, "<CATALOG>\n");
     }
     
-    fprintf(outxml, "<ROEIMAGE>\n");
-    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image->filename);
-    fprintf(outxml, "\t<NAME>%s</NAME>\n", image->name);
-    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
-    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image->width);
-    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
-    fprintf(outxml, "\t<DATE>%s</DATE>\n", image->date);
-    fprintf(outxml, "\t<TIME>%s</TIME>\n", image->time);
-    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
-    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
-    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
-    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image->object);
-    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image->duration);
-    fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
+    /*allocate buffer for xml file snippet to send through telemetry*/
+    unsigned int xml_sz = 0;
+    char * xmlbuf = malloc(650 * sizeof(char));        // Each xml snippet is approximately 597 bytes
+    
+    /*write xml data to buffer*/
+    xml_sz += sprintf(xmlbuf + xml_sz, "<ROEIMAGE>\n");
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<FILENAME>%s</FILENAME>\n", image->filename);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<NAME>%s</NAME>\n", image->name);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<WIDTH>%d</WIDTH>\n", image->width);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<DATE>%s</DATE>\n", image->date);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<TIME>%s</TIME>\n", image->time);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<OBJECT>%s</OBJECT>\n", image->object);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        fprintf(outxml, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
-    fprintf(outxml, "</ROEIMAGE>\n");
+    xml_sz += sprintf(xmlbuf + xml_sz, "</ROEIMAGE>\n");
+    
+    /*save xml snippet buffer in roeimage struct to pass to telem*/
+    xml_snips[xml_index] = xmlbuf;
+    xml_snips_sz[xml_index] = xml_sz;
+    xml_index++;
+    
+    /*save xml snippet to disk*/
+    rc = fwrite(xmlbuf, sizeof(char), xml_sz, outxml);
+    
+    /*saving xml into RAM buffer before writing to disk to send down telem*/
+//    fprintf(outxml, "<ROEIMAGE>\n");
+//    fprintf(outxml, "\t<FILENAME>%s</FILENAME>\n", image->filename);
+//    fprintf(outxml, "\t<NAME>%s</NAME>\n", image->name);
+//    fprintf(outxml, "\t<BITPIX>%d</BITPIX>\n", image->bitpix);
+//    fprintf(outxml, "\t<WIDTH>%d</WIDTH>\n", image->width);
+//    fprintf(outxml, "\t<HEIGHT>%d</HEIGHT>\n", image->height);
+//    fprintf(outxml, "\t<DATE>%s</DATE>\n", image->date);
+//    fprintf(outxml, "\t<TIME>%s</TIME>\n", image->time);
+//    fprintf(outxml, "\t<ORIGIN>%s</ORIGIN>\n", image->origin);
+//    fprintf(outxml, "\t<INSTRUMENT>%s</INSTRUMENT>\n", image->instrument);
+//    fprintf(outxml, "\t<OBSERVER>%s</OBSERVER>\n", image->observer);
+//    fprintf(outxml, "\t<OBJECT>%s</OBJECT>\n", image->object);
+//    fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image->duration);
+//    fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
+//    for (i = 0; i < 4; i++) {
+//        fprintf(outxml, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+//    }
+//    fprintf(outxml, "</ROEIMAGE>\n");
+    
+    /*write closing xml statement*/
     fprintf(outxml, "</CATALOG>\n");
     
     fclose(outxml);
