@@ -27,11 +27,15 @@
 #define CATALOG "/mdata/imageindex.xml"
 #define DATADIR "/mdata"
 
-char			dataStub[128];
+extern int xml_index; // index for storing how many xml entries have been saved
+extern char * xml_snips[1000]; // array for storing xml snippets, room for 1000 images per program run.
+extern int xml_snips_sz[1000]; // array for storing the amount of bytes in each xml snippe
+
+char dataStub[128];
 
 void constructEmpty();
-void constructImage(roeimage_t*, int* psize,char channels,int pbitpix);
-void init(roeimage_t*, int *size,char, int);
+void constructImage(roeimage_t*, int* psize, char channels, int pbitpix);
+void init(roeimage_t*, int *size, char, int);
 void setData(roeimage_t*, int *size, char channels);
 void writeToFile(roeimage_t*);
 

@@ -12,6 +12,11 @@
  **************************************************/
 #include "roe_image.h"
 
+/*the xml file is incrementally stored in RAM using these variables. An xml snippet is the part of the xml file that is associated with one image*/
+int xml_index = 0;      // index for storing how many xml entries have been saved
+char * xml_snips[1000]; // array for storing xml snippets, room for 1000 images per program run.
+int xml_snips_sz[1000]; // array for storing the amount of bytes in each xml snippet
+
 void constructEmpty() {
 
 }
@@ -151,8 +156,9 @@ void writeToFile(roeimage_t * image) {
     xml_sz += sprintf(xmlbuf + xml_sz, "</ROEIMAGE>\n");
     
     /*save xml snippet buffer in roeimage struct to pass to telem*/
-    image->xml_buf = xmlbuf;
-    image->xml_buf_sz = xml_sz;
+    xml_snips[xml_index] = xmlbuf;
+    xml_snips_sz[xml_index] = xml_sz;
+    xml_index++;
     
     /*save xml snippet to disk*/
     rc = fwrite(xmlbuf, sizeof(char), xml_sz, outxml);

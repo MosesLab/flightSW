@@ -114,12 +114,10 @@ typedef struct {
     unsigned int duration; // the duration of the image exposure
     unsigned int size[4]; // size corresponds to number of pixels in image so, # of bytes = size *2 
     unsigned short* data[4]; // the image data
-    char channels; //channels included in the image;
-//    char* seq_name; //sequence that initiated the image  DEPRECATED --RTS
+    char channels; //channels included in the image;S
     unsigned int num_exp;       // index of this image in the sequence
-    unsigned int num_frames;    // total number of images for this sequence
-    char * xml_buf;     // buffer to store xml data for updating imageindex.cml
-    unsigned int xml_buf_sz;  // number of bytes in the xml buffer
+    unsigned int num_frames;    // total number of images for this sequencel
+    unsigned int xml_cur_index;  // currrent index in xml snippet array
 } roeimage_t;
 
 //typedef struct {

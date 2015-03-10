@@ -205,12 +205,12 @@ void * write_data(void * arg) {
         sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
         image->filename = filename;
-        //        image->name = image->seq_name; //Add the information to the image
         image->date = ddate;
         image->time = dtime;
-        //image.duration = duration;
         image->width = 2048;
         image->height = 1024;
+        
+        image->xml_cur_index = xml_index;   // update current index of xml snippet array
 
 
         record("Image Opened\n");
@@ -235,7 +235,6 @@ void * write_data(void * arg) {
             free(image->data[1]);
             free(image->data[2]);
             free(image->data[3]);
-            free(image->xml_buf);
             free(image);
         }
 
@@ -331,7 +330,6 @@ void * telem(void * arg) {
         free(new_image->data[1]);
         free(new_image->data[2]);
         free(new_image->data[3]);
-        free(new_image->xml_buf);
         free(new_image);
 
         new_image = NULL;

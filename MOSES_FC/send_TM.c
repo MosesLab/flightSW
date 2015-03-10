@@ -254,14 +254,16 @@ int send_image(roeimage_t * image, int fd) {
         imagename = "imageindex.xml";
 
         /*write xml lines*/
-        rc = write(fd, image->xml_buf, image->xml_buf_sz);
-        if (rc < 0) {
-            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-            record(msg);
+        for (i = 0; i < image->xml_cur_index; i++) {
+            rc = write(fd, xml_snips[i], xml_snips_sz[i]);
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+            }
+            /* block until all data sent */
+            totalSize += rc;
+            rc = tcdrain(fd);
         }
-        /* block until all data sent */
-        totalSize += rc;
-        rc = tcdrain(fd);
 
         if (rc < 0) return rc; //Finishes the write error handling after the break
 
