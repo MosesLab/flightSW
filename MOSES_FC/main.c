@@ -31,16 +31,14 @@ LockingQueue lqueue[QUEUE_NUM];
  */
 int main(int argc, char **argv) {
     char msg[255];
-    int restart = TRUE;
     
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
     sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
     
-    while(restart){
-        restart = moses();
-    }
+    
+    while(moses());
     
     return 0;
        

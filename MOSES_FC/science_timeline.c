@@ -128,7 +128,7 @@ void * science_timeline(void * arg) {
             /*Wait until FPGA has entered buffer mode*/
             rc = wait_on_sem(&dma_control_sem, 2);
             if (rc != TRUE) {
-                record("Failed to set FPGA to buffer mode, trying exposure again");
+                record("Failed to set FPGA to buffer mode, trying next exposure\n");
                 continue;
             }
 
@@ -218,7 +218,7 @@ void * write_data(void * arg) {
         /*write the image and metadata to disk*/
         writeToFile(image);
 
-        sprintf(msg, "File %s %p successfully written to disk. (%d out of %d)\n", filename, image, image->num_exp, image->num_frames);
+        sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
         record(msg);
 
         /*push the filename onto the telemetry queue*/
@@ -257,7 +257,7 @@ void * telem(void * arg) {
 
         /*dequeue new image from image writer thread*/
         new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
-        sprintf(msg, "Dequeued new image %s %p\n", new_image->filename, new_image);
+        sprintf(msg, "Dequeued new image %s\n", new_image->filename);
         record(msg);
 
        
