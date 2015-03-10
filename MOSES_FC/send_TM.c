@@ -250,6 +250,7 @@ int send_image(roeimage_t * image, int fd) {
         
         /*start sending imageindex.xml snippets*/
         record("XML File...\n");
+        totalSize = 0;
         imagename = "imageindex.xml";
         gettimeofday(&time_begin, NULL); //Determine elapsed time for xml file write to TM
 
