@@ -108,7 +108,7 @@ void * fpga_server(void * arg) {
                 //                dmaClose();
 
                 record("Sort image\n");
-                unsort(dma_image);
+                sort(dma_image);
 
 
                 record("Enqueue image to writer\n");
@@ -168,7 +168,7 @@ void * fpga_server(void * arg) {
                 dma_image = dequeue(&lqueue[scit_image]);
 
                 /*If we're simulating an image, we have to trigger a frame from the VDX*/
-                if (config_values[image_sim_interface]) {
+                if (config_values[image_sim_interface] == 0) {
                     //Trigger a frame
                     record("Trigger simulated frame\n");
                     gpio_out_state.bf.frame_trigger = 1;
