@@ -61,7 +61,7 @@ void copy_log_to_disk() {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%01d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%2d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
 
 //    /*open pipe*/
 //    int p[2];

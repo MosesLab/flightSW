@@ -34,6 +34,7 @@ void * science_timeline(void * arg) {
     int exit_activate_loop = FALSE;
     while (exit_activate_loop == FALSE) {
 
+        /*If ROE is set to real interface and powered on*/
         if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
             activateROE();
 
