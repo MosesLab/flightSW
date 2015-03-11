@@ -64,7 +64,10 @@ void copy_log_to_disk() {
 
     /*open pipe*/
     int p[2];
-    pipe(p);
+     int rc = pipe(p);
+     if(rc != 0){
+         record("*ERROR* Failed to open pipe for log backup!\n");
+     }
 
     /*open both log and backup log */
     int out = open(new_path, O_WRONLY);
