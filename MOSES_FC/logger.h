@@ -10,8 +10,12 @@
 
 #include <stdio.h>
 
+#define splice(a, b, c) splice(a, 0, b, 0, c, 0)
+
+#define LOG_PATH "/moses/ramdisk/moses_log.txt"
+
 void record(const char* message);
-void srecord(int, ...);
+void copy_log_to_disk();
 
 #endif	/* LOGGER_H */
 

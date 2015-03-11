@@ -237,6 +237,9 @@ void * write_data(void * arg) {
             free(image->data[3]);
             free(image);
         }
+        
+        /*copy a backup of the log to disk after each image write*/
+        copy_log_to_disk();
 
     }//end while ts_alive
 

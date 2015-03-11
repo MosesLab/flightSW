@@ -7,21 +7,14 @@
 
 #include "system.h"
 #include "logger.h"
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <time.h>
-//#include <string.h>
 
 void record(const char* message) {
 
     FILE *outfile; // for writing
-    outfile = fopen("/moses/ramdisk/moses_log.txt", "a"); // write to this file
+    outfile = fopen(LOG_PATH, "a"); // write to this file
     time_t now;
     time(&now);
     char theTime[255];
-
-//    theTime = ctime(&now);
-//    theTime[ strlen(theTime) - 1 ] = '\0'; //Replace the '\n' with null char
 
     /*micro time*/
     struct timeval tv;
@@ -29,7 +22,7 @@ void record(const char* message) {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(theTime, "%d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int)(tv.tv_usec / 1000));
+    sprintf(theTime, "%d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
 
 
     fwrite("[", 1, 1, outfile);
@@ -56,51 +49,25 @@ void record(const char* message) {
     fclose(outfile);
 }
 
-//void srecord(int count, ...)
-//{
-//    va_list ap;
-//    int i;
-//    FILE *outfile; // for writing
-//    outfile = fopen("/etc/moses_log.txt", "a"); // write to this file
-//    time_t now;
-//    time(&now);
-//    char* theTime;
-//    
-//    theTime = ctime(&now);
-//    theTime[ strlen(theTime) - 1 ] = ' '; //Replace the '\n' with a space
-//
-//    // Find required length to store merged string
-//    int len = 1; // room for NULL
-//    va_start(ap, count);
-//    for(i=0 ; i<count ; i++)
-//        len += strlen(va_arg(ap, char*));
-//    va_end(ap);
-//
-//    // Allocate memory to concat strings
-//    char *merged = calloc(sizeof(char),len);
-//    int null_pos = 0;
-//
-//    // Actually concatenate strings
-//    va_start(ap, count);
-//    for(i=0 ; i<count ; i++)
-//    {
-//        char *s = va_arg(ap, char*);
-//        strcpy(merged+null_pos, s);
-//        null_pos += strlen(s);
-//    }
-//    va_end(ap);
-//
-//    /*write the date and the message to the file*/
-//    fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
-//    
-//    /*write the name of the thread to a file*/
-//    char thread_name[16];
-//    prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
-//    
-//    //fwrite(' ', 1, 1, outfile);
-//    fwrite(merged, sizeof (merged[0]), strlen(merged), outfile);
-//
-//    /* we are done with file, close it */
-//    fclose(outfile);
-//
-//}
+void copy_log_to_disk() {
+    time_t now;
+    time(&now);
+    char new_path[255];
+
+    /*micro time*/
+    struct timeval tv;
+    struct timezone tz;
+    struct tm *tm;
+    gettimeofday(&tv, &tz);
+    tm = localtime(&tv.tv_sec);
+    sprintf(new_path, "/moses/log_backups/_%d_%d_%02d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+
+    /*open pipe*/
+    int p[2];
+    pipe(p);
+
+    /*open both log and backup log */
+    int out = open(new_path, O_WRONLY);
+    int in = open(LOG_PATH, O_RDONLY);
+    while(splice(p[0], out, splice(in, p[1], 4096))>0);
+}
