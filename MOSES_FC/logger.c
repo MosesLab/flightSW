@@ -60,17 +60,19 @@ void copy_log_to_disk() {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(new_path, "/moses/log_backups/_%d_%d_%02d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+    sprintf(new_path, "/moses/log_backups/moses_log_%d_%d_%02d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
 
     /*open pipe*/
     int p[2];
-     int rc = pipe(p);
-     if(rc != 0){
-         record("*ERROR* Failed to open pipe for log backup!\n");
-     }
+    int rc = pipe(p);
+    if (rc != 0) {
+        record("*ERROR* Failed to open pipe for log backup!\n");
+    }
 
     /*open both log and backup log */
     int out = open(new_path, O_WRONLY);
     int in = open(LOG_PATH, O_RDONLY);
-    while(splice(p[0], out, splice(in, p[1], 4096))>0);
+    while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
+
+    record("Backup log successfully written to disk\n");
 }
