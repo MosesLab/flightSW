@@ -61,21 +61,45 @@ void copy_log_to_disk() {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(new_path, "/moses/log_backups/moses_log_%d_%d_%02d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%01d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
 
-    /*open pipe*/
-    int p[2];
-    int rc = pipe(p);
-    if (rc != 0) {
-        record("*ERROR* Failed to open pipe for log backup!\n");
-    }
+//    /*open pipe*/
+//    int p[2];
+//    int rc = pipe(p);
+//    if (rc != 0) {
+//        record("*ERROR* Failed to open pipe for log backup!\n");
+//    }
+//
+//    /*open both log and backup log */
+//    int out = open(new_path, O_WRONLY);
+//    int in = open(LOG_PATH, O_RDONLY);
+//    while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
+//    close(in);
+//    close(out);
+    
+    int pipefd[2];
+    int result;
+    FILE *in_file;
+    FILE *out_file;
 
-    /*open both log and backup log */
-    int out = open(new_path, O_WRONLY);
-    int in = open(LOG_PATH, O_RDONLY);
-    while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
-    close(in);
-    close(out);
+    result = pipe(pipefd);
+
+    in_file = fopen(LOG_PATH, "rb");
+    out_file = fopen(new_path, "wb");
+
+    result = splice(fileno(in_file), 0, pipefd[1], NULL, 32768, SPLICE_F_MORE | SPLICE_F_MOVE);
+    printf("%d\n", result);
+
+    result = splice(pipefd[0], NULL, fileno(out_file), 0, 32768, SPLICE_F_MORE | SPLICE_F_MOVE);
+    printf("%d\n", result);
+
+    if (result == -1)
+        printf("%d - %s\n", errno, strerror(errno));
+
+    close(pipefd[0]);
+    close(pipefd[1]);
+    fclose(in_file);
+    fclose(out_file);
 
     sprintf(msg, "Backup log %s successfully written to disk\n", new_path);
     record(msg);

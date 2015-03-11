@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#define splice(a, b, c) splice(a, 0, b, 0, c, 0)
+//#define splice(a, b, c) splice(a, 0, b, 0, c, 0)
 
 #define LOG_PATH "/moses/ramdisk/moses_log.txt"
 
