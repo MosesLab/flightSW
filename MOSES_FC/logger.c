@@ -52,6 +52,7 @@ void record(const char* message) {
 void copy_log_to_disk() {
     time_t now;
     time(&now);
+    char msg[255];
     char new_path[255];
 
     /*micro time*/
@@ -74,5 +75,5 @@ void copy_log_to_disk() {
     int in = open(LOG_PATH, O_RDONLY);
     while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
 
-    record("Backup log successfully written to disk\n");
+    sprintf(msg, "Backup log %s successfully written to disk\n", new_path);
 }
