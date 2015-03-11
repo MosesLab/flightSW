@@ -8,7 +8,8 @@
 #include "system.h"
 #include "logger.h"
 
-int log_index = 0;
+unsigned int log_sz = 0;
+unsigned int log_index = 0;
 
 void record(const char* message) {
 
@@ -27,25 +28,25 @@ void record(const char* message) {
     sprintf(theTime, "%d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
 
 
-    fwrite("[", 1, 1, outfile);
+    log_sz += fwrite("[", 1, 1, outfile);
 
     /*write the date and the message to the file*/
-    fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
+    log_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
 
-    fwrite("] ", 1, 2, outfile);
+    log_sz += fwrite("] ", 1, 2, outfile);
 
     /*write the name of the thread to a file*/
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
-    fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
+    log_sz += fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
 
 
 
     char * delim = " : ";
-    fwrite(delim, sizeof (char), strlen(delim), outfile);
+    log_sz += fwrite(delim, sizeof (char), strlen(delim), outfile);
 
     //fwrite(' ', 1, 1, outfile);
-    fwrite(message, sizeof (message[0]), strlen(message), outfile);
+    log_sz += fwrite(message, sizeof (message[0]), strlen(message), outfile);
 
     /* we are done with file, close it */
     fclose(outfile);
@@ -91,11 +92,11 @@ void copy_log_to_disk() {
     out_file = fopen(new_path, "wb");
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MOVE);
+    result = splice(fileno(in_file), 0, pipefd[1], NULL, log_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
 //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MOVE);
+    result = splice(pipefd[0], NULL, fileno(out_file), 0, log_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     if (result == -1)
