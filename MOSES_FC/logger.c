@@ -76,4 +76,5 @@ void copy_log_to_disk() {
     while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
 
     sprintf(msg, "Backup log %s successfully written to disk\n", new_path);
+    record(msg);
 }
