@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include "sequence.h"
 #include "system.h"
 #include "lockingQueue.h"

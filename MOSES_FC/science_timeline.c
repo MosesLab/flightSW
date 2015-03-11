@@ -175,6 +175,8 @@ void * science_timeline(void * arg) {
  */
 void * write_data(void * arg) {
     char msg[100];
+    unsigned long free_disk;
+    struct statvfs * disk_info = malloc(sizeof(statvfs));
 
     /*Set thread name*/
     prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
@@ -212,14 +214,26 @@ void * write_data(void * arg) {
         
         image->xml_cur_index = xml_index;   // update current index of xml snippet array
 
-
         record("Image Opened\n");
 
-        /*write the image and metadata to disk*/
-        writeToFile(image);
-
-        sprintf(msg, "File %s %p successfully written to disk. (%d out of %d)\n", filename, image, image->num_exp, image->num_frames);
-        record(msg);
+        /* check if sufficient free space on disk */
+        statvfs("/mdata/", disk_info);
+        free_disk = (unsigned long) (disk_info->f_bfree) * (disk_info->f_bsize);
+        
+        if (free_disk < 30000000) {
+            
+            sprintf(msg, "Insufficient free space on disk: image not written. (%d bytes remaining)\n", (int) free_disk);
+            record(msg);
+        
+        }
+        else if (free_disk >= 30000000) {
+            
+            /* write image on disk */
+            writeToFile(image);
+            sprintf(msg, "File %s %p successfully written to disk. (%d out of %d)\n", filename, image, image->num_exp, image->num_frames);
+            record(msg);
+        
+        }
 
         /*push the filename onto the telemetry queue*/
         if (ops.tm_write == 1) {

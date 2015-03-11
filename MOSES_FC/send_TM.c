@@ -2,7 +2,7 @@
 /********************************************************************************
  * MOSES telemetry downlink test code
  *
- * Author: Jacob Plovanic, Roy Smart
+ * Author: Jacob Plovanic, Roy Smart, Jackson Remington
  * History:
  *  Created Dec 17 2013
  *  Tested  Dec 18 2013 
