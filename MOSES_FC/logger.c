@@ -87,10 +87,10 @@ void copy_log_to_disk() {
     in_file = fopen(LOG_PATH, "rb");
     out_file = fopen(new_path, "wb");
 
-    result = splice(fileno(in_file), 0, pipefd[1], NULL, 32768, SPLICE_F_MORE | SPLICE_F_MOVE);
+    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     printf("%d\n", result);
 
-    result = splice(pipefd[0], NULL, fileno(out_file), 0, 32768, SPLICE_F_MORE | SPLICE_F_MOVE);
+    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     printf("%d\n", result);
 
     if (result == -1)
