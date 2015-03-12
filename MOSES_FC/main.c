@@ -83,7 +83,7 @@ int moses(){
 
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
-
+    
     /*clean up memory and open devices*/
     cleanup();
 
@@ -95,17 +95,6 @@ int moses(){
 
         sleep(2);
         record("Flight software rebooting...\n");
-
-        /*reset stdin and stdout*/
-//        reset_std_io();
-
-//        if (execv(argv[0], argv)) {
-//            record("ERROR in restarting flight software!\n");
-//        }
-
-        //            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
-        //                record("ERROR in restarting flight software!\n");
-        //            }
 
         return TRUE;
     }

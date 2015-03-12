@@ -9,7 +9,6 @@
 #include "logger.h"
 
 unsigned int log_sz = 0;
-unsigned int log_index = 0;
 
 void record(const char* message) {
 
@@ -26,6 +25,13 @@ void record(const char* message) {
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
     sprintf(theTime, "%d:%02d:%02d:%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
+
+
+    /* Get data for image details*/
+    char ddate[255];
+    time_t curTime = time(NULL);
+    struct tm *broken = localtime(&curTime);
+    strftime(ddate, 20, "%y-%m-%d", broken); //get date
 
 
     log_sz += fwrite("[", 1, 1, outfile);
@@ -64,8 +70,8 @@ void copy_log_to_disk() {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%d_%d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year, log_index);
-    log_index++;
+    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+
 
     //    /*open pipe*/
     //    int p[2];
@@ -95,7 +101,7 @@ void copy_log_to_disk() {
     result = splice(fileno(in_file), 0, pipefd[1], NULL, log_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
-//    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
+    //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(pipefd[0], NULL, fileno(out_file), 0, log_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 

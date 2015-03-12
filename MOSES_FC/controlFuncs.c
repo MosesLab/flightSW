@@ -831,7 +831,7 @@ int resetSW(packet_t* p) {
     
     record("Command to reset flight software received\n");
     
-    kill(main_pid, SIGHUP);
+    kill(main_pid, SIGUSR2);
     
     return GOOD_PACKET;
 }
