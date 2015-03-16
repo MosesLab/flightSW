@@ -339,6 +339,14 @@ int uSleep() {
      * HALPHA  - 10
      * 
      */
+    
+    /* indicate that its bedtime*/
+    moses_ops_t.sleep = 1;
+    
+    /*Wait for threads to cancel/join*/
+    while(moses_ops_t.sleep == 1)
+        usleep()
+    
     /* Shut down Power.....*/
     
     
@@ -369,6 +377,7 @@ int uSleep() {
 
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
+    
     
     
     sleep(1);

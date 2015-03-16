@@ -76,7 +76,7 @@ int moses(){
     /*start threads indicated by configuration file*/
     start_threads();
 
-    /*Upon program termiation (^c) attempt to join the threads*/
+    /*Upon program termination (^c) attempt to join the threads*/
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
     sigwait(&mask, &quit_sig);
     pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
@@ -174,7 +174,10 @@ void join_threads() {
 //    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
-
+    
+    /* Threads we dont want to cancel, but join:  *
+     * science timeline (make sure that the shutter is closed) *
+     * image writer (make sure it is done writing image */
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
