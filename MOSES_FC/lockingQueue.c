@@ -63,6 +63,7 @@ void * dequeue(LockingQueue * queue) {
     while ((queue->count == 0) && ts_alive) {
 //        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
         pthread_cond_wait(&queue->cond, &queue->lock);
+        printf("inside locking queue while loop\n");
     }
 
     /*check if program is still active*/
