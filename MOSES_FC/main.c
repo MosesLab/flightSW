@@ -176,9 +176,10 @@ void join_threads() {
     /*Check to see if this function was called because of sleep T/U */
     if(ops.sleep)
     {
+        record("in ops.sleep\n");
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], &returns);
-       
+        record("joined sci ti\n");
         sleep(10); // for testing
         
         /* Turn off subsytems*/
@@ -192,8 +193,7 @@ void join_threads() {
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
         
-        sprintf(msg, "All Subsystems turned off\n");
-        record(msg);
+        record("All Subsystems turned off\n");
         
         /*Gracefully close down image_writer(making sure it is done writing)*/
         pthread_join(image_writer_thread, &returns);

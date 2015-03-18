@@ -328,13 +328,13 @@ int uSleep() {
     //char msg[255];
 
     /* This ensures that the threads will not finish before they need to*/
-    ts_alive = 0;
+    //ts_alive = 0;
     
     /* Indicate that its bedtime*/
     ops.sleep = 1;
     
     /* Tell main we want to quit */
-    kill(main_pid, SIGUSR2);   
+    kill(main_pid, SIGINT);   
 
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&lqueue[hkdown], r);
