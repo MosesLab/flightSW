@@ -180,14 +180,14 @@ void join_threads() {
         
         
         ts_alive = 0;
-        pthread_cond_broadcast(&lqueue[sequence]->cond);
-        pthread_cond_broadcast(&lqueue[scit_image]->cond);
-        pthread_cond_broadcast(&lqueue[fpga_image]->cond);
-        pthread_cond_broadcast(&lqueue[telem_image]->cond);
-        pthread_cond_broadcast(&lqueue[gpio_in]->cond);
-        pthread_cond_broadcast(&lqueue[gpio_out]->cond);
-        pthread_cond_broadcast(&lqueue[gpio_req]->cond);
-        pthread_cond_broadcast(&lqueue[hkdown]->cond);
+        pthread_cond_broadcast(&lqueue[sequence].cond);
+        pthread_cond_broadcast(&lqueue[scit_image].cond);
+        pthread_cond_broadcast(&lqueue[fpga_image].cond);
+        pthread_cond_broadcast(&lqueue[telem_image].cond);
+        pthread_cond_broadcast(&lqueue[gpio_in].cond);
+        pthread_cond_broadcast(&lqueue[gpio_out].cond);
+        pthread_cond_broadcast(&lqueue[gpio_req].cond);
+        pthread_cond_broadcast(&lqueue[hkdown].cond);
         
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], &returns);
