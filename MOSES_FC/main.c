@@ -177,10 +177,20 @@ void join_threads() {
     if(ops.sleep)
     {
         record("in ops.sleep\n");
+        
+        
+        ts_alive = 0;
+        pthread_cond_broadcast(&lqueue[sequence]->cond);
+        pthread_cond_broadcast(&lqueue[scit_image]->cond);
+        pthread_cond_broadcast(&lqueue[fpga_image]->cond);
+        pthread_cond_broadcast(&lqueue[telem_image]->cond);
+        pthread_cond_broadcast(&lqueue[gpio_in]->cond);
+        pthread_cond_broadcast(&lqueue[gpio_out]->cond);
+        pthread_cond_broadcast(&lqueue[gpio_req]->cond);
+        pthread_cond_broadcast(&lqueue[hkdown]->cond);
+        
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], &returns);
-        record("joined sci ti\n");
-        sleep(10); // for testing
         
         /* Turn off subsytems*/
         set_power(tcs1, OFF);
@@ -196,7 +206,7 @@ void join_threads() {
         record("All Subsystems turned off\n");
         
         /*Gracefully close down image_writer(making sure it is done writing)*/
-        pthread_cancel(threads[image_writer_thread]);//, &returns);
+        pthread_join(threads[image_writer_thread], &returns);
         
         /* Cancel the threads that dont need to be joined*/
         int i;
