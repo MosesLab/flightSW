@@ -237,7 +237,7 @@ void init_quit_signal_handler() {
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = 0;//SA_RESTART;
+    quit_action.sa_flags = SA_RESTART;//SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/

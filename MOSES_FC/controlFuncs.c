@@ -336,7 +336,9 @@ int uSleep() {
     /* Tell main we want to quit */
     kill(main_pid, SIGINT);   
 
-    packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
+    packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
+    enqueue(&lqueue[hkdown], r);
+    r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     
     return GOOD_PACKET;
