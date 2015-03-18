@@ -168,7 +168,7 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //    void * returns;
+    void * returns;
     char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
@@ -177,7 +177,7 @@ void join_threads() {
     if(ops.sleep)
     {
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
-        pthread_join(threads[sci_timeline_thread]);
+        pthread_join(threads[sci_timeline_thread], &returns);
        
         sleep(10); // for testing
         
@@ -196,7 +196,7 @@ void join_threads() {
         record(msg);
         
         /*Gracefully close down image_writer(making sure it is done writing)*/
-        pthread_join(image_writer_thread);
+        pthread_join(image_writer_thread, &returns);
         
         /* Cancel the threads that dont need to be joined*/
         int i;

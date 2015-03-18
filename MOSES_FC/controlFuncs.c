@@ -325,13 +325,13 @@ int uDark4() {
 /* DJK 2/24/15 - This function still needs to be tested*/
 int uSleep() {
     record("Received shutdown Uplink\n");
-    char msg[255];
+    //char msg[255];
 
     /* This ensures that the threads will not finish before they need to*/
     ts_alive = 0;
     
     /* Indicate that its bedtime*/
-    moses_ops_t.sleep = 1;
+    ops.sleep = 1;
     
     /* Tell main we want to quit */
     kill(main_pid, SIGINT);   
@@ -429,7 +429,7 @@ int tSleep() {
     ts_alive = 0;
     
     /* Indicate that its bedtime*/
-    moses_ops_t.sleep = 1;
+    ops.sleep = 1;
     
     /* Tell main we want to quit */
     kill(main_pid, SIGINT); 
