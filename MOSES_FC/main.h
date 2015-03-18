@@ -17,6 +17,7 @@
 #include "sequence.h"
 #include "lockingQueue.h"
 #include "fpga.h"
+#include "controlFuncs.h"
 
 /*IO constants*/
 #define HLP_CONTROL_CONF "HLP_CONTROL_THREAD"

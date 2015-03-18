@@ -9,6 +9,7 @@
 
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 
+
 unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
 void * targs[NUM_RROBIN + NUM_FIFO];
@@ -32,6 +33,7 @@ LockingQueue lqueue[QUEUE_NUM];
 int main(int argc, char **argv) {
     char msg[255];
     int restart = TRUE;
+    ops.sleep = 0;
     
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
@@ -167,17 +169,56 @@ void start_threads() {
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
     //    void * returns;
-
+    char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
+    
+    /*Check to see if this function was called because of sleep T/U */
+    if(ops.sleep)
+    {
+        /*Gracefully close down sci_ti(making sure the shutter is closed)*/
+        pthread_join(threads[sci_timeline_thread]);
+       
+        sleep(10); // for testing
+        
+        /* Turn off subsytems*/
+        set_power(tcs1, OFF);
+        set_power(tcs2, OFF);
+        set_power(tcs3, OFF);
+        set_power(shutter, OFF);
+        set_power(roe, OFF);
+        set_power(halpha, OFF);
+        set_power(premod, OFF);
+        set_power(ps5v, OFF);
+        set_power(psdual12v, OFF);
+        
+        sprintf(msg, "All Subsystems turned off\n");
+        record(msg);
+        
+        /*Gracefully close down image_writer(making sure it is done writing)*/
+        pthread_join(image_writer_thread);
+        
+        /* Cancel the threads that dont need to be joined*/
+        int i;
+        for (i = 0; i < num_threads; i++) {
+            if (threads[i] != 0) {
+                if(i != sci_timeline_thread && i != image_writer_thread) {
+                    pthread_cancel(threads[i]);
+                }
+            }
+        }
+        
+        sleep(1);
+        
+        /* Goodnight MOSES */
+        execlp("shutdown","shutdown", "-h","now",(char *)0);
+       
+    } // end if sleep
 
 //    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
-    
-    /* Threads we dont want to cancel, but join:  *
-     * science timeline (make sure that the shutter is closed) *
-     * image writer (make sure it is done writing image */
+
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
