@@ -168,7 +168,7 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //void * returns;
+    void * returns;
  //   char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
@@ -178,7 +178,7 @@ void join_threads() {
     {
         record("in ops.sleep\n");
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
-        pthread_cancel(threads[sci_timeline_thread]);//, &returns);
+        pthread_join(threads[sci_timeline_thread], &returns);
         record("joined sci ti\n");
         sleep(10); // for testing
         
