@@ -199,52 +199,55 @@ void * write_data(void * arg) {
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
-        record("Dequeued new image\n");
+        if(image != NULL)
+        {
+            record("Dequeued new image\n");
 
-        /* Get data for image details*/
-        time_t curTime = time(NULL);
-        struct tm *broken = localtime(&curTime);
-        strftime(dtime, 20, "%H:%M:%S", broken);
-        strftime(ddate, 20, "%y-%m-%d", broken); //get date
-        strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
-        //construct a unique filename	
-        sprintf(filename, "%s.roe", ftimedate);
-        sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
+            /* Get data for image details*/
+            time_t curTime = time(NULL);
+            struct tm *broken = localtime(&curTime);
+            strftime(dtime, 20, "%H:%M:%S", broken);
+            strftime(ddate, 20, "%y-%m-%d", broken); //get date
+            strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
+            //construct a unique filename	
+            sprintf(filename, "%s.roe", ftimedate);
+            sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-        image->filename = filename;
-        image->name = image->seq_name; //Add the information to the image
-        image->date = ddate;
-        image->time = dtime;
-        //image.duration = duration;
-        image->width = 2048;
-        image->height = 1024;
+            image->filename = filename;
+            image->name = image->seq_name; //Add the information to the image
+            image->date = ddate;
+            image->time = dtime;
+            //image.duration = duration;
+            image->width = 2048;
+            image->height = 1024;
 
 
-        record("Image Opened\n");
+            record("Image Opened\n");
 
-        /*write the image and metadata to disk*/
-        writeToFile(image);
+            /*write the image and metadata to disk*/
+            writeToFile(image);
 
-        sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
-        record(msg);
+            sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
+            record(msg);
 
-        /*push the filename onto the telemetry queue*/
-        if (ops.tm_write == 1) {
+            /*push the filename onto the telemetry queue*/
+            if (ops.tm_write == 1) {
 
-            imgPtr_t newPtr;
-            newPtr.filePath = filename;
-            newPtr.next = NULL;
-            enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
-            record("Filename pushed to telemetry queue\n");
+                imgPtr_t newPtr;
+                newPtr.filePath = filename;
+                newPtr.next = NULL;
+                enqueue(&lqueue[telem_image], &newPtr); //enqueues the path for telem
+                record("Filename pushed to telemetry queue\n");
+            }
+
+
+            /*need to free allocated image to prevent memory leak --RTS*/
+            free(image->data[0]);
+            free(image->data[1]);
+            free(image->data[2]);
+            free(image->data[3]);
+            free(image);
         }
-
-
-        /*need to free allocated image to prevent memory leak --RTS*/
-        free(image->data[0]);
-        free(image->data[1]);
-        free(image->data[2]);
-        free(image->data[3]);
-        free(image);
     }//end while ts_alive
 
     return 0;
