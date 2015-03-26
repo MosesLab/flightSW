@@ -249,7 +249,7 @@ void * write_data(void * arg) {
             free(image);
         }
     }//end while ts_alive
-
+    record("Done Writing Images\n");
     return 0;
 }
 

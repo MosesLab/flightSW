@@ -184,10 +184,10 @@ void join_threads() {
         pthread_cond_broadcast(&lqueue[scit_image].cond);
         pthread_cond_broadcast(&lqueue[fpga_image].cond);
         pthread_cond_broadcast(&lqueue[telem_image].cond);
-        pthread_cond_broadcast(&lqueue[gpio_in].cond);
-        pthread_cond_broadcast(&lqueue[gpio_out].cond);
-        pthread_cond_broadcast(&lqueue[gpio_req].cond);
-        pthread_cond_broadcast(&lqueue[hkdown].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_in].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_out].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_req].cond);
+        //pthread_cond_broadcast(&lqueue[hkdown].cond);
         
         record("after broadcasting\n");
         
@@ -197,15 +197,15 @@ void join_threads() {
         record("after join\n");
         
         /* Turn off subsytems*/
-        set_power(tcs1, OFF);
-        set_power(tcs2, OFF);
-        set_power(tcs3, OFF);
-        set_power(shutter, OFF);
-        set_power(roe, OFF);
-        set_power(halpha, OFF);
-        set_power(premod, OFF);
-        set_power(ps5v, OFF);
-        set_power(psdual12v, OFF);
+        //set_power(tcs1, OFF);
+        //set_power(tcs2, OFF);
+        //set_power(tcs3, OFF);
+        //set_power(shutter, OFF);
+        //set_power(roe, OFF);
+        //set_power(halpha, OFF);
+        //set_power(premod, OFF);
+        //set_power(ps5v, OFF);
+        //set_power(psdual12v, OFF);
         
         record("All Subsystems turned off\n");
         
