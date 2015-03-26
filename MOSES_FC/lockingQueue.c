@@ -73,7 +73,7 @@ void * dequeue(LockingQueue * queue) {
         queue->first = n->next;
         queue->count--;
         
-        void * ptr = n->def;
+        ptr = n->def;
         free(n);
     }
 
