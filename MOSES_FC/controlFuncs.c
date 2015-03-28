@@ -227,7 +227,6 @@ int uDataStart() {
 
 int uDataStop() {
     record("Received data stop Uplink\n");
-    //Insert uplink handling code here
 
     ops.seq_run = FALSE;
 
@@ -238,7 +237,6 @@ int uDataStop() {
 
 int uDark1() {
     record("Received Dark1 Uplink\n");
-    //Insert uplink handling code here
 
 
     int i;
@@ -260,7 +258,6 @@ int uDark1() {
 
 int uDark2() {
     record("Received Dark2 Uplink\n");
-    //Insert uplink handling code here
 
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
@@ -282,7 +279,6 @@ int uDark2() {
 
 int uDark3() {
     record("Received Dark3 Uplink\n");
-    //Insert uplink handling code here
 
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
@@ -303,7 +299,6 @@ int uDark3() {
 
 int uDark4() {
     record("Received Dark4 Uplink\n");
-    //Insert uplink handling code here
 
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
@@ -325,25 +320,21 @@ int uDark4() {
 /* DJK 2/24/15 - This function still needs to be tested*/
 int uSleep() {
     record("Received shutdown Uplink\n");
-    //char msg[255];
-
-    /* This ensures that the threads will not finish before they need to*/
-    //ts_alive = 0;
     
-    /* Indicate that its bedtime*/
+    /* Indicate that its MOSES should go to sleep*/
     ops.sleep = 1;
     
     /* Tell main we want to quit */
     kill(main_pid, SIGINT);   
 
-    packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
-    enqueue(&lqueue[hkdown], r);
-    r = constructPacket(UPLINK_S, SLEEP, NULL);
+    
+    packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     
     return GOOD_PACKET;
 }
 
+/*With how the Sleep function is implemented there isn't really much use for this function*/
 int uWake() {
     record("Received shutdown pending Uplink\n");
     //Insert uplink handling code here
@@ -354,6 +345,7 @@ int uWake() {
 
 int uTest() {
     record("Received test Uplink\n");
+    
     /*Only thing needed done here is send a packet*/
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&lqueue[hkdown], r);
@@ -384,7 +376,6 @@ int tDataStart() {
 
 int tDataStop() {
     record("Received data stop Timer\n");
-    //Insert timer handling code here
     
     ops.seq_run = FALSE;
     
@@ -395,7 +386,7 @@ int tDataStop() {
 
 int tDark2() {
     record("Received Dark2 Timer\n");
-    //Insert timer handling code here
+    
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
@@ -411,7 +402,7 @@ int tDark2() {
 
 int tDark4() {
     record("Received Dark4 Timer\n");
-    //Insert timer handling code here
+    
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
     {
@@ -427,14 +418,13 @@ int tDark4() {
 
 int tSleep() {
     record("Received shutdown Timer\n");
-    /* This ensures that the threads will not finish before they need to*/
-    ts_alive = 0;
     
-    /* Indicate that its bedtime*/
+    /* Indicate that its MOSES should go to sleep*/
     ops.sleep = 1;
     
     /* Tell main we want to quit */
     kill(main_pid, SIGUSR2); 
+    
     packet_t* r = constructPacket(TIMER_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -470,7 +460,6 @@ int setOutputName(packet_t* p) {
 /*Get sequence name that corresponds to the signal number in the data field*/
 int getSeqName(packet_t* p) {
     record("Get sequence name command received\n");
-
     char numstr[16];
     char name[128];
     strcpy(numstr, p->data);
@@ -506,7 +495,7 @@ int getCurSeqName(packet_t* p) {
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(packet_t* p) {
     record("Get current frame length command received\n");
-    char response[100]; 
+    char response[256]; 
     sprintf(response, "%6.3f", getCurrentExposure());
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
     enqueue(&lqueue[hkdown], r);
@@ -863,6 +852,7 @@ int resetSW(packet_t* p) {
  */
 
 /*Request for flight computer +2.0V voltage*/
+/* Not used, VDX doesn't have voltage monitoring*/
 int FC_2V_V(packet_t* p) {
     record("Request for FC +2.0V voltage received\n");
     //Insert control code here  
@@ -873,6 +863,7 @@ int FC_2V_V(packet_t* p) {
 }
 
 /*Request for flight computer +2.5V voltage*/
+/* Not used, VDX doesn't have voltage monitoring */
 int FC_2_5V_V(packet_t* p) {
     record("Request for FC +2.5V voltage received\n");
     //Insert control code here  
@@ -911,6 +902,7 @@ int ROE_2_5V_I(packet_t* p) {
 }
 
 /*Request for flight computer +3.3V voltage*/
+/* Not used, VDX doesn't have voltage monitoring */
 int FC_3_3V_V(packet_t* p) {
     record("Request for FC +3.3V voltage received\n");
     //Insert control code here  
@@ -921,6 +913,7 @@ int FC_3_3V_V(packet_t* p) {
 }
 
 /*Request for flight computer +5.0V voltage*/
+/* Not used, VDX doesn't have voltage monitoring */
 int FC_POS_5V_V(packet_t* p) {
     record("Request for FC +5.0V voltage received\n");
     //Insert control code here  
@@ -1100,6 +1093,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
 }
 
 /*Request for flight computer +12V voltage*/
+/* Not used, VDX doesn't have voltage monitoring */
 int FC_12V_V(packet_t* p) {
  record("Request for FC +12V voltage received\n");
 //Insert control code here
@@ -1356,6 +1350,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     strcpy(temp, ROE_P5VAA_V);
     char* response = getHK(CCDB_VSSC);
     strcat(temp, response);
+    printf("temp is: %s", temp);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);

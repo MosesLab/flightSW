@@ -189,30 +189,24 @@ void join_threads() {
         //pthread_cond_broadcast(&lqueue[gpio_req].cond);
         //pthread_cond_broadcast(&lqueue[hkdown].cond);
         
-        record("after broadcasting\n");
-        
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], &returns);
         
-        record("after join\n");
-        
         /* Turn off subsytems*/
-        //set_power(tcs1, OFF);
-        //set_power(tcs2, OFF);
-        //set_power(tcs3, OFF);
-        //set_power(shutter, OFF);
-        //set_power(roe, OFF);
-        //set_power(halpha, OFF);
-        //set_power(premod, OFF);
-        //set_power(ps5v, OFF);
-        //set_power(psdual12v, OFF);
+        set_power(tcs1, OFF);
+        set_power(tcs2, OFF);
+        set_power(tcs3, OFF);
+        set_power(shutter, OFF);
+        set_power(roe, OFF);
+        set_power(halpha, OFF);
+        set_power(premod, OFF);
+        set_power(ps5v, OFF);
+        set_power(psdual12v, OFF);
         
         record("All Subsystems turned off\n");
         
         /*Gracefully close down image_writer(making sure it is done writing)*/
         pthread_join(threads[image_writer_thread], &returns);
-        
-        record("after join\n");
         
         /* Cancel the threads that dont need to be joined*/
         int i;
@@ -224,7 +218,6 @@ void join_threads() {
             }
         }
         
-        record("after cancel\n");
         
         sleep(1);
         
