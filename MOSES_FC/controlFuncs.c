@@ -1280,7 +1280,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     strcpy(temp, CCDA_VOD);
     char* response = getHK(CCDA_VODC);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
@@ -1294,7 +1294,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     strcpy(temp, CCDA_VRD);
     char* response = getHK(CCDA_VRDC);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
@@ -1308,7 +1308,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     strcpy(temp, CCDA_VSS);
     char* response = getHK(CCDA_VSSC);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
@@ -1319,10 +1319,10 @@ int ROE_CCDA_VSS(packet_t* p) {
 int ROE_CCDS_VOD(packet_t* p) {
     record("Request for ROE CCDS_VOD current received\n");
     char * temp = malloc(sizeof (char) * 6);
-    strcpy(temp, CCDB_VOD);
+    //strcpy(temp, CCDB_VOD);
     char* response = getHK(CCDB_VODC);
-    strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, temp);
+    //strcat(temp, response);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
@@ -1333,10 +1333,10 @@ int ROE_CCDS_VOD(packet_t* p) {
 int ROE_CCDS_VRD(packet_t* p) {
     record("Request for ROE CCDS_VRD current received\n");
     char * temp = malloc(sizeof (char) * 6);
-    strcpy(temp, CCDB_VRD);
+    //strcpy(temp, CCDB_VRD);
     char* response = getHK(CCDB_VRDC);
-    strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, temp);
+    //strcat(temp, response);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
@@ -1351,7 +1351,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     char* response = getHK(CCDB_VSSC);
     strcat(temp, response);
     printf("temp is: %s", temp);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);
