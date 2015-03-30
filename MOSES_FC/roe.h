@@ -29,7 +29,7 @@
 #define ROE_TOE  	0x03FF	//Time Out Error
 #define DEFAULT  	1
 #define MANUAL  	0
-#define ROE_DEV         "/dev/ttyS2"
+#define ROE_DEV         "/dev/ttyS0" // comes out of COM2 but its COM1 because of a hardware error
 
 #include <fcntl.h>
 #include <pthread.h>

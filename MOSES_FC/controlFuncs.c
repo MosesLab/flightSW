@@ -436,15 +436,25 @@ int tSleep() {
 /*Associates a sequence name with a signal number*/
 int setSequence(packet_t* p) {
     record("Set sequence command received\n");
-    //char data[32];
-    //strcpy(data, p->data);
-    //char temp = data[2];
-    //data[2] = '\0';
-    //int num = atoi(data);
-    //data[2] = temp;
+    
+    //		char data[32];
+    //	strcpy(data,p.getDataStr().c_str());
+    //	char temp = data[2];
+    //	data[2] = '\0';
+    //	int num = atoi(data);
+    //	data[2] = temp;
+    //	sequenceMap[num]->reload(data+2);
+    //	sequenceMap[num]->setNum(num);
+    
+    char data[32];
+    strcpy(data, p->data);
+    char temp = data[2];
+    data[2] = '\0';
+    int num = atoi(data);
+    data[2] = temp;
     
     //reload(data + 2);
-    //sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
+    sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
     return GOOD_PACKET;
 }
 

@@ -218,9 +218,6 @@ void join_threads() {
             }
         }
         
-        
-        sleep(1);
-        
         /* Goodnight MOSES */
         execlp("shutdown","shutdown", "-h", "now", (char *)0);
        

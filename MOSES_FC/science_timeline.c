@@ -31,29 +31,29 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-    int exit_activate_loop = FALSE;
-    while (exit_activate_loop == FALSE) {
+    //int exit_activate_loop = FALSE;
+    //while (exit_activate_loop == FALSE) {
 
-        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+        //if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
             activateROE();
 
             /* if ROE active, set to known state (exit default, reset, exit default) */
             exitDefault();
             reset();
             exitDefault();
-            record("ROE Active\n");
-            exit_activate_loop = TRUE;
+            //record("ROE Active\n");
+            //exit_activate_loop = TRUE;
 
-        } else if (config_values[roe_interface] == 0) {
-            record("ROE not present, continuing timeline...\n");
-            exit_activate_loop = TRUE;
-        }
+        //} else if (config_values[roe_interface] == 0) {
+        //    record("ROE not present, continuing timeline...\n");
+        //    exit_activate_loop = TRUE;
+        //}
 
         usleep(20000);
 
 
 
-    }
+    //}
 
     while (ts_alive) {
 
