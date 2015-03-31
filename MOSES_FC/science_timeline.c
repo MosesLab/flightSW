@@ -31,7 +31,7 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-    int exit_activate_loop = FALSE;
+    int exit_activate_loop = TRUE;
     while (exit_activate_loop == FALSE) {
 
         /*If ROE is set to real interface and powered on*/
