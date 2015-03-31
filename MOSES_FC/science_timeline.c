@@ -217,21 +217,21 @@ void * write_data(void * arg) {
         record("Image Opened\n");
 
         /*retrieve file system data*/
-        if ((statvfs("/mdata/", disk_info)) < 1) {
+        if ((statvfs("/mdata/", disk_info)) < 0) {
             sprintf(msg, "statvfs error=%d %s\n", errno, strerror(errno));
             record(msg);
         }
         
         /* check if sufficient free space on disk */
-        free_disk = (unsigned long) (disk_info->f_bfree) * (disk_info->f_bsize);
+        free_disk = (unsigned long) (disk_info->f_bavail) * (disk_info->f_bsize);
         
-        if (free_disk < 30000000) {
+        if (free_disk < 20000000) {
             
             sprintf(msg, "Insufficient free space on disk: image not written. (%d bytes remaining)\n", (int) free_disk);
             record(msg);
         
         }
-        else if (free_disk >= 30000000) {
+        else if (free_disk >= 20000000) {
             
             /* write image on disk */
             writeToFile(image);
@@ -240,7 +240,7 @@ void * write_data(void * arg) {
         
         }
         else {
-            /*error check - program shouldnt reach here*/
+            /*code shouldn't get here - statvfs(2) should catch errors*/
             record("error: free_disk space undefined");
         }
 
