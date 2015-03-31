@@ -40,8 +40,9 @@
 /*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_ENABLE  0x98
 #define SHUTTER_OFFSET  0x78
-#define SHUTTER_OPEN    0x20
-#define SHUTTER_CLOSE   0x40
+#define SHUTTER_OPEN    0x40
+#define SHUTTER_CLOSE   0x80
+#define FPGA_RESET      0x20
 #define SHUTTER_PULSE 200000 //usec
 
 /*Power is controlled by FPGA GPIO pins*/

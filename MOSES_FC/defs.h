@@ -155,7 +155,7 @@ typedef struct {
     
     unsigned int ddr2_read_error : 1;
     
-    unsigned int unused_in2 : 4;
+    unsigned int unused_in2 : 4;        //structure needs to be 32 bits
     
     unsigned int dma_ready : 1;
 } gpio_in_bf;
