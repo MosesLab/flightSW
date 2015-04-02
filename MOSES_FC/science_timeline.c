@@ -50,7 +50,9 @@ void * science_timeline(void * arg) {
             exit_activate_loop = TRUE;
         }
 
-        usleep(20000);
+//        usleep(20000);
+        printf("%d\n", gpio_out_state.bf.roe);
+        sleep(1);
 
 
 
