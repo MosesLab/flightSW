@@ -31,7 +31,7 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-    int exit_activate_loop = FALSE;
+    int exit_activate_loop = TRUE;
     while (exit_activate_loop == FALSE) {
 
         /*If ROE is set to real interface and powered on*/
@@ -43,11 +43,11 @@ void * science_timeline(void * arg) {
             reset();
             exitDefault();
             record("ROE Active\n");
-            exit_activate_loop = TRUE;
+            exit_activate_loop = FALSE;
 
         } else if (config_values[roe_interface] == 0) {
             record("ROE not present, continuing timeline...\n");
-            exit_activate_loop = TRUE;
+            exit_activate_loop = FALSE;
         }
 
         usleep(20000);
