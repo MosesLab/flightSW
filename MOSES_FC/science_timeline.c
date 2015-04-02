@@ -35,7 +35,9 @@ void * science_timeline(void * arg) {
     while (exit_activate_loop == FALSE) {
 
         /*If ROE is set to real interface and powered on*/
-        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+        //        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+        if (config_values[roe_interface] == 1) {
+
             activateROE();
 
             /* if ROE active, set to known state (exit default, reset, exit default) */
@@ -50,7 +52,7 @@ void * science_timeline(void * arg) {
             exit_activate_loop = TRUE;
         }
 
-//        usleep(20000);
+        //        usleep(20000);
         printf("%d\n", gpio_out_state.bf.roe);
         sleep(1);
 
@@ -212,8 +214,8 @@ void * write_data(void * arg) {
         image->time = dtime;
         image->width = 2048;
         image->height = 1024;
-        
-        image->xml_cur_index = xml_index;   // update current index of xml snippet array
+
+        image->xml_cur_index = xml_index; // update current index of xml snippet array
 
 
         record("Image Opened\n");
@@ -240,10 +242,10 @@ void * write_data(void * arg) {
             free(image->data[3]);
             free(image);
         }
-        
+
         /*copy a backup of the log to disk after each image write*/
         copy_log_to_disk();
-        
+
 
     }//end while ts_alive
 
@@ -267,7 +269,7 @@ void * telem(void * arg) {
         sprintf(msg, "Dequeued new image %s\n", new_image->filename);
         record(msg);
 
-       
+
         rc = send_image(new_image, synclink_fd); //Send actual Image
         if (rc < 0) {
             record("Failed to send image over telemetry!");
