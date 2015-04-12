@@ -11,8 +11,8 @@
 
 #include "system.h"
 
-#define STDIN_PIPE PATH "fifo/moses_stdin_fifo"
-#define STDOUT_PIPE PATH "fifo/dev/moses_stdout_fifo"
+#define STDIN_PIPE "/moses/fifo/moses_stdin_fifo"
+#define STDOUT_PIPE "/moses/fifo/dev/moses_stdout_fifo"
 
 #define P_READ 0
 #define P_WRITE 1
