@@ -73,20 +73,6 @@ void copy_log_to_disk() {
     sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
 
 
-    //    /*open pipe*/
-    //    int p[2];
-    //    int rc = pipe(p);
-    //    if (rc != 0) {
-    //        record("*ERROR* Failed to open pipe for log backup!\n");
-    //    }
-    //
-    //    /*open both log and backup log */
-    //    int out = open(new_path, O_WRONLY);
-    //    int in = open(LOG_PATH, O_RDONLY);
-    //    while (splice(p[0], out, splice(in, p[1], 4096)) > 0);
-    //    close(in);
-    //    close(out);
-
     int pipefd[2];
     int result;
     FILE *in_file;

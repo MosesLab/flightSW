@@ -268,7 +268,7 @@ void main_init() {
 void read_moses_config() {
     int rc = 0;
     unsigned int config_size = num_threads + NUM_IO;
-    char * config_path = "moses.conf";
+    char * config_path = PATH "moses.conf";
 
 
     record("Reading in configuration file.....\n");

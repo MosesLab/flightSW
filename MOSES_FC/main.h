@@ -19,6 +19,7 @@
 #include "fpga.h"
 
 /*IO constants*/
+
 #define HLP_CONTROL_CONF "HLP_CONTROL_THREAD"
 #define DOWN_CONF "HLP_DOWN_THREAD"
 #define GPIO_CONTROL_CONF "GPIO_CONTROL_THREAD"

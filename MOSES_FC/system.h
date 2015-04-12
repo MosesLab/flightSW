@@ -20,7 +20,7 @@
 #include "defs.h"
 #include "logger.h"
 
-
+#define PATH "/moses/flightSW/MOSES_FC/"
 
 
 #endif /*SYSTEM_H*/
