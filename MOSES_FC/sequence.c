@@ -54,10 +54,11 @@ sequence_t constructSequence(char *filepath) {
 }
 
 void loadSequences() {
-    char filepath[] = PATH "/sequence"; //default folder path
+    char filepath[] = PATH "sequence"; //default folder path
     record(filepath);
     int numfiles = 0;
-    char strdir[100];
+    char strdir[256];
+    char msg[256];
 
     /*Open up all files that */
     DIR *d;
@@ -80,6 +81,8 @@ void loadSequences() {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
                 sprintf(strdir, "%s/%s", filepath, dir->d_name);
+                sprintf(msg, "%s/%s", filepath, dir->d_name);
+                record(msg);
                 sequenceMap[i] = constructSequence(strdir);
                 i++;
                 //seq_map_size = i;  //Need to send this variable to science_timeline
