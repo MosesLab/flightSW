@@ -87,8 +87,9 @@ int enablePower(packet_t* p) {
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
-    set_power(subsystem, ON);
-
+    if (subsystem <= NUM_SUBSYSTEM) {
+        set_power(subsystem, ON);
+    }
     sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
     record(msg);
 
@@ -105,7 +106,7 @@ int disablePower(packet_t* p) {
     record("Command to disable subsystem power received\n");
     //Insert control code here
     unsigned int subsystem = strtol(p->data, NULL, 16);
-    if (subsystem < NUM_SUBSYSTEM) {
+    if (subsystem <= NUM_SUBSYSTEM) {
         set_power(subsystem, OFF);
     }
 
@@ -267,7 +268,6 @@ int uDark2() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
-            printf("found the sequence");
             break;
         }
     }

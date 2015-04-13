@@ -55,8 +55,6 @@ sequence_t constructSequence(char *filepath) {
 
 void loadSequences() {
     char filepath[] = PATH "sequence"; //default folder path
-    
-    record(filepath);
     int numfiles = 0;
     char strdir[256];
     char msg[256];
