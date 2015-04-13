@@ -111,10 +111,10 @@ void open_shutter() {
     record("Opening shutter\n");
 
     /*activate VDX GPIO with driver call*/
-    iopl(3);
+//    iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
+//    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OPEN, SHUTTER_OFFSET);
@@ -136,7 +136,7 @@ void close_shutter() {
 //    iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
+//    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);
@@ -147,7 +147,7 @@ void close_shutter() {
     /*deassert pin*/
     outb(0x00, SHUTTER_OFFSET);
 
-    iopl(0);
+//    iopl(0);
 }
 
 /*sets up the memory used in powering the instrument*/
@@ -225,6 +225,8 @@ int init_gpio() {
     if (rc == FALSE) {
         record("Error writing GPIO output\n");
     }
+    
+    init_shutter();
 
     return TRUE;
 
