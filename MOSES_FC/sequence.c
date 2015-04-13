@@ -54,14 +54,14 @@ sequence_t constructSequence(char *filepath) {
 }
 
 void loadSequences() {
-    char filepath[] = "/moses/flightSW/MOSES_FC/sequence/"; //default folder path
+    char filepath[] = PATH "sequence/"; //default folder path
     int numfiles = 0;
     char strdir[100];
 
     /*Open up all files that */
     DIR *d;
     struct dirent *dir;
-    d = opendir("sequence");
+    d = opendir(filepath);
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
@@ -73,7 +73,7 @@ void loadSequences() {
 
     sequenceMap = (sequence_t *) malloc(numfiles * sizeof (sequence_t));
 
-    d = opendir("sequence");
+    d = opendir(filepath);
     int i = 0;
     if (d) {
         while ((dir = readdir(d)) != NULL) {
