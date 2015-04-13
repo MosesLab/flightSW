@@ -18,11 +18,11 @@ sequence_t tempSequence;
 
 sequence_t constructSequence(char *filepath) {
     int i;
-    char input_data[50];
+    char input_data[256];
 
     FILE* file;
-    tempSequence.sequenceName = (char *) malloc(30);
-    strncpy(tempSequence.sequenceName, filepath, 30);
+    tempSequence.sequenceName = (char *) malloc(100);
+    strncpy(tempSequence.sequenceName, filepath, 100);
     if (strstr(tempSequence.sequenceName, "data") != NULL) {
         tempSequence.seq_type = 1; // type is data
     }
