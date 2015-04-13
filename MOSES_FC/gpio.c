@@ -125,7 +125,7 @@ void open_shutter() {
     /*deassert pin*/
     outb(0x00, SHUTTER_OFFSET);
 
-    iopl(0);
+//    iopl(0);
 }
 
 /*VDX FPIO*/
@@ -133,7 +133,7 @@ void close_shutter() {
     record("Closing Shutter\n");
 
     /*activate VDX GPIO with driver call*/
-    iopl(3);
+//    iopl(3);
 
     /*initialize pins for writing*/
     outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
