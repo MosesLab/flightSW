@@ -157,7 +157,7 @@ int init_gpio() {
     
     gpio_out_state.val = 0;
 
-    U32 mask = 0x00000010;
+    U32 mask = 0x00000002;
     unsigned int i;
     for (i = 0; i < NUM_SUBSYSTEM; i++) {
         power_subsystem_mask[i] = mask;
