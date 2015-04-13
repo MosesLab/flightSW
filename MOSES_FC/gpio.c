@@ -114,7 +114,7 @@ void open_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-//    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
+    //    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OPEN, SHUTTER_OFFSET);
@@ -136,7 +136,7 @@ void close_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-//    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
+    //    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);
@@ -154,7 +154,7 @@ void close_shutter() {
 int init_gpio() {
     int rc;
     char msg[255];
-    
+
     gpio_out_state.val = 0;
 
     U32 mask = 0x00000002;
@@ -225,7 +225,7 @@ int init_gpio() {
     if (rc == FALSE) {
         record("Error writing GPIO output\n");
     }
-    
+
     init_shutter();
 
     return TRUE;
@@ -241,4 +241,7 @@ void init_shutter() {
 
     /*initialize pins for writing*/
     outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+
+    iopl(0);
+
 }
