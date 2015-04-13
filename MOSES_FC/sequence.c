@@ -55,11 +55,14 @@ sequence_t constructSequence(char *filepath) {
 
 void loadSequences() {
     char filepath[] = PATH "sequence"; //default folder path
+    
     record(filepath);
     int numfiles = 0;
     char strdir[256];
     char msg[256];
 
+    sprintf(msg, "%s/\n", filepath);
+    record(msg);
     /*Open up all files that */
     DIR *d;
     struct dirent *dir;
@@ -81,7 +84,7 @@ void loadSequences() {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
                 sprintf(strdir, "%s/%s", filepath, dir->d_name);
-                sprintf(msg, "%s/%s", filepath, dir->d_name);
+                sprintf(msg, "%s/%s\n", filepath, dir->d_name);
                 record(msg);
                 sequenceMap[i] = constructSequence(strdir);
                 i++;
