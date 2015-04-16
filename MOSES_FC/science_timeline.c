@@ -35,17 +35,21 @@ void * science_timeline(void * arg) {
     while (exit_activate_loop == FALSE) {
 
         /*If ROE is set to real interface and powered on*/
-        //        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
-        if (config_values[roe_interface] == 1) {
+        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+            //        if (config_values[roe_interface] == 1) {
 
             activateROE();
 
             /* if ROE active, set to known state (exit default, reset, exit default) */
-            exitDefault();
-            reset();
-            exitDefault();
-            record("ROE Active\n");
-            exit_activate_loop = TRUE;
+            if (!exitDefault()) {
+                if (!reset()) {
+                    if (!exitDefault()) {
+                        record("ROE Active\n");
+                        exit_activate_loop = TRUE;
+                    }
+                }
+            }
+
 
         } else if (config_values[roe_interface] == 0) {
             record("ROE not present, continuing timeline...\n");
