@@ -110,7 +110,7 @@ int wait_on_sem(sem_t * sem, int timeout) {
 
     /*wait on semaphore until dma is done or timeout period is reached*/
     if (sem_timedwait(sem, &dma_timeout_spec)) {
-        sprintf(msg, "*ERROR* %s\n", strerror(errno));
+        sprintf(msg, " wait on sem *ERROR*  %s\n", strerror(errno));
         record(msg);
         return FALSE;
     }

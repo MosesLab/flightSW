@@ -374,6 +374,7 @@ int readOut(int block, int delay) {
     pthread_mutex_lock(&roe_struct.mx);
 
     char command[2] = {START_CSG,block};
+    printf("block: %d", block);
     //char command[2] = {0x42, 0x99};
 
     int i;

@@ -140,13 +140,18 @@ void * science_timeline(void * arg) {
                 record("Failed to set FPGA to buffer mode, trying next exposure\n");
                 continue;
             }
-
+            
+            record("Sending command to ROE to readout\n");
+            
             /* Command ROE to Readout*/
             if (roe_struct.active) {
                 readOut(ops.read_block, 100000);
                 a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
                 enqueue(&lqueue[hkdown], a);
             }
+            
+            record("Readout command sent\n");
+            record("waiting on DMA completion\n");
 
             /*Wait until DMA is complete before proceeding*/
             wait_on_sem(&dma_control_sem, 15);
