@@ -373,8 +373,8 @@ int stimOff() {
 int readOut(int block, int delay) {
     pthread_mutex_lock(&roe_struct.mx);
 
-    //char command[2] = {START_CSG,block};
-    char command[2] = {0x45, 0x99};
+    char command[2] = {START_CSG,block};
+    //char command[2] = {0x42, 0x99};
 
     int i;
     for (i = 0; i < 2; i++) //Write the command to the serial link

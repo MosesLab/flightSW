@@ -57,7 +57,7 @@ void * science_timeline(void * arg) {
         }
 
         //        usleep(20000);
-        printf("%d\n", gpio_out_state.bf.roe);
+//        printf("%d\n", gpio_out_state.bf.roe);
         sleep(1);
 
 
