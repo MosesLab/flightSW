@@ -54,11 +54,11 @@ int activateROE() {
         roe_struct.roeLink = fd;
         roe_struct.active = TRUE;
     }
-    else{
-        record("ROE not active!\n");
-    }
+    //else{
+    //    record("ROE not active!\n");
+    //}
     pthread_mutex_unlock(&roe_struct.mx);
-    record("ROE Active\n");
+    //record("ROE Active\n");
     return fd;
 
 }
