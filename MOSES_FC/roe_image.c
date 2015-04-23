@@ -151,7 +151,7 @@ void writeToFile(roeimage_t * image) {
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
     xml_sz += sprintf(xmlbuf + xml_sz, "</ROEIMAGE>\n");
     
