@@ -187,6 +187,8 @@ void sort(roeimage_t * image) {
         for (j = 0; j < (buf_size); j++) {
             next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
 
+            
+            
             if (next_pixel >= 0xC000) { // Channel 3
                 dest_buf[3][i3] = next_pixel;
                 i3++;
@@ -202,7 +204,7 @@ void sort(roeimage_t * image) {
             }
 
             /*make sure the indices aren't too big*/
-            if (i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size) {
+            if (i0 >= buf_size || i1 >= buf_size || i2 >= buf_size || i3 >= buf_size) {
                 record("SCIENCE DATA BUFFER OVERFLOW!\n");
                 goto end_sort; // Don't freak out, breaking out of double loop 
             }

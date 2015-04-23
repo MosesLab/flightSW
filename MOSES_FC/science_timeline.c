@@ -20,7 +20,7 @@ void * science_timeline(void * arg) {
     /*Set thread name*/
     prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
 
-    //sleep(1);
+    ops.read_block = READBLK_DEFAULT;
 
     record("-->Science Timeline thread started....\n");
 
@@ -57,7 +57,7 @@ void * science_timeline(void * arg) {
         }
 
         //        usleep(20000);
-//        printf("%d\n", gpio_out_state.bf.roe);
+        //        printf("%d\n", gpio_out_state.bf.roe);
         sleep(1);
 
 
@@ -140,17 +140,18 @@ void * science_timeline(void * arg) {
                 record("Failed to set FPGA to buffer mode, trying next exposure\n");
                 continue;
             }
-            
-            record("Sending command to ROE to readout\n");
-            
+
+
             /* Command ROE to Readout*/
             if (roe_struct.active) {
+                record("Sending command to ROE to readout\n");
+
+
                 readOut(ops.read_block, 100000);
                 a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_RD_OUT, (char *) NULL);
                 enqueue(&lqueue[hkdown], a);
             }
-            
-            record("Readout command sent\n");
+
             record("waiting on DMA completion\n");
 
             /*Wait until DMA is complete before proceeding*/
