@@ -264,7 +264,6 @@ int uDark2() {
     {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
-            printf("found the sequence");
             break;
         }
     }
@@ -588,7 +587,6 @@ int scaleSequence(packet_t* p) {
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    //printf("Number to scale by: %f", strtod(numstr, &ptr));
     
     scale(strtod(numstr,&ptr));
     return GOOD_PACKET;
@@ -928,7 +926,6 @@ int FC_POS_5V_V(packet_t* p) {
     record("Request for FC +5.0V voltage received\n");
     //Insert control code here  
     char* response = FC_P5V_V "0.0"; //test EGSE
-    record(response);
     packet_t* r = constructPacket(HK_RSP, POS5V, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -1105,12 +1102,12 @@ int ROE_NEG_5V_IB(packet_t* p) {
 /*Request for flight computer +12V voltage*/
 /* Not used, VDX doesn't have voltage monitoring */
 int FC_12V_V(packet_t* p) {
- record("Request for FC +12V voltage received\n");
-//Insert control code here
-char* response = FC_P12V_V "0.0"; //test EGSE
-packet_t* r = constructPacket(HK_RSP, POS12V, response);
-enqueue(&lqueue[hkdown], r);
-return GOOD_PACKET;
+    record("Request for FC +12V voltage received\n");
+    //Insert control code here
+    char* response = FC_P12V_V "0.0"; //test EGSE
+    packet_t* r = constructPacket(HK_RSP, POS12V, response);
+    enqueue(&lqueue[hkdown], r);
+    return GOOD_PACKET;
 }
 
 /*Request for ROE +12V A Channel voltage*/
@@ -1360,7 +1357,6 @@ int ROE_CCDS_VSS(packet_t* p) {
     strcpy(temp, CCDB_VSS);
     char* response = getHK(CCDB_VSSC);
     strcat(temp, response);
-    printf("temp is: %s", temp);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&lqueue[hkdown], r);
     free(response);

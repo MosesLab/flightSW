@@ -148,7 +148,7 @@ void writeToFile(roeimage_t * image) {
     fprintf(outxml, "\t<DURATION>%d</DURATION>\n", image->duration);
     fprintf(outxml, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        fprintf(outxml, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+        fprintf(outxml, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
     fprintf(outxml, "</ROEIMAGE>\n");
     fprintf(outxml, "</CATALOG>\n");

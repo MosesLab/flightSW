@@ -22,7 +22,7 @@ void lockingQueue_init(LockingQueue * queue) {
 node_t * construct_queue_node(void * content){
     node_t* n;
     if((n = (node_t *)malloc(sizeof(node_t))) == NULL){
-        record("malloc failed to allocate node");
+        record("malloc failed to allocate node\n");
     }
     n->def = content;
     n->next = NULL;     //initialize next node to null

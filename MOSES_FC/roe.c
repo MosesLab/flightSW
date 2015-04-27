@@ -81,9 +81,7 @@ int deactivate() {
 
 int exitDefault() {
      char msg[255];
-    //printf("Attempting to exit default mode.\n");
-    record("Attempting to exit default mode.\n");
-    //record(msg);
+    record("ROE Attempting to exit default mode.\n");
 
     pthread_mutex_lock(&roe_struct.mx);
 
@@ -132,7 +130,6 @@ int exitDefault() {
     char command = EXIT_DEFAULT;
     int val;
     val = write(roe_struct.roeLink, (char *) &command, 1); //Write Command to ROE Link
-    //printf("write: %d\n", val);
     if (val != 1) {
         record("Exit Default Error, write\n");
         pthread_mutex_unlock(&roe_struct.mx);
@@ -146,7 +143,6 @@ int exitDefault() {
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Acknowledgment of Command
     }
-    printf("received ack, reading the status\n");
     char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
 
@@ -154,7 +150,7 @@ int exitDefault() {
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Status of Command Execution
     }
-    printf("Status = %c\n", status);
+    sprintf(msg, "Exit Default Status = %c\n", status); record(msg);
     roe_struct.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.
@@ -231,9 +227,9 @@ char* getHK(char hkparam) {
         pthread_mutex_unlock(&roe_struct.mx);
         return value_char; //Get Ack
     }
+    
     /*This value will be sent over telemetry as a string,
       convert this value(byte) to a char array */
-
     sprintf(value_char, "%c", value);
 
     pthread_mutex_unlock(&roe_struct.mx);
@@ -426,7 +422,6 @@ int flush() {
         readRoe(roe_struct.roeLink, &status, 1); //Wait for endofsequence, faster than usleep(***)
     }
     readRoe(roe_struct.roeLink, &status, 1); //Get the status of command execution
-    printf("Flush status: %c\n", status);
 
     pthread_mutex_unlock(&roe_struct.mx);
     record("Flushing CCD's\n");
@@ -482,19 +477,16 @@ int flush() {
 }*/
 
 int readRoe(int fd, char *data, int size) {
-    //printf("fd readRoe: %d\n", fd);
+    
     //Times out after 50000 tries
-    //int timeout;
     int input;
     //wait for one second
     input = input_timeout_roe(fd, 1);
     if (input > 0) {
         if (read(fd, data, size) != -1) {
-            //printf("data read, exiting readRoe %c<---data\n", *data);
             return 0;
         }
     }
-    //printf("readRoe Error\n");
     return -1;
 }
 
@@ -503,21 +495,17 @@ int readRoe(int fd, char *data, int size) {
 int receiveAck(int fd, char *data, int size, char target) {
     int timeout;
     char msg[100];
-    record("Inside receiveAck\n");
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds
     {
         if (readRoe(fd, data, size) != -1) { //Return only if read data is an acknowledgement
-            sprintf(msg, "Data:%c, target:%c\n", *data, target);
-            record(msg);
             if (*data == target) {
                 record("Acknowledgment successful\n");
                 return 0;
             }
         }
     }
-    sprintf(msg, "Acknowledgment timeout %c <--data \n", *data);
-    record(msg);
+    record("ROE Acknowledgment timeout\n");
     return -1;
 }
 

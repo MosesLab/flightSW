@@ -31,29 +31,29 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-    //int exit_activate_loop = FALSE;
-    //while (exit_activate_loop == FALSE) {
+    int exit_activate_loop = FALSE;
+    while (exit_activate_loop == FALSE) {
 
-        //if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
+        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
             activateROE();
 
             /* if ROE active, set to known state (exit default, reset, exit default) */
             exitDefault();
             reset();
             exitDefault();
-            //record("ROE Active\n");
-            //exit_activate_loop = TRUE;
+            record("ROE Active\n");
+            exit_activate_loop = TRUE;
 
-        //} else if (config_values[roe_interface] == 0) {
-        //    record("ROE not present, continuing timeline...\n");
-        //    exit_activate_loop = TRUE;
-        //}
+        } else if (config_values[roe_interface] == 0) {
+            record("ROE not present, continuing timeline...\n");
+            exit_activate_loop = TRUE;
+        }
 
         usleep(20000);
 
 
 
-    //}
+    }
 
     while (ts_alive) {
 
@@ -125,7 +125,7 @@ void * science_timeline(void * arg) {
                 /*Wait until FPGA has entered buffer mode*/
                 rc = wait_on_sem(&dma_control_sem, 2);
                 if(rc != TRUE){
-                    record("Failed to set FPGA to buffer mode, trying exposure again");
+                    record("Failed to set FPGA to buffer mode, trying exposure again\n");
                     continue;
                 }
 
@@ -157,7 +157,6 @@ void * science_timeline(void * arg) {
 
             a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
-            //record("Done with allsequences\n");
             ops.seq_run = FALSE;
         }
 
@@ -260,7 +259,7 @@ void * telem(void * arg) {
     FILE *fp;
     int synclink_fd = synclink_init(SYNCLINK_START);
     int xmlTrigger = 1;
-
+    char msg[256];
     lockingQueue_init(&lqueue[telem_image]);
 
     while (ts_alive) {
@@ -274,8 +273,8 @@ void * telem(void * arg) {
         fp = fopen(curr_path, "r");
 
         if (fp == NULL) { //Error opening file
-            //                printf("fopen(%s) error=%d %s\n", roeQueue.first->filePath, errno, strerror(errno));
-            printf("fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno));
+            //                
+            sprintf(msg, "fopen(%s) error=%d %s\n", curr_path, errno, strerror(errno)); record(msg);
         } else fclose(fp);
         if ((&lqueue[telem_image])->first != NULL) {
 

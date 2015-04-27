@@ -31,7 +31,7 @@ void * hlp_control(void * arg) {
     } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_SIM);
     } else {
-        record("HK up serial connection not configured");
+        record("HK up serial connection not configured\n");
     }
 
     /*all below should be changed to make it more organized*/
@@ -200,7 +200,7 @@ void * hlp_shell_out(void * arg) {
 
             /*read from stdout pipe*/
             if ((read(stdout_des, buf, 255)) == -1) {
-                record("read failed in HLP shell out");
+                record("read failed in HLP shell out\n");
             }
 
             /*push onto hk down queue*/
