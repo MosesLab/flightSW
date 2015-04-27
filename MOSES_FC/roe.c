@@ -497,7 +497,6 @@ int readRoe(int fd, char *data, int size) {
 
 int receiveAck(int fd, char *data, int size, char target) {
     int timeout;
-    char msg[100];
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds
     {
