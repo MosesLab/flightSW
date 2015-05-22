@@ -57,7 +57,7 @@ void recordPacket(packet_t* p) {
     char* pString = (char *) malloc(300 * sizeof (char));
     /*decode checksum so it doesn't print gibberish*/
     if (sprintf(pString, "%c%s%s%s%s%s%s%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
-        record("failed to record packet");
+        record("failed to record packet\n");
     }
     record(pString);
     free(pString); //clean up string after recording
