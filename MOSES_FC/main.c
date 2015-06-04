@@ -173,7 +173,7 @@ void join_threads() {
         //pthread_cond_broadcast(&lqueue[hkdown].cond);
         
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
-        pthread_join(threads[sci_timeline_thread], &returns);
+        pthread_join(&threads[sci_timeline_thread], &returns);
         
         /* Turn off subsytems*/
         set_power(tcs1, OFF);
