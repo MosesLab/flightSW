@@ -241,6 +241,7 @@ void init_shutter() {
 
     /*initialize pins for writing*/
     outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+    outb(0x00, SHUTTER_OFFSET);
 
     iopl(0);
 
