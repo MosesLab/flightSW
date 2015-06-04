@@ -54,6 +54,8 @@ void * science_timeline(void * arg) {
         } else if (config_values[roe_interface] == 0) {
             record("ROE not present, continuing timeline...\n");
             exit_activate_loop = TRUE;
+        } else if (!ts_alive){
+            return NULL;
         }
 
         //        usleep(20000);
