@@ -278,6 +278,7 @@ void * telem(void * arg) {
 
         /*dequeue new image from image writer thread*/
         new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
+        if(!ts_alive) return NULL;
         sprintf(msg, "Dequeued new image %s\n", new_image->filename);
         record(msg);
 
