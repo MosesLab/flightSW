@@ -83,9 +83,9 @@ typedef struct {
     unsigned int unique_stub;
     unsigned int sleep;
     char channels;
-    
-    
-}moses_ops_t;
+
+
+} moses_ops_t;
 
 /*structure to store attributes of a sequence*/
 typedef struct {
@@ -116,9 +116,9 @@ typedef struct {
     unsigned int size[4]; // size corresponds to number of pixels in image so, # of bytes = size *2 
     unsigned short* data[4]; // the image data
     char channels; //channels included in the image;S
-    unsigned int num_exp;       // index of this image in the sequence
-    unsigned int num_frames;    // total number of images for this sequencel
-    unsigned int xml_cur_index;  // currrent index in xml snippet array
+    unsigned int num_exp; // index of this image in the sequence
+    unsigned int num_frames; // total number of images for this sequencel
+    unsigned int xml_cur_index; // currrent index in xml snippet array
 } roeimage_t;
 
 //typedef struct {
@@ -127,37 +127,37 @@ typedef struct {
 //} xml_t;
 
 /*Create image path node*/
-typedef struct imgPtr { 
+typedef struct imgPtr {
     char* filePath;
     struct imgPtr * next;
 } imgPtr_t;
 
 /*bit field for passing gpio inputs */
 typedef struct {
-    unsigned int udatastart : 1;
-    unsigned int udatastop : 1;
     unsigned int udark1 : 1;
-    unsigned int udark2 : 1;
-    unsigned int udark3 : 1;
-    unsigned int udark4 : 1;
     unsigned int usleep : 1;
     unsigned int uwake : 1;
+    unsigned int udark2 : 1;
+    unsigned int udatastart : 1;
+    unsigned int udatastop : 1;
+    unsigned int udark3 : 1;
+    unsigned int udark4 : 1;
     unsigned int utest : 1;
 
     unsigned int tdark2 : 1;
-    unsigned int tdark4 : 1;
     unsigned int tdatastart : 1;
     unsigned int tdatastop : 1;
     unsigned int tsleep : 1;
+    unsigned int tdark4 : 1;  
 
     unsigned int shutter_sig : 1;
 
     unsigned int unused_in : 11; //structure needs to be 32 bits
-    
+
     unsigned int ddr2_read_error : 1;
-    
-    unsigned int unused_in2 : 4;        //structure needs to be 32 bits
-    
+
+    unsigned int unused_in2 : 4; //structure needs to be 32 bits
+
     unsigned int dma_ready : 1;
 } gpio_in_bf;
 
@@ -176,24 +176,24 @@ typedef struct {
     unsigned int tcs2 : 1;
     unsigned int tcs3 : 1;
     unsigned int premod : 1;
-    unsigned int tcs1 : 1; 
+    unsigned int tcs1 : 1;
     unsigned int shutter : 1;
-    unsigned int roe : 1;  
+    unsigned int roe : 1;
     unsigned int h_alpha : 1;
     unsigned int cc_pwr : 1;
     unsigned int led_0 : 1;
     unsigned int led_1 : 1;
 
     unsigned int unused_out_1 : 12;
-    
-    unsigned int fpga_reset : 1;        //0 is reset state, 1 is normal operation
+
+    unsigned int fpga_reset : 1; //0 is reset state, 1 is normal operation
     unsigned int frame_trigger : 1;
     unsigned int sw_shutdown : 1;
-    
+
     unsigned int unused_out_2 : 1;
-    
+
     unsigned int camer_mux_sel : 1;
-    
+
     unsigned int unused_out_3 : 1;
 
 } gpio_out_bf;
