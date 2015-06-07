@@ -43,8 +43,8 @@ int reset_fpga() {
 
     PlxPci_DeviceReset(&fpga_dev);
 
-//    gpio_out_state.bf.fpga_reset = 0;
-//    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+    gpio_out_state.bf.fpga_reset = 0;
+    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
 //
 //    gpio_out_state.bf.fpga_reset = 1;
 //    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
