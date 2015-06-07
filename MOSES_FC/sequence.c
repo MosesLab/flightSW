@@ -38,6 +38,7 @@ sequence_t constructSequence(char *filepath) {
 
     rc = fscanf(file, "%s %2ud\n", input_data, &(tempSequence.numFrames)); //scan "COUNT" and number of exposures 
     if (rc < 0) record("Error reading sequence\n");
+    tempSequence.exposureTimes = malloc(sizeof(double)*tempSequence.numFrames);
 
     rc = fscanf(file, "%s ", input_data); //scan "BEGIN"
     if (rc < 0) record("Error reading sequence\n");

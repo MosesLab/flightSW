@@ -91,7 +91,7 @@ typedef struct {
 typedef struct {
     unsigned int numFrames;
     unsigned int num;
-    double exposureTimes[10]; //need to figure out how to assign size based on sequence file
+    double* exposureTimes; //need to figure out how to assign size based on sequence file
     unsigned int currentFrame;
     char* sequenceName;
     char* filename;

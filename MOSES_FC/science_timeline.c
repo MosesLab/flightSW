@@ -207,6 +207,7 @@ void * write_data(void * arg) {
         char * dtime = malloc(sizeof (char) * 100);
         char * ddate = malloc(sizeof (char) * 100);
 
+        
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);

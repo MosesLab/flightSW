@@ -218,6 +218,8 @@ int uDataStart() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -249,6 +251,8 @@ int uDark1() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -269,6 +273,8 @@ int uDark2() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -289,6 +295,8 @@ int uDark3() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -309,6 +317,8 @@ int uDark4() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();  
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -365,6 +375,8 @@ int tDataStart() {
         }
     }
 
+    /*Check for updated sequences*/
+    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);    
 
@@ -386,6 +398,8 @@ int tDataStop() {
 
 int tDark2() {
     record("Received Dark2 Timer\n");
+    /*Check for updated sequences*/
+    loadSequences();
     
     int i;
     for (i = 0; i < SEQ_MAP_SIZE; i++)
@@ -395,6 +409,12 @@ int tDark2() {
             break;
         }
     }
+    
+    /*Check for updated sequences*/
+    loadSequences();
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);    
+    
     packet_t* r = constructPacket(TIMER_S, DARK2, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -411,6 +431,12 @@ int tDark4() {
             break;
         }
     }
+    
+    /*Check for updated sequences*/
+    loadSequences();
+    /*enqueue sequence to science timeline*/
+    enqueue(&lqueue[sequence], &sequenceMap[i]);    
+    
     packet_t* r = constructPacket(TIMER_S, DARK4, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
