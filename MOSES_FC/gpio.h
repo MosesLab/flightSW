@@ -35,7 +35,7 @@
 #define NUM_CONTROL_GPIO 14
 
 /*Power macros*/
-#define NUM_SUBSYSTEM 10
+#define NUM_SUBSYSTEM 11
 
 /*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_ENABLE  0x98

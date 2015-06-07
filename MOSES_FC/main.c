@@ -172,7 +172,7 @@ void join_threads() {
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
 
-        poke_gpio(CC_POWER, ON);
+        set_power(11, ON);      // hit cc_power
         
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
