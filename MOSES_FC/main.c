@@ -160,7 +160,19 @@ void join_threads() {
     if(ops.sleep)
     {
         record("in ops.sleep\n");
-        
+
+        /* Turn off subsytems*/
+        set_power(tcs1, OFF);
+        set_power(tcs2, OFF);
+        set_power(tcs3, OFF);
+        set_power(shutter, OFF);
+        set_power(roe, OFF);
+        set_power(halpha, OFF);
+        set_power(premod, OFF);
+        set_power(ps5v, OFF);
+        set_power(psdual12v, OFF);
+
+        poke_gpio(CC_POWER, ON);
         
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
@@ -175,16 +187,7 @@ void join_threads() {
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], NULL);
         
-        /* Turn off subsytems*/
-        set_power(tcs1, OFF);
-        set_power(tcs2, OFF);
-        set_power(tcs3, OFF);
-        set_power(shutter, OFF);
-        set_power(roe, OFF);
-        set_power(halpha, OFF);
-        set_power(premod, OFF);
-        set_power(ps5v, OFF);
-        set_power(psdual12v, OFF);
+
         
         record("All Subsystems turned off\n");
         
