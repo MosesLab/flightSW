@@ -13,7 +13,7 @@
 void * science_timeline(void * arg) {
     int rc;
     char* msg = (char *) malloc(200 * sizeof (char));
-    char sindex[2];
+    char sindex[5];
     char sframe[1200];
 
 
