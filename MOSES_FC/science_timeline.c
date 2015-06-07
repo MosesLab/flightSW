@@ -14,7 +14,7 @@ void * science_timeline(void * arg) {
     int rc;
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[2];
-    char sframe[10];
+    char sframe[1200];
 
 
     /*Set thread name*/
