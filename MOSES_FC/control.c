@@ -31,14 +31,19 @@ void * hlp_control(void * arg) {
     } else if (*(int*) arg == 2) { //Open simulated housekeeping downlink
         f_up = init_serial_connection(HKUP, HKUP_SIM);
     } else {
-        record("HK up serial connection not configured");
+        record("HK up serial connection not configured\n");
     }
 
     /*all below should be changed to make it more organized*/
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;
-    ops.tm_write = TRUE;
+    if(config_values[synclink_interface] == 1){
+        ops.tm_write = TRUE;
+    } else {
+        ops.tm_write = FALSE;
+    }
+    
 
     /*Load the Sequence Map*/
     loadSequences();
@@ -114,7 +119,8 @@ void * gpio_control(void * arg) {
     while (ts_alive) {
         /*dequeue next packet from gpio input queue*/
         gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
-        
+        if(gpio_control != NULL)
+            
         if(gpio_control->bf.ddr2_read_error == TRUE){
             record("DDR2 read error encountered!\n");
         }
@@ -200,7 +206,7 @@ void * hlp_shell_out(void * arg) {
 
             /*read from stdout pipe*/
             if ((read(stdout_des, buf, 255)) == -1) {
-                record("read failed in HLP shell out");
+                record("read failed in HLP shell out\n");
             }
 
             /*push onto hk down queue*/

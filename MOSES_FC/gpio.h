@@ -29,19 +29,20 @@
 #define OUTPUT_GPIO_ADDR		0x14
 #define	OUTPUT_DDR2_ADDRESS_ADDR	0x18
 #define OUTPUT_DDR2_CTRL_ADDR		0x1C
-
+#define CC_POWER 0x00000800
 
 /*Control GPIO input macros*/
 #define NUM_CONTROL_GPIO 14
 
 /*Power macros*/
-#define NUM_SUBSYSTEM 10
+#define NUM_SUBSYSTEM 11
 
 /*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_ENABLE  0x98
 #define SHUTTER_OFFSET  0x78
-#define SHUTTER_OPEN    0x20
-#define SHUTTER_CLOSE   0x40
+#define SHUTTER_OPEN    0x40
+#define SHUTTER_CLOSE   0x80
+#define FPGA_RESET      0x20
 #define SHUTTER_PULSE 200000 //usec
 
 /*Power is controlled by FPGA GPIO pins*/

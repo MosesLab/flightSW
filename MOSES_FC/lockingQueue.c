@@ -21,8 +21,8 @@ void lockingQueue_init(LockingQueue * queue) {
 
 node_t * construct_queue_node(void * content) {
     node_t* n;
-    if ((n = (node_t *) malloc(sizeof (node_t))) == NULL) {
-        record("malloc failed to allocate node");
+    if((n = (node_t *)malloc(sizeof(node_t))) == NULL){
+        record("malloc failed to allocate node\n");
     }
     n->def = content;
     n->next = NULL; //initialize next node to null
@@ -53,6 +53,7 @@ void * dequeue(LockingQueue * queue) {
     //    struct timespec timeToWait;
     //    struct timeval now;
     node_t * n = NULL;
+    void * ptr = NULL;
 
     //    gettimeofday(&now, NULL);
     //    timeToWait.tv_sec = now.tv_sec + 1;
@@ -70,12 +71,13 @@ void * dequeue(LockingQueue * queue) {
         n = queue->first;
         queue->first = n->next;
         queue->count--;
+        
+        ptr = n->def;
+        free(n);
     }
 
     pthread_mutex_unlock(&queue->lock);
 
-    void * ptr = n->def;
-    free(n);
     return ptr;
 }
 

@@ -151,7 +151,7 @@ void writeToFile(roeimage_t * image) {
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     for (i = 0; i < 4; i++) {
-        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE> ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
+        xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
     xml_sz += sprintf(xmlbuf + xml_sz, "</ROEIMAGE>\n");
     
@@ -195,7 +195,7 @@ void writeToFile(roeimage_t * image) {
     
 
     for (i = 0; i < 4; i++) {
-      if (image->channels & (char) (1 << i)) {
+//      if (image->channels & (char) (1 << i)) {
           
           /*write image to library buffer*/
             rc = fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
@@ -223,7 +223,7 @@ void writeToFile(roeimage_t * image) {
 //            sprintf(msg, "Error writing science data to disk! %s\n", strerror(errno));
 //            record(msg);
 //        }
-    }
+//    }
     fclose(dataOut);
 //    close(data_fd);
     

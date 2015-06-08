@@ -114,7 +114,7 @@ void open_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
+    //    outb((SHUTTER_OPEN), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_OPEN, SHUTTER_OFFSET);
@@ -136,7 +136,7 @@ void close_shutter() {
     iopl(3);
 
     /*initialize pins for writing*/
-    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
+    //    outb((SHUTTER_CLOSE), SHUTTER_ENABLE);
 
     /*assert pin*/
     outb(SHUTTER_CLOSE, SHUTTER_OFFSET);
@@ -153,10 +153,11 @@ void close_shutter() {
 /*sets up the memory used in powering the instrument*/
 int init_gpio() {
     int rc;
+    char msg[255];
 
     gpio_out_state.val = 0;
 
-    U32 mask = 0x00000001;
+    U32 mask = 0x00000002;
     unsigned int i;
     for (i = 0; i < NUM_SUBSYSTEM; i++) {
         power_subsystem_mask[i] = mask;
@@ -213,15 +214,19 @@ int init_gpio() {
     WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl); // Set the Data Manager control signal to zero
 
     /*set camera interface to simulated or real*/
-    if (config_values[image_sim_interface]) {
+    if (config_values[image_sim_interface] == 0) {
         gpio_out_state.bf.camer_mux_sel = 0; // Simulated camera interface
     } else {
         gpio_out_state.bf.camer_mux_sel = 1; // actual ROE camera interface
     }
+    sprintf(msg, "Camera mux is: %d\n", gpio_out_state.val);
+    record(msg);
     rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
     if (rc == FALSE) {
         record("Error writing GPIO output\n");
     }
+
+    init_shutter();
 
     return TRUE;
 
@@ -236,4 +241,8 @@ void init_shutter() {
 
     /*initialize pins for writing*/
     outb((SHUTTER_OPEN | SHUTTER_CLOSE), SHUTTER_ENABLE);
+    outb(0x00, SHUTTER_OFFSET);
+
+    iopl(0);
+
 }

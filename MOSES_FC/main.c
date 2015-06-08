@@ -9,6 +9,7 @@
 
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 
+
 unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
 void * targs[NUM_RROBIN + NUM_FIFO];
@@ -31,16 +32,15 @@ LockingQueue lqueue[QUEUE_NUM];
  */
 int main(int argc, char **argv) {
     char msg[255];
-    int restart = TRUE;
+    ops.sleep = 0;
     
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
     sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
     
-    while(restart){
-        restart = moses();
-    }
+    
+    while(moses());
     
     return 0;
        
@@ -76,7 +76,7 @@ int moses(){
     /*start threads indicated by configuration file*/
     start_threads();
 
-    /*Upon program termiation (^c) attempt to join the threads*/
+    /*Upon program termination (^c) attempt to join the threads*/
     pthread_sigmask(SIG_BLOCK, &mask, &oldmask);
     sigwait(&mask, &quit_sig);
     pthread_sigmask(SIG_UNBLOCK, &mask, &oldmask);
@@ -85,7 +85,7 @@ int moses(){
 
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
-
+    
     /*clean up memory and open devices*/
     cleanup();
 
@@ -97,17 +97,6 @@ int moses(){
 
         sleep(2);
         record("Flight software rebooting...\n");
-
-        /*reset stdin and stdout*/
-//        reset_std_io();
-
-//        if (execv(argv[0], argv)) {
-//            record("ERROR in restarting flight software!\n");
-//        }
-
-        //            if (execlp("./dist/fd/GNU-Linux-x86/moses_fc", "", NULL) == -1) {
-        //                record("ERROR in restarting flight software!\n");
-        //            }
 
         return TRUE;
     }
@@ -162,10 +151,63 @@ void start_threads() {
 
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
-    //    void * returns;
-
+    void * returns;
+ //   char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
+    
+    /*Check to see if this function was called because of sleep T/U */
+    if(ops.sleep)
+    {
+        record("in ops.sleep\n");
+
+        /* Turn off subsytems*/
+        set_power(tcs1, OFF);
+        set_power(tcs2, OFF);
+        set_power(tcs3, OFF);
+        set_power(shutter, OFF);
+        set_power(roe, OFF);
+        set_power(halpha, OFF);
+        set_power(premod, OFF);
+        set_power(ps5v, OFF);
+        set_power(psdual12v, OFF);
+
+        set_power(10, ON);      // hit cc_power
+        
+        ts_alive = 0;
+        pthread_cond_broadcast(&lqueue[sequence].cond);
+        pthread_cond_broadcast(&lqueue[scit_image].cond);
+        pthread_cond_broadcast(&lqueue[fpga_image].cond);
+        pthread_cond_broadcast(&lqueue[telem_image].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_in].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_out].cond);
+        //pthread_cond_broadcast(&lqueue[gpio_req].cond);
+        //pthread_cond_broadcast(&lqueue[hkdown].cond);
+        
+        /*Gracefully close down sci_ti(making sure the shutter is closed)*/
+        pthread_join(threads[sci_timeline_thread], NULL);
+        
+
+        
+        record("All Subsystems turned off\n");
+        
+        /*Gracefully close down image_writer(making sure it is done writing)*/
+        pthread_join(threads[image_writer_thread], &returns);
+        
+        /* Cancel the threads that dont need to be joined*/
+        int i;
+        for (i = 0; i < num_threads; i++) {
+            if (threads[i] != 0) {
+                if(i != sci_timeline_thread && i != image_writer_thread) {
+                    pthread_cancel(threads[i]);
+                }
+            }
+        }
+        
+        /* Goodnight MOSES */
+        execlp("shutdown","shutdown", "-h", "now", (char *)0);
+       
+    } // end if sleep
 
 //    kill(vshell_pid, SIGKILL);
 
@@ -189,7 +231,7 @@ void init_quit_signal_handler() {
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = SA_RESTART;
+    quit_action.sa_flags = SA_RESTART;//SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
@@ -281,7 +323,7 @@ void main_init() {
 void read_moses_config() {
     int rc = 0;
     unsigned int config_size = num_threads + NUM_IO;
-    char * config_path = "moses.conf";
+    char * config_path = PATH "moses.conf";
 
 
     record("Reading in configuration file.....\n");

@@ -18,11 +18,11 @@ sequence_t tempSequence;
 
 sequence_t constructSequence(char *filepath) {
     int i;
-    char input_data[50];
+    char input_data[256];
 
     FILE* file;
-    tempSequence.sequenceName = (char *) malloc(30);
-    strncpy(tempSequence.sequenceName, filepath, 30);
+    tempSequence.sequenceName = (char *) malloc(100);
+    strncpy(tempSequence.sequenceName, filepath, 100);
     if (strstr(tempSequence.sequenceName, "data") != NULL) {
         tempSequence.seq_type = 1; // type is data
     }
@@ -36,8 +36,9 @@ sequence_t constructSequence(char *filepath) {
     rc = fscanf(file, "%s %s\n", input_data, input_data); //scan "NAME" and filepath
     if (rc < 0) record("Error reading sequence\n");
 
-    rc = fscanf(file, "%s %d\n", input_data, &tempSequence.numFrames); //scan "COUNT" and number of exposures 
+    rc = fscanf(file, "%s %2ud\n", input_data, &(tempSequence.numFrames)); //scan "COUNT" and number of exposures 
     if (rc < 0) record("Error reading sequence\n");
+    tempSequence.exposureTimes = malloc(sizeof(double)*tempSequence.numFrames);
 
     rc = fscanf(file, "%s ", input_data); //scan "BEGIN"
     if (rc < 0) record("Error reading sequence\n");
@@ -54,14 +55,17 @@ sequence_t constructSequence(char *filepath) {
 }
 
 void loadSequences() {
-    char filepath[] = "sequence"; //default folder path
+    char filepath[] = PATH "sequence"; //default folder path
     int numfiles = 0;
-    char strdir[100];
+    char strdir[256];
+    char msg[256];
 
+    sprintf(msg, "%s/\n", filepath);
+    record(msg);
     /*Open up all files that */
     DIR *d;
     struct dirent *dir;
-    d = opendir("sequence");
+    d = opendir(filepath);
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
@@ -73,12 +77,14 @@ void loadSequences() {
 
     sequenceMap = (sequence_t *) malloc(numfiles * sizeof (sequence_t));
 
-    d = opendir("sequence");
+    d = opendir(filepath);
     int i = 0;
     if (d) {
         while ((dir = readdir(d)) != NULL) {
             if (strstr(dir->d_name, ".seq") != NULL) {
                 sprintf(strdir, "%s/%s", filepath, dir->d_name);
+                sprintf(msg, "%s/%s\n", filepath, dir->d_name);
+                record(msg);
                 sequenceMap[i] = constructSequence(strdir);
                 i++;
                 //seq_map_size = i;  //Need to send this variable to science_timeline
