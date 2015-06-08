@@ -101,7 +101,7 @@ int wait_on_sem(sem_t * sem, int timeout) {
     char msg[255];
     struct timeval dma_timeout_val; // need this struct to use gettimeofday()
     struct timespec dma_timeout_spec; // need this struct to use sem_timedwait()
-    
+
     gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
 
     /*convert timespec to timeval to use sem_timedwait*/
@@ -114,6 +114,6 @@ int wait_on_sem(sem_t * sem, int timeout) {
         record(msg);
         return FALSE;
     }
-    
+
     return TRUE;
 }

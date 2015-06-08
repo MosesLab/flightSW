@@ -209,17 +209,17 @@ int hlp_shell(int pipe_fd, packet_t * p) {
 int uDataStart() {
     record("Received data start Uplink\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
+
     unsigned int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -241,18 +241,18 @@ int uDataStop() {
 int uDark1() {
     record("Received Dark1 Uplink\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
 
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark1") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();
+
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -264,17 +264,18 @@ int uDark1() {
 int uDark2() {
     record("Received Dark2 Uplink\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
+
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();
+
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -286,17 +287,17 @@ int uDark2() {
 int uDark3() {
     record("Received Dark3 Uplink\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
+
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark3") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -308,17 +309,17 @@ int uDark3() {
 int uDark4() {
     record("Received Dark4 Uplink\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
+
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();  
     /*enqueue sequence to science timeline*/
     enqueue(&lqueue[sequence], &sequenceMap[i]);
 
@@ -330,17 +331,17 @@ int uDark4() {
 /* DJK 2/24/15 - This function still needs to be tested*/
 int uSleep() {
     record("Received shutdown Uplink\n");
-    
+
     /* Indicate that its MOSES should go to sleep*/
     ops.sleep = 1;
-    
-    /* Tell main we want to quit */
-    kill(main_pid, SIGINT);   
 
-    
+    /* Tell main we want to quit */
+    kill(main_pid, SIGINT);
+
+
     packet_t* r = constructPacket(UPLINK_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
-    
+
     return GOOD_PACKET;
 }
 
@@ -355,7 +356,7 @@ int uWake() {
 
 int uTest() {
     record("Received test Uplink\n");
-    
+
     /*Only thing needed done here is send a packet*/
     packet_t* r = constructPacket(UPLINK_S, TEST, NULL);
     enqueue(&lqueue[hkdown], r);
@@ -366,19 +367,19 @@ int uTest() {
 int tDataStart() {
     record("Received data start Timer\n");
 
+    /*Check for updated sequences*/
+    loadSequences();
+
     unsigned int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "data") != NULL) {
             ops.sequence = i;
             break;
         }
     }
 
-    /*Check for updated sequences*/
-    loadSequences();
     /*enqueue sequence to science timeline*/
-    enqueue(&lqueue[sequence], &sequenceMap[i]);    
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
 
 
     packet_t* r = constructPacket(TIMER_S, DATASTART, NULL);
@@ -388,9 +389,9 @@ int tDataStart() {
 
 int tDataStop() {
     record("Received data stop Timer\n");
-    
+
     ops.seq_run = FALSE;
-    
+
     packet_t* r = constructPacket(TIMER_S, DATASTOP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -398,23 +399,21 @@ int tDataStop() {
 
 int tDark2() {
     record("Received Dark2 Timer\n");
+
     /*Check for updated sequences*/
     loadSequences();
-    
+
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark2") != NULL) {
             ops.sequence = i;
             break;
         }
     }
-    
-    /*Check for updated sequences*/
-    loadSequences();
+
     /*enqueue sequence to science timeline*/
-    enqueue(&lqueue[sequence], &sequenceMap[i]);    
-    
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
+
     packet_t* r = constructPacket(TIMER_S, DARK2, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -422,21 +421,21 @@ int tDark2() {
 
 int tDark4() {
     record("Received Dark4 Timer\n");
-    
+
+    /*Check for updated sequences*/
+    loadSequences();
+
     int i;
-    for (i = 0; i < SEQ_MAP_SIZE; i++)
-    {
+    for (i = 0; i < SEQ_MAP_SIZE; i++) {
         if (strstr(sequenceMap[i].sequenceName, "dark4") != NULL) {
             ops.sequence = i;
             break;
         }
     }
-    
-    /*Check for updated sequences*/
-    loadSequences();
+
     /*enqueue sequence to science timeline*/
-    enqueue(&lqueue[sequence], &sequenceMap[i]);    
-    
+    enqueue(&lqueue[sequence], &sequenceMap[i]);
+
     packet_t* r = constructPacket(TIMER_S, DARK4, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -444,13 +443,13 @@ int tDark4() {
 
 int tSleep() {
     record("Received shutdown Timer\n");
-    
+
     /* Indicate that its MOSES should go to sleep*/
     ops.sleep = 1;
-    
+
     /* Tell main we want to quit */
-    kill(main_pid, SIGUSR2); 
-    
+    kill(main_pid, SIGUSR2);
+
     packet_t* r = constructPacket(TIMER_S, SLEEP, NULL);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -462,7 +461,7 @@ int tSleep() {
 /*Associates a sequence name with a signal number*/
 int setSequence(packet_t* p) {
     record("Set sequence command received\n");
-    
+
     //		char data[32];
     //	strcpy(data,p.getDataStr().c_str());
     //	char temp = data[2];
@@ -471,21 +470,22 @@ int setSequence(packet_t* p) {
     //	data[2] = temp;
     //	sequenceMap[num]->reload(data+2);
     //	sequenceMap[num]->setNum(num);
-    
+
     char data[32];
     strcpy(data, p->data);
     char temp = data[2];
     data[2] = '\0';
     int num = atoi(data);
     data[2] = temp;
-    
+
     //reload(data + 2);
-    sequenceMap[num].num = num;      /*flightSW_2005 code never used num -DJK*/
+    sequenceMap[num].num = num; /*flightSW_2005 code never used num -DJK*/
     return GOOD_PACKET;
 }
 
 /*Uses stem for an output file.*/
 // When is this used??? -djk
+
 int setOutputName(packet_t* p) {
     record("Set output filename command received\n");
     strcpy(dataStub, p->data);
@@ -511,9 +511,9 @@ int getSeqInfo(packet_t* p) {
     record("Get sequence info command received\n");
     char numstr[16];
     char info[256];
-    strcpy(numstr,p->data);
-    
-    strcpy(info,toString(atoh(p->data)));
+    strcpy(numstr, p->data);
+
+    strcpy(info, toString(atoh(p->data)));
     packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -531,7 +531,7 @@ int getCurSeqName(packet_t* p) {
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(packet_t* p) {
     record("Get current frame length command received\n");
-    char response[256]; 
+    char response[256];
     sprintf(response, "%6.3f", getCurrentExposure());
     packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
     enqueue(&lqueue[hkdown], r);
@@ -614,20 +614,20 @@ int scaleSequence(packet_t* p) {
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    
-    scale(strtod(numstr,&ptr));
+
+    scale(strtod(numstr, &ptr));
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to translate the current sequence, adding the 
  floating point value in the Data field to each frame in the sequence*/
 int translateSeq(packet_t* p) {
-        char numstr[16];
+    char numstr[16];
     //char name[128];
     strcpy(numstr, p->data);
     char *ptr;
     record("Command to translate sequence received\n");
-    translate(strtod(numstr,&ptr));
+    translate(strtod(numstr, &ptr));
     return GOOD_PACKET;
 }
 
@@ -642,7 +642,7 @@ int findAndJump(packet_t* p) {
     char *ptr;
     //char name[128];
     strcpy(numstr, p->data);
-    sprintf(response,"%2d", findAndJump_seq(strtod(numstr,&ptr)));
+    sprintf(response, "%2d", findAndJump_seq(strtod(numstr, &ptr)));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -683,11 +683,11 @@ int findAndReplace(packet_t* p) {
     //Insert control code here  
     //char* response = "0,0"; //test EGSE
     char response[128];
-     char input[128];
-    strcpy(input,p->data);
-    double num1 = strtod(strtok(input,","), NULL);
-    double num2 = strtod(strtok(NULL,","), NULL);
-    strcpy(response,findAndReplace_seq(num1,num2));
+    char input[128];
+    strcpy(input, p->data);
+    double num1 = strtod(strtok(input, ","), NULL);
+    double num2 = strtod(strtok(NULL, ","), NULL);
+    strcpy(response, findAndReplace_seq(num1, num2));
     packet_t* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -761,7 +761,7 @@ int posOnlyDisable(packet_t* p) {
 /*Commands the flight software to turn STIMS ON*/
 int stimsEnable(packet_t* p) {
     record("Command to enable STIMS mode received.\n");
-    
+
     if (roe_struct.active) {
         int var = stimOn();
         if (var == -1) {
@@ -773,8 +773,7 @@ int stimsEnable(packet_t* p) {
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         }
-    } else
-    {
+    } else {
         record("STIM-ON ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
@@ -797,8 +796,7 @@ int stimsDisable(packet_t* p) {
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         }
-    } else
-    {
+    } else {
         record("STIM-OFF ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
@@ -813,8 +811,7 @@ int resetROE(packet_t* p) {
         reset();
         ops.read_block =
                 (ops.roe_custom_read == TRUE) ? READBLK_CUSTOM : READBLK_DEFAULT;
-    } else
-    {
+    } else {
         record("RESET-ROE ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
@@ -832,14 +829,11 @@ int disableDefaultROE(packet_t* p) {
             record("ROE did not exit default mode.\n");
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
-        }
-        else
-        {
+        } else {
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         }
-    } else
-    {
+    } else {
         record("EXIT-DEFAULT ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
@@ -861,8 +855,7 @@ int enableSelftestROE(packet_t* p) {
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         }
-    } else
-    {
+    } else {
         record("SELF-TEST ERROR: ROE INACTIVE!\n");
         packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
         enqueue(&lqueue[hkdown], a);
@@ -872,11 +865,11 @@ int enableSelftestROE(packet_t* p) {
 
 /*Command to reset the flight software*/
 int resetSW(packet_t* p) {
-    
+
     record("Command to reset flight software received\n");
-    
+
     kill(main_pid, SIGUSR2); // used to be SIGHUP
-    
+
     return GOOD_PACKET;
 }
 
@@ -887,6 +880,7 @@ int resetSW(packet_t* p) {
  */
 
 /*Request for flight computer +2.0V voltage*/
+
 /* Not used, VDX doesn't have voltage monitoring*/
 int FC_2V_V(packet_t* p) {
     record("Request for FC +2.0V voltage received\n");
@@ -898,6 +892,7 @@ int FC_2V_V(packet_t* p) {
 }
 
 /*Request for flight computer +2.5V voltage*/
+
 /* Not used, VDX doesn't have voltage monitoring */
 int FC_2_5V_V(packet_t* p) {
     record("Request for FC +2.5V voltage received\n");
@@ -911,7 +906,7 @@ int FC_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V voltage*/
 int ROE_2_5V_V(packet_t* p) {
     record("Request for ROE +2.5V voltage received\n");
-        char * temp = malloc(sizeof (char) * 6);
+    char * temp = malloc(sizeof (char) * 6);
     strcpy(temp, ROE_P2_5VD_V);
     char* response = getHK(VPOS2_5VD);
     strcat(temp, response);
@@ -937,6 +932,7 @@ int ROE_2_5V_I(packet_t* p) {
 }
 
 /*Request for flight computer +3.3V voltage*/
+
 /* Not used, VDX doesn't have voltage monitoring */
 int FC_3_3V_V(packet_t* p) {
     record("Request for FC +3.3V voltage received\n");
@@ -948,6 +944,7 @@ int FC_3_3V_V(packet_t* p) {
 }
 
 /*Request for flight computer +5.0V voltage*/
+
 /* Not used, VDX doesn't have voltage monitoring */
 int FC_POS_5V_V(packet_t* p) {
     record("Request for FC +5.0V voltage received\n");
@@ -989,7 +986,7 @@ int ROE_POS_5V_VB(packet_t* p) {
 /*Request for ROE +5.0V D Channel voltage*/
 int ROE_POS_5V_VD(packet_t* p) {
     record("Request for ROE +5.0V D Channel voltage received\n");
-        char * temp = malloc(sizeof (char) * 6);
+    char * temp = malloc(sizeof (char) * 6);
     strcpy(temp, ROE_P5VD_V);
     char* response = getHK(VPOS5VD);
     strcat(temp, response);
@@ -1003,7 +1000,7 @@ int ROE_POS_5V_VD(packet_t* p) {
 /*Request for ROE +5.0V A Channel current*/
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
-        char * temp = malloc(sizeof (char) * 6);
+    char * temp = malloc(sizeof (char) * 6);
     strcpy(temp, ROE_P5VD_I);
     char* response = getHK(CPOS5VD);
     strcat(temp, response);
@@ -1017,7 +1014,7 @@ int ROE_POS_5V_IA(packet_t* p) {
 /*Request for ROE +5.0V B Channel current*/
 int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
-        char * temp = malloc(sizeof (char) * 6);
+    char * temp = malloc(sizeof (char) * 6);
     strcpy(temp, ROE_P5VAB_I);
     char* response = getHK(CPOS5VA_B);
     strcat(temp, response);
@@ -1127,6 +1124,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
 }
 
 /*Request for flight computer +12V voltage*/
+
 /* Not used, VDX doesn't have voltage monitoring */
 int FC_12V_V(packet_t* p) {
     record("Request for FC +12V voltage received\n");
@@ -1141,7 +1139,7 @@ int FC_12V_V(packet_t* p) {
 int ROE_12V_VA(packet_t* p) {
     record("Request for ROE +12V A Channel voltage received\n");
     char * temp = malloc(sizeof (char) * 6);
-    strcpy(temp, ROE_P12VA_V );
+    strcpy(temp, ROE_P12VA_V);
     char* response = getHK(VPOS12V_A);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);

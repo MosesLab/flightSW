@@ -171,6 +171,8 @@ void join_threads() {
         set_power(premod, OFF);
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
+        
+        sleep(2);
 
         set_power(10, ON);      // hit cc_power
         
