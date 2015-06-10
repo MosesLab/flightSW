@@ -175,6 +175,8 @@ void * science_timeline(void * arg) {
             /* done with sequence, push packet with info */
             sprintf(msg, "Done with sequence %s\n\n\n", currentSequence->sequenceName);
             record(msg);
+            
+            free(tempSequence.exposureTimes);
 
             a = (packet_t*) constructPacket(MDAQ_RSP, END_SEQ, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
