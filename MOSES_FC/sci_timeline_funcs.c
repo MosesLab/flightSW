@@ -25,7 +25,7 @@ int takeExposure(double duration, int sig) {
     if (sig == 1) // use the shutter for Data sequence 
     {
         /*exposure duration should be lengthened to accout for shutter openeing*/
-        dur = dur + PULSE;
+//        dur = dur + PULSE;    // determined through experimentation that this step is uncessary --RTS 06/10/15
 
         /*start measuring exposure duration*/
         gettimeofday(&expstart, NULL);
