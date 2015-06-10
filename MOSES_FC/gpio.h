@@ -69,7 +69,7 @@ extern U8 bar_index;
 extern U32 bar_sz_buffer;
 
 /*array to hold power pin macros*/
-extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
+extern U32 power_subsystem_mask[32];
 extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
 extern U32 output_ddr2_ctrl;
