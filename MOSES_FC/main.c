@@ -162,19 +162,19 @@ void join_threads() {
         record("in ops.sleep\n");
 
         /* Turn off subsytems*/
-        set_power(tcs1, OFF);
-        set_power(tcs2, OFF);
-        set_power(tcs3, OFF);
-        set_power(shutter, OFF);
-        set_power(roe, OFF);
-        set_power(halpha, OFF);
-        set_power(premod, OFF);
-        set_power(ps5v, OFF);
-        set_power(psdual12v, OFF);
+        set_power(tcs1 + 1, OFF);
+        set_power(tcs2 + 1, OFF);
+        set_power(tcs3 + 1, OFF);
+        set_power(shutter + 1, OFF);
+        set_power(roe + 1, OFF);
+        set_power(halpha + 1, OFF);
+        set_power(premod + 1, OFF);
+        set_power(ps5v + 1, OFF);
+        set_power(psdual12v + 1, OFF);
         
         sleep(2);
 
-        set_power(11, ON);      // hit cc_power
+        set_power(12, ON);      // hit cc_power
         
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
