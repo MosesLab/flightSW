@@ -1505,11 +1505,11 @@ void hlpHashInit() {
     functionTable[USleep] = &uSleep;
     functionTable[UWake] = &uWake;
     functionTable[UTest] = &uTest;
-    functionTable[TDataStart] = &uDataStart;
-    functionTable[TDataStop] = &uDataStop;
-    functionTable[TDark2] = &uDark2;
-    functionTable[TDark4] = &uDark4;
-    functionTable[TSleep] = &uSleep;
+    functionTable[TDataStart] = &tDataStart;
+    functionTable[TDataStop] = &tDataStop;
+    functionTable[TDark2] = &tDark2;
+    functionTable[TDark4] = &tDark4;
+    functionTable[TSleep] = &tSleep;
     functionTable[SetSeq] = &setSequence;
     functionTable[SetOut] = &setOutputName;
     functionTable[GetSeqName] = &getSeqName;
