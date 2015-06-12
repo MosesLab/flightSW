@@ -172,9 +172,11 @@ void join_threads() {
         set_power(ps5v + 1, OFF);
         set_power(psdual12v + 1, OFF);
         
-        sleep(2);
+        
 
-        set_power(12, ON);      // hit cc_power
+        set_power(11, ON);      // hit cc_power
+        
+        sleep(4);
         
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
