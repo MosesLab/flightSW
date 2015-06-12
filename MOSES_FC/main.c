@@ -176,7 +176,7 @@ void join_threads() {
 
         set_power(11, ON);      // hit cc_power
         
-        sleep(4);
+        sleep(1);
         
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
