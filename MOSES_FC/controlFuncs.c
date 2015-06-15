@@ -826,6 +826,11 @@ int disableDefaultROE(packet_t* p) {
     if (roe_struct.active) {
         int var = exitDefault();
         if (var == -1) {
+            if (!reset()) {
+                var = exitDefault();
+            }
+        }
+        if (var == -1) {
             record("ROE did not exit default mode.\n");
             packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);

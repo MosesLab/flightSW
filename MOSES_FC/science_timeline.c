@@ -276,6 +276,7 @@ void * telem(void * arg) {
     record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
     int rc;
+    int sequence_itr = 1;
     char msg[255];
     roeimage_t * new_image = NULL;
 
@@ -293,7 +294,12 @@ void * telem(void * arg) {
         if (rc < 0) {
             record("Failed to send image over telemetry!");
         }
-
+        else {
+            sprintf(msg, "File %s successfully sent via high-speed telemetry. (%d out of %d)\n", new_image->filename, sequence_itr, currentSequence->numFrames);
+            record(msg);
+        }
+        sequence_itr++;
+        
         /*free all dynamically allocated memory associated with image*/
         free(new_image->name);
         free(new_image->filename);
