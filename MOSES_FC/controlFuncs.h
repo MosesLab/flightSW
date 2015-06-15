@@ -261,33 +261,23 @@ enum control{
     ROE_CS_VSS,
 };
 
-/*According to EGSE software
- * Shutter - 1
- * ROE     - 2
- * PMF     - 3
- * TCS1    - 4
- * TCS3    - 5
- * TCS2    - 6
- * TCS     - 7
- * 5V Reg  - 8
- * 12V Reg - 9
- * HALPHA  - 10
- * 
- */
+
 
 enum subsystems {
-    shutter,
-    roe,
-    premod,
+    latch,
+    psdual12v,
+    ps5v,
     tcs1,
     tcs2,
     tcs3,
+    premod,
     tcs,
-    ps5v,
-    psdual12v,
-    halpha
-    
+    shutter,
+    roe,  
+    halpha  
 };
+
+extern char * subsystem_strs[];
 
 #endif	/* CONTROLFUNCS_H */
 

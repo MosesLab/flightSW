@@ -162,15 +162,15 @@ void join_threads() {
         record("in ops.sleep\n");
 
         /* Turn off subsytems*/
-        set_power(tcs1 + 1, OFF);
-        set_power(tcs2 + 1, OFF);
-        set_power(tcs3 + 1, OFF);
-        set_power(shutter + 1, OFF);
-        set_power(roe + 1, OFF);
-        set_power(halpha + 1, OFF);
-        set_power(premod + 1, OFF);
-        set_power(ps5v + 1, OFF);
-        set_power(psdual12v + 1, OFF);
+        set_power(tcs1, OFF);
+        set_power(tcs2, OFF);
+        set_power(tcs3, OFF);
+        set_power(shutter, OFF);
+        set_power(roe, OFF);
+        set_power(halpha, OFF);
+        set_power(premod, OFF);
+        set_power(ps5v, OFF);
+        set_power(psdual12v, OFF);
         
         
 

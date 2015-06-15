@@ -9,6 +9,9 @@
  */
 #include "controlFuncs.h"
 
+
+char * subsystem_strs[] = {"Latch", "12V Regulator", "5V Regulator", "TCS-1", "TCS-2", "TCS-3", "Premod Filter", "TCS Enable", "Shutter", "ROE", "H-alpha"};
+
 /*
  * Determines control string for uplink packets and finds the corresponding 
  * function by looking up the control string in the hash table
@@ -88,9 +91,16 @@ int enablePower(packet_t* p) {
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
     if (subsystem <= NUM_SUBSYSTEM) {
-        set_power(subsystem, ON);
+        
+        /*The TCS subsystems use inverse logic, 1 == OFF and 0 == ON*/
+        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){
+            set_power(subsystem, OFF);
+        } else {
+            set_power(subsystem, ON);
+        }
+        
     }
-    sprintf(msg, "Enabled power subsystem: %d\n", subsystem);
+    sprintf(msg, "Enabled power subsystem: %s\n", subsystem_strs[subsystem]);
     record(msg);
 
     packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
@@ -107,7 +117,13 @@ int disablePower(packet_t* p) {
     //Insert control code here
     unsigned int subsystem = strtol(p->data, NULL, 16);
     if (subsystem <= NUM_SUBSYSTEM) {
-        set_power(subsystem, OFF);
+        
+        /*The TCS subsystems use inverse logic, 1 == OFF and 0 == ON*/
+        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){
+            set_power(subsystem, ON);
+        } else {
+            set_power(subsystem, OFF);
+        }
     }
 
     sprintf(msg, "Disabled power subsystem: %d\n", subsystem);

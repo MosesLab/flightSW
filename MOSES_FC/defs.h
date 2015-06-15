@@ -172,11 +172,11 @@ typedef struct {
     unsigned int latch : 1;
     unsigned int reg_5V : 1;
     unsigned int reg_12V : 1;
-    unsigned int tcs4 : 1;
+    unsigned int tcs1 : 1;
     unsigned int tcs2 : 1;
     unsigned int tcs3 : 1;
     unsigned int premod : 1;
-    unsigned int tcs1 : 1;
+    unsigned int tcs_enable : 1;
     unsigned int shutter : 1;
     unsigned int roe : 1;
     unsigned int h_alpha : 1;

@@ -156,6 +156,10 @@ int init_gpio() {
     char msg[255];
 
     gpio_out_state.val = 0;
+    gpio_out_state.bf.tcs1 = 1; // initialize TCS systems to one to ensure that they are off. 
+    gpio_out_state.bf.tcs2 = 1; // The TCS systems use inverse logic.
+    gpio_out_state.bf.tcs3 = 1;
+    
 
     U32 mask = 0x00000002;
     unsigned int i;
