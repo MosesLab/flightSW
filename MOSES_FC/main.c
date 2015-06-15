@@ -213,7 +213,7 @@ void join_threads() {
        
     } // end if sleep
 
-//    kill(vshell_pid, SIGKILL);
+    kill(vshell_pid, SIGKILL);
 
     record("killed bash\n");
 
