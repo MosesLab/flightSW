@@ -126,7 +126,7 @@ int disablePower(packet_t* p) {
         }
     }
 
-    sprintf(msg, "Disabled power subsystem: %d\n", subsystem);
+    sprintf(msg, "Disabled power subsystem: %s\n", subsystem_strs[subsystem]);
     record(msg);
 
     packet_t* r = constructPacket(PWR_S, STATUS_OFF, p->data);
@@ -179,15 +179,23 @@ int queryPower(packet_t* p) {
     /*AND with mask to find state of requested power pin*/
     power_state = mask & req_state->val;
 
-    sprintf(msg, "Querying subsystem %d\n", subsystem);
+    sprintf(msg, "Querying subsystem %s\n", subsystem_strs[subsystem]);
     record(msg);
 
     /*send response packet*/
     packet_t* r;
     if (power_state) {
-        r = constructPacket(PWR_S, STATUS_ON, p->data);
+        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){        // TCS subsytems use inverse logic
+            r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        } else {
+            r = constructPacket(PWR_S, STATUS_ON, p->data);
+        }      
     } else {
-        r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){        // TCS subsytems use inverse logic
+            r = constructPacket(PWR_S, STATUS_ON, p->data);
+        } else {
+            r = constructPacket(PWR_S, STATUS_OFF, p->data);
+        }
     }
     enqueue(&lqueue[hkdown], r);
 
