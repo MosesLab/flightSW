@@ -13,7 +13,7 @@ PLX_PCI_BAR_PROP bar_properties;
 PLX_ACCESS_TYPE type_bit;
 U8 bar_index;
 U32 bar_sz_buffer;
-U32 power_subsystem_mask[NUM_SUBSYSTEM];
+U32 power_subsystem_mask[32];
 U32 gpio_control_mask[NUM_CONTROL_GPIO];
 U32 output_ddr2_ctrl = 0;
 U32 output_ddr2_addr = 0;
@@ -159,7 +159,7 @@ int init_gpio() {
 
     U32 mask = 0x00000002;
     unsigned int i;
-    for (i = 0; i < NUM_SUBSYSTEM; i++) {
+    for (i = 0; i < 32; i++) {
         power_subsystem_mask[i] = mask;
         mask = mask << 1;
     }

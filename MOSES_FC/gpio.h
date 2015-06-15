@@ -35,7 +35,7 @@
 #define NUM_CONTROL_GPIO 14
 
 /*Power macros*/
-#define NUM_SUBSYSTEM 11
+#define NUM_SUBSYSTEM 10
 
 /*Shutter is controlled by VDX GPIO pins*/
 #define SHUTTER_ENABLE  0x98
@@ -69,7 +69,7 @@ extern U8 bar_index;
 extern U32 bar_sz_buffer;
 
 /*array to hold power pin macros*/
-extern U32 power_subsystem_mask[NUM_SUBSYSTEM];
+extern U32 power_subsystem_mask[32];
 extern U32 gpio_control_mask[NUM_CONTROL_GPIO];
 
 extern U32 output_ddr2_ctrl;

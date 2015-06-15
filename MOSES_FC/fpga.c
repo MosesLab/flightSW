@@ -212,6 +212,10 @@ int interrupt_wait(U32 * interrupt) {
 
     /*wait for interrupt*/
     int waitrc = PlxPci_NotificationWait(&fpga_dev, &plx_event, FPGA_TIMEOUT);
+    
+    /*cancel interrupt notification*/
+    rc = PlxPci_NotificationCancel(&fpga_dev, &plx_event);
+    if (rc != ApiSuccess) PlxSdkErrorDisplay(rc);
 
     /*disable interrupt*/
     rc = PlxPci_InterruptDisable(&fpga_dev, &plx_intr); // sets PCI9056_INT_CTRL_STAT

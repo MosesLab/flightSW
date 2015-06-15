@@ -148,7 +148,7 @@ typedef struct {
     unsigned int tdatastart : 1;
     unsigned int tdatastop : 1;
     unsigned int tsleep : 1;
-    unsigned int tdark4 : 1;  
+    unsigned int tdark4 : 1;
 
     unsigned int shutter_sig : 1;
 

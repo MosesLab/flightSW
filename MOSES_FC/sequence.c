@@ -25,6 +25,8 @@ sequence_t constructSequence(char *filepath) {
     strncpy(tempSequence.sequenceName, filepath, 100);
     if (strstr(tempSequence.sequenceName, "data") != NULL) {
         tempSequence.seq_type = 1; // type is data
+    } else {
+        tempSequence.seq_type = 0; //type is dark
     }
     file = fopen(filepath, "r");
 

@@ -25,7 +25,7 @@ int takeExposure(double duration, int sig) {
     if (sig == 1) // use the shutter for Data sequence 
     {
         /*exposure duration should be lengthened to accout for shutter openeing*/
-        dur = dur + PULSE;
+        dur = dur + PULSE;    // determined through experimentation that this step is uncessary --RTS 06/10/15
 
         /*start measuring exposure duration*/
         gettimeofday(&expstart, NULL);
@@ -57,9 +57,10 @@ int takeExposure(double duration, int sig) {
         //clear the pin
 
         timeval_subtract(&expdiff, expstart, expstop);
+        expdiff.tv_usec -= PULSE;
         sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
-        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec - PULSE;
+        actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     } else // performing dark exposure, just wait
     {
         gettimeofday(&expstart, NULL);
@@ -101,7 +102,7 @@ int wait_on_sem(sem_t * sem, int timeout) {
     char msg[255];
     struct timeval dma_timeout_val; // need this struct to use gettimeofday()
     struct timespec dma_timeout_spec; // need this struct to use sem_timedwait()
-    
+
     gettimeofday(&dma_timeout_val, NULL); // Get current time since epoch
 
     /*convert timespec to timeval to use sem_timedwait*/
@@ -114,6 +115,6 @@ int wait_on_sem(sem_t * sem, int timeout) {
         record(msg);
         return FALSE;
     }
-    
+
     return TRUE;
 }

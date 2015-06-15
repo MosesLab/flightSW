@@ -165,20 +165,21 @@ int ROE_CCDS_VOD(packet_t*);      //ROE CCDS_VOD current
 int ROE_CCDS_VRD(packet_t*);      //ROE CCDS_VRD current
 int ROE_CCDS_VSS(packet_t*);      //ROE CCDS_VRD current
 
+/*this enum must be in the correct order for timers and uplinks to work*/
 enum control{
-    UDataStart,
-    UDataStop,
     UDark1,
-    UDark2,
-    UDark3,
-    UDark4,
     USleep,
     UWake,
+    UDark2,
+    UDataStart,
+    UDataStop,
+    UDark3,
+    UDark4,  
     UTest,
     
-    TDataStart,
-    TDataStop,
     TDark2,
+    TDataStart,
+    TDataStop, 
     TDark4,
     TSleep,
     
