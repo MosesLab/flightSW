@@ -181,6 +181,7 @@ void * science_timeline(void * arg) {
                 ops.seq_run = FALSE;
             }
         } else if (config_values[roe_interface] != 0) { // If the ROE is present but not on, pause science timeline to reactivate
+            record("ROE not active!\n");
             exit_activate_loop = FALSE;
         }
     }//end while ts_alive
