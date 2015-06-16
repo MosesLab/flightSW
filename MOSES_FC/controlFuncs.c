@@ -86,7 +86,7 @@ int control_wait(int fd, LockingQueue * queue) {
 int enablePower(packet_t* p) {
     char msg[256];
 
-    record("Command to enable subsystem power received\n");
+//    record("Command to enable subsystem power received\n");
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
@@ -113,7 +113,7 @@ int enablePower(packet_t* p) {
 int disablePower(packet_t* p) {
     char msg[256];
 
-    record("Command to disable subsystem power received\n");
+//    record("Command to disable subsystem power received\n");
     //Insert control code here
     unsigned int subsystem = strtol(p->data, NULL, 16);
     if (subsystem <= NUM_SUBSYSTEM) {
@@ -158,7 +158,7 @@ void set_power(U32 sys, U32 state) {
 int queryPower(packet_t* p) {
     char msg[256];
 
-    record("Command to query subsystem power received\n");
+//    record("Command to query subsystem power received\n");
 
     unsigned int subsystem = strtol(p->data, NULL, 16);
     U32 power_state = OFF;
