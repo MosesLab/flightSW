@@ -295,7 +295,7 @@ void * telem(void * arg) {
             record("Failed to send image over telemetry!");
         }
         else {
-            sprintf(msg, "File %s successfully sent via high-speed telemetry. (%d out of %d)\n", new_image->filename, sequence_itr, currentSequence->numFrames);
+            sprintf(msg, "File %s successfully sent via high-speed telemetry. (%d out of %d)\n", new_image->filename, new_image->num_exp, new_image->num_frames);
             record(msg);
         }
         sequence_itr++;
