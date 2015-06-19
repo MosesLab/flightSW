@@ -584,7 +584,7 @@ int getOutputName(packet_t* p) {
 int getSelftestStatus(packet_t* p) {
     record("Get self-test mode status command received\n");
     char response[5];
-    sprintf(response, "%s", (ops.read_block == STMBLK) ? "ON" : "OFF");
+    sprintf(response, "%s", (ops.read_block == STBLK) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_SLFT_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -594,7 +594,7 @@ int getSelftestStatus(packet_t* p) {
 int getStimsStatus(packet_t* p) {
     record("Get STIMS mode status command received\n");
     char response[5];
-    sprintf(response, "%s", (ops.read_block == STBLK) ? "ON" : "OFF");
+    sprintf(response, "%s", (ops.read_block == STMBLK) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_STM_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -604,7 +604,7 @@ int getStimsStatus(packet_t* p) {
 int getTelemStatus(packet_t* p) {
     record("Get Telemetry mode status command received\n");
     char response[5];
-    sprintf(response, "%s", (ops.tm_write == ON) ? "ON" : "OFF");
+    sprintf(response, "%s", (ops.tm_write == TRUE) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_TLM_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
