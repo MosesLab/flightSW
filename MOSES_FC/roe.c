@@ -222,7 +222,7 @@ char* getHK(char hkparam) {
 
     }
     char value;
-    if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
+    if (readRoe(roe_struct.roeLink, (char *) &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
         sprintf(value_char, "FF");
