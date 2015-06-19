@@ -10,7 +10,7 @@
 #include "controlFuncs.h"
 
 
-char * subsystem_strs[] = {"Latch", "12V Regulator", "5V Regulator", "TCS-1", "TCS-2", "TCS-3", "Premod Filter", "TCS Enable", "Shutter", "ROE", "H-alpha"};
+char * subsystem_strs[] = {"Latch", "12V Regulator", "5V Regulator", "TCS-1 (-y CCD)", "TCS-2 (+y CCD)", "TCS-3 (0y CCD)", "Premod Filter", "TCS Enable", "Shutter", "ROE", "H-alpha"};
 
 /*
  * Determines control string for uplink packets and finds the corresponding 
