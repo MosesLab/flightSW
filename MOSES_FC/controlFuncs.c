@@ -850,7 +850,7 @@ int disableDefaultROE(packet_t* p) {
     if (roe_struct.active) {
         int var = exitDefault();
         if (var == -1) {
-            if (!reset()) {
+            if (reset() != -1) {
                 var = exitDefault();
             }
         }
