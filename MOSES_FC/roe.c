@@ -197,7 +197,7 @@ int exitDefault() {
 //Request House Keeping data from roe;
 
 char* getHK(char hkparam) {
-    char * value_char = malloc(sizeof (char) * 6);
+    char * value_char = malloc(sizeof (char) * 8);
     if (!roe_struct.active) {
         record("ROE not active in getHK\n");
     }
@@ -232,7 +232,7 @@ char* getHK(char hkparam) {
     
     /*This value will be sent over telemetry as a string,
       convert this value(byte) to a char array */
-    sprintf(value_char, "%02x \n", value);
+    sprintf(value_char, "%02x", value);
 
     pthread_mutex_unlock(&roe_struct.mx);
     return value_char; //Return the HK Value
