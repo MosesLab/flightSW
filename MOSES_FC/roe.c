@@ -221,8 +221,8 @@ char* getHK(char hkparam) {
         return value_char; //Get Ack
 
     }
-    char value[2];
-    if (readRoe(roe_struct.roeLink, value, 1) == -1) {
+    char value;
+    if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
         sprintf(value_char, "FF");
@@ -232,7 +232,7 @@ char* getHK(char hkparam) {
     
     /*This value will be sent over telemetry as a string,
       convert this value(byte) to a char array */
-    sprintf(value_char, "%x", value[0]);
+    sprintf(value_char, "%hhx", value);
 
     pthread_mutex_unlock(&roe_struct.mx);
     return value_char; //Return the HK Value
