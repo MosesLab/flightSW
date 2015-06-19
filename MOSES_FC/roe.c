@@ -221,7 +221,7 @@ char* getHK(char hkparam) {
         return value_char; //Get Ack
 
     }
-    unsigned char value[2];
+    char value[2];
     if (readRoe(roe_struct.roeLink, value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
