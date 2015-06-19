@@ -24,54 +24,17 @@ void * science_timeline(void * arg) {
 
     record("-->Science Timeline thread started....\n");
 
-
-    //        void init_shutter();      //Would still like to do this -- causes segfault
-
-
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-    int exit_activate_loop = FALSE;
-
-    /*main loop*/
+//    /*main loop*/
     while (ts_alive) {
-
-        while (exit_activate_loop == FALSE) {
-
-            /*If ROE is set to real interface and powered on*/
-            if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) {
-                //        if (config_values[roe_interface] == 1) {
-
-                activateROE();
-
-                /* if ROE active, set to known state (exit default, reset, exit default) */
-                if (!exitDefault()) {
-                    if (!reset()) {
-                        if (!exitDefault()) {
-                            record("ROE Active\n");
-                            exit_activate_loop = TRUE;
-                        }
-                    }
-                }
-            } else if (config_values[roe_interface] == 0) {
-                record("ROE not present, continuing timeline...\n");
-                exit_activate_loop = TRUE;
-            } else if (!ts_alive) {
-                return NULL;
-            }
-
-            //        usleep(20000);
-            //        printf("%d\n", gpio_out_state.bf.roe);
-            sleep(1);
-        }
-
-
 
         /*wait until sequence is enqueued*/
         record("Wait for new sequence\n");
         currentSequence = (sequence_t *) dequeue(&lqueue[sequence]);
 
-        if (config_values[roe_interface] == 1 && gpio_out_state.bf.roe == 1) { // Check if the ROE is still present
+        if (ops.roe == ON) { // Check if the ROE is still present
             if (currentSequence != NULL) {
                 ops.seq_run = TRUE;
 
@@ -180,9 +143,9 @@ void * science_timeline(void * arg) {
                 enqueue(&lqueue[hkdown], a);
                 ops.seq_run = FALSE;
             }
-        } else if (config_values[roe_interface] != 0) { // If the ROE is present but not on, pause science timeline to reactivate
-            record("ROE not active!\n");
-            exit_activate_loop = FALSE;
+        } else { // If the ROE is present but not on, pause science timeline to reactivate
+            record("Waiting for the ROE to become active...\n");
+            sleep(1);
         }
     }//end while ts_alive
 

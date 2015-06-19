@@ -99,6 +99,29 @@ int enablePower(packet_t* p) {
             set_power(subsystem, ON);
         }
         
+        /*Enable commnand mode on the ROE if it is activated*/
+        if(subsystem == roe){
+            
+            /*If ROE is set to real interface and powered on*/
+            if (config_values[roe_interface] == 1 && ops.roe == OFF) {
+                //        if (config_values[roe_interface] == 1) {
+
+                activateROE();
+
+                /* if ROE active, set to known state (exit default, reset, exit default) */
+                if (!exitDefault()) {
+                    if (!reset()) {
+                        if (!exitDefault()) {
+                            record("ROE Active\n");
+                            ops.roe = ON;
+                        }
+                    }
+                }
+            } else {
+                record("ROE not enabled in configuration file\n");
+            } 
+        }
+        
     }
     sprintf(msg, "Enabled power subsystem: %s\n", subsystem_strs[subsystem]);
     record(msg);
@@ -123,6 +146,10 @@ int disablePower(packet_t* p) {
             set_power(subsystem, ON);
         } else {
             set_power(subsystem, OFF);
+        }
+        
+        if(subsystem == roe){
+            ops.roe = OFF;
         }
     }
 
