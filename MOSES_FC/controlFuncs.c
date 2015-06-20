@@ -102,8 +102,11 @@ int enablePower(packet_t* p) {
         sprintf(msg, "Enabled power subsystem: %s\n", subsystem_strs[subsystem]);
         record(msg);
 
+        packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
+        enqueue(&lqueue[hkdown], r);
+
         sleep(1);
-        
+
         /*Enable commnand mode on the ROE if it is activated*/
         if (subsystem == roe) {
 
@@ -128,9 +131,6 @@ int enablePower(packet_t* p) {
         }
 
     }
-
-    packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
-    enqueue(&lqueue[hkdown], r);
 
     return GOOD_PACKET;
 }

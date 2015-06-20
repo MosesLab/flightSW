@@ -144,7 +144,7 @@ void * science_timeline(void * arg) {
                 ops.seq_run = FALSE;
             }
         } else { // If the ROE is present but not on, pause science timeline to reactivate
-            record("Waiting for the ROE to become active...\n");
+            record("ROE not active!\n");
             sleep(1);
         }
     }//end while ts_alive
