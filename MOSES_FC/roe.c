@@ -152,7 +152,7 @@ int exitDefault() {
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Status of Command Execution
     }
-    sprintf(msg, "Exit Default Status = 0x%02x \n", ack); record(msg);
+    sprintf(msg, "Exit Default Status = 0x%02x \n", status); record(msg);
     roe_struct.mode = MANUAL; //Update variable to reflect current state
     //Update the ROE's CSG Program
     //New program writes a dummy pixel at the end of a readout.
