@@ -86,23 +86,28 @@ int control_wait(int fd, LockingQueue * queue) {
 int enablePower(packet_t* p) {
     char msg[256];
 
-//    record("Command to enable subsystem power received\n");
+    //    record("Command to enable subsystem power received\n");
 
     //Insert control code here  
     int subsystem = strtol(p->data, NULL, 16);
     if (subsystem <= NUM_SUBSYSTEM) {
-        
+
         /*The TCS subsystems use inverse logic, 1 == OFF and 0 == ON*/
-        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){
+        if (subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3) {
             set_power(subsystem, OFF);
         } else {
             set_power(subsystem, ON);
         }
+
+        sprintf(msg, "Enabled power subsystem: %s\n", subsystem_strs[subsystem]);
+        record(msg);
+
+        sleep(1);
         
         /*Enable commnand mode on the ROE if it is activated*/
-        if(subsystem == roe){
-            
-            /*If ROE is set to real interface and powered on*/
+        if (subsystem == roe) {
+
+            /*If ROE is set to real interface and not already active*/
             if (config_values[roe_interface] == 1 && ops.roe == OFF) {
                 //        if (config_values[roe_interface] == 1) {
 
@@ -119,12 +124,10 @@ int enablePower(packet_t* p) {
                 }
             } else {
                 record("ROE not enabled in configuration file\n");
-            } 
+            }
         }
-        
+
     }
-    sprintf(msg, "Enabled power subsystem: %s\n", subsystem_strs[subsystem]);
-    record(msg);
 
     packet_t* r = constructPacket(PWR_S, STATUS_ON, p->data);
     enqueue(&lqueue[hkdown], r);
@@ -136,19 +139,19 @@ int enablePower(packet_t* p) {
 int disablePower(packet_t* p) {
     char msg[256];
 
-//    record("Command to disable subsystem power received\n");
+    //    record("Command to disable subsystem power received\n");
     //Insert control code here
     unsigned int subsystem = strtol(p->data, NULL, 16);
     if (subsystem <= NUM_SUBSYSTEM) {
-        
+
         /*The TCS subsystems use inverse logic, 1 == OFF and 0 == ON*/
-        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){
+        if (subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3) {
             set_power(subsystem, ON);
         } else {
             set_power(subsystem, OFF);
         }
-        
-        if(subsystem == roe){
+
+        if (subsystem == roe) {
             ops.roe = OFF;
         }
     }
@@ -185,7 +188,7 @@ void set_power(U32 sys, U32 state) {
 int queryPower(packet_t* p) {
     char msg[256];
 
-//    record("Command to query subsystem power received\n");
+    //    record("Command to query subsystem power received\n");
 
     unsigned int subsystem = strtol(p->data, NULL, 16);
     U32 power_state = OFF;
@@ -212,13 +215,13 @@ int queryPower(packet_t* p) {
     /*send response packet*/
     packet_t* r;
     if (power_state) {
-        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){        // TCS subsytems use inverse logic
+        if (subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3) { // TCS subsytems use inverse logic
             r = constructPacket(PWR_S, STATUS_OFF, p->data);
         } else {
             r = constructPacket(PWR_S, STATUS_ON, p->data);
-        }      
+        }
     } else {
-        if(subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3){        // TCS subsytems use inverse logic
+        if (subsystem == tcs1 || subsystem == tcs2 || subsystem == tcs3) { // TCS subsytems use inverse logic
             r = constructPacket(PWR_S, STATUS_ON, p->data);
         } else {
             r = constructPacket(PWR_S, STATUS_OFF, p->data);
