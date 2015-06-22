@@ -165,6 +165,8 @@ int ROE_CCDS_VOD(packet_t*);      //ROE CCDS_VOD current
 int ROE_CCDS_VRD(packet_t*);      //ROE CCDS_VRD current
 int ROE_CCDS_VSS(packet_t*);      //ROE CCDS_VRD current
 
+double get_x(int);      // Calculate the x value for ROE calibration
+
 /*this enum must be in the correct order for timers and uplinks to work*/
 enum control{
     UDark1,
