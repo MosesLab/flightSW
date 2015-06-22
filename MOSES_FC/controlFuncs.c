@@ -654,7 +654,7 @@ int getCh0Status(packet_t* p) {
 int getPosOnlyStatus(packet_t* p) {
     record("Get status of positive channel record command received\n");
     char response[5];
-    sprintf(response, "%s", (ops.channels == CH3) ? "ON" : "OFF");
+    sprintf(response, "%s", ((ops.channels & CH3) == CH3) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_POS_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -773,14 +773,14 @@ int exitSW(packet_t* p) {
 /*commands the flight software to turn telemetry ON*/
 int telemEnable(packet_t* p) {
     record("Command to enable telemetry received\n");
-    ops.tm_write = ON;
+    ops.tm_write = TRUE;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to turn telemetry OFF*/
 int telemDisable(packet_t* p) {
     record("Command to disable telemetry received\n");
-    ops.tm_write = OFF;
+    ops.tm_write = FALSE;
     return GOOD_PACKET;
 }
 

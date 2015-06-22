@@ -1,0 +1,27 @@
+# File: moses.conf
+# moses.conf is used to select how each thread will be executed by the flight 
+# software at runtime. These threads may be off, on, or simulated. This file
+# also contains information on whether to enable or simulate the various I/O
+# on the experiment
+#
+# Usage: 0 is equivalent to OFF, 1 is ON.
+#
+# Thread selection
+HLP_CONTROL_THREAD=1
+HLP_DOWN_THREAD=1
+HLP_SHELL_THREAD=1
+GPIO_CONTROL_THREAD=1
+FPGA_SERVER_THREAD=1
+SCIENCE_THREAD=1
+IMAGE_THREAD=1
+TELEM_THREAD=1
+#
+# I/O interface selection 
+# Usage: 0 is simulated, 1 is real interface. NOTE: ROE and synclink telemetry have no simulated interface, 0 is equivalent to OFF.
+HLP_UP=1
+HLP_DOWN=1
+ROE=1
+IMAGE_SIM=1
+SYNCLINK_TM=1
+
+   
