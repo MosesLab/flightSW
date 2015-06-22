@@ -965,7 +965,7 @@ int FC_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V voltage*/
 int ROE_2_5V_V(packet_t* p) {
     record("Request for ROE +2.5V voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P2_5VD_V);
     double x = getHK(VPOS2_5VD);
     double y = 2.0 * x;
@@ -981,7 +981,7 @@ int ROE_2_5V_V(packet_t* p) {
 /*Request for ROE +2.5V current*/
 int ROE_2_5V_I(packet_t* p) {
     record("Request for ROE +2.5V current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P2_5VD_I);
     double x = getHK(CPOS2_5VD);
     double y = 0.2089 * x - 0.0014;
@@ -1021,7 +1021,7 @@ int FC_POS_5V_V(packet_t* p) {
 /*Request for ROE +5.0V A Channel voltage*/
 int ROE_POS_5V_VA(packet_t* p) {
     record("Request for ROE +5.0V A Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VAA_V);
     double x = getHK(VPOS5VA_A);
     double y = 2.7407 * x + 8e-15;
@@ -1037,7 +1037,7 @@ int ROE_POS_5V_VA(packet_t* p) {
 /*Request for ROE +5.0V B Channel voltage*/
 int ROE_POS_5V_VB(packet_t* p) {
     record("Request for ROE +5.0V B Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VAB_V);
     double x = getHK(VPOS5VA_B);
     double y = 2.7407 * x + 8e-15;
@@ -1053,7 +1053,7 @@ int ROE_POS_5V_VB(packet_t* p) {
 /*Request for ROE +5.0V D Channel voltage*/
 int ROE_POS_5V_VD(packet_t* p) {
     record("Request for ROE +5.0V D Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VD_V);
     double x = getHK(VPOS5VD);
     double y = 4.1333 * x;
@@ -1069,7 +1069,7 @@ int ROE_POS_5V_VD(packet_t* p) {
 /*Request for ROE +5.0V A Channel current*/
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VAA_I);
     double x = getHK(CPOS5VA_A);
     double y = 0.0498 * x - 0.0097;
@@ -1085,7 +1085,7 @@ int ROE_POS_5V_IA(packet_t* p) {
 /*Request for ROE +5.0V B Channel current*/
 int ROE_POS_5V_IB(packet_t* p) {
     record("Request for ROE +5.0V B Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VAB_I);
     double x = getHK(CPOS5VA_B);
     double y = 0.0493 * x - 0.0007;
@@ -1101,7 +1101,7 @@ int ROE_POS_5V_IB(packet_t* p) {
 /*Request for ROE +5.0V D Channel current*/
 int ROE_POS_5V_ID(packet_t* p) {
     record("Request for ROE +5.0V D Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P5VD_I);
     double x = getHK(CPOS5VD);
     double y = 0.2788 * x - 0.0154;
@@ -1117,7 +1117,7 @@ int ROE_POS_5V_ID(packet_t* p) {
 /*Request for ROE -5.0V A Channel voltage*/
 int ROE_NEG_5V_VA(packet_t* p) {
     record("Request for ROE -5.0V A Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N5VAA_V);
     double x = getHK(VNEG5VA_A);
     double y = 2.5897 * x - 7.9487;
@@ -1133,7 +1133,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
 /*Request for ROE -5.0V B Channel voltage*/
 int ROE_NEG_5V_VB(packet_t* p) {
     record("Request for ROE -5.0V B Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N5VAB_V);
     double x = getHK(VNEG5VA_B);
     double y = 2.5897 * x - 7.9487;
@@ -1149,7 +1149,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
 /*Request for ROE -10.0V A Channel voltage*/
 int ROE_NEG_10V_VA(packet_t* p) {
     record("Request for ROE -10.0V A Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N10VA_V);
     double x = getHK(VNEG10V_A);
     double y = -5.3 * x;
@@ -1165,7 +1165,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
 /*Request for ROE -10.0V B Channel voltage*/
 int ROE_NEG_10V_VB(packet_t* p) {
     record("Request for ROE -10.0V B Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N10VB_V);
     double x = getHK(VNEG10V_B);
     double y = -5.3 * x;
@@ -1181,7 +1181,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
 /*Request for ROE -5.0V A Channel current*/
 int ROE_NEG_5V_IA(packet_t* p) {
     record("Request for ROE -5.0V A Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N5VAA_I);
     double x = getHK(CNEG5VA_A);
     double y = 0.0379 * x - 0.0035;
@@ -1197,7 +1197,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
 /*Request for ROE -5.0V B Channel current*/
 int ROE_NEG_5V_IB(packet_t* p) {
     record("Request for ROE -5.0V B Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_N5VAB_I);
     double x = getHK(CNEG5VA_B);
     double y = 0.0381 * x - 0.0015;
@@ -1225,7 +1225,7 @@ int FC_12V_V(packet_t* p) {
 /*Request for ROE +12V A Channel voltage*/
 int ROE_12V_VA(packet_t* p) {
     record("Request for ROE +12V A Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P12VA_V);
     double x = getHK(VPOS12V_A);
     double y = 9.2 * x - 3e-14;
@@ -1241,7 +1241,7 @@ int ROE_12V_VA(packet_t* p) {
 /*Request for ROE +12V B Channel voltage*/
 int ROE_12V_VB(packet_t* p) {
     record("Request for ROE +12V B Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P12VB_V);
     double x = getHK(VPOS12V_B);
     double y = 9.2 * x - 3e-14;
@@ -1257,7 +1257,7 @@ int ROE_12V_VB(packet_t* p) {
 /*Request for ROE +12V A Channel current*/
 int ROE_12V_IA(packet_t* p) {
     record("Request for ROE +12V A Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P12VA_I);
     double x = getHK(CPOS12V_A);
     double y = 0.0666 * x - 0.0097;
@@ -1273,7 +1273,7 @@ int ROE_12V_IA(packet_t* p) {
 /*Request for ROE +12V B Channel current*/
 int ROE_12V_IB(packet_t* p) {
     record("Request for ROE +12V B Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P12VB_I);
     double x = getHK(CPOS12V_B);
     double y = 0.0656 * x - 0.0067;
@@ -1289,7 +1289,7 @@ int ROE_12V_IB(packet_t* p) {
 /*Request for ROE +36V A Channel voltage*/
 int ROE_36V_VA(packet_t* p) {
     record("Request for ROE +36V A Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P36VA_V);
     double x = getHK(VPOS36V_A);
     double y = 28.5 * x;
@@ -1305,7 +1305,7 @@ int ROE_36V_VA(packet_t* p) {
 /*Request for ROE +36V B Channel voltage*/
 int ROE_36V_VB(packet_t* p) {
     record("Request for ROE +36V B Channel voltage received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P36VB_V);
     double x = getHK(VPOS36V_B);
     double y = 28.5 * x;
@@ -1321,7 +1321,7 @@ int ROE_36V_VB(packet_t* p) {
 /*Request for ROE +36V A Channel current*/
 int ROE_36V_IA(packet_t* p) {
     record("Request for ROE +36V A Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P36VA_I);
     double x = getHK(CPOS36V_A);
     double y = 0.0066 * x - 0.0027;
@@ -1337,7 +1337,7 @@ int ROE_36V_IA(packet_t* p) {
 /*Request for ROE +36V B Channel current*/
 int ROE_36V_IB(packet_t* p) {
     record("Request for ROE +36V B Channel current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, ROE_P36VB_I);
     double x = getHK(CPOS36V_B);
     double y = 0.0067 * x - 0.0024;
@@ -1383,7 +1383,7 @@ int FC_TEMP_3(packet_t* p) {
 /*Request for ROE upper temperature*/
 int ROE_TEMP_UPPER(packet_t* p) {
     record("Request for ROE upper temperature received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, UPPER);
     double x = getHK(UPPER_TEMP);
     double y = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
@@ -1399,10 +1399,10 @@ int ROE_TEMP_UPPER(packet_t* p) {
 /*Request for ROE lower temperature*/
 int ROE_TEMP_LOWER(packet_t* p) {
     record("Request for ROE lower temperature received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, LOWER);
     double x = getHK(LOWER_TEMP);
-   double y = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
+    double y = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
     char response[15];
     sprintf(response, "%3.2e C", y);
     strcat(temp, response);
@@ -1415,14 +1415,14 @@ int ROE_TEMP_LOWER(packet_t* p) {
 /*Request for CCDA_VOD current from the ROE*/
 int ROE_CCDA_VOD(packet_t* p) {
     record("Request for ROE CCDA_VOD current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, CCDA_VOD);
     double x = getHK(CCDA_VODC);
     double y = 17.529 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1431,14 +1431,14 @@ int ROE_CCDA_VOD(packet_t* p) {
 /*Request for CCDA_VRD current from the ROE*/
 int ROE_CCDA_VRD(packet_t* p) {
     record("Request for ROE CCDA_VRD current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, CCDA_VRD);
     double x = getHK(CCDA_VRDC);
     double y = 10.05 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1447,14 +1447,14 @@ int ROE_CCDA_VRD(packet_t* p) {
 /*Request for CCDA_VSS current from the ROE*/
 int ROE_CCDA_VSS(packet_t* p) {
     record("Request for ROE CCDA_VSS current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, CCDA_VSS);
     double x = getHK(CCDA_VSSC);
     double y = 5.2105 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1463,14 +1463,14 @@ int ROE_CCDA_VSS(packet_t* p) {
 /*Request for CCDS_VOD current from the ROE*/
 int ROE_CCDS_VOD(packet_t* p) {
     record("Request for ROE CCDS_VOD current received\n");
-     char * temp = malloc(sizeof (char) * 20);
-    //strcpy(temp, CCDB_VOD);
+    char * temp = malloc(sizeof (char) * 20);
+    strcpy(temp, CCDB_VOD);
     double x = getHK(CCDB_VODC);
     double y = 17.529 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
-    //strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
+    strcat(temp, response);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1479,14 +1479,14 @@ int ROE_CCDS_VOD(packet_t* p) {
 /*Request for CCDS_VRD current from the ROE*/
 int ROE_CCDS_VRD(packet_t* p) {
     record("Request for ROE CCDS_VRD current received\n");
-     char * temp = malloc(sizeof (char) * 20);
-    //strcpy(temp, CCDB_VRD);
+    char * temp = malloc(sizeof (char) * 20);
+    strcpy(temp, CCDB_VRD);
     double x = getHK(CCDB_VRDC);
     double y = 10.05 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
-    //strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
+    strcat(temp, response);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1495,20 +1495,18 @@ int ROE_CCDS_VRD(packet_t* p) {
 /*Request for CCDS_VSS current from the ROE*/
 int ROE_CCDS_VSS(packet_t* p) {
     record("Request for ROE CCDS_VSS current received\n");
-     char * temp = malloc(sizeof (char) * 20);
+    char * temp = malloc(sizeof (char) * 20);
     strcpy(temp, CCDB_VSS);
     double x = getHK(CCDB_VSSC);
     double y = 5.2105 * x;
     char response[15];
     sprintf(response, "%3.2e V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
 }
-
-
 
 /*Uses a hash table to match packet strings to function pointers*/
 void hlpHashInit() {
