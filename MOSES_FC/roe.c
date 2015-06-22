@@ -521,7 +521,11 @@ int atoh_roe(char c) {
 
 /* Function for calculating 'x' for use in ROE HK calibration*/
 double get_x(unsigned int val){
-    return 2.5 * ((float) val) / 255.0;
+    char msg[255];
+    double x =  2.5 * ((float) val) / 255.0;
+    sprintf(msg, "Value: %d, x: %f \n", val, x);
+    record(msg);
+    return x;
 }
 
 int input_timeout_roe(int filedes, unsigned int seconds) {
