@@ -293,7 +293,7 @@ int selftestMode() {
 
 
     pthread_mutex_unlock(&roe_struct.mx);
-    record("Entering Self Test Mode\n");
+    record("Successfully entered Self Test Mode\n");
     return 0;
 }
 

@@ -886,10 +886,10 @@ int disableDefaultROE(packet_t* p) {
         }
         if (var == -1) {
             record("ROE did not exit default mode.\n");
-            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         } else {
-            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_BACK, (char *) NULL);
+            packet_t* a = (packet_t*) constructPacket(MDAQ_RSP, ROE_GACK, (char *) NULL);
             enqueue(&lqueue[hkdown], a);
         }
     } else {
@@ -1142,7 +1142,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     double x = getHK(VNEG5VA_B);
     double y = 2.5897 * x - 7.9487;
     char response[15];
-    sprintf(response, "%3.2f V", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
