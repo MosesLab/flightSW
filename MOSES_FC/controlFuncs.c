@@ -969,7 +969,7 @@ int ROE_2_5V_V(packet_t* p) {
     strcpy(temp, ROE_P2_5VD_V);
     char* response = getHK(VPOS2_5VD);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, POS2_5V, response);
+    packet_t* r = constructPacket(HK_RSP, POS2_5V, temp);
     enqueue(&lqueue[hkdown], r);
     free(response);
     free(temp);

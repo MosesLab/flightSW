@@ -136,7 +136,7 @@
 #define CCDA_VSS "AVS"
 #define CCDB_VOD "BVO"
 #define CCDB_VRD "BVR"
-#define CCDB_VSS "BVS"
+#define CCDB_Vmos       SS "BVS"
 
 //HK Arguments
 #define FC_P2_5V_V   "VC"
