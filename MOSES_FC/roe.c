@@ -214,7 +214,7 @@ double getHK(char hkparam) {
             return 0.0;
         }
     unsigned char ack;
-    if (receiveAck(roe_struct.roeLink, &ack, 1, ROE_HK_RES) == -1) {
+    if (receiveAck(roe_struct.roeLink, (unsigned char *) &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
 //        sprintf(value_char, "FF");
