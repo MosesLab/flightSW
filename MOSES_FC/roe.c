@@ -499,7 +499,7 @@ int readRoe(int fd, unsigned char *data, int size) {
 
 //Receive Acknowledgement from ROE
 
-int receiveAck(int fd, unsigned char *data, int size, char target) {
+int receiveAck(int fd, unsigned char *data, int size, unsigned char target) {
     int timeout;
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds

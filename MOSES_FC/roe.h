@@ -73,7 +73,7 @@ double getHK(char hkparam);
 char* getAE();
 int setAE(char* paramstring);
 int manualWrite(char* msg, int size);
-int receiveAck(int fd,unsigned char *data,int size,char target);
+int receiveAck(int fd,unsigned char *data,int size, unsigned char target);
 int input_timeout_roe(int filedes, unsigned int seconds);
 int atoh_roe(char c);
 int readRoe(int fd, unsigned char *data, int size);
