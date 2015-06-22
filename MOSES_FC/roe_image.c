@@ -195,7 +195,7 @@ void writeToFile(roeimage_t * image) {
     
 
     for (i = 0; i < 4; i++) {
-//      if (image->channels & (char) (1 << i)) {
+      if (image->channels & (char) (1 << i)) {
           
           /*write image to library buffer*/
             rc = fwrite(image->data[i], sizeof(short), image->size[i], dataOut);
@@ -214,9 +214,9 @@ void writeToFile(roeimage_t * image) {
 //            if(rc < 0){
 //                record("Error syncing science data buffer to disk!");
 //            }
-            // commented out 
+      } 
             
-      }
+    }
             
 //        int count = sizeof(short) * image->size[i];
 //        if(write(data_fd, image->data[i], count) < count){
