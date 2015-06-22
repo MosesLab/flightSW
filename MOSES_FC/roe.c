@@ -196,8 +196,8 @@ int exitDefault() {
 
 //Request House Keeping data from roe;
 
-char* getHK(char hkparam) {
-    char * value_char = malloc(sizeof (char) * 8);
+double getHK(char hkparam) {
+//    char * value_char = malloc(sizeof (char) * 8);
     if (!roe_struct.active) {
         record("ROE not active in getHK\n");
     }
@@ -208,34 +208,38 @@ char* getHK(char hkparam) {
         if (write(roe_struct.roeLink, (char *) &command[i], 1) != 1) {
             pthread_mutex_unlock(&roe_struct.mx);
             record("getHK error, write\n");
-            sprintf(value_char, "FF");
+//            sprintf(value_char, "FF");
             pthread_mutex_unlock(&roe_struct.mx);
-            return value_char; //Get Ack
+//            return value_char; //Get Ack
+            return 0.0;
         }
     char ack;
     if (receiveAck(roe_struct.roeLink, (char *) &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
-        sprintf(value_char, "FF");
+//        sprintf(value_char, "FF");
         pthread_mutex_unlock(&roe_struct.mx);
-        return value_char; //Get Ack
+//        return value_char; //Get Ack
+        return 0.0;
 
     }
     char value;
     if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
-        sprintf(value_char, "FF");
+//        sprintf(value_char, "FF");
         pthread_mutex_unlock(&roe_struct.mx);
-        return value_char; //Get Ack
+//        return value_char; //Get Ack
+        return 0.0;
     }
     
     /*This value will be sent over telemetry as a string,
       convert this value(byte) to a char array */
-    sprintf(value_char, "%hhx", value);
+//    sprintf(value_char, "%hhx", value);
 
     pthread_mutex_unlock(&roe_struct.mx);
-    return value_char; //Return the HK Value
+//    return value_char; //Return the HK Value
+    return get_x(value);
 
 }
 
@@ -513,6 +517,11 @@ int receiveAck(int fd, char *data, int size, char target) {
 
 int atoh_roe(char c) {
     return (c >= 0 && c <= 9) ? (c & 0x0F) : ((c & 0x0F) + 9);
+}
+
+/* Function for calculating 'x' for use in ROE HK calibration*/
+double get_x(int val){
+    return 2.5 * ((float) val) / 255.0;
 }
 
 int input_timeout_roe(int filedes, unsigned int seconds) {
