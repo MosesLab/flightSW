@@ -77,7 +77,7 @@ int receiveAck(int fd,char *data,int size,char target);
 int input_timeout_roe(int filedes, unsigned int seconds);
 int atoh_roe(char c);
 int readRoe(int fd, char *data, int size);
-double get_x(int);      // Calculate the x value for ROE calibration
+double get_x(unsigned int);      // Calculate the x value for ROE calibration
 
 
 #ifdef	__cplusplus
