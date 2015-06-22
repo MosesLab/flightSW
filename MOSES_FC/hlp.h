@@ -149,7 +149,7 @@
 #define ROE_P5VD_V   "VD"
 #define ROE_P5VAA_I  "IA"
 #define ROE_P5VAB_I  "IB"
-#define ROE_P5VD_I   "IC"       //wrong according to hlp document, should be "ID" EGSE software is incorrect
+#define ROE_P5VD_I   "ID"       //wrong according to hlp document, should be "ID" EGSE software is incorrect
 
 #define ROE_N5VAA_V  "VA"
 #define ROE_N5VAB_V  "VB"
