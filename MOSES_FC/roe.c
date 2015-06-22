@@ -139,13 +139,13 @@ int exitDefault() {
     }
 
     usleep(5000000); //Wait for command to finish
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         record("Did not receive ack from ROE!\n");
         pthread_mutex_unlock(&roe_struct.mx);
         return -1; //Get Acknowledgment of Command
     }
-    char status;
+    unsigned char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
 
         record("Exit Default Error, status\n");
@@ -213,8 +213,8 @@ double getHK(char hkparam) {
 //            return value_char; //Get Ack
             return 0.0;
         }
-    char ack;
-    if (receiveAck(roe_struct.roeLink, (char *) &ack, 1, ROE_HK_RES) == -1) {
+    unsigned char ack;
+    if (receiveAck(roe_struct.roeLink, &ack, 1, ROE_HK_RES) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, ack\n");
 //        sprintf(value_char, "FF");
@@ -223,7 +223,7 @@ double getHK(char hkparam) {
         return 0.0;
 
     }
-    char value;
+    unsigned char value;
     if (readRoe(roe_struct.roeLink, &value, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("getHK error, value\n");
@@ -278,13 +278,13 @@ int selftestMode() {
         }
 
     usleep(500000); //Wait for the command to complete   		
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("selfTest error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
-    char status;
+    unsigned char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("selfTest error, read\n");
@@ -313,13 +313,13 @@ int stimOn() {
         }
 
     usleep(500000); //Wait for the command to complete
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("stimOn error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
-    char status;
+    unsigned char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("stimOn error, read\n");
@@ -347,13 +347,13 @@ int stimOff() {
         }
 
     usleep(500000); //Wait for the command to complete
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("stimOff error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
-    char status;
+    unsigned char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("stimOff error, read\n");
@@ -385,13 +385,13 @@ int readOut(int block, int delay) {
             return -1;
         }
     usleep(delay); //Wait for the command to complete
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("Readout Error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
-    char status;
+    unsigned char status;
     if (readRoe(roe_struct.roeLink, &status, 1) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("Readout Error, read\n");
@@ -418,13 +418,13 @@ int flush() {
             return -1;
         }
 
-    char ack;
+    unsigned char ack;
     if (receiveAck(roe_struct.roeLink, &ack, 1, 0x03) == -1) {
         pthread_mutex_unlock(&roe_struct.mx);
         record("Flush Error, ack\n");
         return -1; //Get Acknowledgement of Command
     }
-    char status = 0;
+    unsigned char status = 0;
     for (i = 0; (status != END_OF_SEQUENCE)&&(i < 5); i++) {
         readRoe(roe_struct.roeLink, &status, 1); //Wait for endofsequence, faster than usleep(***)
     }
@@ -483,7 +483,7 @@ int flush() {
     return 0;
 }*/
 
-int readRoe(int fd, char *data, int size) {
+int readRoe(int fd, unsigned char *data, int size) {
     
     //Times out after 50000 tries
     int input;
@@ -499,7 +499,7 @@ int readRoe(int fd, char *data, int size) {
 
 //Receive Acknowledgement from ROE
 
-int receiveAck(int fd, char *data, int size, char target) {
+int receiveAck(int fd, unsigned char *data, int size, char target) {
     int timeout;
 
     for (timeout = 0; timeout < 5; timeout++) //Times out after 5 seconds
