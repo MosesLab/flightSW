@@ -1060,8 +1060,8 @@ int ROE_POS_5V_VD(packet_t* p) {
 int ROE_POS_5V_IA(packet_t* p) {
     record("Request for ROE +5.0V A Channel current received\n");
     char * temp = malloc(sizeof (char) * 6);
-    strcpy(temp, ROE_P5VD_I);
-    char* response = getHK(CPOS5VD);
+    strcpy(temp, ROE_P5VAA_I);
+    char* response = getHK(CPOS5VA_A);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
