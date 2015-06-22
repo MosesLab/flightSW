@@ -970,7 +970,7 @@ int ROE_2_5V_V(packet_t* p) {
     double x = getHK(VPOS2_5VD);
     double y = 2.0 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -985,8 +985,9 @@ int ROE_2_5V_I(packet_t* p) {
     strcpy(temp, ROE_P2_5VD_I);
     double x = getHK(CPOS2_5VD);
     double y = 0.2089 * x - 0.0014;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS2_5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1026,7 +1027,7 @@ int ROE_POS_5V_VA(packet_t* p) {
     double x = getHK(VPOS5VA_A);
     double y = 2.7407 * x + 8e-15;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1042,7 +1043,7 @@ int ROE_POS_5V_VB(packet_t* p) {
     double x = getHK(VPOS5VA_B);
     double y = 2.7407 * x + 8e-15;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1058,7 +1059,7 @@ int ROE_POS_5V_VD(packet_t* p) {
     double x = getHK(VPOS5VD);
     double y = 4.1333 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1073,8 +1074,9 @@ int ROE_POS_5V_IA(packet_t* p) {
     strcpy(temp, ROE_P5VAA_I);
     double x = getHK(CPOS5VA_A);
     double y = 0.0498 * x - 0.0097;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1089,8 +1091,9 @@ int ROE_POS_5V_IB(packet_t* p) {
     strcpy(temp, ROE_P5VAB_I);
     double x = getHK(CPOS5VA_B);
     double y = 0.0493 * x - 0.0007;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1105,8 +1108,9 @@ int ROE_POS_5V_ID(packet_t* p) {
     strcpy(temp, ROE_P5VD_I);
     double x = getHK(CPOS5VD);
     double y = 0.2788 * x - 0.0154;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1122,7 +1126,7 @@ int ROE_NEG_5V_VA(packet_t* p) {
     double x = getHK(VNEG5VA_A);
     double y = 2.5897 * x - 7.9487;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1138,7 +1142,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     double x = getHK(VNEG5VA_B);
     double y = 2.5897 * x - 7.9487;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1154,7 +1158,7 @@ int ROE_NEG_10V_VA(packet_t* p) {
     double x = getHK(VNEG10V_A);
     double y = -5.3 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG10V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1170,7 +1174,7 @@ int ROE_NEG_10V_VB(packet_t* p) {
     double x = getHK(VNEG10V_B);
     double y = -5.3 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG10V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1185,8 +1189,9 @@ int ROE_NEG_5V_IA(packet_t* p) {
     strcpy(temp, ROE_N5VAA_I);
     double x = getHK(CNEG5VA_A);
     double y = 0.0379 * x - 0.0035;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1201,8 +1206,9 @@ int ROE_NEG_5V_IB(packet_t* p) {
     strcpy(temp, ROE_N5VAB_I);
     double x = getHK(CNEG5VA_B);
     double y = 0.0381 * x - 0.0015;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1230,7 +1236,7 @@ int ROE_12V_VA(packet_t* p) {
     double x = getHK(VPOS12V_A);
     double y = 9.2 * x - 3e-14;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1246,7 +1252,7 @@ int ROE_12V_VB(packet_t* p) {
     double x = getHK(VPOS12V_B);
     double y = 9.2 * x - 3e-14;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1261,8 +1267,9 @@ int ROE_12V_IA(packet_t* p) {
     strcpy(temp, ROE_P12VA_I);
     double x = getHK(CPOS12V_A);
     double y = 0.0666 * x - 0.0097;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1277,8 +1284,9 @@ int ROE_12V_IB(packet_t* p) {
     strcpy(temp, ROE_P12VB_I);
     double x = getHK(CPOS12V_B);
     double y = 0.0656 * x - 0.0067;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS12V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1294,7 +1302,7 @@ int ROE_36V_VA(packet_t* p) {
     double x = getHK(VPOS36V_A);
     double y = 28.5 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1310,7 +1318,7 @@ int ROE_36V_VB(packet_t* p) {
     double x = getHK(VPOS36V_B);
     double y = 28.5 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1325,8 +1333,9 @@ int ROE_36V_IA(packet_t* p) {
     strcpy(temp, ROE_P36VA_I);
     double x = getHK(CPOS36V_A);
     double y = 0.0066 * x - 0.0027;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1341,8 +1350,9 @@ int ROE_36V_IB(packet_t* p) {
     strcpy(temp, ROE_P36VB_I);
     double x = getHK(CPOS36V_B);
     double y = 0.0067 * x - 0.0024;
+    y = y * 100;
     char response[15];
-    sprintf(response, "%3.2e A", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, POS36V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1388,7 +1398,7 @@ int ROE_TEMP_UPPER(packet_t* p) {
     double x = getHK(UPPER_TEMP);
     double y = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
     char response[15];
-    sprintf(response, "%3.2e C", y);
+    sprintf(response, "%3.2f C", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, TEMP, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1404,7 +1414,7 @@ int ROE_TEMP_LOWER(packet_t* p) {
     double x = getHK(LOWER_TEMP);
     double y = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
     char response[15];
-    sprintf(response, "%3.2e C", y);
+    sprintf(response, "%3.2f C", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, TEMP, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1420,7 +1430,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     double x = getHK(CCDA_VODC);
     double y = 17.529 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDA_VOD, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1436,7 +1446,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     double x = getHK(CCDA_VRDC);
     double y = 10.05 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDA_VRD, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1452,7 +1462,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     double x = getHK(CCDA_VSSC);
     double y = 5.2105 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDA_VSS, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1468,7 +1478,7 @@ int ROE_CCDS_VOD(packet_t* p) {
     double x = getHK(CCDB_VODC);
     double y = 17.529 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDB_VOD, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1484,7 +1494,7 @@ int ROE_CCDS_VRD(packet_t* p) {
     double x = getHK(CCDB_VRDC);
     double y = 10.05 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDB_VRD, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1500,7 +1510,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     double x = getHK(CCDB_VSSC);
     double y = 5.2105 * x;
     char response[15];
-    sprintf(response, "%3.2e V", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
     enqueue(&lqueue[hkdown], r);

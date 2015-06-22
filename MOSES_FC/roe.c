@@ -524,7 +524,7 @@ double get_x(unsigned int val){
     char msg[255];
     double x =  2.5 * ((float) val) / 255.0;
     sprintf(msg, "Value: %d, x: %f \n", val, x);
-    record(msg);
+//    record(msg);
     return x;
 }
 
