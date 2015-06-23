@@ -17,6 +17,7 @@ Date		Author	Modifications
 *******************************************************************************/
 
 #include "PlxInit.h"
+#include "../logger.h"
 
 #ifdef METRICS
 LARGE_INTEGER tTotalWaitBit;
@@ -99,7 +100,9 @@ char* PlxSdkErrorText(RETURN_CODE code)
  ********************************************************************/
 void PlxSdkErrorDisplay(RETURN_CODE code )
 {
-    printf("\tAPI Error: %s (%03Xh)\n",PlxSdkErrorText(code),code);
+    char msg[255];
+    sprintf(msg, "\tAPI Error: %s (%03Xh)\n",PlxSdkErrorText(code),code);
+    record(msg);
 }
 
 /*********************************************************************
@@ -121,10 +124,11 @@ RETURN_CODE GetAndOpenDevice (PLX_DEVICE_OBJECT* pDevice, U16 plxDeviceID )
 
 	// Check if device exists
 	rc = PlxPci_DeviceFind(&DevKey,0);
+        char msg[255];
 
 	if (rc == ApiSuccess)
 	{
-		printf("Device Info: \n\tDevice ID=%04x\n\tVendor ID=%04x\n"
+		sprintf(msg, "Device Info: \n\tDevice ID=%04x\n\tVendor ID=%04x\n"
 					"\tSub-Device ID=%04x\n\tSub-Vendor ID=%04x\n"
 					"\tBus=%02x\n\tSlot=%02x\n\tFunction=%02x\n",
 				DevKey.DeviceId,
@@ -135,6 +139,7 @@ RETURN_CODE GetAndOpenDevice (PLX_DEVICE_OBJECT* pDevice, U16 plxDeviceID )
 				DevKey.slot,
 				DevKey.function
 				);
+                record(msg);
 	}
 	else
     {

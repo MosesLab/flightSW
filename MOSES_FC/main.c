@@ -58,8 +58,12 @@ int moses(){
     char msg[255];
     
     record("*****************************************************\n");
-    record("MOSES FLIGHT SOFTWARE\n");
+    record("*            MOSES FLIGHT SOFTWARE                  *\n");
     record("*****************************************************\n");
+    
+    printf("*****************************************************\n");
+    printf("*            MOSES FLIGHT SOFTWARE                  *\n");
+    printf("*****************************************************\n");
 
     /*init configuration stings*/
     main_init();
