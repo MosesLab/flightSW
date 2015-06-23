@@ -31,7 +31,7 @@ DEFAULTCONF=Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release flightDebug fd 
+ALLCONFS=Debug Release flightDebug fd fr 
 
 
 # build

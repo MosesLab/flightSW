@@ -753,5 +753,185 @@
       <item path="v_shell.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
+    <conf name="fr" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <commandLine>-march=i486 -O2 -Werror -Wall</commandLine>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerLibLibItem>dl</linkerLibLibItem>
+            <linkerLibStdlibItem>Curses</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="bashrc" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="control.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="control.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="controlFuncs.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="controlFuncs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="defs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dma.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="dma.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="fpga.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="fpga.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gpio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="gpio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hashTable.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="hashTable.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="helper.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hlp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lockingQueue.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="lockingQueue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="logger.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+          <commandLine>-lm -pthread</commandLine>
+        </cTool>
+      </item>
+      <item path="main.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="packet.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="packet.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Aardvark.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/ConsFunc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/Eep_8000.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciRegs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PciTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PexApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Plx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiDebug.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxApiI2cAa.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxDefCk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="plx/PlxInit.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxIoctl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxStat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/PlxTypes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="plx/Reg9056.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roe.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="roe.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roe_image.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="roe_image.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="roehk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sci_timeline_funcs.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="sci_timeline_funcs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="science_timeline.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="science_timeline.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="send_TM.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="send_TM.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="sequence.c" ex="false" tool="0" flavor2="9">
+        <cTool>
+        </cTool>
+      </item>
+      <item path="sequence.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="synclink.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="system.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="v_shell.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="v_shell.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
   </confs>
 </configurationDescriptor>

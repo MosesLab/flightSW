@@ -985,7 +985,7 @@ int ROE_2_5V_I(packet_t* p) {
     strcpy(temp, ROE_P2_5VD_I);
     double x = getHK(CPOS2_5VD);
     double y = 0.2089 * x - 0.0014;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1074,7 +1074,7 @@ int ROE_POS_5V_IA(packet_t* p) {
     strcpy(temp, ROE_P5VAA_I);
     double x = getHK(CPOS5VA_A);
     double y = 0.0498 * x - 0.0097;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1091,7 +1091,7 @@ int ROE_POS_5V_IB(packet_t* p) {
     strcpy(temp, ROE_P5VAB_I);
     double x = getHK(CPOS5VA_B);
     double y = 0.0493 * x - 0.0007;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1108,7 +1108,7 @@ int ROE_POS_5V_ID(packet_t* p) {
     strcpy(temp, ROE_P5VD_I);
     double x = getHK(CPOS5VD);
     double y = 0.2788 * x - 0.0154;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1189,7 +1189,7 @@ int ROE_NEG_5V_IA(packet_t* p) {
     strcpy(temp, ROE_N5VAA_I);
     double x = getHK(CNEG5VA_A);
     double y = 0.0379 * x - 0.0035;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1206,7 +1206,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
     strcpy(temp, ROE_N5VAB_I);
     double x = getHK(CNEG5VA_B);
     double y = 0.0381 * x - 0.0015;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1267,7 +1267,7 @@ int ROE_12V_IA(packet_t* p) {
     strcpy(temp, ROE_P12VA_I);
     double x = getHK(CPOS12V_A);
     double y = 0.0666 * x - 0.0097;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1284,7 +1284,7 @@ int ROE_12V_IB(packet_t* p) {
     strcpy(temp, ROE_P12VB_I);
     double x = getHK(CPOS12V_B);
     double y = 0.0656 * x - 0.0067;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1333,7 +1333,7 @@ int ROE_36V_IA(packet_t* p) {
     strcpy(temp, ROE_P36VA_I);
     double x = getHK(CPOS36V_A);
     double y = 0.0066 * x - 0.0027;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
@@ -1350,7 +1350,7 @@ int ROE_36V_IB(packet_t* p) {
     strcpy(temp, ROE_P36VB_I);
     double x = getHK(CPOS36V_B);
     double y = 0.0067 * x - 0.0024;
-    y = y * 100;
+    y = y * 1000;
     char response[15];
     sprintf(response, "%3.2f mA", y);
     strcat(temp, response);

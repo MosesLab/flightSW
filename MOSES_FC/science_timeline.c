@@ -97,7 +97,7 @@ void * science_timeline(void * arg) {
 
                     /*initialize index( these will start at -1 and be incremented by DMA*/
 
-                    record("Done with exposure. Wait for readout...\n");
+                    record("Exposure complete.\n");
 
                     /*Enqueue image buffer to fpga server thread for DMA transfer*/
                     record("Queue image buffer for DMA transfer.\n");
