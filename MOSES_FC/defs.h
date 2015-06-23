@@ -113,9 +113,10 @@ typedef struct {
     char* observer; // observer of the image
     char* object; // the object in the image
     unsigned int duration; // the duration of the image exposure
+    unsigned int total_size; // Total number of pixels 
     unsigned int size[4]; // size corresponds to number of pixels in image so, # of bytes = size *2 
-    unsigned short* data[4]; // the image data
-    char channels; //channels included in the image;S
+    unsigned short* data; // the image data
+    char channels; //channels included in the image;
     unsigned int num_exp; // index of this image in the sequence
     unsigned int num_frames; // total number of images for this sequencel
     unsigned int xml_cur_index; // currrent index in xml snippet array

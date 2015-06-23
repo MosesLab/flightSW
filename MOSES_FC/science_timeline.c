@@ -229,10 +229,7 @@ void * write_data(void * arg) {
                 free(image->filename);
                 free(image->date);
                 free(image->time);
-                free(image->data[0]);
-                free(image->data[1]);
-                free(image->data[2]);
-                free(image->data[3]);
+                free(image->data);
                 free(image);
             }
 
@@ -264,7 +261,6 @@ void * telem(void * arg) {
         sprintf(msg, "Dequeued new image %s\n", new_image->filename);
         record(msg);
 
-
         rc = send_image(new_image, synclink_fd); //Send actual Image
         if (rc < 0) {
             record("Failed to send image over telemetry!");
@@ -279,10 +275,7 @@ void * telem(void * arg) {
         free(new_image->filename);
         free(new_image->date);
         free(new_image->time);
-        free(new_image->data[0]);
-        free(new_image->data[1]);
-        free(new_image->data[2]);
-        free(new_image->data[3]);
+        free(new_image->data);
         free(new_image);
 
         new_image = NULL;

@@ -43,8 +43,8 @@ int reset_fpga() {
 
     PlxPci_DeviceReset(&fpga_dev);
 
-//    gpio_out_state.bf.fpga_reset = 0;
-//    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
+    //    gpio_out_state.bf.fpga_reset = 0;
+    //    poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
 
     gpio_out_state.bf.fpga_reset = 1;
     poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_state.val);
@@ -173,135 +173,105 @@ void finish() {
 
 }
 
-void sort(roeimage_t * image) {
+/*Filters out the zero channel pixels if the zero channel is set to OFF*/
+void filter_channel(roeimage_t * image) {
     register uint i, j;
-    register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
+    register uint k = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short next_pixel = 0;
-    unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
-    uint * dest_size = image->size;
+    unsigned short * dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
 
+    if ((image->channels & CH0) == 0) { // Channel zero is OFF
+        for (i = 0; i < frag; i++) {
+            for (j = 0; j < (buf_size); j++) {
+                next_pixel = virt_buf[i][j]; 
 
-    for (i = 0; i < frag; i++) {
-        for (j = 0; j < (buf_size); j++) {
-            next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
-
-            
-            
-            if (next_pixel >= 0xC000) { // Channel 3
-                dest_buf[3][i3] = next_pixel;
-                i3++;
-            } else if (next_pixel >= 0x8000) { // Channel 2
-                dest_buf[2][i2] = next_pixel;
-                i2++;
-            } else if (next_pixel >= 0x4000) { // Channel 1
-                dest_buf[1][i1] = next_pixel;
-                i1++;
-            } else { // Channel 0
-                dest_buf[0][i0] = next_pixel;
-                i0++;
-            }
-
-            /*make sure the indices aren't too big*/
-            if (i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size) {
-                record("SCIENCE DATA BUFFER OVERFLOW!\n");
-                goto end_sort; // Don't freak out, breaking out of double loop 
+                if(next_pixel > 0x3FFF){        // Save only channels 1-3
+                    dest_buf[k] = next_pixel;
+                    k++;
+                }
             }
         }
-    }
-end_sort: // To break out of double loop
+        
+        /* Check if we saved more pixels than we expected*/
+        if(k > (buf_size * 3)){
+            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+        }
+    } else if((image->channels & CH0) == CH0) { // All channels are enabled
+        for (i = 0; i < frag; i++) {
+            memmove(dest_buf + (buf_size * i), virt_buf, SIZE_DS_BUFFER);
+        }
+    } else if (image->channels == CH3){         // Only positive channel is enabled
+        for (i = 0; i < frag; i++) {
+            for (j = 0; j < (buf_size); j++) {
+                next_pixel = virt_buf[i][j]; 
 
-    /*assign sizes for imageindex.xml*/
-    dest_size[0] = i0;
-    dest_size[1] = i1;
-    dest_size[2] = i2;
-    dest_size[3] = i3;
+                if(next_pixel > 0xBFFF){        // Save only channel 3
+                    dest_buf[k] = next_pixel;
+                    k++;
+                }
+            }
+        }
+        
+        /* Check if we saved more pixels than we expected*/
+        if(k > buf_size){
+            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+        }
+    } else {
+        record("Unknown channel arrangement!\n");
+    }
+    
+    image->total_size = k;      // Save the total number of pixels we copied
 
 }
 
-void unsort(roeimage_t * image) {
-    //    char buf[255];
+/*puts pixels from each channel into four separate arrays*/
+//void sort(roeimage_t * image) {
+//    register uint i, j;
+//    register uint i0 = 0, i1 = 0, i2 = 0, i3 = 0;
+//    uint frag = NUM_FRAGMENT;
+//    uint buf_size = SIZE_DS_BUFFER / 2;
+//    unsigned short next_pixel = 0;
+//    unsigned short ** dest_buf = image->data; //Copy pointer to destination buffer so as not to evaluate pointer chain within loop
+//    uint * dest_size = image->size;
+//
+//
+//    for (i = 0; i < frag; i++) {
+//        for (j = 0; j < (buf_size); j++) {
+//            next_pixel = virt_buf[i][j]; // Check the channel of the next pixel
+//
+//            if (next_pixel >= 0xC000) { // Channel 3
+//                dest_buf[3][i3] = next_pixel;
+//                i3++;
+//            } else if (next_pixel >= 0x8000) { // Channel 2
+//                dest_buf[2][i2] = next_pixel;
+//                i2++;
+//            } else if (next_pixel >= 0x4000) { // Channel 1
+//                dest_buf[1][i1] = next_pixel;
+//                i1++;
+//            } else { // Channel 0
+//                dest_buf[0][i0] = next_pixel;
+//                i0++;
+//            }
+//
+//            /*make sure the indices aren't too big*/
+//            if (i0 > buf_size || i1 > buf_size || i2 > buf_size || i3 > buf_size) {
+//                record("SCIENCE DATA BUFFER OVERFLOW!\n");
+//                goto end_sort; // Don't freak out, breaking out of double loop 
+//            }
+//        }
+//    }
+//end_sort: // To break out of double loop
+//
+//    /*assign sizes for imageindex.xml*/
+//    dest_size[0] = i0;
+//    dest_size[1] = i1;
+//    dest_size[2] = i2;
+//    dest_size[3] = i3;
+//
+//}
 
-    register uint i, j = 0;
-    uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER / 2;
-    unsigned short ** dest_buf = image->data;
-    unsigned short next_pixel;
-
-    /*values for predicting next pixel*/
-    //    unsigned short pred_val = 0;
-    //    unsigned short pred_pixel;
-    //    unsigned int count = 0;
-
-    //    int beef = 0;
-    //    int expected_size = frag * buf_size;
-
-    uint * dest_size = image->size;
-    for (i = 0; i < frag; i++) {
-        for (j = 0; j < (buf_size); j++) {
-
-            /*roll counter to the right by two*/
-            //            pred_pixel = rotr(pred_val);
-
-            next_pixel = virt_buf[i][j];
-
-            //            if ((next_pixel != pred_pixel)) {
-            //                printf("Pixel lost! Got %04x but expected %04x at index %d out of %d\n", next_pixel, pred_pixel, count, expected_size);
-            //                pred_val = (rotl(next_pixel) + 1) % (2048 * 4);
-            //            } else {
-            //                pred_val = (pred_val + 1) % (2048 * 4);
-            //            }
-
-            dest_buf[i][j] = next_pixel;
-            //            count++;
-
-        }
-        dest_size[i] = buf_size; //number of pixels
-    }
-    //    if (beef) {
-    //        sprintf(buf, "*ERROR* Not 0xBEEF, %d times\n", beef);
-    //        record(buf);
-    //    }
-}
-
-void beef(roeimage_t * image) {
-    //    char buf[255];
-
-    register uint i, j = 0;
-    uint frag = NUM_FRAGMENT;
-    uint buf_size = SIZE_DS_BUFFER / 2; // since each pixel is a word
-    unsigned short ** dest_buf = image->data;
-    unsigned short next_pixel;
-    unsigned short notbeef = 0;
-
-    /*values for predicting next pixel*/
-    //    unsigned short pred_val = 0;
-    //    unsigned short pred_pixel;
-
-    //    int beef = 0;
-    uint * dest_size = image->size;
-    for (i = 0; i < frag; i++) {
-        for (j = 0; j < (buf_size); j++) {
-
-            /*roll counter to the right by two*/
-            //            pred_pixel = rotr(pred_val);
-            //            pred_pixel = rotr(pred_pixel);
-
-            next_pixel = virt_buf[i][j];
-            if (next_pixel != 0xBEEF) {
-                notbeef++;
-            }
-            dest_buf[i][j] = next_pixel;
-            //            pred_val++;
-
-        }
-        printf("%04x\n", next_pixel);
-        dest_size[i] = buf_size; //number of pixels
-
-    }
-    printf("Lost pixels! %d out of %d pixels\n", notbeef, buf_size * frag);
-}
 
 /**
  * Clear page-locked DMA buffer out of memory

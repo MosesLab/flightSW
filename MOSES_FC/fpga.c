@@ -102,15 +102,11 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
                 output_ddr2_ctrl &= 0x00FFFFFF;
                 output_ddr2_ctrl |= (0x00000000 << 24);
-                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);
-
-                /*close DMA channel*/
-                //                dmaClose();
+                WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);;
 
                 record("Sort image\n");
-                sort(dma_image);
-
-
+                filter_channel(dma_image);
+\
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
 
