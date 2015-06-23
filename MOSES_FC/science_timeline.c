@@ -15,6 +15,7 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[5];
     char sframe[1200];
+    struct timeval seq_start, seq_end, seq_diff;
 
 
     /*Set thread name*/
@@ -27,7 +28,7 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-//    /*main loop*/
+    //    /*main loop*/
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
@@ -48,6 +49,9 @@ void * science_timeline(void * arg) {
                 packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence->sequenceName);
                 enqueue(&lqueue[hkdown], a);
                 enqueue(&lqueue[hkdown], b);
+
+                /*grab system time before starting to time exposures for flight*/
+                gettimeofday(&seq_start, NULL);
 
                 /* for each exposure in the sequence */
                 int i;
@@ -135,6 +139,11 @@ void * science_timeline(void * arg) {
                     record(msg);
                 }/* end for each exposure */
 
+                /* Calculate the amount of time taken for the whole sequence*/
+                gettimeofday(&seq_end, NULL);
+                timeval_subtract(&seq_diff, seq_start, seq_end);
+                sprintf(msg, "Sequence duration: %lu:%06lu sec\n", seq_diff.tv_sec, seq_diff.tv_usec);
+
                 /* done with sequence, push packet with info */
                 sprintf(msg, "Done with sequence %s\n\n\n", currentSequence->sequenceName);
                 record(msg);
@@ -150,6 +159,8 @@ void * science_timeline(void * arg) {
     }//end while ts_alive
 
     record("Done with scienceTimeline\n");
+
+
 
     return NULL;
 }
@@ -256,13 +267,12 @@ void * telem(void * arg) {
         rc = send_image(new_image, synclink_fd); //Send actual Image
         if (rc < 0) {
             record("Failed to send image over telemetry!");
-        }
-        else {
+        } else {
             sprintf(msg, "File %s successfully sent via high-speed telemetry. (%d out of %d)\n", new_image->filename, new_image->num_exp, new_image->num_frames);
             record(msg);
         }
         sequence_itr++;
-        
+
         /*free all dynamically allocated memory associated with image*/
         free(new_image->name);
         free(new_image->filename);

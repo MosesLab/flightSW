@@ -1142,7 +1142,7 @@ int ROE_NEG_5V_VB(packet_t* p) {
     double x = getHK(VNEG5VA_B);
     double y = 2.5897 * x - 7.9487;
     char response[15];
-    sprintf(response, "%3.2f mA", y);
+    sprintf(response, "%3.2f V", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
@@ -1208,7 +1208,7 @@ int ROE_NEG_5V_IB(packet_t* p) {
     double y = 0.0381 * x - 0.0015;
     y = y * 100;
     char response[15];
-    sprintf(response, "%3.2f V", y);
+    sprintf(response, "%3.2f mA", y);
     strcat(temp, response);
     packet_t* r = constructPacket(HK_RSP, NEG5V, temp);
     enqueue(&lqueue[hkdown], r);
