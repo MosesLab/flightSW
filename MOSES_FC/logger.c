@@ -85,14 +85,14 @@ void copy_log_to_disk() {
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(fileno(in_file), 0, pipefd[1], NULL, log_sz, SPLICE_F_MOVE);
-    printf("%d\n", result);
+    sprintf(msg, "splice result = %d\n", result); record(msg);
 
     //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(pipefd[0], NULL, fileno(out_file), 0, log_sz, SPLICE_F_MOVE);
-    printf("%d\n", result);
+    sprintf(msg, "splice result = %d\n", result);
 
     if (result == -1)
-        printf("%d - %s\n", errno, strerror(errno));
+        sprintf(msg, "%d - %s\n", errno, strerror(errno)); record(msg);
 
     close(pipefd[0]);
     close(pipefd[1]);

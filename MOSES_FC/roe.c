@@ -30,9 +30,8 @@ int activateROE() {
         //Open Serial Device
         fd = open(ROE_DEV, O_RDWR | O_NOCTTY | O_NDELAY);
         if (fd < 0) {
-            sprintf(msg, "%s\n", strerror(errno));
+            sprintf(msg, "ROE Connection error: %s\n", strerror(errno));
             record(msg);
-            record("Couldnt connect\n");
             pthread_mutex_unlock(&roe_struct.mx);
             exit(-1);
         }
@@ -368,9 +367,10 @@ int stimOff() {
 
 int readOut(int block, int delay) {
     pthread_mutex_lock(&roe_struct.mx);
-
+    char msg[255];
+    
     char command[2] = {START_CSG,block};
-    printf("block: %d", block);
+    sprintf(msg, "block: %d\n", block); record(msg);
     //char command[2] = {0x42, 0x99};
 
     int i;
