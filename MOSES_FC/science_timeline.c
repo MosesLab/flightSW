@@ -143,6 +143,7 @@ void * science_timeline(void * arg) {
                 gettimeofday(&seq_end, NULL);
                 timeval_subtract(&seq_diff, seq_start, seq_end);
                 sprintf(msg, "Sequence duration: %lu:%06lu sec\n", seq_diff.tv_sec, seq_diff.tv_usec);
+                record(msg);
 
                 /* done with sequence, push packet with info */
                 sprintf(msg, "Done with sequence %s\n\n\n", currentSequence->sequenceName);
