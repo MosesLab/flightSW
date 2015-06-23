@@ -200,7 +200,7 @@ void filter_channel(roeimage_t * image) {
         }
     } else if((image->channels & CH0) == CH0) { // All channels are enabled
         for (i = 0; i < frag; i++) {
-            memmove(dest_buf + (buf_size * i), virt_buf, SIZE_DS_BUFFER);
+            memmove(dest_buf + (buf_size * i), virt_buf[i], SIZE_DS_BUFFER);
         }
     } else if (image->channels == CH3){         // Only positive channel is enabled
         for (i = 0; i < frag; i++) {
