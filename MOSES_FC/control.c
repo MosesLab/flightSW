@@ -13,7 +13,7 @@ void * hlp_control(void * arg) {
     int f_up = 0;
     int stdin_des;
 
-    prctl(PR_SET_NAME, "HLP_CONTROL", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[36mHLP_CNTL", 0, 0, 0);
     record("-->HLP control thread started....\n");
 
     /*initialize virtual shell input*/
@@ -120,7 +120,7 @@ void * hlp_control(void * arg) {
 void * gpio_control(void * arg) {
     char msg[255];
 
-    prctl(PR_SET_NAME, "GPIO_CONTROL", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[32mGPIO_CONTROL", 0, 0, 0);
     record("-->GPIO control thread started....\n");
 
     while (ts_alive) {

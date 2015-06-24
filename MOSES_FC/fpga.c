@@ -17,7 +17,7 @@ void * fpga_server(void * arg) {
     int rc;
     gpio_out_uni * temp_state = NULL; //If this variable is set, the server will deassert the output latch
 
-    prctl(PR_SET_NAME, "FPGA_SERVER", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[33mFPGA_CTL", 0, 0, 0);
 
     record("-->FPGA Server thread started....\n");
 

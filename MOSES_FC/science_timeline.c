@@ -19,7 +19,7 @@ void * science_timeline(void * arg) {
 
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "\x1b[31mSCI_TIMELINE:\x1b[0m", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[31mSCI_TIMELN", 0, 0, 0);
 
     ops.read_block = READBLK_DEFAULT;
 
@@ -173,7 +173,7 @@ void * write_data(void * arg) {
     char msg[100];
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[35mIMG_WRTR", 0, 0, 0);
 
     record("-->Image Writer thread started....\n");
 
