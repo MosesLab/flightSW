@@ -210,6 +210,8 @@ void join_threads() {
         
         /* Goodnight MOSES */
         execlp("shutdown","shutdown", "-h", "now", (char *)0);
+        
+        return;
        
     } // end if sleep
 
@@ -220,7 +222,6 @@ void join_threads() {
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-            //            pthread_join(threads[i], &returns);
             pthread_cancel(threads[i]);
         }
     }

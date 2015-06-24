@@ -19,7 +19,7 @@ void * science_timeline(void * arg) {
 
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
+    prctl(PR_SET_NAME, "\[\e[0;31m\\]SCI_TIMELINE\[\e[m\\]", 0, 0, 0);
 
     ops.read_block = READBLK_DEFAULT;
 

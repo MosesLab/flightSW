@@ -34,6 +34,7 @@
                    projectFiles="true">
       <itemPath>bashrc</itemPath>
       <itemPath>moses.conf</itemPath>
+      <itemPath>moses_startup.sh</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -179,6 +180,8 @@
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses_startup.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -335,6 +338,8 @@
       </item>
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="moses_startup.sh" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="nbproject/Makefile-Debug.mk" ex="false" tool="3" flavor2="0">
@@ -486,6 +491,8 @@
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses_startup.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -653,6 +660,8 @@
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses_startup.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -833,6 +842,8 @@
       <item path="main.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses.conf" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="moses_startup.sh" ex="false" tool="3" flavor2="0">
       </item>
       <item path="moses_threads.h" ex="false" tool="3" flavor2="0">
       </item>
