@@ -174,7 +174,7 @@ void finish() {
 }
 
 /*Filters out the zero channel pixels if the zero channel is set to OFF*/
-void filter_channel(roeimage_t * image) {
+void filter_sort(roeimage_t * image) {
     register uint i, j;
     register uint k = 0;
     uint frag = NUM_FRAGMENT;

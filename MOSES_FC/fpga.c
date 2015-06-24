@@ -85,15 +85,14 @@ void * fpga_server(void * arg) {
                 record("Error handling FPGA input\n");
             } else if (rc == DMA_AVAILABLE) { // DMA available in buffer, begin transfer
 
+                /*Wake up science timeline waiting for readout completion*/
+                sem_post(&dma_control_sem);               
 
                 record("Perform DMA transfer from FPGA\n");
 
                 for (i = 0; i < NUM_FRAGMENT; i++) {
                     dmaRead(dma_params[i], DMA_TIMEOUT);
-                }
-
-                /*Wake up science timeline waiting for DMA completion*/
-                sem_post(&dma_control_sem);
+                }             
 
                 // Return to IDLE state
                 record("DMA Complete, Returning to IDLE state\n");
@@ -105,7 +104,7 @@ void * fpga_server(void * arg) {
                 WriteDword(&fpga_dev, 2, OUTPUT_DDR2_CTRL_ADDR, output_ddr2_ctrl);;
 
                 record("Sort image\n");
-                filter_channel(dma_image);
+                filter_sort(dma_image);
 \
                 record("Enqueue image to writer\n");
                 enqueue(&lqueue[fpga_image], dma_image);
