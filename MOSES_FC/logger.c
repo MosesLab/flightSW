@@ -46,7 +46,7 @@ void record(const char* message) {
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
     log_sz += fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
-    log_sz += fwrite(&no_color, sizeof (no_color[0]), strlen(no_color), outfile);
+    log_sz += fwrite(no_color, sizeof (no_color[0]), strlen(no_color), outfile);
 
 
 
