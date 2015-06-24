@@ -202,6 +202,7 @@ void filter_channel(roeimage_t * image) {
         for (i = 0; i < frag; i++) {
             memmove(dest_buf + (buf_size * i), virt_buf[i], SIZE_DS_BUFFER);
         }
+        k = 4 * buf_size;
     } else if (image->channels == CH3){         // Only positive channel is enabled
         for (i = 0; i < frag; i++) {
             for (j = 0; j < (buf_size); j++) {
