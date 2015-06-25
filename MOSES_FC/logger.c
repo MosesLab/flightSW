@@ -91,7 +91,7 @@ void copy_log_to_disk() {
     int out_fd = open(new_path, O_WRONLY);
 
     /*seek to the appropriate position in the log*/
-    off64_t in_offset = lseek64(in_fd, cur_sz, SEEK_END);
+    off64_t in_offset = lseek64(in_fd, (off64_t)(-1 * cur_sz), SEEK_END);
     printf("In offset is: %d\n", (int) in_offset);
     if (result == -1)
         printf("%d - %s\n", errno, strerror(errno));
