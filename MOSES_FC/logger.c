@@ -98,7 +98,7 @@ void copy_log_to_disk() {
 
     /* Move the cursor to the end of the backup log*/
     off64_t out_offset = lseek64(out_fd, 0, SEEK_END);
-    printf("Out offset is: %d\n", (int) out_offset);
+    printf("Out offset is: %ld\n", (long int) out_offset);
     if (out_offset == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
