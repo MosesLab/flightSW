@@ -92,6 +92,11 @@ void copy_log_to_disk() {
     if (result == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
+    /* Move the cursor to the end of the backup log*/
+    result = fseek(out_file, 0, SEEK_END);
+    if (result == -1)
+        printf("%d - %s\n", errno, strerror(errno));
+
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(fileno(in_file), 0, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
