@@ -98,11 +98,11 @@ void copy_log_to_disk() {
         printf("%d - %s\n", errno, strerror(errno));
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(fileno(in_file), 0, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
+    result = splice(fileno(in_file), NULL, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(pipefd[0], NULL, fileno(out_file), 0, cur_sz, SPLICE_F_MOVE);
+    result = splice(pipefd[0], NULL, fileno(out_file), NULL, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     if (result == -1)
