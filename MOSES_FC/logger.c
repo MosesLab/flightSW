@@ -79,31 +79,35 @@ void copy_log_to_disk() {
 
     int pipefd[2];
     int result;
-    FILE *in_file;
-    FILE *out_file;
+//    FILE *in_file;
+//    FILE *out_file;
 
     result = pipe(pipefd);
 
-    in_file = fopen(LOG_PATH, "r");
-    out_file = fopen(new_path, "w");
+//    in_file = fopen(LOG_PATH, "r");
+//    out_file = fopen(new_path, "w");
+    
+    int in_fd = open(LOG_PATH, O_RDONLY);
+    int out_fd = open(new_path, O_WRONLY|O_CREAT);
 
     /*seek to the appropriate position in the log*/
-    result = fseek(in_file, -1 * cur_sz, SEEK_END);
+    loff_t in_offset = lseek64(in_fd, -1 * cur_sz, SEEK_END);
+    printf("In offset is: %d\n", (int) in_offset);
     if (result == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
     /* Move the cursor to the end of the backup log*/
-    loff_t out_offset = lseek64(fileno(out_file), 0, SEEK_END);
-//    printf("Out offset is: %ld\n", out_offset);
+    loff_t out_offset = lseek64(out_fd, 0, SEEK_END);
+    printf("Out offset is: %d\n", (int) out_offset);
     if (out_offset == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(fileno(in_file), NULL, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
+    result = splice(in_fd, NULL, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(pipefd[0], NULL, fileno(out_file), &out_offset, result, SPLICE_F_MOVE);
+    result = splice(pipefd[0], NULL, out_fd, &out_offset, result, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     if (result == -1)
@@ -111,8 +115,8 @@ void copy_log_to_disk() {
 
     close(pipefd[0]);
     close(pipefd[1]);
-    fclose(in_file);
-    fclose(out_file);
+    close(in_fd);
+    close(out_fd);
 
     sprintf(msg, "Wrote %d bytes to backup log %s\n", result, new_path);
     record(msg);
