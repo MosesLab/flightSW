@@ -13,7 +13,7 @@ void * hlp_control(void * arg) {
     int f_up = 0;
     int stdin_des;
 
-    prctl(PR_SET_NAME, "\x1b[36mHLP_CNTL", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[32mHLP_CNTRL", 0, 0, 0);
     record("-->HLP control thread started....\n");
 
     /*initialize virtual shell input*/
@@ -120,7 +120,7 @@ void * hlp_control(void * arg) {
 void * gpio_control(void * arg) {
     char msg[255];
 
-    prctl(PR_SET_NAME, "\x1b[32mGPIO_CONTROL", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[32mGPIO_CNTRL", 0, 0, 0);
     record("-->GPIO control thread started....\n");
 
     while (ts_alive) {
@@ -153,7 +153,7 @@ void * gpio_control(void * arg) {
 void * hlp_down(void * arg) {
     unsigned int fdown = 0;
 
-    prctl(PR_SET_NAME, "HLP_DOWN", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[32mHLP_DOWN", 0, 0, 0);
 
     //    sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n");
@@ -188,7 +188,7 @@ void * hlp_down(void * arg) {
  * reads data from stdout into hlp packets pushed onto hkdown queue
  */
 void * hlp_shell_out(void * arg) {
-    prctl(PR_SET_NAME, "HLP_SHELL_OUT", 0, 0, 0);
+    prctl(PR_SET_NAME, "\x1b[32mSHELL_OUT", 0, 0, 0);
 
     unsigned int data = FALSE;
     char * buf;

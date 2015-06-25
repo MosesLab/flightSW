@@ -380,6 +380,8 @@ void cleanup(){
     dmaClose();
     close_fpga();
     
+    copy_log_to_disk();
+    
 //    /*free dynamically allocated memory*/
 //     for (i = 0; i < config_size; i++) {
 //         config_hash_table[i]

@@ -8,7 +8,8 @@
 #include "system.h"
 #include "logger.h"
 
-unsigned int log_sz = 0;
+unsigned int cur_sz = 0;
+unsigned int tot_sz = 0;
 
 void record(const char* message) {
 
@@ -35,27 +36,27 @@ void record(const char* message) {
     strftime(ddate, 20, "%y-%m-%d", broken); //get date
 
 
-    log_sz += fwrite("[", 1, 1, outfile);
+    cur_sz += fwrite("[", 1, 1, outfile);
 
     /*write the date and the message to the file*/
-    log_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
+    cur_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
 
-    log_sz += fwrite("] ", 1, 2, outfile);
+    cur_sz += fwrite("] ", 1, 2, outfile);
 
     /*write the name of the thread to a file*/
     char thread_name[16];
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
-    log_sz += fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
-    log_sz += fwrite(no_color, sizeof (no_color[0]), strlen(no_color), outfile);
+    cur_sz += fwrite(&thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
+    cur_sz += fwrite(no_color, sizeof (no_color[0]), strlen(no_color), outfile);
 
 
 
 
     char * delim = " : ";
-    log_sz += fwrite(delim, sizeof (char), strlen(delim), outfile);
+    cur_sz += fwrite(delim, sizeof (char), strlen(delim), outfile);
 
     //fwrite(' ', 1, 1, outfile);
-    log_sz += fwrite(message, sizeof (message[0]), strlen(message), outfile);
+    cur_sz += fwrite(message, sizeof (message[0]), strlen(message), outfile);
 
     /* we are done with file, close it */
     fclose(outfile);
@@ -73,7 +74,7 @@ void copy_log_to_disk() {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(new_path, "/moses/log_backups/moseslog_%d_%d_%d.txt", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
+    sprintf(new_path, "/moses/log_backups/moseslog_%d-%d-%d.txt", tm->tm_mon + 1, tm->tm_mday, 1900 + tm->tm_year);
 
 
     int pipefd[2];
@@ -83,15 +84,18 @@ void copy_log_to_disk() {
 
     result = pipe(pipefd);
 
-    in_file = fopen(LOG_PATH, "rb");
-    out_file = fopen(new_path, "wb");
+    in_file = fopen(LOG_PATH, "r");
+    out_file = fopen(new_path, "a");
+    
+    /*seek to the appropriate position in the log*/
+    fseek(in_file, -1 * tot_sz, SEEK_END);
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(fileno(in_file), 0, pipefd[1], NULL, log_sz, SPLICE_F_MOVE);
+    result = splice(fileno(in_file), 0, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     //    result = splice(pipefd[0], NULL, fileno(out_file), 0, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
-    result = splice(pipefd[0], NULL, fileno(out_file), 0, log_sz, SPLICE_F_MOVE);
+    result = splice(pipefd[0], NULL, fileno(out_file), 0, cur_sz, SPLICE_F_MOVE);
     printf("%d\n", result);
 
     if (result == -1)
@@ -102,6 +106,11 @@ void copy_log_to_disk() {
     fclose(in_file);
     fclose(out_file);
 
-    sprintf(msg, "Backup log %s successfully written to disk\n", new_path);
+    sprintf(msg, "Wrote %d bytes to backup log %s\n", result, new_path);
     record(msg);
+    
+    tot_sz += cur_sz;
+    cur_sz = 0;
+    
+    
 }
