@@ -88,7 +88,7 @@ void copy_log_to_disk() {
 //    out_file = fopen(new_path, "w");
     
     int in_fd = open(LOG_PATH, O_RDONLY);
-    int out_fd = open(new_path, O_WRONLY|O_CREAT);
+    int out_fd = open(new_path, O_WRONLY);
 
     /*seek to the appropriate position in the log*/
     loff_t in_offset = lseek64(in_fd, -1 * cur_sz, SEEK_END);
