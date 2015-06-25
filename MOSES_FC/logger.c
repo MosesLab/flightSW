@@ -93,7 +93,7 @@ void copy_log_to_disk() {
         printf("%d - %s\n", errno, strerror(errno));
 
     /* Move the cursor to the end of the backup log*/
-    int out_offset = fseek(out_file, 0, SEEK_END);
+    loff_t out_offset = fseek(out_file, 0, SEEK_END);
     if (out_offset == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
