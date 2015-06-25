@@ -88,7 +88,7 @@ void copy_log_to_disk() {
     out_file = fopen(new_path, "a");
     
     /*seek to the appropriate position in the log*/
-    fseek(in_file, -1 * tot_sz, SEEK_END);
+    fseek(in_file, -1 * cur_sz, SEEK_END);
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(fileno(in_file), 0, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
