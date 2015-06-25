@@ -85,10 +85,12 @@ void copy_log_to_disk() {
     result = pipe(pipefd);
 
     in_file = fopen(LOG_PATH, "r");
-    out_file = fopen(new_path, "a");
-    
+    out_file = fopen(new_path, "w");
+
     /*seek to the appropriate position in the log*/
-    fseek(in_file, -1 * cur_sz, SEEK_END);
+    result = fseek(in_file, -1 * cur_sz, SEEK_END);
+    if (result == -1)
+        printf("%d - %s\n", errno, strerror(errno));
 
     //    result = splice(fileno(in_file), 0, pipefd[1], NULL, 4096, SPLICE_F_MORE | SPLICE_F_MOVE);
     result = splice(fileno(in_file), 0, pipefd[1], NULL, cur_sz, SPLICE_F_MOVE);
@@ -108,9 +110,9 @@ void copy_log_to_disk() {
 
     sprintf(msg, "Wrote %d bytes to backup log %s\n", result, new_path);
     record(msg);
-    
+
     tot_sz += cur_sz;
     cur_sz = 0;
-    
-    
+
+
 }
