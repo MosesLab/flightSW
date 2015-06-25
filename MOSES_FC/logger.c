@@ -91,13 +91,13 @@ void copy_log_to_disk() {
     int out_fd = open(new_path, O_WRONLY);
 
     /*seek to the appropriate position in the log*/
-    loff_t in_offset = lseek64(in_fd, cur_sz, SEEK_END);
+    off64_t in_offset = lseek64(in_fd, cur_sz, SEEK_END);
     printf("In offset is: %d\n", (int) in_offset);
     if (result == -1)
         printf("%d - %s\n", errno, strerror(errno));
 
     /* Move the cursor to the end of the backup log*/
-    loff_t out_offset = lseek64(out_fd, 0, SEEK_END);
+    off64_t out_offset = lseek64(out_fd, 0, SEEK_END);
     printf("Out offset is: %d\n", (int) out_offset);
     if (out_offset == -1)
         printf("%d - %s\n", errno, strerror(errno));
