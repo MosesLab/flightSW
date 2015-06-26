@@ -41,8 +41,10 @@ void * hlp_control(void * arg) {
     
     if(config_values[roe_interface] == 1){
         ops.roe = OFF;
+        record("ROE TURNED OFF\n");
     } else {
         ops.roe = ON;
+        record("ROE TURNED ON\n");
     }
     
     if(config_values[synclink_interface] == 1){
