@@ -12,9 +12,12 @@ pid_t vshell_pid;
 void * hlp_control(void * arg) {
     int f_up = 0;
     int stdin_des;
+    char msg[256];
 
     prctl(PR_SET_NAME, "HLP_CONTROL", 0, 0, 0);
     record("-->HLP control thread started....\n");
+    sprintf(msg, "OPS.ROE value = %d", ops.roe);
+    record(msg);
 
     /*initialize virtual shell input*/
     stdin_des = open(STDIN_PIPE, O_WRONLY);
