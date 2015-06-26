@@ -127,6 +127,7 @@ int enablePower(packet_t* p) {
                 }
             } else {
                 record("ROE not enabled in configuration file\n");
+                ops.roe = ON;
             }
         }
 
