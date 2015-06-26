@@ -40,9 +40,9 @@ void * hlp_control(void * arg) {
     ops.dma_write = TRUE;
     
     if(config_values[roe_interface] == 1){
-        ops.roe = FALSE;
+        ops.roe = OFF;
     } else {
-        ops.tm_write = TRUE;
+        ops.roe = ON;
     }
     
     if(config_values[synclink_interface] == 1){
