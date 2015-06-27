@@ -36,7 +36,6 @@ int main(int argc, char **argv) {
 
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
-    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
 
 
