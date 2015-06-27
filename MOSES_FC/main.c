@@ -32,6 +32,7 @@ LockingQueue lqueue[QUEUE_NUM];
  */
 int main(int argc, char **argv) {
     ops.sleep = 0;
+    init_logger();
 
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
@@ -52,9 +53,6 @@ int main(int argc, char **argv) {
  */
 int moses() {
     char msg[255];
-
-    /*initialize memory for logging output*/
-    init_logger();
 
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");

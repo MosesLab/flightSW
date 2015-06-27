@@ -174,15 +174,15 @@ void init_logger() {
 
     /*init memory for log strings hash table*/
     /*initialize memory for configuration hash table*/
-    if ((thread_strings_hash_table = calloc(ts_hash_sz, sizeof(node_t))) == NULL) {
-        printf("calloc failed to allocate hash table\n");
-    }
-
-    /*fill hash table with array of strings matching indices for configuration values*/
-    uint i;
-    for (i = 0; i < num_threads; i++) {
-
-        /*insert node into hash table*/
-        installNode(thread_strings_hash_table, thread_strings[i], thread_colors[i], ts_hash_sz);
-    }
+//    if ((thread_strings_hash_table = calloc(ts_hash_sz, sizeof(node_t))) == NULL) {
+//        printf("calloc failed to allocate hash table\n");
+//    }
+//
+//    /*fill hash table with array of strings matching indices for configuration values*/
+//    uint i;
+//    for (i = 0; i < num_threads; i++) {
+//
+//        /*insert node into hash table*/
+//        installNode(thread_strings_hash_table, thread_strings[i], thread_colors[i], ts_hash_sz);
+//    }
 }
