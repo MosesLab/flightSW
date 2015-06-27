@@ -33,19 +33,18 @@ LockingQueue lqueue[QUEUE_NUM];
 int main(int argc, char **argv) {
     char msg[255];
     ops.sleep = 0;
-    
+
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
     sprintf(msg, "Bash PID is: %d \n", vshell_pid);
     record(msg);
-    
-    
-    while(moses());
-    
-    return 0;
-       
-}
 
+
+    while (moses());
+
+    return 0;
+
+}
 
 /**
  * Call this method for program start. Allows restarting the program.
@@ -54,9 +53,12 @@ int main(int argc, char **argv) {
  * 
  * @return 
  */
-int moses(){
+int moses() {
     char msg[255];
-    
+
+    /*initialize memory for logging output*/
+    init_logger();
+
     record("*****************************************************\n");
     record("MOSES FLIGHT SOFTWARE\n");
     record("*****************************************************\n");
@@ -71,7 +73,7 @@ int moses(){
     main_pid = getpid();
 
     /*Use signals to inform the program to quit*/
-    init_quit_signal_handler();   
+    init_quit_signal_handler();
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -85,7 +87,7 @@ int moses(){
 
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
-    
+
     /*clean up memory and open devices*/
     cleanup();
 
@@ -152,13 +154,12 @@ void start_threads() {
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
     void * returns;
- //   char msg[256];
+    //   char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
-    
+
     /*Check to see if this function was called because of sleep T/U */
-    if(ops.sleep)
-    {
+    if (ops.sleep) {
         record("in ops.sleep\n");
 
         /* Turn off subsytems*/
@@ -171,13 +172,13 @@ void join_threads() {
         set_power(premod, OFF);
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
-        
-        
 
-        set_power(11, ON);      // hit cc_power
-        
+
+
+        set_power(11, ON); // hit cc_power
+
         sleep(1);
-        
+
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
         pthread_cond_broadcast(&lqueue[scit_image].cond);
@@ -187,32 +188,32 @@ void join_threads() {
         //pthread_cond_broadcast(&lqueue[gpio_out].cond);
         //pthread_cond_broadcast(&lqueue[gpio_req].cond);
         //pthread_cond_broadcast(&lqueue[hkdown].cond);
-        
+
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], NULL);
-        
 
-        
+
+
         record("All Subsystems turned off\n");
-        
+
         /*Gracefully close down image_writer(making sure it is done writing)*/
         pthread_join(threads[image_writer_thread], &returns);
-        
+
         /* Cancel the threads that dont need to be joined*/
         int i;
         for (i = 0; i < num_threads; i++) {
             if (threads[i] != 0) {
-                if(i != sci_timeline_thread && i != image_writer_thread) {
+                if (i != sci_timeline_thread && i != image_writer_thread) {
                     pthread_cancel(threads[i]);
                 }
             }
         }
-        
+
         /* Goodnight MOSES */
-        execlp("shutdown","shutdown", "-h", "now", (char *)0);
-        
+        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
+
         return;
-       
+
     } // end if sleep
 
     kill(vshell_pid, SIGKILL);
@@ -236,7 +237,7 @@ void init_quit_signal_handler() {
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = SA_RESTART;//SA_RESTART;
+    quit_action.sa_flags = SA_RESTART; //SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
@@ -275,7 +276,7 @@ void reset_signal(int sig) {
 void main_init() {
     uint config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
-    
+
     /*allocate strings to match with configuration file*/
     config_strings[hlp_control_thread] = HLP_CONTROL_CONF;
     config_strings[hlp_down_thread] = DOWN_CONF;
@@ -306,7 +307,7 @@ void main_init() {
         /*insert node into hash table*/
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
-    
+
     /*fill array of function pointers for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
@@ -321,10 +322,9 @@ void main_init() {
     for (i = 0; i < QUEUE_NUM; i++) {
         lockingQueue_init(&lqueue[i]);
     }
-    
-    /*initialize memory for logging output*/
-    init_logger();
-    
+
+
+
 }
 
 /*read in configuration file for thread and I/O attributes*/
@@ -375,20 +375,20 @@ void read_moses_config() {
     }
 }
 
-void cleanup(){
+void cleanup() {
     record("Release page-locked contiguous buffer\n");
     dmaClearBlock();
 
     record("Close DMA channel\n");
     dmaClose();
     close_fpga();
-    
+
     copy_log_to_disk();
-    
-//    /*free dynamically allocated memory*/
-//     for (i = 0; i < config_size; i++) {
-//         config_hash_table[i]
-//     }
+
+    //    /*free dynamically allocated memory*/
+    //     for (i = 0; i < config_size; i++) {
+    //         config_hash_table[i]
+    //     }
     free(config_hash_table);
-    
+
 }
