@@ -99,6 +99,7 @@ void record(const char* message) {
 
     /* we are done with file, close it */
     fclose(outfile);
+    fclose(backup);
 }
 
 //void copy_log_to_disk() {
