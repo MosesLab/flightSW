@@ -172,7 +172,7 @@ void init_logger() {
 
     /*init memory for log strings hash table*/
     /*initialize memory for configuration hash table*/
-    if ((thread_strings_hash_table = calloc(num_threads, sizeof (node_t))) == NULL) {
+    if ((thread_strings_hash_table = malloc(num_threads * sizeof(node_t))) == NULL) {
         record("calloc failed to allocate hash table\n");
     }
 
