@@ -12,6 +12,7 @@ unsigned int cur_sz = 0;
 unsigned int tot_sz = 0;
 
 node_t** thread_strings_hash_table;
+unsigned int ts_hash_sz;
 
 char backup_path[255];
 
@@ -52,7 +53,7 @@ void record(const char* message) {
     prctl(PR_GET_NAME, &thread_name, 0, 0, 0);
 
     /*Use thread name to find appropriate color in hash table*/
-    node_t* np = lookup(thread_strings_hash_table, thread_name, num_threads); //Lookup corresponding function in table
+    node_t* np = lookup(thread_strings_hash_table, thread_name, ts_hash_sz); //Lookup corresponding function in table
     char * color = (char *) np->def;
 
     cur_sz += fwrite(color, sizeof (color[0]), strlen(color), outfile);
@@ -150,6 +151,7 @@ void init_logger() {
 
     char ** thread_strings = malloc(sizeof (char) * num_threads);
     char ** thread_colors = malloc(sizeof (char) * 10);
+    ts_hash_sz = num_threads * 2;
 
     /* Allocate strings to denote threads in log file*/
     thread_strings[hlp_control_thread] = HLP_CNTL;
@@ -172,7 +174,7 @@ void init_logger() {
 
     /*init memory for log strings hash table*/
     /*initialize memory for configuration hash table*/
-    if ((thread_strings_hash_table = malloc(num_threads * sizeof(node_t*))) == NULL) {
+    if ((thread_strings_hash_table = calloc(ts_hash_sz, sizeof(node_t*))) == NULL) {
         printf("calloc failed to allocate hash table\n");
     }
 
@@ -181,6 +183,6 @@ void init_logger() {
     for (i = 0; i < num_threads; i++) {
 
         /*insert node into hash table*/
-        installNode(thread_strings_hash_table, thread_strings[i], thread_colors[i], num_threads);
+        installNode(thread_strings_hash_table, thread_strings[i], thread_colors[i], ts_hash_sz);
     }
 }
