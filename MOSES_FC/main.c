@@ -31,7 +31,6 @@ LockingQueue lqueue[QUEUE_NUM];
  * @return 0 upon successful exit
  */
 int main(int argc, char **argv) {
-    char msg[255];
     ops.sleep = 0;
 
     /*initialize virtual shell*/
