@@ -36,7 +36,6 @@ int main(int argc, char **argv) {
 
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
-    record(msg);
 
 
     while (moses());
