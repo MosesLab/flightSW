@@ -10,7 +10,7 @@
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 
 
-unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
+unsigned int num_threads;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
 void * targs[NUM_RROBIN + NUM_FIFO];
 pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
@@ -31,6 +31,7 @@ LockingQueue lqueue[QUEUE_NUM];
  * @return 0 upon successful exit
  */
 int main(int argc, char **argv) {
+    num_threads = NUM_RROBIN + NUM_FIFO;
     ops.sleep = 0;
     init_logger();
 
@@ -377,8 +378,6 @@ void cleanup() {
     record("Close DMA channel\n");
     dmaClose();
     close_fpga();
-
-    copy_log_to_disk();
 
     //    /*free dynamically allocated memory*/
     //     for (i = 0; i < config_size; i++) {

@@ -8,7 +8,10 @@
 #ifndef HASHTABLE_H
 #define	HASHTABLE_H
 
-#include "system.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include "defs.h"
 
 
 /*functions*/

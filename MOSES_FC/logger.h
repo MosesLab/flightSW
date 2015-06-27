@@ -8,9 +8,8 @@
 #ifndef LOGGER_H
 #define	LOGGER_H
 
-#include "system.h"
-#include "moses_threads.h"
-#include "hashTable.h"
+
+
 
 //#define splice(a, b, c) splice(a, 0, b, 0, c, 0)
 
