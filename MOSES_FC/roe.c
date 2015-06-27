@@ -367,10 +367,10 @@ int stimOff() {
 
 int readOut(int block, int delay) {
     pthread_mutex_lock(&roe_struct.mx);
-    char msg[255];
+    //char msg[255];
     
     char command[2] = {START_CSG,block};
-    sprintf(msg, "block: %d\n", block); record(msg);
+    //sprintf(msg, "block: %d\n", block); record(msg);
     //char command[2] = {0x42, 0x99};
 
     int i;

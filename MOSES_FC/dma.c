@@ -101,6 +101,7 @@ int initializeDMA() {
  */
 int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, short ** user_buf) {
     int rc;
+    char msg[255];
 
     memset(pci_buf, 0, sizeof (PLX_PHYSICAL_MEM));
 
@@ -122,13 +123,14 @@ int allocate_buffer(PLX_DMA_PARAMS * dma_param, PLX_PHYSICAL_MEM * pci_buf, shor
         return (FALSE);
     }
 
-    printf("\n    Mem Allocator information:\n"
+    sprintf(msg, "\n    Mem Allocator information:\n"
             "     Bus Physical Addr:  %016llx\n"
             "     CPU Physical Addr:  %016llx\n"
             "     Size             :  %d bytes\n",
             pci_buf->PhysicalAddr,
             pci_buf->CpuPhysical,
             pci_buf->Size);
+    record(msg);
 
     *user_buf = PLX_INT_TO_PTR(pci_buf->UserAddr);
 
@@ -157,7 +159,7 @@ int dmaRead(PLX_DMA_PARAMS dma_param, U64 timeout) {
     if (rc != ApiSuccess) {
         if (rc == ApiWaitTimeout) {
             // Timed out waiting for DMA completion 
-            printf("Timeout\n");
+            printf("DMA Timeout\n");
             return (FALSE);
         } else {
             printf("*ERROR* - API failed\n");
@@ -266,7 +268,7 @@ void unsort(roeimage_t * image) {
 }
 
 void beef(roeimage_t * image) {
-    //    char buf[255];
+    char msg[255];
 
     register uint i, j = 0;
     uint frag = NUM_FRAGMENT;
@@ -296,7 +298,8 @@ void beef(roeimage_t * image) {
             //            pred_val++;
 
         }
-        printf("%04x\n", next_pixel);
+        sprintf(msg, "%04x\n", next_pixel);
+        record(msg);
         dest_size[i] = buf_size; //number of pixels
 
     }

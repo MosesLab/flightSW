@@ -130,7 +130,7 @@ int synclink_init(int killSwitch) {
             record(msg);
             return fd;
         } else {
-            sprintf(msg, "device opened on %s\n", devname);
+            sprintf(msg, "Synclink device opened on %s\n", devname);
             record(msg);
         }
 
@@ -248,8 +248,50 @@ int send_image(roeimage_t * image, int fd) {
 
         record("Sending data: \n");
         
-        /*start sending imageindex.xml snippets*/
-        record("XML File...\n");
+        
+        /*start sending science data first*/
+        record("Sending ROE File...\n");
+        totalSize = 0;  // reset variable that keeps track of bytes sent
+        imagename = image->filename;
+        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
+        
+        /*Write image frames here*/
+        for (i = 1; i < 4; i++) {
+            rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
+            if (rc < 0) {
+                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+                record(msg);
+                break;
+            }
+            /* block until all data sent */
+            totalSize += rc;
+            rc = tcdrain(fd);
+        }
+        if (rc < 0) return rc; //Finishes the write error handling after the break
+
+        /*write terminating characters*/
+        rc = write(fd, imagename + 7, strlen(imagename) - 7); //Ending characters "YYMMDDHHmmss.roe"
+        if (rc < 0) {
+            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
+            record(msg);
+            return rc;
+        }
+        /*block until all data sent*/
+        rc = tcdrain(fd);
+
+        gettimeofday(&time_end, NULL); //Timing
+        record("all data sent\n");
+        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
+        record(msg);
+        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
+                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
+        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
+        record(msg);
+        
+        
+        
+        /*Now start sending imageindex.xml snippets*/
+        record("Sending XML File...\n");
         totalSize = 0;
         imagename = "imageindex.xml";
         gettimeofday(&time_begin, NULL); //Determine elapsed time for xml file write to TM
@@ -289,49 +331,6 @@ int send_image(roeimage_t * image, int fd) {
         record(msg);
         
         
-        
-
-        /*start sending science data*/
-        record("ROE File...\n");
-        totalSize = 0;  // reset variable that keeps track of bytes sent
-        imagename = image->filename;
-        gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
-        
-        /*Write image frames here*/
-        for (i = 1; i < 4; i++) {
-            rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
-            if (rc < 0) {
-                sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-                record(msg);
-                break;
-            }
-            /* block until all data sent */
-            totalSize += rc;
-            rc = tcdrain(fd);
-
-        }
-        if (rc < 0) return rc; //Finishes the write error handling after the break
-
-        /*write terminating characters*/
-        sprintf(msg, "Sending image file %s \n", imagename);
-        record(msg);
-        rc = write(fd, imagename + 7, strlen(imagename) - 7); //Ending characters "YYMMDDHHmmss.roe"
-        if (rc < 0) {
-            sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
-            record(msg);
-            return rc;
-        }
-        /*block until all data sent*/
-        rc = tcdrain(fd);
-
-        gettimeofday(&time_end, NULL); //Timing
-        record("all data sent\n");
-        sprintf(msg, "Sent %d bytes of data from file %s.\n", totalSize, imagename);
-        record(msg);
-        time_elapsed = 1000000 * ((long) (time_end.tv_sec) - (long) (time_begin.tv_sec))
-                + (long) (time_end.tv_usec) - (long) (time_begin.tv_usec);
-        sprintf(msg, "Time elapsed: %-3.2f seconds.\n", (float) time_elapsed / (float) 1000000);
-        record(msg);
     }
 
 
