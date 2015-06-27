@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 int moses(){
     char msg[255];
     
-    system("clear");
+    //system("clear");
     
     record("*****************************************************\n");
     record("*            MOSES FLIGHT SOFTWARE                  *\n");
