@@ -14,6 +14,15 @@
 #define NUM_RROBIN      4
 #define NUM_FIFO        4
 
+#define HLP_CNTL "HLP CONTROL"
+#define GPIO_CNTL "GPIO CONTROL"
+#define HLP_DOWN        "HLP DOWN"
+#define HLP_SHELL       "HLP SHELL"
+#define SCI_TIMELINE    "SCI. TIMELINE"
+#define IMG_WRITER      "IMAGE WRITER"
+#define TELEM           "TELEMETRY"
+#define FPGA_SERVER     "FPGA SERVER"
+
 extern unsigned int num_threads;
 
 typedef void*(*thread_func)(void*);

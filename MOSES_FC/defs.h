@@ -71,6 +71,7 @@ typedef struct {
 /*typedef for array of function pointers for HLP packets*/
 typedef int(*hlpControl)();
 
+
 /* This struct will contain the variables that represent the status of the system*/
 typedef struct {
     unsigned int sequence;

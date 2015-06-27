@@ -19,7 +19,7 @@ void * science_timeline(void * arg) {
 
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "\x1b[36mSCI_TIMELN", 0, 0, 0);
+    prctl(PR_SET_NAME, SCI_TIMELINE, 0, 0, 0);
 
     ops.read_block = READBLK_DEFAULT;
 
@@ -173,7 +173,7 @@ void * write_data(void * arg) {
     char msg[100];
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "\x1b[33mIMG_WRTR", 0, 0, 0);
+    prctl(PR_SET_NAME, IMG_WRITER, 0, 0, 0);
 
     record("-->Image Writer thread started....\n");
 
@@ -233,8 +233,6 @@ void * write_data(void * arg) {
                 free(image);
             }
 
-            /*copy a backup of the log to disk after each image write*/
-            copy_log_to_disk();
         }
 
     }//end while ts_alive
@@ -244,7 +242,7 @@ void * write_data(void * arg) {
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
-    prctl(PR_SET_NAME, "\x1b[33mTELEM", 0, 0, 0);
+    prctl(PR_SET_NAME, TELEM, 0, 0, 0);
     record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
     int rc;

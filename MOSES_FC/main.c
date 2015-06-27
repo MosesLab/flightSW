@@ -275,7 +275,7 @@ void reset_signal(int sig) {
 void main_init() {
     uint config_size = num_threads + NUM_IO;
     char * config_strings[num_threads + NUM_IO];
-
+    
     /*allocate strings to match with configuration file*/
     config_strings[hlp_control_thread] = HLP_CONTROL_CONF;
     config_strings[hlp_down_thread] = DOWN_CONF;
@@ -306,7 +306,7 @@ void main_init() {
         /*insert node into hash table*/
         installNode(config_hash_table, config_strings[i], int_def, config_size);
     }
-
+    
     /*fill array of function pointers for pthread call*/
     tfuncs[hlp_control_thread] = hlp_control;
     tfuncs[hlp_down_thread] = hlp_down;
@@ -321,7 +321,10 @@ void main_init() {
     for (i = 0; i < QUEUE_NUM; i++) {
         lockingQueue_init(&lqueue[i]);
     }
-
+    
+    /*initialize memory for logging output*/
+    init_logger();
+    
 }
 
 /*read in configuration file for thread and I/O attributes*/
