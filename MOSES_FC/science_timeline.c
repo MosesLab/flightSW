@@ -122,7 +122,7 @@ void * science_timeline(void * arg) {
 
                     }
 
-                    record("waiting on DMA completion\n");
+                    record("Waiting on ROE readout completion\n");
 
                     /*Wait until DMA is complete before proceeding*/
                     wait_on_sem(&dma_control_sem, 15);

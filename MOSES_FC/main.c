@@ -389,7 +389,9 @@ void cleanup() {
     tm = localtime(&tv.tv_sec);
    
     char cmd[255];
-    sprintf(cmd, "cat %s >> /moses/log_backup/moseslog_%02d-%02d-%04d", LOG_PATH, tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
+    sprintf(cmd, "cat %s >> /moses/log_backups/moseslog_%02d-%02d-%04d", LOG_PATH, tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
+    
+    record("Saving backup log to filesystem\n");
     if(system(cmd) == -1){
         record("Saving backup log failed!\n");
     }
