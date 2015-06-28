@@ -41,8 +41,8 @@ void record(const char* message) {
 
     FILE *outfile; // for writing
     outfile = fopen(LOG_PATH, "a"); // write to this file
-    FILE *backup; // for writing
-    backup = fopen(backup_path, "a"); // write to this file
+//    FILE *backup; // for writing
+//    backup = fopen(backup_path, "a"); // write to this file
 
 
     time_t now;
@@ -59,15 +59,15 @@ void record(const char* message) {
     sprintf(theTime, "%d:%02d:%02d.%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
 
     cur_sz += fwrite("[", 1, 1, outfile);
-    cur_sz += fwrite("[", 1, 1, backup);
+//    cur_sz += fwrite("[", 1, 1, backup);
 
 
     /*write the date and the message to the file*/
     cur_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), outfile);
-    cur_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), backup);
+//    cur_sz += fwrite(theTime, sizeof (theTime[0]), strlen(theTime), backup);
 
     cur_sz += fwrite("] ", 1, 2, outfile);
-    cur_sz += fwrite("] ", 1, 2, backup);
+//    cur_sz += fwrite("] ", 1, 2, backup);
 
     /*write the name of the thread to a file*/
     char thread_name[16];
@@ -85,21 +85,21 @@ void record(const char* message) {
     cur_sz += fwrite(color, sizeof (color[0]), strlen(color), outfile);
     
     cur_sz += fwrite(thread_name, sizeof (thread_name[0]), strlen(thread_name), outfile);
-    cur_sz += fwrite(thread_name, sizeof (thread_name[0]), strlen(thread_name), backup);
+//    cur_sz += fwrite(thread_name, sizeof (thread_name[0]), strlen(thread_name), backup);
     
     cur_sz += fwrite(no_color, sizeof (no_color[0]), strlen(no_color), outfile);
 
     char * delim = " : ";
     cur_sz += fwrite(delim, sizeof (char), strlen(delim), outfile);
-    cur_sz += fwrite(delim, sizeof (char), strlen(delim), backup);
+//    cur_sz += fwrite(delim, sizeof (char), strlen(delim), backup);
 
     //fwrite(' ', 1, 1, outfile);
     cur_sz += fwrite(message, sizeof (message[0]), strlen(message), outfile);
-    cur_sz += fwrite(message, sizeof (message[0]), strlen(message), backup);
+//    cur_sz += fwrite(message, sizeof (message[0]), strlen(message), backup);
 
     /* we are done with file, close it */
     fclose(outfile);
-    fclose(backup);
+//    fclose(backup);
 }
 
 //void copy_log_to_disk() {
