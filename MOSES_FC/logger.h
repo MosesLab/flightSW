@@ -13,7 +13,7 @@
 
 //#define splice(a, b, c) splice(a, 0, b, 0, c, 0)
 
-#define LOG_PATH "/moses/ramdisk/moses_log.txt"
+#define LOG_PATH "/moses/log_backups/moses_log.txt"
 
 #define GREEN   "\x1b[32m"
 #define YELLOW  "\x1b[33m"
