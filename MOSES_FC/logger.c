@@ -1,6 +1,6 @@
 /* 
  * File:     ProgramLogger.c
- * Author: David Keltgen
+ * Author: David Keltgen, Roy Smart
  * creates a log file that can be used to track the programs behavior 
  * Created on May 19, 2014, 11:58 AM
  */
