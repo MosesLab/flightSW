@@ -379,10 +379,19 @@ void cleanup() {
     dmaClose();
     close_fpga();
 
-    //    /*free dynamically allocated memory*/
-    //     for (i = 0; i < config_size; i++) {
-    //         config_hash_table[i]
-    //     }
+    /*grab time for backup file naming*/
+    time_t now;
+    time(&now);
+    struct timeval tv;
+    struct timezone tz;
+    struct tm *tm;
+    gettimeofday(&tv, &tz);
+    tm = localtime(&tv.tv_sec);
+   
+    char cmd[255];
+    sprintf(cmd, "cat %s >> /moses/log_backup/moseslog_%02d-%02d-%04d", LOG_PATH, tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
+    system(cmd);
+    
     free(config_hash_table);
 
 }
