@@ -390,7 +390,9 @@ void cleanup() {
    
     char cmd[255];
     sprintf(cmd, "cat %s >> /moses/log_backup/moseslog_%02d-%02d-%04d", LOG_PATH, tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
-    system(cmd);
+    if(system(cmd) == -1){
+        record("Saving backup log failed!\n");
+    }
     
     free(config_hash_table);
 
