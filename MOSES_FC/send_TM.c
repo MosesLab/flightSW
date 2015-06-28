@@ -256,17 +256,15 @@ int send_image(roeimage_t * image, int fd) {
         gettimeofday(&time_begin, NULL); //Determine elapsed time for file write to TM
         
         /*Write image frames here*/
-        for (i = 1; i < 4; i++) {
-            rc = write(fd, image->data[i], image->size[i] * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
+            rc = write(fd, image->data, image->total_size * 2); // size corresponds to num pixels, so multiply by 2 to get bytes
             if (rc < 0) {
                 sprintf(msg, "write error=%d %s\n", errno, strerror(errno));
                 record(msg);
-                break;
             }
             /* block until all data sent */
             totalSize += rc;
             rc = tcdrain(fd);
-        }
+        
         if (rc < 0) return rc; //Finishes the write error handling after the break
 
         /*write terminating characters*/
