@@ -8,7 +8,7 @@
 #include "main.h"
 
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
-volatile sig_atomic_t fpga_alive = 1;
+volatile sig_atomic_t img_wr_alive = 1;
 
 unsigned int num_threads;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
@@ -177,16 +177,19 @@ void join_threads() {
 
 
 
-        ts_alive = 0;
+        img_wr_alive = 0;
 
         /* Wait until image writer is done saving images*/
         pthread_cond_broadcast(&lqueue[fpga_image].cond);
-        pthread_cond_broadcast(&lqueue[telem_image].cond);
+        
         pthread_join(threads[image_writer_thread], &returns);
 
         set_power(11, ON); // hit cc_power
         sleep(1);
 
+        ts_alive = 0;
+        
+        pthread_cond_broadcast(&lqueue[telem_image].cond);
         pthread_cond_broadcast(&lqueue[sequence].cond);
         pthread_cond_broadcast(&lqueue[scit_image].cond);
 

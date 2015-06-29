@@ -43,7 +43,7 @@ void * fpga_server(void * arg) {
     initializeDMA();
 
     /*FPGA server main control loop*/
-    while (fpga_alive) {
+    while (ts_alive) {
         U32 interrupt = 0;
 
         /*wait on interrupt for DMA and GPIO input*/
