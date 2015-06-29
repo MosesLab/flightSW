@@ -61,10 +61,10 @@ void * dequeue(LockingQueue * queue) {
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
     pthread_mutex_lock(&queue->lock);
-    while ((queue->count == 0)) {
+//    while ((queue->count == 0)) {
         //        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
         pthread_cond_wait(&queue->cond, &queue->lock);
-    }
+//    }
 
     /*check if program is still active*/
     if (ts_alive) {
