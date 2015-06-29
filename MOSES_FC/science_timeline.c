@@ -15,10 +15,11 @@ void * science_timeline(void * arg) {
     char* msg = (char *) malloc(200 * sizeof (char));
     char sindex[5];
     char sframe[1200];
+    struct timeval seq_start, seq_end, seq_diff;
 
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "SCI_TIMELINE", 0, 0, 0);
+    prctl(PR_SET_NAME, SCI_TIMELINE, 0, 0, 0);
 
     ops.read_block = READBLK_DEFAULT;
 
@@ -27,7 +28,7 @@ void * science_timeline(void * arg) {
     /* wait for ROE to become active */
     record("Waiting for ROE to become active...\n");
 
-//    /*main loop*/
+    //    /*main loop*/
     while (ts_alive) {
 
         /*wait until sequence is enqueued*/
@@ -48,6 +49,9 @@ void * science_timeline(void * arg) {
                 packet_t* b = (packet_t*) constructPacket(MDAQ_RSP, GT_CUR_SEQ, currentSequence->sequenceName);
                 enqueue(&lqueue[hkdown], a);
                 enqueue(&lqueue[hkdown], b);
+
+                /*grab system time before starting to time exposures for flight*/
+                gettimeofday(&seq_start, NULL);
 
                 /* for each exposure in the sequence */
                 int i;
@@ -93,7 +97,7 @@ void * science_timeline(void * arg) {
 
                     /*initialize index( these will start at -1 and be incremented by DMA*/
 
-                    record("Done with exposure. Wait for readout...\n");
+                    record("Exposure complete.\n");
 
                     /*Enqueue image buffer to fpga server thread for DMA transfer*/
                     record("Queue image buffer for DMA transfer.\n");
@@ -118,7 +122,7 @@ void * science_timeline(void * arg) {
 
                     }
 
-                    record("waiting on DMA completion\n");
+                    record("Waiting on ROE readout completion\n");
 
                     /*Wait until DMA is complete before proceeding*/
                     wait_on_sem(&dma_control_sem, 15);
@@ -134,6 +138,12 @@ void * science_timeline(void * arg) {
                     sprintf(msg, "Exposure of %3.3lf seconds complete.\n\n", currentSequence->exposureTimes[i]);
                     record(msg);
                 }/* end for each exposure */
+
+                /* Calculate the amount of time taken for the whole sequence*/
+                gettimeofday(&seq_end, NULL);
+                timeval_subtract(&seq_diff, seq_start, seq_end);
+                sprintf(msg, "Sequence duration: %lu:%06lu sec\n", seq_diff.tv_sec, seq_diff.tv_usec);
+                record(msg);
 
                 /* done with sequence, push packet with info */
                 sprintf(msg, "Done with sequence %s\n\n\n", currentSequence->sequenceName);
@@ -151,6 +161,8 @@ void * science_timeline(void * arg) {
 
     record("Done with scienceTimeline\n");
 
+
+
     return NULL;
 }
 
@@ -161,7 +173,7 @@ void * write_data(void * arg) {
     char msg[100];
 
     /*Set thread name*/
-    prctl(PR_SET_NAME, "IMAGE_WRITER", 0, 0, 0);
+    prctl(PR_SET_NAME, IMG_WRITER, 0, 0, 0);
 
     record("-->Image Writer thread started....\n");
 
@@ -217,15 +229,10 @@ void * write_data(void * arg) {
                 free(image->filename);
                 free(image->date);
                 free(image->time);
-                free(image->data[0]);
-                free(image->data[1]);
-                free(image->data[2]);
-                free(image->data[3]);
+                free(image->data);
                 free(image);
             }
 
-            /*copy a backup of the log to disk after each image write*/
-            copy_log_to_disk();
         }
 
     }//end while ts_alive
@@ -235,7 +242,7 @@ void * write_data(void * arg) {
 
 /*High speed telemetry thread for use with synclink USB adapter*/
 void * telem(void * arg) {
-    prctl(PR_SET_NAME, "TELEM", 0, 0, 0);
+    prctl(PR_SET_NAME, TELEM, 0, 0, 0);
     record("--->High-speed Telemetry thread started....\n");
     int synclink_fd = synclink_init(SYNCLINK_START);
     int rc;
@@ -252,26 +259,21 @@ void * telem(void * arg) {
         sprintf(msg, "Dequeued new image for telemetry: %s\n", new_image->filename);
         record(msg);
 
-
         rc = send_image(new_image, synclink_fd); //Send actual Image
         if (rc < 0) {
             record("Failed to send image over telemetry!");
-        }
-        else {
+        } else {
             sprintf(msg, "File %s successfully sent via high-speed telemetry. (%d out of %d)\n", new_image->filename, new_image->num_exp, new_image->num_frames);
             record(msg);
         }
         sequence_itr++;
-        
+
         /*free all dynamically allocated memory associated with image*/
         free(new_image->name);
         free(new_image->filename);
         free(new_image->date);
         free(new_image->time);
-        free(new_image->data[0]);
-        free(new_image->data[1]);
-        free(new_image->data[2]);
-        free(new_image->data[3]);
+        free(new_image->data);
         free(new_image);
 
         new_image = NULL;

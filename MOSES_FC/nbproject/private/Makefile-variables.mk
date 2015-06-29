@@ -7,3 +7,4 @@
 # Release configuration
 # flightDebug configuration
 # fd configuration
+# fr configuration

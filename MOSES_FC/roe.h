@@ -69,14 +69,16 @@ int stimOff();
 int reset();
 int readOut(int block, int delay);
 int flush();
-char* getHK(char hkparam);
+double getHK(char hkparam);
 char* getAE();
 int setAE(char* paramstring);
 int manualWrite(char* msg, int size);
-int receiveAck(int fd,char *data,int size,char target);
+int receiveAck(int fd,unsigned char *data,int size, unsigned char target);
 int input_timeout_roe(int filedes, unsigned int seconds);
 int atoh_roe(char c);
-int readRoe(int fd, char *data, int size);
+int readRoe(int fd, unsigned char *data, int size);
+double get_x(unsigned int);      // Calculate the x value for ROE calibration
+
 
 #ifdef	__cplusplus
 extern "C" {

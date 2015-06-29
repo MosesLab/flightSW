@@ -10,7 +10,7 @@
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 
 
-unsigned int num_threads = NUM_RROBIN + NUM_FIFO;
+unsigned int num_threads;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
 void * targs[NUM_RROBIN + NUM_FIFO];
 pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
@@ -31,21 +31,19 @@ LockingQueue lqueue[QUEUE_NUM];
  * @return 0 upon successful exit
  */
 int main(int argc, char **argv) {
-    char msg[255];
+    num_threads = NUM_RROBIN + NUM_FIFO;
     ops.sleep = 0;
-    
+    init_logger();
+
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
-    sprintf(msg, "Bash PID is: %d \n", vshell_pid);
-    record(msg);
-    
-    
-    while(moses());
-    
-    return 0;
-       
-}
 
+
+    while (moses());
+
+    return 0;
+
+}
 
 /**
  * Call this method for program start. Allows restarting the program.
@@ -54,11 +52,9 @@ int main(int argc, char **argv) {
  * 
  * @return 
  */
-int moses(){
+int moses() {
     char msg[255];
-    
-    //system("clear");
-    
+
     record("*****************************************************\n");
     record("*            MOSES FLIGHT SOFTWARE                  *\n");
     record("*****************************************************\n");
@@ -77,7 +73,7 @@ int moses(){
     main_pid = getpid();
 
     /*Use signals to inform the program to quit*/
-    init_quit_signal_handler();   
+    init_quit_signal_handler();
 
     /*start threads indicated by configuration file*/
     start_threads();
@@ -91,7 +87,7 @@ int moses(){
 
     /*SIGINT or SIGHUP caught, ending program*/
     join_threads();
-    
+
     /*clean up memory and open devices*/
     cleanup();
 
@@ -158,13 +154,12 @@ void start_threads() {
 /*more like canceling threads at the moment, not sure if need to clean up properly*/
 void join_threads() {
     void * returns;
- //   char msg[256];
+    //   char msg[256];
     /*sleep to give threads a chance to clean up a little*/
     sleep(1);
-    
+
     /*Check to see if this function was called because of sleep T/U */
-    if(ops.sleep)
-    {
+    if (ops.sleep) {
         record("in ops.sleep\n");
 
         /* Turn off subsytems*/
@@ -177,13 +172,13 @@ void join_threads() {
         set_power(premod, OFF);
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
-        
-        
 
-        set_power(11, ON);      // hit cc_power
-        
+
+
+        set_power(11, ON); // hit cc_power
+
         sleep(1);
-        
+
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
         pthread_cond_broadcast(&lqueue[scit_image].cond);
@@ -193,30 +188,32 @@ void join_threads() {
         //pthread_cond_broadcast(&lqueue[gpio_out].cond);
         //pthread_cond_broadcast(&lqueue[gpio_req].cond);
         //pthread_cond_broadcast(&lqueue[hkdown].cond);
-        
+
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], NULL);
-        
 
-        
+
+
         record("All Subsystems turned off\n");
-        
+
         /*Gracefully close down image_writer(making sure it is done writing)*/
         pthread_join(threads[image_writer_thread], &returns);
-        
+
         /* Cancel the threads that dont need to be joined*/
         int i;
         for (i = 0; i < num_threads; i++) {
             if (threads[i] != 0) {
-                if(i != sci_timeline_thread && i != image_writer_thread) {
+                if (i != sci_timeline_thread && i != image_writer_thread) {
                     pthread_cancel(threads[i]);
                 }
             }
         }
-        
+
         /* Goodnight MOSES */
-        execlp("shutdown","shutdown", "-h", "now", (char *)0);
-       
+        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
+
+        return;
+
     } // end if sleep
 
     kill(vshell_pid, SIGKILL);
@@ -226,7 +223,6 @@ void join_threads() {
     int i;
     for (i = 0; i < num_threads; i++) {
         if (threads[i] != 0) {
-            //            pthread_join(threads[i], &returns);
             pthread_cancel(threads[i]);
         }
     }
@@ -241,7 +237,7 @@ void init_quit_signal_handler() {
     sigaddset(&mask, SIGINT); //add SIGINT (^C) to mask
     quit_action.sa_handler = quit_signal;
     quit_action.sa_mask = oldmask;
-    quit_action.sa_flags = SA_RESTART;//SA_RESTART;
+    quit_action.sa_flags = SA_RESTART; //SA_RESTART;
     sigaction(SIGINT, &quit_action, NULL);
 
     /*experiment data start signal handling*/
@@ -327,6 +323,8 @@ void main_init() {
         lockingQueue_init(&lqueue[i]);
     }
 
+
+
 }
 
 /*read in configuration file for thread and I/O attributes*/
@@ -377,18 +375,31 @@ void read_moses_config() {
     }
 }
 
-void cleanup(){
+void cleanup() {
     record("Release page-locked contiguous buffer\n");
     dmaClearBlock();
 
     record("Close DMA channel\n");
     dmaClose();
     close_fpga();
+
+    /*grab time for backup file naming*/
+    time_t now;
+    time(&now);
+    struct timeval tv;
+    struct timezone tz;
+    struct tm *tm;
+    gettimeofday(&tv, &tz);
+    tm = localtime(&tv.tv_sec);
+   
+    char cmd[255];
+    sprintf(cmd, "cat %s >> /moses/log_backups/moseslog_%02d-%02d-%04d", LOG_PATH, tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900);
     
-//    /*free dynamically allocated memory*/
-//     for (i = 0; i < config_size; i++) {
-//         config_hash_table[i]
-//     }
+    record("Saving backup log to filesystem\n");
+    if(system(cmd) == -1){
+        record("Saving backup log failed!\n");
+    }
+    
     free(config_hash_table);
-    
+
 }

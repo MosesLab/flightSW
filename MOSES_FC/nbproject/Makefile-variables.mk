@@ -38,6 +38,14 @@ CND_ARTIFACT_PATH_fd=dist/fd/GNU-Linux-x86/moses_fc
 CND_PACKAGE_DIR_fd=dist/fd/GNU-Linux-x86/package
 CND_PACKAGE_NAME_fd=mosesfc.tar
 CND_PACKAGE_PATH_fd=dist/fd/GNU-Linux-x86/package/mosesfc.tar
+# fr configuration
+CND_PLATFORM_fr=GNU-Linux-x86
+CND_ARTIFACT_DIR_fr=dist/fr/GNU-Linux-x86
+CND_ARTIFACT_NAME_fr=moses_fc
+CND_ARTIFACT_PATH_fr=dist/fr/GNU-Linux-x86/moses_fc
+CND_PACKAGE_DIR_fr=dist/fr/GNU-Linux-x86/package
+CND_PACKAGE_NAME_fr=mosesfc.tar
+CND_PACKAGE_PATH_fr=dist/fr/GNU-Linux-x86/package/mosesfc.tar
 #
 # include compiler specific variables
 #
