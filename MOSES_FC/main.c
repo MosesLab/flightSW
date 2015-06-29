@@ -174,6 +174,8 @@ void join_threads() {
         set_power(psdual12v, OFF);
 
         record("All Subsystems turned off\n");
+        
+        sleep(1);
 
         ts_alive = 0;
         pthread_cond_broadcast(&lqueue[sequence].cond);
