@@ -174,14 +174,21 @@ void join_threads() {
         set_power(psdual12v, OFF);
 
         record("All Subsystems turned off\n");
-        
-        sleep(1);
+
+
 
         ts_alive = 0;
-        pthread_cond_broadcast(&lqueue[sequence].cond);
-//        pthread_cond_broadcast(&lqueue[scit_image].cond);
+
+        /* Wait until image writer is done saving images*/
         pthread_cond_broadcast(&lqueue[fpga_image].cond);
         pthread_cond_broadcast(&lqueue[telem_image].cond);
+        pthread_join(threads[image_writer_thread], &returns);
+
+        set_power(11, ON); // hit cc_power
+        sleep(1);
+
+        pthread_cond_broadcast(&lqueue[sequence].cond);
+        pthread_cond_broadcast(&lqueue[scit_image].cond);
 
         /*Gracefully close down sci_ti(making sure the shutter is closed)*/
         pthread_join(threads[sci_timeline_thread], NULL);
@@ -190,21 +197,11 @@ void join_threads() {
         int i;
         for (i = 0; i < num_threads; i++) {
             if (threads[i] != 0) {
-                if (i != sci_timeline_thread && i != image_writer_thread && i != fpga_server_thread) {
+                if (i != sci_timeline_thread && i != image_writer_thread) {
                     pthread_cancel(threads[i]);
                 }
             }
         }
-
-        /*Gracefully close down image_writer(making sure it is done writing)*/
-        pthread_join(threads[image_writer_thread], &returns);
-        
-        set_power(11, ON); // hit cc_power
-
-        sleep(1);
-        
-        /* stop FPGA server thread*/
-        pthread_cancel(threads[fpga_server_thread]);
 
         /* Goodnight MOSES */
         execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
