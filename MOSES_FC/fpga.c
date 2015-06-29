@@ -150,6 +150,8 @@ void * fpga_server(void * arg) {
 
                         temp_state = gpio_out_val; //write to this variable so we know to delatch next timeout
                     }
+                } else {
+                    record("Received NULL GPIO output struct\n");
                 }
             }
 
