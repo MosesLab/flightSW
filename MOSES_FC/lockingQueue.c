@@ -67,7 +67,7 @@ void * dequeue(LockingQueue * queue) {
 //    }
 
     /*check if program is still active*/
-    if (ts_alive && img_wr_alive) {
+    if ((ts_alive && img_wr_alive) || queue->count) {
         n = queue->first;
         queue->first = n->next;
         queue->count--;
