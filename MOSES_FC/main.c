@@ -201,7 +201,7 @@ void join_threads() {
         
         set_power(11, ON); // hit cc_power
 
-        usleep(500000);
+        sleep(1);
         
         /* stop FPGA server thread*/
         pthread_cancel(threads[fpga_server_thread]);
