@@ -184,7 +184,7 @@ void join_threads() {
         pthread_join(threads[image_writer_thread], &returns);
 
         set_power(11, ON); // hit cc_power
-        sleep(1);
+        sleep(2);
 
         ts_alive = 0;
         
@@ -206,7 +206,7 @@ void join_threads() {
         }
 
         /* Goodnight MOSES */
-        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
+//        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
 
         return;
 
