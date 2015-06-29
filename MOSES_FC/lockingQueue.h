@@ -14,6 +14,7 @@
 #include <signal.h>
 
 extern volatile sig_atomic_t ts_alive;
+extern volatile sig_atomic_t img_wr_alive;
 
 void lockingQueue_init(LockingQueue *);
 node_t * construct_queue_node(void *);
