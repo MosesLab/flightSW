@@ -180,8 +180,7 @@ void join_threads() {
         img_wr_alive = 0;
 
         /* Wait until image writer is done saving images*/
-        pthread_cond_broadcast(&lqueue[fpga_image].cond);
-        
+        pthread_cond_broadcast(&lqueue[fpga_image].cond);        
         pthread_join(threads[image_writer_thread], &returns);
 
         set_power(11, ON); // hit cc_power

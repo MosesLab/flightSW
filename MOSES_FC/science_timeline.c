@@ -178,7 +178,7 @@ void * write_data(void * arg) {
     record("-->Image Writer thread started....\n");
 
     /*Loop until the flight software shuts down and there are no more images*/
-    while (img_wr_alive || lqueue[fpga_image].count > 0) {
+    while (img_wr_alive || occupied(&lqueue[fpga_image])) {
 
         /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
         char ftimedate[80];
