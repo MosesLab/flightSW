@@ -50,24 +50,17 @@ void enqueue(LockingQueue * queue, void * content) {
 }
 
 void * dequeue(LockingQueue * queue) {
-    //    struct timespec timeToWait;
-    //    struct timeval now;
     node_t * n = NULL;
     void * ptr = NULL;
-
-    //    gettimeofday(&now, NULL);
-    //    timeToWait.tv_sec = now.tv_sec + 1;
-    //    timeToWait.tv_nsec = 0;
 
     /*The thread must be locked for pthread_cond_timedwait() to work*/
     pthread_mutex_lock(&queue->lock);
 //    while ((queue->count == 0)) {
-        //        pthread_cond_timedwait(&queue->cond, &queue->lock, &timeToWait);        //unlocks the mutex and waits on the conditional variable
         pthread_cond_wait(&queue->cond, &queue->lock);
 //    }
 
     /*check if program is still active*/
-    if ((ts_alive && img_wr_alive) || queue->count) {
+    if ((ts_alive && img_wr_alive) || (queue->count > 0)) {
         n = queue->first;
         queue->first = n->next;
         queue->count--;

@@ -163,9 +163,9 @@ void join_threads() {
         record("in ops.sleep\n");
 
         /* Turn off subsytems*/
-        set_power(tcs1, OFF);
-        set_power(tcs2, OFF);
-        set_power(tcs3, OFF);
+        set_power(tcs1, ON);
+        set_power(tcs2, ON);
+        set_power(tcs3, ON);
         set_power(shutter, OFF);
         set_power(roe, OFF);
         set_power(halpha, OFF);
