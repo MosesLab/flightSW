@@ -206,7 +206,7 @@ void join_threads() {
         }
 
         /* Goodnight MOSES */
-//        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
+        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
 
         return;
 
