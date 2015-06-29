@@ -177,7 +177,8 @@ void * write_data(void * arg) {
 
     record("-->Image Writer thread started....\n");
 
-    while (ts_alive) {
+    /*Loop until the flight software shuts down and there are no more images*/
+    while (ts_alive || lqueue[fpga_image].count > 0) {
 
         /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
         char ftimedate[80];
@@ -220,7 +221,7 @@ void * write_data(void * arg) {
             record(msg);
 
             /*push the filename onto the telemetry queue*/
-            if (ops.tm_write == 1) {
+            if (ops.tm_write == 1 && ts_alive == 1) {
                 enqueue(&lqueue[telem_image], image); //enqueues the path for telem
                 record("Filename pushed to telemetry queue\n");
             } else {

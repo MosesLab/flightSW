@@ -58,7 +58,7 @@ int takeExposure(double duration, int sig) {
 
         timeval_subtract(&expdiff, expstart, expstop);
         expdiff.tv_usec -= PULSE;
-        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu.%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
         actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     } else // performing dark exposure, just wait
@@ -68,7 +68,7 @@ int takeExposure(double duration, int sig) {
         gettimeofday(&expstop, NULL);
 
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu.%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
         actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     }

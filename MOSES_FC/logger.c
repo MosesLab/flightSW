@@ -56,7 +56,7 @@ void record(const char* message) {
     struct tm *tm;
     gettimeofday(&tv, &tz);
     tm = localtime(&tv.tv_sec);
-    sprintf(theTime, "%d:%02d:%02d.%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
+    sprintf(theTime, "%02d:%02d:%02d.%03d", tm->tm_hour, tm->tm_min, tm->tm_sec, (int) (tv.tv_usec / 1000));
 
     cur_sz += fwrite("[", 1, 1, outfile);
 //    cur_sz += fwrite("[", 1, 1, backup);
