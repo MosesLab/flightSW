@@ -163,13 +163,14 @@ void join_threads() {
     if (ops.sleep) {
         record("in ops.sleep\n");
 
-        /*Gracefully close down sci_ti(making sure the shutter is closed)*/
+        /*Gracefully close down sci_ti (making sure the shutter is closed)*/
         sciti_alive = 0;
+        ops.seq_run = FALSE;
         pthread_cond_broadcast(&lqueue[sequence].cond);
         pthread_join(threads[sci_timeline_thread], NULL);
 
         /* Turn off subsytems*/
-        set_power(tcs1, ON);
+        set_power(tcs1, ON);    // inverse logic for TCS subsystems
         set_power(tcs2, ON);
         set_power(tcs3, ON);
         set_power(shutter, OFF);

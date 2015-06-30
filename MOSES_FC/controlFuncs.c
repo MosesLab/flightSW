@@ -1433,7 +1433,7 @@ int ROE_CCDA_VOD(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VOD, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1449,7 +1449,7 @@ int ROE_CCDA_VRD(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VRD, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1465,7 +1465,7 @@ int ROE_CCDA_VSS(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDA_VSS, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1481,7 +1481,7 @@ int ROE_CCDS_VOD(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VOD, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1497,7 +1497,7 @@ int ROE_CCDS_VRD(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VRD, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
@@ -1513,7 +1513,7 @@ int ROE_CCDS_VSS(packet_t* p) {
     char response[15];
     sprintf(response, "%3.2f V", y);
     strcat(temp, response);
-    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, temp);
+    packet_t* r = constructPacket(HK_RSP, CCDB_VSS, response);
     enqueue(&lqueue[hkdown], r);
     free(temp);
     return GOOD_PACKET;
