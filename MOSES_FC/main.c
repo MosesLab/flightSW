@@ -9,6 +9,7 @@
 
 volatile sig_atomic_t ts_alive = 1; //variable modified by signal handler, setting this to false will end the threads
 volatile sig_atomic_t img_wr_alive = 1;
+volatile sig_atomic_t sciti_alive = 1;
 
 unsigned int num_threads;
 thread_func tfuncs[NUM_RROBIN + NUM_FIFO];
@@ -162,6 +163,11 @@ void join_threads() {
     if (ops.sleep) {
         record("in ops.sleep\n");
 
+        /*Gracefully close down sci_ti(making sure the shutter is closed)*/
+        sciti_alive = 0;
+        pthread_cond_broadcast(&lqueue[sequence].cond);
+        pthread_join(threads[sci_timeline_thread], NULL);
+
         /* Turn off subsytems*/
         set_power(tcs1, ON);
         set_power(tcs2, ON);
@@ -175,25 +181,19 @@ void join_threads() {
 
         record("All Subsystems turned off\n");
 
-
-
         img_wr_alive = 0;
 
         /* Wait until image writer is done saving images*/
-        pthread_cond_broadcast(&lqueue[fpga_image].cond);        
+        pthread_cond_broadcast(&lqueue[fpga_image].cond);
         pthread_join(threads[image_writer_thread], &returns);
 
         set_power(11, ON); // hit cc_power
         sleep(2);
 
         ts_alive = 0;
-        
-        pthread_cond_broadcast(&lqueue[telem_image].cond);
-        pthread_cond_broadcast(&lqueue[sequence].cond);
-        pthread_cond_broadcast(&lqueue[scit_image].cond);
 
-        /*Gracefully close down sci_ti(making sure the shutter is closed)*/
-        pthread_join(threads[sci_timeline_thread], NULL);
+        pthread_cond_broadcast(&lqueue[telem_image].cond);
+        pthread_cond_broadcast(&lqueue[scit_image].cond);
 
         /* Cancel the threads that dont need to be joined*/
         int i;

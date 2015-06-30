@@ -29,7 +29,7 @@ void * science_timeline(void * arg) {
     record("Waiting for ROE to become active...\n");
 
     //    /*main loop*/
-    while (ts_alive) {
+    while (sciti_alive) {
 
         /*wait until sequence is enqueued*/
         record("Wait for new sequence\n");
