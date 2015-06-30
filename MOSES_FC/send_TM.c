@@ -120,7 +120,7 @@ int synclink_init(int killSwitch) {
             wait(&child_status); //Wait for child to finish
         }
 
-        sprintf(msg, "send HDLC data on %s\n", devname);
+        sprintf(msg, "Sending HDLC data on %s\n", devname);
         record(msg);
 
         /* open serial device with O_NONBLOCK to ignore DCD input */
