@@ -655,7 +655,7 @@ int getCh0Status(packet_t* p) {
 int getPosOnlyStatus(packet_t* p) {
     record("Get status of positive channel record command received\n");
     char response[5];
-    sprintf(response, "%s", ((ops.channels & CH3) == CH3) ? "ON" : "OFF");
+    sprintf(response, "%s", (ops.channels == CH3) ? "ON" : "OFF");
     packet_t* r = constructPacket(MDAQ_RSP, GT_POS_STS, response);
     enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
@@ -809,7 +809,7 @@ int posOnlyEnable(packet_t* p) {
 /* Commands the flight software to disable only positive channel */
 int posOnlyDisable(packet_t* p) {
     record("Command to disable only positive channel received\n");
-    ops.channels = CH1 | CH2 | CH3;
+    ops.channels |= CH1 | CH2 | CH3;
     return GOOD_PACKET;
 }
 
