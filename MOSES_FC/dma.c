@@ -202,8 +202,8 @@ void filter_sort(roeimage_t * image) {
             }
             else {
                 image->size[i] = chan_size;
-                chan_size = 0;
             }
+            chan_size = 0;
         }
         
         /* Check if we saved more pixels than we expected*/
@@ -232,8 +232,8 @@ void filter_sort(roeimage_t * image) {
                 record("SCIENCE DATA BUFFER OVERFLOW!\n");
             } else {
                 image->size[i] = chan_size;
-                chan_size = 0;
             }
+            chan_size = 0;
         }
         
         /* Check if we saved more pixels than we expected*/
