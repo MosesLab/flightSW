@@ -22,7 +22,7 @@
 #define END_OF_SEQUENCE	0x0C	//returned after START_CSG
 #define ROE_AE_REQ  	0x49	//Request Analogue Electronics
 #define ROE_AE_RES  	0xC0	//Analogue Electronics Response
-#define ROE_HK_REQ  	eop	//Request House Keeping value
+#define ROE_HK_REQ  	0x47	//Request House Keeping value
 #define ROE_HK_RES  	0xC0	//House Keeping Response
 #define ROE_ACK  	0x0300	//Roe Acknowledgement
 #define ROE_UCH  	0x0301	//Unrecognized Command Header
