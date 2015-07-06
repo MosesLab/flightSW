@@ -179,6 +179,7 @@ void finish() {
 void filter_sort(roeimage_t * image) {
     register uint i, j;
     register uint k = 0;
+    int chan_size = 0;
     uint frag = NUM_FRAGMENT;
     uint buf_size = SIZE_DS_BUFFER / 2;
     unsigned short next_pixel = 0;
@@ -192,7 +193,17 @@ void filter_sort(roeimage_t * image) {
                 if(next_pixel > 0x3FFF){        // Save only channels 1-3
                     dest_buf[k] = next_pixel;
                     k++;
+                    chan_size++;
                 }
+            }
+            
+           /* Check if we saved more pixels per channel than expected*/
+            if (chan_size > (buf_size)) {
+                record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            }
+            else {
+                image->size[i] = chan_size;
+                chan_size = 0;
             }
         }
         
@@ -203,6 +214,7 @@ void filter_sort(roeimage_t * image) {
     } else if((image->channels & CH0) == CH0) { // All channels are enabled
         for (i = 0; i < frag; i++) {
             memmove(dest_buf + (buf_size * i), virt_buf[i], SIZE_DS_BUFFER);
+            image->size[i] = buf_size;
         }
         k = 4 * buf_size;
     } else if (image->channels == CH3){         // Only positive channel is enabled
@@ -213,7 +225,16 @@ void filter_sort(roeimage_t * image) {
                 if(next_pixel > 0xBFFF){        // Save only channel 3
                     dest_buf[k] = next_pixel;
                     k++;
+                    chan_size++;
                 }
+            }
+            /* Check if we saved more pixels per channel than expected*/
+            if (chan_size > (buf_size)) {
+                record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            }
+            else {
+                image->size[i] = chan_size;
+                chan_size = 0;
             }
         }
         
