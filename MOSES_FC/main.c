@@ -39,8 +39,11 @@ int main(int argc, char **argv) {
     /*initialize virtual shell*/
     vshell_pid = vshell_init();
 
-
     while (moses());
+    
+    kill(vshell_pid, SIGKILL);
+    record("killed bash\n");
+
 
     return 0;
 
@@ -220,10 +223,7 @@ void join_threads() {
         }
     }
 
-    kill(vshell_pid, SIGKILL);
-
-    record("killed bash\n");
-
+    
 }
 
 /*initialize signal handler to listen for quit signal*/
