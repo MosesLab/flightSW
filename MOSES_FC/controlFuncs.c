@@ -516,6 +516,7 @@ int tSleep() {
 /*Associates a sequence name with a signal number*/
 int setSequence(packet_t* p) {
     record("Set sequence command received\n");
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
 
     //		char data[32];
     //	strcpy(data,p.getDataStr().c_str());
@@ -526,16 +527,17 @@ int setSequence(packet_t* p) {
     //	sequenceMap[num]->reload(data+2);
     //	sequenceMap[num]->setNum(num);
 
-    char data[32];
-    strcpy(data, p->data);
-    char temp = data[2];
-    data[2] = '\0';
-    int num = atoi(data);
-    data[2] = temp;
-
-    //reload(data + 2);
-    sequenceMap[num].num = num; /*flightSW_2005 code never used num -DJK*/
+//    char data[32];
+//    strcpy(data, p->data);
+//    char temp = data[2];
+//    data[2] = '\0';
+//    int num = atoi(data);
+//    data[2] = temp;
+//
+//    //reload(data + 2);
+//    sequenceMap[num].num = num; /*flightSW_2005 code never used num -DJK*/
     return GOOD_PACKET;
+    
 }
 
 /*Uses stem for an output file.*/
@@ -543,71 +545,79 @@ int setSequence(packet_t* p) {
 
 int setOutputName(packet_t* p) {
     record("Set output filename command received\n");
-    strcpy(dataStub, p->data);
-    ops.unique_stub = TRUE;
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    strcpy(dataStub, p->data);
+//    ops.unique_stub = TRUE;
     return GOOD_PACKET;
+
 }
 
 /*Get sequence name that corresponds to the signal number in the data field*/
 int getSeqName(packet_t* p) {
     record("Get sequence name command received\n");
-    char numstr[16];
-    char name[128];
-    strcpy(numstr, p->data);
-    strcpy(name, sequenceMap[atoi(numstr)].sequenceName);
-
-    packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_NM, name);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char numstr[16];
+//    char name[128];
+//    strcpy(numstr, p->data);
+//    strcpy(name, sequenceMap[atoi(numstr)].sequenceName);
+//
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_NM, name);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Generates a string representation of the sequence file*/
 int getSeqInfo(packet_t* p) {
     record("Get sequence info command received\n");
-    char numstr[16];
-    char info[256];
-    strcpy(numstr, p->data);
-
-    strcpy(info, toString(atoh(p->data)));
-    packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char numstr[16];
+//    char info[256];
+//    strcpy(numstr, p->data);
+//
+//    strcpy(info, toString(atoh(p->data)));
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_SEQ_INFO, info);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to return the currently running sequence*/
 int getCurSeqName(packet_t* p) {
     record("Get current sequence name command received\n");
-    char* name = currentSequence->sequenceName;
-    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_SEQ, name);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char* name = currentSequence->sequenceName;
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_SEQ, name);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to return the current frame's exposure length*/
 int getCurFrameLen(packet_t* p) {
     record("Get current frame length command received\n");
-    char response[256];
-    sprintf(response, "%6.3f", getCurrentExposure());
-    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char response[256];
+//    sprintf(response, "%6.3f", getCurrentExposure());
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRML, response);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Command the flight software to return the current frame's index number*/
 int getCurFrameIndex(packet_t* p) {
     record("Get current frame index command received\n");
-    char response[4];
-    sprintf(response, "%d", currentSequence->currentFrame);
-    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char response[4];
+//    sprintf(response, "%d", currentSequence->currentFrame);
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_CUR_FRMI, response);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to return the filename of the output file*/
 int getOutputName(packet_t* p) {
     record("Get output filename command received\n");
-    packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, dataStub);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    packet_t* r = constructPacket(MDAQ_RSP, GT_OFN, dataStub);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -665,24 +675,26 @@ int getPosOnlyStatus(packet_t* p) {
  floating point value contained within the Data field*/
 int scaleSequence(packet_t* p) {
     record("Command to scale sequence received\n");
-    char numstr[16];
-    char *ptr;
-    //char name[128];
-    strcpy(numstr, p->data);
-
-    scale(strtod(numstr, &ptr));
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    char numstr[16];
+//    char *ptr;
+//    //char name[128];
+//    strcpy(numstr, p->data);
+//
+//    scale(strtod(numstr, &ptr));
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to translate the current sequence, adding the 
  floating point value in the Data field to each frame in the sequence*/
 int translateSeq(packet_t* p) {
-    char numstr[16];
-    //char name[128];
-    strcpy(numstr, p->data);
-    char *ptr;
+//    char numstr[16];
+//    //char name[128];
+//    strcpy(numstr, p->data);
+//    char *ptr;
     record("Command to translate sequence received\n");
-    translate(strtod(numstr, &ptr));
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    translate(strtod(numstr, &ptr));
     return GOOD_PACKET;
 }
 
@@ -691,15 +703,16 @@ int translateSeq(packet_t* p) {
  this criterion*/
 int findAndJump(packet_t* p) {
     record("Command to Find and Jump received\n");
-    //Insert control code here
-    char numstr[16];
-    char response[100];
-    char *ptr;
-    //char name[128];
-    strcpy(numstr, p->data);
-    sprintf(response, "%2d", findAndJump_seq(strtod(numstr, &ptr)));
-    packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    //Insert control code here
+//    char numstr[16];
+//    char response[100];
+//    char *ptr;
+//    //char name[128];
+//    strcpy(numstr, p->data);
+//    sprintf(response, "%2d", findAndJump_seq(strtod(numstr, &ptr)));
+//    packet_t* r = constructPacket(MDAQ_RSP, FIND_N_JUMP, response);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
@@ -707,13 +720,14 @@ int findAndJump(packet_t* p) {
  in the data field*/
 int jumpToExp(packet_t* p) {
     record("Command to Jump to exposure received\n");
-    //Insert control code here  
-    char numstr[16];
-    char response[100];
-    strcpy(numstr, p->data);
-    sprintf(response, "%2d", jump(atoi(numstr)));
-    packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
-    enqueue(&lqueue[hkdown], r);
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    //Insert control code here  
+//    char numstr[16];
+//    char response[100];
+//    strcpy(numstr, p->data);
+//    sprintf(response, "%2d", jump(atoi(numstr)));
+//    packet_t* r = constructPacket(MDAQ_RSP, JUMP, response);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 /*CONFLICTING INTERFACES*/
@@ -723,10 +737,11 @@ int jumpToExp(packet_t* p) {
 /*flightSW_2005: Saves the sequence defined in the Data field*/
 int saveSequence(packet_t* p) {
     record("Command to save sequence received\n");
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
     /* User enters a sequence name, this will save the current sequence to that name*/
-    char numstr[100];
-    strcpy(numstr, p->data);
-    saveAs(numstr);
+//    char numstr[100];
+//    strcpy(numstr, p->data);
+//    saveAs(numstr);
     return GOOD_PACKET;
 }
 
@@ -735,30 +750,33 @@ int saveSequence(packet_t* p) {
  the Data field*/
 int findAndReplace(packet_t* p) {
     record("Command to find and replace received\n");
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
     //Insert control code here  
     //char* response = "0,0"; //test EGSE
-    char response[128];
-    char input[128];
-    strcpy(input, p->data);
-    double num1 = strtod(strtok(input, ","), NULL);
-    double num2 = strtod(strtok(NULL, ","), NULL);
-    strcpy(response, findAndReplace_seq(num1, num2));
-    packet_t* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response);
-    enqueue(&lqueue[hkdown], r);
+//    char response[128];
+//    char input[128];
+//    strcpy(input, p->data);
+//    double num1 = strtod(strtok(input, ","), NULL);
+//    double num2 = strtod(strtok(NULL, ","), NULL);
+//    strcpy(response, findAndReplace_seq(num1, num2));
+//    packet_t* r = constructPacket(MDAQ_RSP, FIND_N_RPLC, response);
+//    enqueue(&lqueue[hkdown], r);
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to start the currently loaded sequence*/
 int beginSequence(packet_t* p) {
     record("Command to begin sequence received\n");
-    ops.seq_run = TRUE;
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    ops.seq_run = TRUE;
     return GOOD_PACKET;
 }
 
 /*Commands the flight software to stop the currently running sequence*/
 int endSequence(packet_t* p) {
     record("Command to stop sequence received\n");
-    ops.seq_run = FALSE;
+    record(YELLOW "COMMAND NOT IMPLEMENTED!\n" NO_COLOR);
+//    ops.seq_run = FALSE;
     return GOOD_PACKET;
 }
 
