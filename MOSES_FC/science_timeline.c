@@ -72,6 +72,13 @@ void * science_timeline(void * arg) {
                     char channels = ops.channels;
                     constructImage(image, index, channels, 16);
 
+                    record("Recording ROE temperatures\n");
+                    double x;
+                    x = getHK(LOWER_TEMP);
+                    image->roe_temp_low = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
+                    x = getHK(UPPER_TEMP);
+                    image->roe_temp_up = 3.7849 * pow(x, 4) - 40.554 * pow(x, 3) + 118.06 * pow(x, 2) - 170.85 * x + 121.58;
+
                     sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
                     record(msg);
                     int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);

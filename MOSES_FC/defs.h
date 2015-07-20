@@ -121,6 +121,8 @@ typedef struct {
     unsigned int num_exp; // index of this image in the sequence
     unsigned int num_frames; // total number of images for this sequencel
     unsigned int xml_cur_index; // currrent index in xml snippet array
+    double roe_temp_up; // ROE HK value indicating the temperature in deg. C
+    double roe_temp_low;        // ROE HK value indicating temperature in deg. C
 } roeimage_t;
 
 //typedef struct {

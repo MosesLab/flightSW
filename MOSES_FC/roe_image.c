@@ -145,6 +145,8 @@ void writeToFile(roeimage_t * image) {
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<PIXELS>%d</PIXELS>\n", image->total_size);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ROE_TEMP_UPPER>%3.2f</ROE_TEMP_UPPER>\n", image->roe_temp_up);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ROE_TEMP_LOWER>%3.2f</ROE_TEMP_LOWER>\n", image->roe_temp_low);
     for (i = 0; i < 4; i++) {
         xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
