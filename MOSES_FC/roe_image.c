@@ -127,7 +127,7 @@ void writeToFile(roeimage_t * image) {
 
     /*allocate buffer for xml file snippet to send through telemetry*/
     unsigned int xml_sz = 0;
-    char * xmlbuf = malloc(700 * sizeof (char)); // Each xml snippet is approximately 597 bytes
+    char * xmlbuf = malloc(800 * sizeof (char)); // Each xml snippet is approximately 597 bytes
 
     /*write xml data to buffer*/
     xml_sz += sprintf(xmlbuf + xml_sz, "<ROEIMAGE>\n");
