@@ -163,6 +163,13 @@ void writeToFile(roeimage_t * image) {
     /*write closing xml statement*/
     fprintf(outxml, "</CATALOG>\n");
 
+    rc = fflush(outxml);
+    if (rc != 0) {
+        record("Error flushing science data buffer!");
+    }
+
+    fsync(fileno(outxml));
+
     fclose(outxml);
 
     /*Write Image Data*/
@@ -180,6 +187,9 @@ void writeToFile(roeimage_t * image) {
     if (rc != 0) {
         record("Error flushing science data buffer!");
     }
+
+    fsync(fileno(dataOut));
+
 
     fclose(dataOut);
 

@@ -191,10 +191,10 @@ void join_threads() {
         pthread_cond_broadcast(&lqueue[fpga_image].cond);
         pthread_join(threads[image_writer_thread], &returns);
 
+        ts_alive = 0;
+        
         set_power(11, ON); // hit cc_power
         sleep(2);
-
-        ts_alive = 0;
 
         pthread_cond_broadcast(&lqueue[telem_image].cond);
         pthread_cond_broadcast(&lqueue[scit_image].cond);
