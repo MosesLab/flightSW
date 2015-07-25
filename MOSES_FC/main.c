@@ -406,4 +406,6 @@ void log_backup(){
     if (system(cmd) == -1) {
         record("Saving backup log failed!\n");
     }
+    
+    sync();
 }
