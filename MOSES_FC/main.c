@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     vshell_pid = vshell_init();
 
     while (moses());
-    
+
     kill(vshell_pid, SIGKILL);
     record("killed bash\n");
 
@@ -173,7 +173,7 @@ void join_threads() {
         pthread_join(threads[sci_timeline_thread], NULL);
 
         /* Turn off subsytems*/
-        set_power(tcs1, ON);    // inverse logic for TCS subsystems
+        set_power(tcs1, ON); // inverse logic for TCS subsystems
         set_power(tcs2, ON);
         set_power(tcs3, ON);
         set_power(shutter, OFF);
@@ -189,11 +189,11 @@ void join_threads() {
 
         /* Wait until image writer is done saving images*/
         pthread_cond_broadcast(&lqueue[fpga_image].cond);
-        pthread_join(threads[image_writer_thread], &returns);      
-        
+        pthread_join(threads[image_writer_thread], &returns);
+
         set_power(11, ON); // hit cc_power
         sleep(1);
-        
+
         ts_alive = 0;
 
         pthread_cond_broadcast(&lqueue[telem_image].cond);
@@ -209,8 +209,10 @@ void join_threads() {
             }
         }
 
+        log_backup();
+
         /* Goodnight MOSES */
-        execlp("shutdown", "shutdown", "-h", "-t", "1", (char *) 0);
+        execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
 
         return;
 
@@ -223,7 +225,7 @@ void join_threads() {
         }
     }
 
-    
+
 }
 
 /*initialize signal handler to listen for quit signal*/
@@ -381,6 +383,13 @@ void cleanup() {
     dmaClose();
     close_fpga();
 
+    log_backup();
+
+    free(config_hash_table);
+
+}
+
+void log_backup(){
     /*grab time for backup file naming*/
     time_t now;
     time(&now);
@@ -397,7 +406,4 @@ void cleanup() {
     if (system(cmd) == -1) {
         record("Saving backup log failed!\n");
     }
-
-    free(config_hash_table);
-
 }

@@ -84,7 +84,7 @@ void start_threads();
 void join_threads();
 void init_quit_signal_handler();
 void cleanup();
-
+void log_backup();
 
 
 
