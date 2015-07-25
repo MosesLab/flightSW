@@ -163,12 +163,12 @@ void writeToFile(roeimage_t * image) {
     /*write closing xml statement*/
     fprintf(outxml, "</CATALOG>\n");
 
-    rc = fflush(outxml);
-    if (rc != 0) {
-        record("Error flushing science data buffer!");
-    }
-
-    fsync(fileno(outxml));
+//    rc = fflush(outxml);
+//    if (rc != 0) {
+//        record("Error flushing science data buffer!");
+//    }
+//
+//    fsync(fileno(outxml));
 
     fclose(outxml);
 
@@ -182,13 +182,13 @@ void writeToFile(roeimage_t * image) {
         record(strerror(ferror(dataOut)));
     }
 
-    /*flush library buffer*/
-    rc = fflush(dataOut);
-    if (rc != 0) {
-        record("Error flushing science data buffer!");
-    }
-
-    fsync(fileno(dataOut));
+//    /*flush library buffer*/
+//    rc = fflush(dataOut);
+//    if (rc != 0) {
+//        record("Error flushing science data buffer!");
+//    }
+//
+//    fsync(fileno(dataOut));
 
 
     fclose(dataOut);

@@ -244,6 +244,10 @@ void * write_data(void * arg) {
         }
 
     }//end while ts_alive
+    
+    /*make sure all buffers are synchronized to disk*/
+    sync();
+    
     record("Done Writing Images\n");
     return 0;
 }
@@ -259,7 +263,7 @@ void * telem(void * arg) {
     roeimage_t * new_image = NULL;
 
     /*Main telemetry loop*/
-    while (ts_alive) {
+    while (img_wr_alive) {
 
         /*dequeue new image from image writer thread*/
         new_image = (roeimage_t*) dequeue(&lqueue[telem_image]);
