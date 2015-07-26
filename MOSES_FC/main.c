@@ -172,6 +172,15 @@ void join_threads() {
         pthread_cond_broadcast(&lqueue[sequence].cond);
         pthread_join(threads[sci_timeline_thread], NULL);
 
+
+        img_wr_alive = 0;
+
+        /* Wait until image writer is done saving images*/
+        pthread_cond_broadcast(&lqueue[fpga_image].cond);
+        pthread_join(threads[image_writer_thread], &returns);
+        
+        log_backup();
+        
         /* Turn off subsytems*/
         set_power(tcs1, ON); // inverse logic for TCS subsystems
         set_power(tcs2, ON);
@@ -182,22 +191,15 @@ void join_threads() {
         set_power(premod, OFF);
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
-
         record("All Subsystems turned off\n");
-
-        img_wr_alive = 0;
-
-        /* Wait until image writer is done saving images*/
-        pthread_cond_broadcast(&lqueue[fpga_image].cond);
-        pthread_join(threads[image_writer_thread], &returns);
-
+        
         set_power(11, ON); // hit cc_power
         sleep(1);
 
-        ts_alive = 0;
-
-        pthread_cond_broadcast(&lqueue[telem_image].cond);
-        pthread_cond_broadcast(&lqueue[scit_image].cond);
+//        ts_alive = 0;
+//
+//        pthread_cond_broadcast(&lqueue[telem_image].cond);
+//        pthread_cond_broadcast(&lqueue[scit_image].cond);
 
         /* Cancel the threads that dont need to be joined*/
         int i;
@@ -209,8 +211,7 @@ void join_threads() {
             }
         }
 
-        log_backup();
-
+       
         /* Goodnight MOSES */
         execlp("shutdown", "shutdown", "-h", "now", (char *) 0);
 
