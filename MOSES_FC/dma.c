@@ -199,7 +199,7 @@ void filter_sort(roeimage_t * image) {
         
         /* Check if we saved more pixels than we expected*/
         if(k > (buf_size * 3)){
-            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            record(RED "*ERROR* SCIENCE DATA BUFFER OVERFLOW!\n" NO_COLOR);
         }
     } else if((image->channels & CH0) == CH0) { // All channels are enabled
         for (i = 0; i < frag; i++) {
@@ -221,7 +221,7 @@ void filter_sort(roeimage_t * image) {
         
         /* Check if we saved more pixels than we expected*/
         if(k > buf_size){
-            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            record(RED "*ERROR* SCIENCE DATA BUFFER OVERFLOW!\n" NO_COLOR);
         }
     } else {
         record("Unknown channel arrangement!\n");

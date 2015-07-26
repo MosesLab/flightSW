@@ -75,7 +75,7 @@ void * science_timeline(void * arg) {
                     sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
                     record(msg);
                     int duration = takeExposure(currentSequence->exposureTimes[i], currentSequence->seq_type);
-                    
+
                     record("Recording ROE temperatures\n");
                     double x;
                     x = getHK(LOWER_TEMP);
@@ -113,7 +113,7 @@ void * science_timeline(void * arg) {
                     /*Wait until FPGA has entered buffer mode*/
                     rc = wait_on_sem(&dma_control_sem, 2);
                     if (rc != TRUE) {
-                        record("Failed to set FPGA to buffer mode, trying next exposure\n");
+                        record(RED "*ERROR* Failed to set FPGA to buffer mode, trying next exposure\n" NO_COLOR);
                         continue;
                     }
 
@@ -132,8 +132,11 @@ void * science_timeline(void * arg) {
                     record("Waiting on ROE readout completion\n");
 
                     /*Wait until DMA is complete before proceeding*/
-                    wait_on_sem(&dma_control_sem, 15);
+                    rc = wait_on_sem(&dma_control_sem, 15);
+                    if (rc != TRUE) {
+                        record(RED "*ERROR* Failed to transfer image from FPGA\n" NO_COLOR);
 
+                    }
 
                     /* push packet w/info about end read out */
                     a = (packet_t*) constructPacket(MDAQ_RSP, END_RD_OUT, (char *) NULL);
@@ -228,7 +231,7 @@ void * write_data(void * arg) {
             record(msg);
 
             /*push the filename onto the telemetry queue*/
-            if (ops.tm_write == 1 && img_wr_alive == 1) {
+            if (ops.tm_write == 1 && img_wr_alive == 1 && (lqueue[telem_image].count + lqueue[fpga_image].count) < 30) {
                 enqueue(&lqueue[telem_image], image); //enqueues the path for telem
                 record("Filename pushed to telemetry queue\n");
             } else {
@@ -244,10 +247,10 @@ void * write_data(void * arg) {
         }
 
     }//end while ts_alive
-    
+
     /*make sure all buffers are synchronized to disk*/
     sync();
-    
+
     record("Done Writing Images\n");
     return 0;
 }

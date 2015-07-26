@@ -49,7 +49,7 @@ void * fpga_server(void * arg) {
         /*wait on interrupt for DMA and GPIO input*/
         rc = interrupt_wait(&interrupt);
         if (rc == FALSE) {
-            record("Error during wait\n");
+            record(RED "Error during wait\n" NO_COLOR);
         }
 
         /**
@@ -66,7 +66,7 @@ void * fpga_server(void * arg) {
             /*Poke unlatched value to FPGA*/
             rc = poke_gpio(OUTPUT_GPIO_ADDR, temp_state->val);
             if (rc == FALSE) {
-                record("Error writing GPIO output\n");
+                record(RED "Error writing GPIO output\n" NO_COLOR);
             }
 
             /*free gpio value*/
@@ -82,7 +82,7 @@ void * fpga_server(void * arg) {
 
             rc = handle_fpga_input();
             if (rc == FALSE) {
-                record("Error handling FPGA input\n");
+                record(RED "Error handling FPGA input\n" NO_COLOR);
             } else if (rc == DMA_AVAILABLE) { // DMA available in buffer, begin transfer
 
                 /*Wake up science timeline waiting for readout completion*/
@@ -126,7 +126,7 @@ void * fpga_server(void * arg) {
                         /*request pin values*/
                         rc = peek_gpio(OUTPUT_GPIO_ADDR, &(gpio_out_val->val));
                         if (rc == FALSE) {
-                            record("Error reading GPIO request\n");
+                            record(RED "Error reading GPIO request\n" NO_COLOR);
                         }
 
                         enqueue(&lqueue[gpio_req], gpio_out_val);
@@ -134,7 +134,7 @@ void * fpga_server(void * arg) {
                         /*apply output if not request*/
                         rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                         if (rc == FALSE) {
-                            record("Error writing GPIO output\n");
+                            record(RED "Error writing GPIO output\n" NO_COLOR);
                         }
 
                         usleep(1000); //sleep for 1ms before applying latch
@@ -145,7 +145,7 @@ void * fpga_server(void * arg) {
                         /*apply latched output*/
                         rc = poke_gpio(OUTPUT_GPIO_ADDR, gpio_out_val->val);
                         if (rc == FALSE) {
-                            record("Error writing GPIO output\n");
+                            record(RED "Error writing GPIO output\n" NO_COLOR);
                         }
 
                         temp_state = gpio_out_val; //write to this variable so we know to delatch next timeout
