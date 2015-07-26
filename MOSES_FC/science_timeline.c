@@ -56,6 +56,13 @@ void * science_timeline(void * arg) {
                 /* for each exposure in the sequence */
                 int i;
                 for (i = 0; i < currentSequence->numFrames; i++) {
+
+                    /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
+                    char ftimedate[80];
+                    char * filename = malloc(sizeof (char) * 80);
+                    char * dtime = malloc(sizeof (char) * 100);
+                    char * ddate = malloc(sizeof (char) * 100);
+
                     sprintf(msg, "Starting exposure for duration: %3.3f seconds (%d out of %d)\n", currentSequence->exposureTimes[i], i + 1, currentSequence->numFrames);
                     record(msg);
                     a = (packet_t*) constructPacket(MDAQ_RSP, BEGIN_EXP, (char *) NULL);
@@ -71,6 +78,19 @@ void * science_timeline(void * arg) {
                     int index[4] = {0, 0, 0, 0}; //incremented when the data is sorted
                     char channels = ops.channels;
                     constructImage(image, index, channels, 16);
+
+                    /* Get data for image details*/
+                    time_t curTime = time(NULL);
+                    struct tm *broken = localtime(&curTime);
+                    strftime(dtime, 20, "%H:%M:%S", broken);
+                    strftime(ddate, 20, "%y-%m-%d", broken); //get date
+                    strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
+                    //construct a unique filename	
+                    sprintf(filename, "%s.roe", ftimedate);
+                    sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
+                    image->filename = filename;
+                    image->date = ddate;
+                    image->time = dtime;
 
                     sprintf(msg, "Taking exposure for duration: %3.3f seconds.\n", currentSequence->exposureTimes[i]);
                     record(msg);
@@ -190,32 +210,13 @@ void * write_data(void * arg) {
     /*Loop until the flight software shuts down and there are no more images*/
     while (img_wr_alive || occupied(&lqueue[fpga_image])) {
 
-        /*dynamically allocate fields for image metadata. David, you screwed me over here, damn you and your statically allocated shit*/
-        char ftimedate[80];
-        char * filename = malloc(sizeof (char) * 80);
-        char * dtime = malloc(sizeof (char) * 100);
-        char * ddate = malloc(sizeof (char) * 100);
-
-
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
         if (image != NULL) {
             record("Dequeued new image\n");
 
-            /* Get data for image details*/
-            time_t curTime = time(NULL);
-            struct tm *broken = localtime(&curTime);
-            strftime(dtime, 20, "%H:%M:%S", broken);
-            strftime(ddate, 20, "%y-%m-%d", broken); //get date
-            strftime(ftimedate, 40, "%d%m%y%H%M%S", broken);
-            //construct a unique filename	
-            sprintf(filename, "%s.roe", ftimedate);
-            sprintf(filename, "%s/%s.roe", DATADIR, ftimedate);
 
-            image->filename = filename;
-            image->date = ddate;
-            image->time = dtime;
             image->width = 2048;
             image->height = 1024;
 
@@ -227,7 +228,7 @@ void * write_data(void * arg) {
             /*write the image and metadata to disk*/
             writeToFile(image);
 
-            sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", filename, image->num_exp, image->num_frames);
+            sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", image->filename, image->num_exp, image->num_frames);
             record(msg);
 
             /*push the filename onto the telemetry queue*/
