@@ -231,7 +231,7 @@ void * write_data(void * arg) {
             record(msg);
 
             /*push the filename onto the telemetry queue*/
-            if (ops.tm_write == 1 && img_wr_alive == 1 && (lqueue[telem_image].count + lqueue[fpga_image].count) < 25) {
+            if (ops.tm_write == 1 && img_wr_alive == 1 && (lqueue[telem_image].count + lqueue[fpga_image].count) < 22) {
                 enqueue(&lqueue[telem_image], image); //enqueues the path for telem
                 record("Filename pushed to telemetry queue\n");
             } else {
