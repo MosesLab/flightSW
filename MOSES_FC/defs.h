@@ -83,6 +83,7 @@ typedef struct {
     unsigned int read_block;
     unsigned int unique_stub;
     unsigned int sleep;
+    unsigned int sync_disk;
     char channels;
 
 

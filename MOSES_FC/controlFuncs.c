@@ -421,6 +421,8 @@ int uTest() {
 /*Timer control functions*/
 int tDataStart() {
     record("Received data start Timer\n");
+    
+    ops.seq_run = FALSE;
 
     /*Check for updated sequences*/
     loadSequences();
@@ -446,6 +448,7 @@ int tDataStop() {
     record("Received data stop Timer\n");
 
     ops.seq_run = FALSE;
+    ops.sync_disk = TRUE;
 
     packet_t* r = constructPacket(TIMER_S, DATASTOP, NULL);
     enqueue(&lqueue[hkdown], r);

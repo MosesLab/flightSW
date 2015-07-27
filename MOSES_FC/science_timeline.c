@@ -213,43 +213,53 @@ void * write_data(void * arg) {
         /*Wait for image to be enqueued*/
         record("Waiting for new image...\n");
         roeimage_t * image = dequeue(&lqueue[fpga_image]);
-        if (image != NULL) {
-            record("Dequeued new image\n");
+
+        if (ops.sync_disk == FALSE) {
+            if (image != NULL) {
+                record("Dequeued new image\n");
 
 
-            image->width = 2048;
-            image->height = 1024;
+                image->width = 2048;
+                image->height = 1024;
 
-            image->xml_cur_index = xml_index; // update current index of xml snippet array
+                image->xml_cur_index = xml_index; // update current index of xml snippet array
 
 
-            record("Image Opened\n");
+                record("Image Opened\n");
 
-            /*write the image and metadata to disk*/
-            writeToFile(image);
+                /*write the image and metadata to disk*/
+                writeToFile(image);
 
-            sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", image->filename, image->num_exp, image->num_frames);
-            record(msg);
+                sprintf(msg, "File %s successfully written to disk. (%d out of %d)\n", image->filename, image->num_exp, image->num_frames);
+                record(msg);
 
-            /*push the filename onto the telemetry queue*/
-            if (ops.tm_write == 1 && img_wr_alive == 1 && (lqueue[telem_image].count + lqueue[fpga_image].count) < 22) {
-                enqueue(&lqueue[telem_image], image); //enqueues the path for telem
-                record("Filename pushed to telemetry queue\n");
-            } else {
-                /*need to free allocated image to prevent memory leak --RTS*/
-                free(image->name);
-                free(image->filename);
-                free(image->date);
-                free(image->time);
-                free(image->data);
-                free(image);
+                /*push the filename onto the telemetry queue*/
+                if (ops.tm_write == 1 && img_wr_alive == 1 && (lqueue[telem_image].count + lqueue[fpga_image].count) < 22) {
+                    enqueue(&lqueue[telem_image], image); //enqueues the path for telem
+                    record("Filename pushed to telemetry queue\n");
+                } else {
+                    /*need to free allocated image to prevent memory leak --RTS*/
+                    free(image->name);
+                    free(image->filename);
+                    free(image->date);
+                    free(image->time);
+                    free(image->data);
+                    free(image);
+                }
+
             }
-
+        } else {
+            /*make sure all buffers are synchronized to disk*/
+            record("Committing ROE images to disk\n");
+            sync();
+            
+            ops.sync_disk = FALSE;      // reset flag
         }
 
     }//end while ts_alive
 
     /*make sure all buffers are synchronized to disk*/
+    record("Committing ROE images to disk\n");
     sync();
 
     record("Done Writing Images\n");
