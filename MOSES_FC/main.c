@@ -18,7 +18,7 @@ pthread_t threads[NUM_RROBIN + NUM_FIFO]; //array of running threads
 
 pid_t main_pid;
 int quit_sig = 0;
-struct sigaction quit_action, init_action, start_action, reset_action; //action to be taken when ^C (SIGINT) is entered
+struct sigaction quit_action, init_action, start_action, reset_action, alarm_action; //action to be taken when ^C (SIGINT) is entered
 sigset_t mask, oldmask; //masks for SIGINT signal
 
 int config_values[NUM_RROBIN + NUM_FIFO + NUM_IO]; //array of values holding moses program configurations  
@@ -249,17 +249,17 @@ void init_quit_signal_handler() {
 
     /*reset flight software signal handling*/
     sigaddset(&mask, SIGUSR2);
-    start_action.sa_handler = reset_signal;
-    start_action.sa_mask = oldmask;
-    start_action.sa_flags = 0;
+    reset_action.sa_handler = reset_signal;
+    reset_action.sa_mask = oldmask;
+    reset_action.sa_flags = 0;
     sigaction(SIGUSR2, &reset_action, NULL);
     
     /*alarm signal handling*/
     sigaddset(&mask, SIGALRM);
-    start_action.sa_handler = alarm_signal;
-    start_action.sa_mask = oldmask;
-    start_action.sa_flags = 0;
-    sigaction(SIGALRM, &alarm_signal, NULL);
+    alarm_action.sa_handler = alarm_signal;
+    alarm_action.sa_mask = oldmask;
+    alarm_action.sa_flags = 0;
+    sigaction(SIGALRM, &alarm_action, NULL);
 
 }
 
