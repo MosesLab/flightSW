@@ -255,7 +255,7 @@ void init_quit_signal_handler() {
     sigaction(SIGUSR2, &reset_action, NULL);
     
     /*alarm signal handling*/
-    sigaddset(&mask, SIGALRM);
+//    sigaddset(&mask, SIGALRM);
     alarm_action.sa_handler = alarm_signal;
     alarm_action.sa_mask = oldmask;
     alarm_action.sa_flags = 0;
