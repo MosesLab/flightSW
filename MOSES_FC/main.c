@@ -253,6 +253,13 @@ void init_quit_signal_handler() {
     start_action.sa_mask = oldmask;
     start_action.sa_flags = 0;
     sigaction(SIGUSR2, &reset_action, NULL);
+    
+    /*alarm signal handling*/
+    sigaddset(&mask, SIGALRM);
+    start_action.sa_handler = alarm_signal;
+    start_action.sa_mask = oldmask;
+    start_action.sa_flags = 0;
+    sigaction(SIGALRM, &alarm_signal, NULL);
 
 }
 
@@ -271,6 +278,11 @@ void start_signal(int sig) {
 /*Signal flight software to reset*/
 void reset_signal(int sig) {
 
+}
+
+/*upon alarm signal, make sure all data is synced to disk*/
+void alarm_signal(int sig){
+    ops.sync_disk = TRUE;
 }
 
 /*set up hash table with configuration strings to match values in moses.conf*/

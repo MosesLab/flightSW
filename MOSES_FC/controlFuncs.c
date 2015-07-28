@@ -480,6 +480,8 @@ int tDark2() {
 int tDark4() {
     record("Received Dark4 Timer\n");
 
+    alarm(25);  // Set up disk sync after 25 seconds. This is to ensure darks are synced before atmospheric splashdown
+    
     /*Check for updated sequences*/
     loadSequences();
 
