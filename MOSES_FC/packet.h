@@ -43,8 +43,10 @@ void buildLookupTable();
 char calcCheckSum(packet_t * p);
 char encode(char);
 char decode(char);
-inline int ahtoi(char*, int);
-inline void itoah(int, char *, int);
+//inline int ahtoi(char*, int);
+
+/*converts integers to ascii hex value*/
+void itoah(int dec, char * aHex, int len) ;
 
 packet_t* constructPacket(char*, char *, char *);
 void recordPacket(packet_t*);

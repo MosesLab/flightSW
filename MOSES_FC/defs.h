@@ -18,7 +18,7 @@
 
 #define SEQ_MAP_SIZE 5
 
-#define STARTBYTE '%'
+#define STARTBYTE "%%%%%%%%%%"
 #define ENDBYTE '^'
 
 #define CH0		0x1	//0x8

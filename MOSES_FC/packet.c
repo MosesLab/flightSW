@@ -56,7 +56,7 @@ void getCurrentTime(char* result) {
 void recordPacket(packet_t* p) {
     char* pString = (char *) malloc(300 * sizeof (char));
     /*decode checksum so it doesn't print gibberish*/
-    if (sprintf(pString, "%c%s%s%s%s%s%s%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
+    if (sprintf(pString, "%s%s%s%s%s%s%s%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
         record("failed to record packet\n");
     }
     record(pString);
@@ -73,8 +73,7 @@ void recordPacket(packet_t* p) {
 //    return sum;
 //}
 
-/*converts integers to ascii hex value*/
-inline void itoah(int dec, char * aHex, int len) {
+void itoah(int dec, char * aHex, int len) {
     char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
     aHex[len] = '\0';
     int i;
@@ -99,9 +98,17 @@ void buildLookupTable() {
 
 /*calculate checksum for HLP packets*/
 char calcCheckSum(packet_t * p) {
-    char parityByte = encode(STARTBYTE); //this variable is XORed with all bytes to complete rectangle code
-
     int i;
+    char * start = STARTBYTE;
+    char parityByte;
+    for (i = 0; i < sizeof (STARTBYTE); i++) {
+        if (i == 0) {
+            parityByte = encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
+        } else {
+            parityByte ^= encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
+        }
+    }
+
     for (i = 0; i < 6; i++) {
         parityByte ^= encode(p->timeStamp[i]);
     }
@@ -173,6 +180,7 @@ void readPacket(int fd, packet_t * p) {
     p->status = TRUE;
     char temp = '\0';
     //    char * error = "";
+    char * start = STARTBYTE;
 
     int continue_read = FALSE;
     int input;
@@ -181,53 +189,61 @@ void readPacket(int fd, packet_t * p) {
         input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
         //if(input==0) puts("select returned");
         volatile int clearBuffer = FALSE;
+
         if (input > 0) {
-            readData(fd, &temp, 1);
-            if (temp == STARTBYTE) clearBuffer = TRUE;
+            clearBuffer = TRUE;
+            int i;
+            for (i = 0; i < sizeof (STARTBYTE); i++) {
+                readData(fd, &temp, 1);
+                if (temp != start[i]){
+                    clearBuffer = FALSE;
+                    break;
+                }
+            }
         }
         if (clearBuffer) {
             //            ioctl(fd, FIONREAD);
             continue_read = TRUE;
-//            record("\n");
+            //            record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
-//            record("Timestamp\n");
+            //            record("Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad type\n");
-//            record("type\n");
+            //            record("type\n");
 
             tempValid = readData(fd, p->subtype, 3);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad subtype\n");
-//            record("subtype\n");
+            //            record("subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data length\n");
             p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
-//            char msg[255];
-//            sprintf(msg, "data length %d\n", p->dataSize);
-//            record(msg);
+            //            char msg[255];
+            //            sprintf(msg, "data length %d\n", p->dataSize);
+            //            record(msg);
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
-//            record("data\n");
+            //            record("data\n");
 
             readData(fd, p->checksum, 1);
-//            record("checksum\n");
+            //            record("checksum\n");
             readData(fd, &temp, 1);
-//            record("endbyte\n");
-//            while (temp != ENDBYTE) {
-//                readData(fd, &temp, 1);
-//            }
-//            record("eof\n");
-//            while (temp != EOF) {
-//                readData(fd, &temp, 1);
-//            }
+            //            record("endbyte\n");
+            //            while (temp != ENDBYTE) {
+            //                readData(fd, &temp, 1);
+            //            }
+            //            record("eof\n");
+            //            while (temp != EOF) {
+            //                readData(fd, &temp, 1);
+            //            }
 
             char rx_checksum = calcCheckSum(p);
             tempValid = (p->checksum[0] == rx_checksum);
@@ -271,11 +287,11 @@ int readData(int fd, char * data, int len) {
 
 void sendPacket(packet_t * p, int fd) {
 
-    char start = STARTBYTE;
+    char * start = STARTBYTE;
     char end = ENDBYTE;
     char eof = 0x04;
 
-    sendData(&start, 1, fd);
+    sendData(start, sizeof (STARTBYTE), fd);
     sendData(p->timeStamp, 6, fd);
     sendData(p->type, 1, fd);
     sendData(p->subtype, 3, fd);
@@ -304,7 +320,7 @@ int input_timeout(int filedes, unsigned int seconds, unsigned int micros) {
     FD_ZERO(&set);
     FD_SET(filedes, &set);
 
-    /*initialize timout data structure for select function*/
+    /*initialize timeout data structure for select function*/
     timeout.tv_sec = seconds;
     timeout.tv_usec = micros;
 
