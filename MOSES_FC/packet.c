@@ -100,7 +100,7 @@ void buildLookupTable() {
 char calcCheckSum(packet_t * p) {
     int i;
     char * start = STARTBYTE;
-    char parityByte;
+    char parityByte = 0;
     for (i = 0; i < sizeof (STARTBYTE); i++) {
         if (i == 0) {
             parityByte = encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
