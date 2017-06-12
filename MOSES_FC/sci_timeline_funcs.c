@@ -58,7 +58,7 @@ int takeExposure(double duration, int sig) {
 
         timeval_subtract(&expdiff, expstart, expstop);
         expdiff.tv_usec -= PULSE;
-        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu.%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
         actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     } else // performing dark exposure, just wait
@@ -68,7 +68,7 @@ int takeExposure(double duration, int sig) {
         gettimeofday(&expstop, NULL);
 
         timeval_subtract(&expdiff, expstart, expstop);
-        sprintf(msg, "Computer Time: %lu:%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
+        sprintf(msg, "Computer Time: %lu.%06lu sec\n", expdiff.tv_sec, expdiff.tv_usec);
         record(msg);
         actual = expdiff.tv_sec * 1e6 + expdiff.tv_usec;
     }
@@ -111,7 +111,7 @@ int wait_on_sem(sem_t * sem, int timeout) {
 
     /*wait on semaphore until dma is done or timeout period is reached*/
     if (sem_timedwait(sem, &dma_timeout_spec)) {
-        sprintf(msg, " wait on sem *ERROR*  %s\n", strerror(errno));
+        sprintf(msg, RED "wait on sem *ERROR*  %s\n" NO_COLOR, strerror(errno));
         record(msg);
         return FALSE;
     }

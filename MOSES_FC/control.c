@@ -38,6 +38,7 @@ void * hlp_control(void * arg) {
     ops.seq_run = FALSE;
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;
+    ops.sync_disk = FALSE;
     
     if(config_values[roe_interface] == 1){
         ops.roe = OFF;
@@ -70,7 +71,7 @@ void * hlp_control(void * arg) {
 
         /*read next packet from HKUP*/
         readPacket(f_up, p);
-        //            recordPacket(p);
+                    recordPacket(p);
 
         if (ts_alive) {
             if (p->status == GOOD_PACKET) {

@@ -194,11 +194,12 @@ void filter_sort(roeimage_t * image) {
                     k++;
                 }
             }
+           
         }
         
         /* Check if we saved more pixels than we expected*/
         if(k > (buf_size * 3)){
-            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            record(RED "*ERROR* SCIENCE DATA BUFFER OVERFLOW!\n" NO_COLOR);
         }
     } else if((image->channels & CH0) == CH0) { // All channels are enabled
         for (i = 0; i < frag; i++) {
@@ -208,18 +209,19 @@ void filter_sort(roeimage_t * image) {
     } else if (image->channels == CH3){         // Only positive channel is enabled
         for (i = 0; i < frag; i++) {
             for (j = 0; j < (buf_size); j++) {
-                next_pixel = virt_buf[i][j]; 
+                next_pixel = virt_buf[i][j];
 
-                if(next_pixel > 0xBFFF){        // Save only channel 3
+                if (next_pixel > 0xBFFF) { // Save only channel 3
                     dest_buf[k] = next_pixel;
                     k++;
                 }
             }
+           
         }
         
         /* Check if we saved more pixels than we expected*/
         if(k > buf_size){
-            record("SCIENCE DATA BUFFER OVERFLOW!\n");
+            record(RED "*ERROR* SCIENCE DATA BUFFER OVERFLOW!\n" NO_COLOR);
         }
     } else {
         record("Unknown channel arrangement!\n");

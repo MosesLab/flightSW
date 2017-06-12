@@ -91,6 +91,8 @@ int handle_fpga_input() {
 
         return DMA_AVAILABLE;
     } else { // check for input gpio
+	
+	usleep(150000);
 
         /*send acknowledge read gpio value to fpga*/
         rc = poke_gpio(GPIO_I_INT_ACK, gpio_in_state->val);

@@ -42,6 +42,8 @@
 
 /*Global quit variable declaration*/
 extern volatile sig_atomic_t ts_alive;     //variable modified by signal handler, setting this to false will end the threads
+extern volatile sig_atomic_t img_wr_alive;
+extern volatile sig_atomic_t sciti_alive;
 
 /*Quit signal varibles*/
 extern pid_t main_pid;
@@ -78,10 +80,12 @@ void quit_signal(int);  //signal handler
 void init_signal(int sig);
 void start_signal(int sig);
 void reset_signal(int sig);
+void alarm_signal(int sig);
 void start_threads();
 void join_threads();
 void init_quit_signal_handler();
 void cleanup();
+void log_backup();
 
 
 

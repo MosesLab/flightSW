@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # 
 # File:   moses_startup.sh
 # Author: byrdie
@@ -55,6 +55,6 @@ exec Plx_load 9056 &
 
 sleep 1
 
-#exec moses_fc &
+exec moses_fc &
 
 exit 0

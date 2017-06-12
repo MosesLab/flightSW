@@ -127,7 +127,7 @@ void writeToFile(roeimage_t * image) {
 
     /*allocate buffer for xml file snippet to send through telemetry*/
     unsigned int xml_sz = 0;
-    char * xmlbuf = malloc(700 * sizeof (char)); // Each xml snippet is approximately 597 bytes
+    char * xmlbuf = malloc(800 * sizeof (char)); // Each xml snippet is approximately 597 bytes
 
     /*write xml data to buffer*/
     xml_sz += sprintf(xmlbuf + xml_sz, "<ROEIMAGE>\n");
@@ -145,6 +145,8 @@ void writeToFile(roeimage_t * image) {
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<DURATION>%d</DURATION>\n", image->duration);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNELS>%s</CHANNELS>\n", schannels);
     xml_sz += sprintf(xmlbuf + xml_sz, "\t<PIXELS>%d</PIXELS>\n", image->total_size);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ROE_TEMP_UPPER>%3.2f</ROE_TEMP_UPPER>\n", image->roe_temp_up);
+    xml_sz += sprintf(xmlbuf + xml_sz, "\t<ROE_TEMP_LOWER>%3.2f</ROE_TEMP_LOWER>\n", image->roe_temp_low);
     for (i = 0; i < 4; i++) {
         xml_sz += sprintf(xmlbuf + xml_sz, "\t<CHANNEL_SIZE ch=\"%d\">%dpix</CHANNEL_SIZE>\n", i, image->size[i]);
     }
@@ -161,6 +163,13 @@ void writeToFile(roeimage_t * image) {
     /*write closing xml statement*/
     fprintf(outxml, "</CATALOG>\n");
 
+//    rc = fflush(outxml);
+//    if (rc != 0) {
+//        record("Error flushing science data buffer!");
+//    }
+//
+//    fsync(fileno(outxml));
+
     fclose(outxml);
 
     /*Write Image Data*/
@@ -173,11 +182,14 @@ void writeToFile(roeimage_t * image) {
         record(strerror(ferror(dataOut)));
     }
 
-    /*flush library buffer*/
-    rc = fflush(dataOut);
-    if (rc != 0) {
-        record("Error flushing science data buffer!");
-    }
+//    /*flush library buffer*/
+//    rc = fflush(dataOut);
+//    if (rc != 0) {
+//        record("Error flushing science data buffer!");
+//    }
+//
+//    fsync(fileno(dataOut));
+
 
     fclose(dataOut);
 
