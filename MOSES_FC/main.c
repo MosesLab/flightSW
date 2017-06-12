@@ -168,8 +168,8 @@ void join_threads() {
         set_power(tcs3, OFF);
         set_power(shutter, OFF);
         set_power(roe, OFF);
-        set_power(halpha, OFF);
-        set_power(premod, OFF);
+        //set_power(halpha, OFF);
+       // set_power(premod, OFF);
         set_power(ps5v, OFF);
         set_power(psdual12v, OFF);
 
