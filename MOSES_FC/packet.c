@@ -274,7 +274,7 @@ int readData(int fd, char * data, int len) {
     for (i = 0; i < len; i++) {
         temp = data[i];
         data[i] = decode(temp);
-        record(data);
+        record("Data:" + data);
 
 
         if (temp != encode(data[i]) && temp != data[i]) {
