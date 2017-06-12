@@ -39,21 +39,21 @@ void * hlp_control(void * arg) {
     ops.channels = CH1 | CH2 | CH3;
     ops.dma_write = TRUE;
     ops.sync_disk = FALSE;
-    
-    if(config_values[roe_interface] == 1){
+
+    if (config_values[roe_interface] == 1) {
         ops.roe = OFF;
         record("ROE TURNED OFF\n");
     } else {
         ops.roe = ON;
         record("ROE TURNED ON\n");
     }
-    
-    if(config_values[synclink_interface] == 1){
+
+    if (config_values[synclink_interface] == 1) {
         ops.tm_write = TRUE;
     } else {
         ops.tm_write = FALSE;
     }
-    
+
 
     /*Load the Sequence Map*/
     loadSequences();
@@ -71,7 +71,7 @@ void * hlp_control(void * arg) {
 
         /*read next packet from HKUP*/
         readPacket(f_up, p);
-                    recordPacket(p);
+        recordPacket(p);
 
         if (ts_alive) {
             if (p->status == GOOD_PACKET) {
@@ -129,11 +129,11 @@ void * gpio_control(void * arg) {
     while (ts_alive) {
         /*dequeue next packet from gpio input queue*/
         gpio_in_uni * gpio_control = (gpio_in_uni*) dequeue(&lqueue[gpio_in]);
-        if(gpio_control != NULL)
-            
-        if(gpio_control->bf.ddr2_read_error == TRUE){
-            record("DDR2 read error encountered!\n");
-        }
+        if (gpio_control != NULL)
+
+            if (gpio_control->bf.ddr2_read_error == TRUE) {
+                record("DDR2 read error encountered!\n");
+            }
 
         sprintf(msg, "GPIO value: %d\n", (U32) (gpio_control->val));
         record(msg);
@@ -143,7 +143,7 @@ void * gpio_control(void * arg) {
 
         free(gpio_control);
     }
-    
+
     return NULL;
 
 
