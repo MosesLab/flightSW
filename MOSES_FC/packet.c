@@ -223,12 +223,11 @@ void readPacket(int fd, packet_t * p) {
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
             //            record("data\n");
-            
-            // An attempt to resolve the incorrect reception of packets.
-            tempValid = readData(fd, p->ENDBYTE, 1);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Couldn't get Stop Delimiter\n");
 
+            tempValid = readData(fd, p->stopbyte, 1);
+            p->status = p->status & tempValid;
+            if (tempValid != TRUE) record("Bad Stop Delimiter\n");
+            
             readData(fd, p->checksum, 1);
             //            record("checksum\n");
             readData(fd, &temp, 1);
