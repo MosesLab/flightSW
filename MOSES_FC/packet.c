@@ -63,16 +63,6 @@ void recordPacket(packet_t* p) {
     free(pString); //clean up string after recording
 }
 
-/*BROKEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DON'T USE, use strtol(3) instead*/
-/*converts ascii hex to integer value*/
-//inline int ahtoi(char * aHex, int len) {
-//    int sum = 0; //Every character is translated to an integer and is then shifted by powers of 16 depending on its position
-//    int i;
-//    for (i = len - 1; i >= 0; i--)
-//        sum += (int) (((aHex[i] - 48 > 16) ? aHex[i] - 55 : aHex[i] - 48) * pow(16.0, len - (i + 1)));
-//    return sum;
-//}
-
 void itoah(int dec, char * aHex, int len) {
     char * ahlt = "0123456789ABCDEF"; // ascii-hex lookup table
     aHex[len] = '\0';
@@ -188,7 +178,7 @@ void readPacket(int fd, packet_t * p) {
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
         //if(input==0) puts("select returned");
-        volatile int clearBuffer = FALSE;
+        int clearBuffer = FALSE;
 
         if (input > 0) {
             clearBuffer = TRUE;
@@ -233,6 +223,11 @@ void readPacket(int fd, packet_t * p) {
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
             //            record("data\n");
+            
+            // An attempt to resolve the incorrect reception of packets.
+            tempValid = readData(fd, p->ENDBYTE, 1);
+            p->status = p->status & tempValid;
+            if (tempValid != TRUE) record("Couldn't get Stop Delimiter\n");
 
             readData(fd, p->checksum, 1);
             //            record("checksum\n");
