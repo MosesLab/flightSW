@@ -188,7 +188,6 @@ void readPacket(int fd, packet_t * p) {
                 readData(fd, &temp, 1);
                 if (temp != start[i]){
                     clearBuffer = FALSE;
-                    continue_read = TRUE;
                     record("error reading startbyte\n");
                     break;
                 }
@@ -196,6 +195,7 @@ void readPacket(int fd, packet_t * p) {
         }
         if (clearBuffer) {
             //            ioctl(fd, FIONREAD);
+            continue_read = TRUE;
             //            record("\n");
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
