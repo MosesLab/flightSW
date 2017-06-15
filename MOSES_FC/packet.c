@@ -1,4 +1,4 @@
-
+  
 #include "packet.h"
 
 /*Builds a packet out of provided values, returns packet pointer*/
@@ -56,7 +56,8 @@ void getCurrentTime(char* result) {
 void recordPacket(packet_t* p) {
     char* pString = (char *) malloc(300 * sizeof (char));
     /*decode checksum so it doesn't print gibberish*/
-    if (sprintf(pString, "%s%s%s%s%s%s%s%c\n", STARTBYTE, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
+    char * start = STARTBYTE;
+    if (sprintf(pString, "%s%s%s%s%s%s%s%c\n", start, p->timeStamp, p->type, p->subtype, p->dataLength, p->data, p->checksum, ENDBYTE) == 0) {
         record("failed to record packet\n");
     }
     record(pString);
@@ -223,10 +224,6 @@ void readPacket(int fd, packet_t * p) {
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
             //            record("data\n");
-
-            tempValid = readData(fd, p->stopbyte, 1);
-            p->status = p->status & tempValid;
-            if (tempValid != TRUE) record("Bad Stop Delimiter\n");
             
             readData(fd, p->checksum, 1);
             //            record("checksum\n");
