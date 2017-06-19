@@ -92,7 +92,7 @@ char calcCheckSum(packet_t * p) {
     int i;
     char * start = STARTBYTE;
     char parityByte = 0;
-    for (i = 0; i < sizeof (STARTBYTE); i++) {
+    for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
         if (i == 0) {
             parityByte = encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
         } else {
@@ -184,16 +184,17 @@ void readPacket(int fd, packet_t * p) {
         if (input > 0) {
             clearBuffer = TRUE;
             int i;
-            for (i = 0; i < sizeof (STARTBYTE); i++) {
+            for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
                 readData(fd, &temp, 1);
-                if (temp != start[i]){
+                //printf("%04x\n", temp);
+		if (temp != start[i]){
                     clearBuffer = FALSE;
                     record("error reading startbyte\n");
                     break;
                 }
             }
         }
-        if (clearBuffer) {
+        if (clearBuffer == TRUE) {
             //            ioctl(fd, FIONREAD);
             continue_read = TRUE;
             //            record("\n");
@@ -242,7 +243,7 @@ void readPacket(int fd, packet_t * p) {
             p->status = p->status & tempValid;
             if (tempValid != TRUE) {
                 char msg[255];
-                sprintf(msg, "Bad checksum: got %c, expected %c\n", p->checksum[0], rx_checksum);
+                sprintf(msg, "Bad checksum: got %02x, expected %02x\n", (unsigned char) p->checksum[0], (unsigned char) rx_checksum);
                 record(msg);
             }
             //            ioctl(fd, FIONREAD);
@@ -253,7 +254,7 @@ void readPacket(int fd, packet_t * p) {
 
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
-    char temp;
+    unsigned char temp;
     int result = TRUE;
 
     int rsz = read(fd, data, len);
@@ -264,13 +265,16 @@ int readData(int fd, char * data, int len) {
     int i;
     for (i = 0; i < len; i++) {
         temp = data[i];
+        printf("%02x\n", temp);
+
         data[i] = decode(temp);
-        record(data);
 
 
         if (temp != encode(data[i]) && temp != data[i]) {
             result = FALSE;
-            record("Bad packet Encoding\n");
+		char msg[255];
+		sprintf(msg, "Bad pacekt Encoding. temp = 0x%02x, encode(data[i]) = 0x%02x, data[i] = 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
+            record(msg);
         }
     }
 
@@ -284,7 +288,7 @@ void sendPacket(packet_t * p, int fd) {
     char end = ENDBYTE;
     char eof = 0x04;
 
-    sendData(start, sizeof (STARTBYTE), fd);
+    sendData(start, sizeof (STARTBYTE) - 1, fd);
     sendData(p->timeStamp, 6, fd);
     sendData(p->type, 1, fd);
     sendData(p->subtype, 3, fd);

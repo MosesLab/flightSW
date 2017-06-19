@@ -45,7 +45,7 @@ typedef struct {
     char dataLength[3];
     char data[256];
     char checksum[2];
-
+    
 
 } packet_t;
 
