@@ -114,9 +114,6 @@ void * hlp_control(void * arg) {
 
         free(p);
     }
-    /*need to clean up properly but these don't allow the program to terminate correctly*/
-    //close(fup);  
-    //lockingQueue_destroy(&hkupQueue);
     return NULL;
 }
 
@@ -158,7 +155,6 @@ void * hlp_down(void * arg) {
 
     prctl(PR_SET_NAME, HLP_DOWN, 0, 0, 0);
 
-    //    sleep(2); //sleep to give control a chance to initialize queue
     record("-->HLP Down thread started....\n");
 
     /*Open housekeeping downlink using configuration file*/
@@ -176,8 +172,7 @@ void * hlp_down(void * arg) {
 
         if (!ts_alive) break; //If the program has terminated, break out of the loop
         if (p->status) {
-            sendPacket(p, fdown);
-            //            recordPacket(p); //save packet to logfile for debugging   
+            sendPacket(p, fdown);  
             free(p); //Clean up after packet is sent
         } else {
             record("Bad hlp_down packet\n");
