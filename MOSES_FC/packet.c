@@ -241,9 +241,9 @@ void readPacket(int fd, packet_t * p) {
             //                readData(fd, &temp, 1);
             //            }
             //            record("eof\n");
-            //            while (temp != EOF) {
-            //                readData(fd, &temp, 1);
-            //            }
+            while (temp != EOF) {
+                readData(fd, &temp, 1);
+            }
 
             char rx_checksum = calcCheckSum(p);
             tempValid = (p->checksum[0] == rx_checksum);
@@ -272,7 +272,6 @@ int readData(int fd, char * data, int len) {
     int i;
     for (i = 0; i < len; i++) {
         temp = data[i];
-        printf("0x%02x\n", (unsigned char) temp);
 
         data[i] = decode(temp);
 
