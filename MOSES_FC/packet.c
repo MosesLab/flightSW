@@ -254,7 +254,7 @@ void readPacket(int fd, packet_t * p) {
 
 /*readData returns an array if successful or 0 if an error occurred*/
 int readData(int fd, char * data, int len) {
-    unsigned char temp;
+    char temp;
     int result = TRUE;
 
     int rsz = read(fd, data, len);
@@ -269,18 +269,18 @@ int readData(int fd, char * data, int len) {
 
         data[i] = decode(temp);
 
-        char msg[255];
-        sprintf(msg, "temp -> 0x%02x, encode(data[i]) -> 0x%02x, data[i] -> 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
-        record(msg);
-        sprintf(msg, "temp != encode(data[i]) -> 0x%02x, temp != data[i] -> 0x%02x\n", (temp != (encode(data[i]))),  temp != data[i]);
-        record(msg);
-        sprintf(msg, "temp != encode(data[i]) && temp != data[i] -> 0x%02x\n", (unsigned char)(temp != encode(data[i]) && temp != data[i]));
-	record(msg);
+//        char msg[255];
+//        sprintf(msg, "temp -> 0x%02x, encode(data[i]) -> 0x%02x, data[i] -> 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
+//        record(msg);
+//        sprintf(msg, "temp != encode(data[i]) -> 0x%02x, temp != data[i] -> 0x%02x\n", (temp != (encode(data[i]))),  temp != data[i]);
+//        record(msg);
+//        sprintf(msg, "temp != encode(data[i]) && temp != data[i] -> 0x%02x\n", (unsigned char)(temp != encode(data[i]) && temp != data[i]));
+//	record(msg);
         if (temp != (encode(data[i])) && temp != data[i]) {
             result = FALSE;
 		//char msg[255];
 		//sprintf(msg, "Bad packet Encoding. temp = 0x%02x, encode(data[i]) = 0x%02x, data[i] = 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
-            record("being dumb\n");
+            record("Bad packet encoding\n");
         }
     }
 
