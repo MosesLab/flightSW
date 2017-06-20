@@ -269,11 +269,16 @@ int readData(int fd, char * data, int len) {
 
         data[i] = decode(temp);
 
-
+        char msg[255];
+        sprintf(msg, "temp -> 0x%02x, encode(data[i]) -> 0x%02x, data[i] -> 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
+        record(msg);
+        sprintf(msg, "temp != encode(data[i]) -> 0x%02x, temp != data[i] -> 0x%02x\n", (unsigned char) (temp != encode(data[i])), (unsigned char) temp != data[i]);
+        record(msg);
+        sprintf(msg, "temp != encode(data[i]) && temp != data[i] -> 0x%02x\n", (unsigned char)(temp != encode(data[i]) && temp != data[i]));
         if (temp != encode(data[i]) && temp != data[i]) {
             result = FALSE;
 		char msg[255];
-		sprintf(msg, "Bad pacekt Encoding. temp = 0x%02x, encode(data[i]) = 0x%02x, data[i] = 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
+		sprintf(msg, "Bad packet Encoding. temp = 0x%02x, encode(data[i]) = 0x%02x, data[i] = 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
             record(msg);
         }
     }
