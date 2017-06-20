@@ -95,28 +95,35 @@ char calcCheckSum(packet_t * p) {
     for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
         if (i == 0) {
             parityByte = encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
+            printf("%04x\n", (unsigned char) parityByte);
         } else {
             parityByte ^= encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
+            printf("%04x\n", (unsigned char) parityByte);
         }
     }
 
     for (i = 0; i < 6; i++) {
         parityByte ^= encode(p->timeStamp[i]);
+        printf("%04x\n", (unsigned char) parityByte);
     }
 
     parityByte ^= encode(p->type[0]);
+    printf("%04x\n", (unsigned char) parityByte);
 
     for (i = 0; i < 3; i++) {
         parityByte ^= encode(p->subtype[i]);
+        printf("%04x\n", (unsigned char) parityByte);
     }
 
     for (i = 0; i < 2; i++) {
         parityByte ^= encode(p->dataLength[i]);
+        printf("%04x\n", (unsigned char) parityByte);
     }
 
 
     for (i = 0; i < p->dataSize; i++) {
         parityByte ^= encode(p->data[i]);
+        printf("%04x\n", (unsigned char) parityByte);
     }
 
     parityByte = decode(parityByte); //decode because all chars are encoded before being sent
@@ -265,21 +272,12 @@ int readData(int fd, char * data, int len) {
     int i;
     for (i = 0; i < len; i++) {
         temp = data[i];
-        printf("%02x\n", temp);
+        printf("0x%02x\n", (unsigned char) temp);
 
         data[i] = decode(temp);
 
-//        char msg[255];
-//        sprintf(msg, "temp -> 0x%02x, encode(data[i]) -> 0x%02x, data[i] -> 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
-//        record(msg);
-//        sprintf(msg, "temp != encode(data[i]) -> 0x%02x, temp != data[i] -> 0x%02x\n", (temp != (encode(data[i]))),  temp != data[i]);
-//        record(msg);
-//        sprintf(msg, "temp != encode(data[i]) && temp != data[i] -> 0x%02x\n", (unsigned char)(temp != encode(data[i]) && temp != data[i]));
-//	record(msg);
         if (temp != (encode(data[i])) && temp != data[i]) {
             result = FALSE;
-		//char msg[255];
-		//sprintf(msg, "Bad packet Encoding. temp = 0x%02x, encode(data[i]) = 0x%02x, data[i] = 0x%02x\n",(unsigned char) temp,(unsigned char) encode(data[i]), (unsigned char)data[i]);
             record("Bad packet encoding\n");
         }
     }
