@@ -95,35 +95,28 @@ char calcCheckSum(packet_t * p) {
     for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
         if (i == 0) {
             parityByte = encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
-            printf("%04x\n", (unsigned char) parityByte);
         } else {
             parityByte ^= encode(start[i]); //this variable is XORed with all bytes to complete rectangle code
-            printf("%04x\n", (unsigned char) parityByte);
         }
     }
 
     for (i = 0; i < 6; i++) {
         parityByte ^= encode(p->timeStamp[i]);
-        printf("%04x\n", (unsigned char) parityByte);
     }
 
     parityByte ^= encode(p->type[0]);
-    printf("%04x\n", (unsigned char) parityByte);
 
     for (i = 0; i < 3; i++) {
         parityByte ^= encode(p->subtype[i]);
-        printf("%04x\n", (unsigned char) parityByte);
     }
 
     for (i = 0; i < 2; i++) {
         parityByte ^= encode(p->dataLength[i]);
-        printf("%04x\n", (unsigned char) parityByte);
     }
 
 
     for (i = 0; i < p->dataSize; i++) {
         parityByte ^= encode(p->data[i]);
-        printf("%04x\n", (unsigned char) parityByte);
     }
 
     parityByte = decode(parityByte); //decode because all chars are encoded before being sent
@@ -177,7 +170,6 @@ void readPacket(int fd, packet_t * p) {
     int tempValid = TRUE;
     p->status = TRUE;
     char temp = '\0';
-    //    char * error = "";
     char * start = STARTBYTE;
 
     int continue_read = FALSE;
@@ -185,16 +177,17 @@ void readPacket(int fd, packet_t * p) {
 
     while (continue_read == FALSE && ts_alive == TRUE) {
         input = input_timeout(fd, 10000, 0); //Wait until interrupt or timeout 
-        //if(input==0) puts("select returned");
+
         int clearBuffer = FALSE;
 
         if (input > 0) {
             clearBuffer = TRUE;
             int i;
+
             for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
                 readData(fd, &temp, 1);
-                //printf("%04x\n", temp);
-		if (temp != start[i]){
+
+		if (temp != encode(start[i])){
                     clearBuffer = FALSE;
                     record("error reading startbyte\n");
                     break;
@@ -202,46 +195,35 @@ void readPacket(int fd, packet_t * p) {
             }
         }
         if (clearBuffer == TRUE) {
-            //            ioctl(fd, FIONREAD);
+
             continue_read = TRUE;
-            //            record("\n");
+
             tempValid = readData(fd, p->timeStamp, 6);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad Timestamp\n");
-            //            record("Timestamp\n");
 
             tempValid = readData(fd, p->type, 1);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad type\n");
-            //            record("type\n");
 
             tempValid = readData(fd, p->subtype, 3);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad subtype\n");
-            //            record("subtype\n");
 
             tempValid = readData(fd, p->dataLength, 2);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data length\n");
             p->dataSize = strtol(p->dataLength, NULL, 16); //calculate data size to find how many bytes to read
-            //            char msg[255];
-            //            sprintf(msg, "data length %d\n", p->dataSize);
-            //            record(msg);
 
             tempValid = readData(fd, p->data, p->dataSize);
             p->status = p->status & tempValid;
             if (tempValid != TRUE) record("Bad data\n");
-            //            record("data\n");
-            
+
             readData(fd, p->checksum, 1);
-            //            record("checksum\n");
+
             readData(fd, &temp, 1);
-            //            record("endbyte\n");
-            //            while (temp != ENDBYTE) {
-            //                readData(fd, &temp, 1);
-            //            }
-            //            record("eof\n");
-            while (temp != EOF) {
+
+            while (temp != EOF_PACKET) {
                 readData(fd, &temp, 1);
             }
 
@@ -253,10 +235,8 @@ void readPacket(int fd, packet_t * p) {
                 sprintf(msg, "Bad checksum: got %02x, expected %02x\n", (unsigned char) p->checksum[0], (unsigned char) rx_checksum);
                 record(msg);
             }
-            //            ioctl(fd, FIONREAD);
         }
     }
-
 }
 
 /*readData returns an array if successful or 0 if an error occurred*/
