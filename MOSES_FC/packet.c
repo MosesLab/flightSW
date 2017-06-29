@@ -19,7 +19,6 @@ packet_t* constructPacket(char* type, char* subtype, char* data) {
     }
 
     getCurrentTime(p->timeStamp);
-    //p->type[0] = type[0];
     memcpy(p->type, type, 2);
     memcpy(p->subtype, subtype, 4);
     memcpy(p->dataLength, dataLength, 3);
@@ -152,7 +151,6 @@ int init_serial_connection(int hkup, char * serial_path) {
     }
     newtio.c_cflag &= ~(PARENB | PARODD);
     newtio.c_iflag &= ~(IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK | INLCR | IGNCR | ICRNL | IXON | IXOFF | IUCLC | IXANY | IMAXBEL);
-    //newtio_up.c_iflag |= ISTRIP;
     newtio.c_oflag &= ~OPOST;
     newtio.c_lflag &= ~(ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK | ECHOCTL | ECHOKE | IEXTEN);
 
