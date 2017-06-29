@@ -255,7 +255,7 @@ int readData(int fd, char * data, int len) {
 
         if (temp != (encode(data[i])) && temp != data[i]) {
             result = FALSE;
-            record("Bad packet encoding\n");
+//          record("Bad packet encoding\n");
         }
     }
 
