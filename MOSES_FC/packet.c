@@ -187,7 +187,7 @@ void readPacket(int fd, packet_t * p) {
 
 		if (temp != encode(start[i])){
                     clearBuffer = FALSE;
-                    record("error reading startbyte\n");
+//                  record("error reading startbyte\n");
                     break;
                 }
             }
