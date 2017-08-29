@@ -184,10 +184,12 @@ void readPacket(int fd, packet_t * p) {
 
             for (i = 0; i < sizeof (STARTBYTE) - 1; i++) {
                 readData(fd, &temp, 1);
-
-		if (temp != encode(start[i])){
+		//char tbuf[255];
+		//sprintf(tbuf, "0x%02X\n", temp);
+		//record(tbuf);		
+		if (temp != start[i]){
                     clearBuffer = FALSE;
-//                  record("error reading startbyte\n");
+                    //record("error reading startbyte\n");
                     break;
                 }
             }
