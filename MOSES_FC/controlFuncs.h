@@ -271,11 +271,11 @@ enum subsystems {
     tcs1,
     tcs2,
     tcs3,
-   // premod,
+    premod,
     tcs,
     shutter,
     roe,  
-    //halpha  
+    halpha  
 };
 
 extern char * subsystem_strs[];
